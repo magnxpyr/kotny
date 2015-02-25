@@ -1,0 +1,149 @@
+[
+    {
+        "name": "components/bootstrap-switch",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/tubssp/bootstrap-switch.git",
+            "reference": "7c2d069a98cba7e7b24ec605a761f8c0685e0be9"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/tubssp/bootstrap-switch/zipball/7c2d069a98cba7e7b24ec605a761f8c0685e0be9",
+            "reference": "7c2d069a98cba7e7b24ec605a761f8c0685e0be9",
+            "shasum": ""
+        },
+        "time": "2014-06-25 18:28:03",
+        "type": "component",
+        "extra": {
+            "component": {
+                "name": "bootstrap-switch",
+                "files": [
+                    "dist/**"
+                ],
+                "scripts": [
+                    "dist/js/bootstrap-switch.js"
+                ],
+                "shim": {
+                    "exports": "BootstrapSwitch"
+                }
+            }
+        },
+        "installation-source": "source",
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "Apache License Version 2.0"
+        ],
+        "authors": [
+            {
+                "name": "Mattia Larentis",
+                "homepage": "http://www.larentis.eu"
+            }
+        ],
+        "description": "Turn checkboxes and radio buttons in toggle switches.",
+        "homepage": "http://www.bootstrap-switch.org",
+        "keywords": [
+            "JS",
+            "bootstrap",
+            "javascript",
+            "switch"
+        ]
+    },
+    {
+        "name": "twbs/bootstrap",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/twbs/bootstrap.git",
+            "reference": "9e1e73f9dcfdf20305dcb6a83e77e67efe1948c5"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/twbs/bootstrap/zipball/9e1e73f9dcfdf20305dcb6a83e77e67efe1948c5",
+            "reference": "9e1e73f9dcfdf20305dcb6a83e77e67efe1948c5",
+            "shasum": ""
+        },
+        "replace": {
+            "twitter/bootstrap": "self.version"
+        },
+        "time": "2015-02-06 22:53:51",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "3.3.x-dev"
+            }
+        },
+        "installation-source": "source",
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Jacob Thornton",
+                "email": "jacobthornton@gmail.com"
+            },
+            {
+                "name": "Mark Otto",
+                "email": "markdotto@gmail.com"
+            }
+        ],
+        "description": "The most popular front-end framework for developing responsive, mobile first projects on the web.",
+        "homepage": "http://getbootstrap.com",
+        "keywords": [
+            "JS",
+            "css",
+            "framework",
+            "front-end",
+            "less",
+            "mobile-first",
+            "responsive",
+            "web"
+        ]
+    },
+    {
+        "name": "ckeditor/ckeditor",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/ckeditor/ckeditor-releases.git",
+            "reference": "cc324415302784eb1abe33a3762fbdd3b48c558b"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/ckeditor/ckeditor-releases/zipball/cc324415302784eb1abe33a3762fbdd3b48c558b",
+            "reference": "cc324415302784eb1abe33a3762fbdd3b48c558b",
+            "shasum": ""
+        },
+        "time": "2015-01-27 15:13:53",
+        "type": "library",
+        "installation-source": "source",
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "GPL-2.0+",
+            "LGPL-2.1+",
+            "MPL-1.1+"
+        ],
+        "authors": [
+            {
+                "name": "CKSource",
+                "homepage": "http://cksource.com"
+            }
+        ],
+        "description": "JavaScript WYSIWYG web text editor.",
+        "homepage": "http://ckeditor.com",
+        "keywords": [
+            "CKEditor",
+            "editor",
+            "fckeditor",
+            "html",
+            "javascript",
+            "richtext",
+            "text",
+            "wysiwyg"
+        ]
+    }
+]
