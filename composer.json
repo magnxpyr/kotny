@@ -9,7 +9,8 @@
         "php" : ">=5.3.6",
         "twbs/bootstrap": "dev-master",
         "components/bootstrap-switch": "dev-master",
-        "ckeditor/ckeditor": "dev-master"
+        "ckeditor/ckeditor": "dev-master",
+        "fortawesome/font-awesome": "dev-master"
     },
     "minimum-stability": "dev",
     "config": {

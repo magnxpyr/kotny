@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "fd3b882a6f43797ebae87d1b501b0de9",
+    "hash": "763d5ecc308904e59e7fe5171ed81c58",
     "packages": [
         {
             "name": "ckeditor/ckeditor",
@@ -97,17 +97,65 @@
             "time": "2014-06-25 18:28:03"
         },
         {
+            "name": "fortawesome/font-awesome",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/FortAwesome/Font-Awesome.git",
+                "reference": "c79474df99e572e230a7e16f06a6a4605c00b18f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/FortAwesome/Font-Awesome/zipball/c79474df99e572e230a7e16f06a6a4605c00b18f",
+                "reference": "c79474df99e572e230a7e16f06a6a4605c00b18f",
+                "shasum": ""
+            },
+            "require-dev": {
+                "jekyll": "1.0.2",
+                "lessc": "1.4.2"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "4.0.x-dev"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "OFL-1.1",
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Dave Gandy",
+                    "email": "dave@fontawesome.io",
+                    "homepage": "http://twitter.com/davegandy",
+                    "role": "Developer"
+                }
+            ],
+            "description": "The iconic font and CSS framework",
+            "homepage": "http://fontawesome.io/",
+            "keywords": [
+                "FontAwesome",
+                "awesome",
+                "bootstrap",
+                "font",
+                "icon"
+            ],
+            "time": "2015-02-13 23:15:18"
+        },
+        {
             "name": "twbs/bootstrap",
             "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twbs/bootstrap.git",
-                "reference": "9e1e73f9dcfdf20305dcb6a83e77e67efe1948c5"
+                "reference": "ad379ffb4a0fde7416ae076e68141300fc583018"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twbs/bootstrap/zipball/9e1e73f9dcfdf20305dcb6a83e77e67efe1948c5",
-                "reference": "9e1e73f9dcfdf20305dcb6a83e77e67efe1948c5",
+                "url": "https://api.github.com/repos/twbs/bootstrap/zipball/ad379ffb4a0fde7416ae076e68141300fc583018",
+                "reference": "ad379ffb4a0fde7416ae076e68141300fc583018",
                 "shasum": ""
             },
             "replace": {
@@ -145,7 +193,7 @@
                 "responsive",
                 "web"
             ],
-            "time": "2015-02-06 22:53:51"
+            "time": "2015-02-27 07:51:17"
         }
     ],
     "packages-dev": [],
@@ -154,7 +202,8 @@
     "stability-flags": {
         "twbs/bootstrap": 20,
         "components/bootstrap-switch": 20,
-        "ckeditor/ckeditor": 20
+        "ckeditor/ckeditor": 20,
+        "fortawesome/font-awesome": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
