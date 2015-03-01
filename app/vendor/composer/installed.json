@@ -1,5 +1,108 @@
 [
     {
+        "name": "fortawesome/font-awesome",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/FortAwesome/Font-Awesome.git",
+            "reference": "c79474df99e572e230a7e16f06a6a4605c00b18f"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/FortAwesome/Font-Awesome/zipball/c79474df99e572e230a7e16f06a6a4605c00b18f",
+            "reference": "c79474df99e572e230a7e16f06a6a4605c00b18f",
+            "shasum": ""
+        },
+        "require-dev": {
+            "jekyll": "1.0.2",
+            "lessc": "1.4.2"
+        },
+        "time": "2015-02-13 23:15:18",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "4.0.x-dev"
+            }
+        },
+        "installation-source": "source",
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "OFL-1.1",
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Dave Gandy",
+                "email": "dave@fontawesome.io",
+                "homepage": "http://twitter.com/davegandy",
+                "role": "Developer"
+            }
+        ],
+        "description": "The iconic font and CSS framework",
+        "homepage": "http://fontawesome.io/",
+        "keywords": [
+            "FontAwesome",
+            "awesome",
+            "bootstrap",
+            "font",
+            "icon"
+        ]
+    },
+    {
+        "name": "twbs/bootstrap",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/twbs/bootstrap.git",
+            "reference": "ad379ffb4a0fde7416ae076e68141300fc583018"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/twbs/bootstrap/zipball/ad379ffb4a0fde7416ae076e68141300fc583018",
+            "reference": "ad379ffb4a0fde7416ae076e68141300fc583018",
+            "shasum": ""
+        },
+        "replace": {
+            "twitter/bootstrap": "self.version"
+        },
+        "time": "2015-02-27 07:51:17",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "3.3.x-dev"
+            }
+        },
+        "installation-source": "source",
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Jacob Thornton",
+                "email": "jacobthornton@gmail.com"
+            },
+            {
+                "name": "Mark Otto",
+                "email": "markdotto@gmail.com"
+            }
+        ],
+        "description": "The most popular front-end framework for developing responsive, mobile first projects on the web.",
+        "homepage": "http://getbootstrap.com",
+        "keywords": [
+            "JS",
+            "css",
+            "framework",
+            "front-end",
+            "less",
+            "mobile-first",
+            "responsive",
+            "web"
+        ]
+    },
+    {
         "name": "components/bootstrap-switch",
         "version": "dev-master",
         "version_normalized": "9999999-dev",
@@ -48,59 +151,6 @@
             "bootstrap",
             "javascript",
             "switch"
-        ]
-    },
-    {
-        "name": "twbs/bootstrap",
-        "version": "dev-master",
-        "version_normalized": "9999999-dev",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/twbs/bootstrap.git",
-            "reference": "9e1e73f9dcfdf20305dcb6a83e77e67efe1948c5"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/twbs/bootstrap/zipball/9e1e73f9dcfdf20305dcb6a83e77e67efe1948c5",
-            "reference": "9e1e73f9dcfdf20305dcb6a83e77e67efe1948c5",
-            "shasum": ""
-        },
-        "replace": {
-            "twitter/bootstrap": "self.version"
-        },
-        "time": "2015-02-06 22:53:51",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "3.3.x-dev"
-            }
-        },
-        "installation-source": "source",
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Jacob Thornton",
-                "email": "jacobthornton@gmail.com"
-            },
-            {
-                "name": "Mark Otto",
-                "email": "markdotto@gmail.com"
-            }
-        ],
-        "description": "The most popular front-end framework for developing responsive, mobile first projects on the web.",
-        "homepage": "http://getbootstrap.com",
-        "keywords": [
-            "JS",
-            "css",
-            "framework",
-            "front-end",
-            "less",
-            "mobile-first",
-            "responsive",
-            "web"
         ]
     },
     {

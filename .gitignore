@@ -1,2 +1,4 @@
 /cache/
-/config/development/
+/config/development//app/cache/
+/.idea
+cms.iml
