@@ -10,7 +10,7 @@ return new \Phalcon\Config(array(
         'charset'     => 'utf8',
     ),
     'application' => array(
-        'controllersDir' => __DIR__ . '/../../app/controllers/',
+        'moduleDir' => __DIR__ . '/../../app/modules/',
         'modelsDir'      => __DIR__ . '/../../app/models/',
         'viewsDir'       => __DIR__ . '/../../app/views/',
         'pluginsDir'     => __DIR__ . '/../../app/plugins/',

@@ -2,7 +2,7 @@
 /*
  * @copyright   2006 - 2015 Magnxpyr Network
  * @license     New BSD License; see LICENSE
- * @url        http://www.magnxpyr.com
+ * @url         http://www.magnxpyr.com
  */
 
 class Bootstrap {
@@ -11,9 +11,10 @@ class Bootstrap {
         // The FactoryDefault Dependency Injector automatically register the right services providing a full stack framework
         $di = new \Phalcon\DI\FactoryDefault();
 
-
+        // load config file
         $config = include 'config/config.php';
         $di->set('config', $config);
+
         $loader = new \Phalcon\Loader();
 
         // Registering directories taken from the configuration file
@@ -52,7 +53,7 @@ class Bootstrap {
 
                     return $volt;
                 },
-                //    '.phtml' => 'Phalcon\Mvc\View\Engine\Php'
+                '.phtml' => 'Phalcon\Mvc\View\Engine\Php'
             ));
 
             return $view;
@@ -81,5 +82,10 @@ class Bootstrap {
 
             return $session;
         });
+
+        // Handle the request
+        $application = new \Phalcon\Mvc\Application($di);
+
+        echo $application->handle()->getContent();
     }
 }
