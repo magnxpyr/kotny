@@ -5,7 +5,7 @@
  * @url         http://www.magnxpyr.com
  */
 
-namespace MG\Admin;
+namespace Modules\Admin;
 
 
 use Phalcon\Mvc\Dispatcher,
