@@ -5,8 +5,8 @@
  * @url         http://www.magnxpyr.com
  */
 
-namespace Engine\Loader;
-use Phalcon\Text;
+namespace Engine;
+//use Phalcon\Text;
 
 class Modules {
 
@@ -16,12 +16,12 @@ class Modules {
         $modules = array();
         if (!empty($modules_list)) {
             foreach ($modules_list as $module) {
-                $namespaces[$module] = '../../modules/' . $module;
-                $simple = Text::uncamelize($module);
-                $simple = str_replace('_', '-', $simple);
-                $modules[$simple] = array(
-                    'className' => $module . '\Module',
-                    'path' => '../../modules/' . $module . '/Module.php'
+                $namespaces[$module] = APP_PATH . 'modules/' . $module;
+            //    $simple = Text::uncamelize($module);
+            //    $simple = str_replace('_', '-', $simple);
+                $modules[$module] = array(
+                    'className' => $module . '\Modules',
+                    'path' => APP_PATH . 'modules/' . $module . '/Module.php'
                 );
             }
         }

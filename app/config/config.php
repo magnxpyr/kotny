@@ -1,6 +1,6 @@
 <?php
 
-return new \Phalcon\Config(array(
+$config = array(
     'database' => array(
         'adapter'     => 'Mysql',
         'host'        => 'localhost',
@@ -10,12 +10,21 @@ return new \Phalcon\Config(array(
         'charset'     => 'utf8',
     ),
     'application' => array(
-        'modulesDir' => __DIR__ . '/../../app/modules/',
-        'modelsDir'      => __DIR__ . '/../../app/models/',
-        'viewsDir'       => __DIR__ . '/../../app/views/',
-        'pluginsDir'     => __DIR__ . '/../../app/plugins/',
-        'vendorDir'     => __DIR__ . '/../../app/vendor/',
-        'cacheDir'       => __DIR__ . '/../../app/cache/',
+        'modulesDir' => APP_PATH . 'modules/',
+        'modelsDir'      => APP_PATH . 'models/',
+        'viewsDir'       => APP_PATH . 'views/',
+        'pluginsDir'     => APP_PATH . 'plugins/',
+        'engineDir'     => APP_PATH . 'engine/Loader',
+        'vendorDir'     => APP_PATH . 'vendor/',
+        'cacheDir'       => APP_PATH . 'cache/',
         'baseUri'        => '/',
     )
-));
+);
+
+$modules_list = require_once 'modules.php';
+require_once APP_PATH . 'engine/Loader.php';
+$modules = new \Engine\Modules();
+$modules_config = $modules->modulesConfig($modules_list);
+$config = array_merge_recursive($config, $modules_config);
+//print_r($config);exit;
+return new \Phalcon\Config($config);

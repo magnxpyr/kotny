@@ -12,19 +12,44 @@ class Bootstrap {
         $di = new \Phalcon\DI\FactoryDefault();
 
         // load config file
-        $config = include 'config/config.php';
+        $config = require_once APP_PATH . 'config/config.php';
         $di->set('config', $config);
 
         $loader = new \Phalcon\Loader();
-
+ //       $loader->registerNamespaces($config->loader->namespaces->toArray());
+/*
+        $loader->registerNamespaces(
+            array(
+                'Modules\Admin' => APP_PATH . 'modules/Admin',
+                'Modules\Admin\Controllers' => APP_PATH . 'modules/Admin/controllers'
+            )
+        );
+*/
         // Registering directories taken from the configuration file
         $loader->registerDirs(
             array(
-                $config->application->controllersDir,
-                $config->application->modelsDir,
-                $config->application->vendorDir
+                $config->application->engineDir
             )
-        )->register();
+        );
+        $loader->register();
+        print_r($loader);
+
+        $di->set('router', function () {
+
+            $router = new Phalcon\Mvc\Router();
+
+            $router->setDefaultModule("Admin");
+
+            $router->add("/", array(
+                'module'     => 'Admin',
+                'controller' => 'index',
+                'action'     => 'index',
+            ));
+
+            return $router;
+        });
+
+        //print_r($loader);
 
         // Generate urls
         $di->set('url', function () use ($config) {
@@ -86,6 +111,71 @@ class Bootstrap {
         // Handle the request
         $application = new \Phalcon\Mvc\Application($di);
 
+        //$application->registerModules($config->modules->toArray());
+
+        $application->registerModules(
+            array(
+                'frontend' => array(
+                    'className' => 'Admin\Module',
+                    'path'      => APP_PATH . 'modules/Admin/Module.php'
+                )
+            )
+        );
+
+        $application->setDI($di);
         echo $application->handle()->getContent();
+       // $this->dispatcher($di);
+    }
+
+    private function dispatcher($di) {
+        // Get the 'router' service
+        $router = $di['router'];
+
+        $router->handle();
+
+        $view = $di['view'];
+
+        $dispatcher = $di['dispatcher'];
+
+        // Pass the processed router parameters to the dispatcher
+        $dispatcher->setModuleName($router->getModuleName());
+        $dispatcher->setControllerName($router->getControllerName());
+        $dispatcher->setActionName($router->getActionName());
+        $dispatcher->setParams($router->getParams());
+
+        $ModuleClassName = \Phalcon\Text::camelize($router->getModuleName()) . '\Module';
+        if (class_exists('Admin\Module')) {
+            echo 'exist...';
+            $module = new $ModuleClassName;
+            $module->registerAutoloaders();
+            $module->registerServices($di);
+        }
+
+        // Start the view
+        $view->start();
+
+        // Dispatch the request
+        $dispatcher->dispatch();
+
+        // Render the related views
+        $view->render(
+            $dispatcher->getControllerName(),
+            $dispatcher->getActionName(),
+            $dispatcher->getParams()
+        );
+
+        // Finish the view
+        $view->finish();
+
+        $response = $di['response'];
+
+        // Pass the output of the view to the response
+        $response->setContent($view->getContent());
+
+        // Send the request headers
+        $response->sendHeaders();
+
+        // Print the response
+        echo $response->getContent();
     }
 }
