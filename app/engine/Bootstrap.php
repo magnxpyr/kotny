@@ -17,14 +17,14 @@ class Bootstrap {
 
         $loader = new \Phalcon\Loader();
  //       $loader->registerNamespaces($config->loader->namespaces->toArray());
-/*
+
         $loader->registerNamespaces(
             array(
-                'Modules\Admin' => APP_PATH . 'modules/Admin',
-                'Modules\Admin\Controllers' => APP_PATH . 'modules/Admin/controllers'
+                'Modules\Admin\\' => APP_PATH . 'modules/Admin',
+                'Modules\Admin\Controllers\\' => APP_PATH . 'modules/Admin/controllers'
             )
         );
-*/
+
         // Registering directories taken from the configuration file
         $loader->registerDirs(
             array(
@@ -32,7 +32,7 @@ class Bootstrap {
             )
         );
         $loader->register();
-        print_r($loader);
+        //print_r($loader);
 
         $di->set('router', function () {
 
@@ -42,7 +42,7 @@ class Bootstrap {
 
             $router->add("/", array(
                 'module'     => 'Admin',
-                'controller' => 'index',
+                'controller' => 'Index',
                 'action'     => 'index',
             ));
 
@@ -115,8 +115,8 @@ class Bootstrap {
 
         $application->registerModules(
             array(
-                'frontend' => array(
-                    'className' => 'Admin\Module',
+                'Admin' => array(
+                    'className' => 'Modules\Admin\Module',
                     'path'      => APP_PATH . 'modules/Admin/Module.php'
                 )
             )
@@ -144,6 +144,7 @@ class Bootstrap {
         $dispatcher->setParams($router->getParams());
 
         $ModuleClassName = \Phalcon\Text::camelize($router->getModuleName()) . '\Module';
+        print_r($ModuleClassName);
         if (class_exists('Admin\Module')) {
             echo 'exist...';
             $module = new $ModuleClassName;

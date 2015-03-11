@@ -20,7 +20,7 @@ class Modules {
             //    $simple = Text::uncamelize($module);
             //    $simple = str_replace('_', '-', $simple);
                 $modules[$module] = array(
-                    'className' => $module . '\Modules',
+                    'className' => $module . '\Module',
                     'path' => APP_PATH . 'modules/' . $module . '/Module.php'
                 );
             }

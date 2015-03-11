@@ -50,59 +50,6 @@
         ]
     },
     {
-        "name": "twbs/bootstrap",
-        "version": "dev-master",
-        "version_normalized": "9999999-dev",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/twbs/bootstrap.git",
-            "reference": "ad379ffb4a0fde7416ae076e68141300fc583018"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/twbs/bootstrap/zipball/ad379ffb4a0fde7416ae076e68141300fc583018",
-            "reference": "ad379ffb4a0fde7416ae076e68141300fc583018",
-            "shasum": ""
-        },
-        "replace": {
-            "twitter/bootstrap": "self.version"
-        },
-        "time": "2015-02-27 07:51:17",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "3.3.x-dev"
-            }
-        },
-        "installation-source": "source",
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Jacob Thornton",
-                "email": "jacobthornton@gmail.com"
-            },
-            {
-                "name": "Mark Otto",
-                "email": "markdotto@gmail.com"
-            }
-        ],
-        "description": "The most popular front-end framework for developing responsive, mobile first projects on the web.",
-        "homepage": "http://getbootstrap.com",
-        "keywords": [
-            "JS",
-            "css",
-            "framework",
-            "front-end",
-            "less",
-            "mobile-first",
-            "responsive",
-            "web"
-        ]
-    },
-    {
         "name": "components/bootstrap-switch",
         "version": "dev-master",
         "version_normalized": "9999999-dev",
@@ -194,6 +141,59 @@
             "richtext",
             "text",
             "wysiwyg"
+        ]
+    },
+    {
+        "name": "twbs/bootstrap",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/twbs/bootstrap.git",
+            "reference": "ba1345f144283d579b07cd40b5ae5a5b84d2b2e7"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/twbs/bootstrap/zipball/ba1345f144283d579b07cd40b5ae5a5b84d2b2e7",
+            "reference": "ba1345f144283d579b07cd40b5ae5a5b84d2b2e7",
+            "shasum": ""
+        },
+        "replace": {
+            "twitter/bootstrap": "self.version"
+        },
+        "time": "2015-03-10 20:20:23",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "3.3.x-dev"
+            }
+        },
+        "installation-source": "source",
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Jacob Thornton",
+                "email": "jacobthornton@gmail.com"
+            },
+            {
+                "name": "Mark Otto",
+                "email": "markdotto@gmail.com"
+            }
+        ],
+        "description": "The most popular front-end framework for developing responsive, mobile first projects on the web.",
+        "homepage": "http://getbootstrap.com",
+        "keywords": [
+            "JS",
+            "css",
+            "framework",
+            "front-end",
+            "less",
+            "mobile-first",
+            "responsive",
+            "web"
         ]
     }
 ]

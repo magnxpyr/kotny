@@ -150,12 +150,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/twbs/bootstrap.git",
-                "reference": "ad379ffb4a0fde7416ae076e68141300fc583018"
+                "reference": "ba1345f144283d579b07cd40b5ae5a5b84d2b2e7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twbs/bootstrap/zipball/ad379ffb4a0fde7416ae076e68141300fc583018",
-                "reference": "ad379ffb4a0fde7416ae076e68141300fc583018",
+                "url": "https://api.github.com/repos/twbs/bootstrap/zipball/ba1345f144283d579b07cd40b5ae5a5b84d2b2e7",
+                "reference": "ba1345f144283d579b07cd40b5ae5a5b84d2b2e7",
                 "shasum": ""
             },
             "replace": {
@@ -193,7 +193,7 @@
                 "responsive",
                 "web"
             ],
-            "time": "2015-02-27 07:51:17"
+            "time": "2015-03-10 20:20:23"
         }
     ],
     "packages-dev": [],

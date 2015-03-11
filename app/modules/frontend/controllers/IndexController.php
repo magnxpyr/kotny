@@ -5,17 +5,15 @@
  * @url        http://www.magnxpyr.com
  */
 
-namespace Admin\Controllers;
+namespace Modules\Frontend\Controllers;
 
 use Phalcon\Mvc\Controller;
 
-class IndexController extends Controller
-{
+class IndexController extends Controller {
 
     public function indexAction()
     {
-
+        echo 'It works!';
     }
-
 }
 

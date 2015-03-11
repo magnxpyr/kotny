@@ -5,7 +5,7 @@
  * @url         http://www.magnxpyr.com
  */
 
-namespace Admin;
+namespace Modules\Frontend;
 
 use Phalcon\Mvc\Dispatcher,
     Phalcon\Loader,
@@ -60,7 +60,7 @@ class Module
     {
         $loader = new \Phalcon\Loader();
         $loader->registerNamespaces(array(
-            'Admin\Controllers' => APP_PATH . 'modules/Admin/controllers/',
+            'Modules\Frontend\Controllers' => APP_PATH . 'modules/frontend/controllers/',
         ));
         $loader->register();
     }
@@ -74,13 +74,27 @@ class Module
             $dispatcher = new \Phalcon\Mvc\Dispatcher();
             //Attach a event listener to the dispatcher
 
-            $dispatcher->setDefaultNamespace('Admin\Controllers');
+            $dispatcher->setDefaultNamespace('Modules\Frontend\Controllers\\');
             return $dispatcher;
         });
         //Registering the view component
         $di->set('view', function() {
             $view = new \Phalcon\Mvc\View();
-            $view->setViewsDir(APP_PATH . 'modules/Admin/views/');
+            $view->setViewsDir(APP_PATH . 'modules/frontend/views/');
+            $view->registerEngines(array(
+                '.volt' => function ($view, $di) {
+
+                    $volt = new \Phalcon\Mvc\View\Engine\Volt($view, $di);
+
+                    $volt->setOptions(array(
+                        'compiledPath' => APP_PATH . 'cache/',
+                        'compiledSeparator' => '_'
+                    ));
+
+                    return $volt;
+                },
+                '.phtml' => 'Phalcon\Mvc\View\Engine\Php'
+            ));
             return $view;
         });
     }
