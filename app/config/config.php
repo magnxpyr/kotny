@@ -1,28 +1,30 @@
 <?php
 
-$config = array(
+return array(
     'database' => array(
-        'adapter'     => 'Mysql',
-        'host'        => 'localhost',
-        'username'    => 'root',
-        'password'    => 'bingo',
-        'dbname'      => 'cms',
-        'charset'     => 'utf8',
+        'adapter'   => 'Mysql',
+        'host'      => 'localhost',
+        'username'  => 'root',
+        'password'  => 'bingo',
+        'dbname'    => 'cms',
+        'charset'   => 'utf8',
     ),
-    'application' => array(
-        'modulesDir' => APP_PATH . 'modules/',
-        'engineDir'     => APP_PATH . 'engine/',
-        'vendorDir'     => APP_PATH . 'vendor/',
-        'cacheDir'       => APP_PATH . 'cache/',
-        'baseUri'        => '/',
+    'app' => array(
+        'cacheDir'      => ROOT_PATH . 'cache/',
+        'baseUri'       => '/',
+        'publicUri'     => '/',
+        'cryptSalt'     => '',
+        'development'   => true
+    ),
+    'mail' => array(
+        'fromName' => '',
+        'fromEmail' => '',
+        'smtp' => array(
+            'server' => 'smtp.example.com',
+            'port' => 587,
+            'security' => 'tls',
+            'username' => '',
+            'password' => ''
+        )
     )
 );
-/*
-$modules_list = require_once 'modules.php';
-require_once APP_PATH . 'engine/Loader.php';
-$modules = new \Engine\Modules();
-$modules_config = $modules->modulesConfig($modules_list);
-$config = array_merge_recursive($config, $modules_config);
-//print_r($config);exit;
-*/
-return new \Phalcon\Config($config);

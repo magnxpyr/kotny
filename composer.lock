@@ -4,11 +4,11 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "763d5ecc308904e59e7fe5171ed81c58",
+    "hash": "51f8122956af14840a5aa6c2829129f9",
     "packages": [
         {
             "name": "ckeditor/ckeditor",
-            "version": "dev-master",
+            "version": "4.4.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ckeditor/ckeditor-releases.git",
@@ -98,16 +98,16 @@
         },
         {
             "name": "fortawesome/font-awesome",
-            "version": "dev-master",
+            "version": "v4.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/FortAwesome/Font-Awesome.git",
-                "reference": "c79474df99e572e230a7e16f06a6a4605c00b18f"
+                "reference": "41b9ed01103e6820c3cb043ba7ddab30ecd3f4c0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FortAwesome/Font-Awesome/zipball/c79474df99e572e230a7e16f06a6a4605c00b18f",
-                "reference": "c79474df99e572e230a7e16f06a6a4605c00b18f",
+                "url": "https://api.github.com/repos/FortAwesome/Font-Awesome/zipball/41b9ed01103e6820c3cb043ba7ddab30ecd3f4c0",
+                "reference": "41b9ed01103e6820c3cb043ba7ddab30ecd3f4c0",
                 "shasum": ""
             },
             "require-dev": {
@@ -142,20 +142,56 @@
                 "font",
                 "icon"
             ],
-            "time": "2015-02-13 23:15:18"
+            "time": "2015-01-22 18:09:42"
         },
         {
-            "name": "twbs/bootstrap",
+            "name": "phalcon/pretty-exceptions",
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/twbs/bootstrap.git",
-                "reference": "ba1345f144283d579b07cd40b5ae5a5b84d2b2e7"
+                "url": "https://github.com/phalcon/pretty-exceptions.git",
+                "reference": "7d07dce67cfd18e87e65fd395272e4ef3dff87ba"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twbs/bootstrap/zipball/ba1345f144283d579b07cd40b5ae5a5b84d2b2e7",
-                "reference": "ba1345f144283d579b07cd40b5ae5a5b84d2b2e7",
+                "url": "https://api.github.com/repos/phalcon/pretty-exceptions/zipball/7d07dce67cfd18e87e65fd395272e4ef3dff87ba",
+                "reference": "7d07dce67cfd18e87e65fd395272e4ef3dff87ba",
+                "shasum": ""
+            },
+            "require": {
+                "php": "~5.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Phalcon\\Utils\\": "Library/Phalcon/Utils"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Contributors",
+                    "homepage": "https://github.com/phalcon/pretty-exceptions/graphs/contributors"
+                }
+            ],
+            "description": "Beauty-exceptions plugin for Phalcon",
+            "time": "2014-12-13 15:49:21"
+        },
+        {
+            "name": "twbs/bootstrap",
+            "version": "v3.3.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/twbs/bootstrap.git",
+                "reference": "bcf7dd38b5ab180256e2e4fb5da0369551b3f082"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/twbs/bootstrap/zipball/bcf7dd38b5ab180256e2e4fb5da0369551b3f082",
+                "reference": "bcf7dd38b5ab180256e2e4fb5da0369551b3f082",
                 "shasum": ""
             },
             "replace": {
@@ -193,17 +229,15 @@
                 "responsive",
                 "web"
             ],
-            "time": "2015-03-10 20:20:23"
+            "time": "2015-01-19 17:03:09"
         }
     ],
     "packages-dev": [],
     "aliases": [],
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "stability-flags": {
-        "twbs/bootstrap": 20,
         "components/bootstrap-switch": 20,
-        "ckeditor/ckeditor": 20,
-        "fortawesome/font-awesome": 20
+        "phalcon/pretty-exceptions": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

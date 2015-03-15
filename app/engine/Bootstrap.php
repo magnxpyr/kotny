@@ -11,46 +11,31 @@ class Bootstrap {
         // The FactoryDefault Dependency Injector automatically register the right services providing a full stack framework
         $di = new \Phalcon\DI\FactoryDefault();
 
-        // load config file
+        // Load config file
         $config = require_once APP_PATH . 'config/config.php';
+        $modules_list = require_once APP_PATH . 'config/modules.php';
+        $modules_config = $this->modulesConfig($modules_list);
+        $config = new \Phalcon\Config(array_merge_recursive($config, $modules_config));
         $di->set('config', $config);
 
+        // Load pretty exceptions
+        if($config->app->development) {
+            ini_set('display_errors', 1);
+            error_reporting(E_ALL);
+            require APP_PATH . 'vendor/phalcon/pretty-exceptions/loader.php';
+        }
+
+        // Registering directories
         $loader = new \Phalcon\Loader();
- //       $loader->registerNamespaces($config->loader->namespaces->toArray());
-
-        $loader->registerNamespaces(
-            array(
-                'Modules\Admin\\' => APP_PATH . 'modules/Admin',
-                'Modules\Admin\Controllers\\' => APP_PATH . 'modules/Admin/controllers'
-            )
-        );
-
-        // Registering directories taken from the configuration file
-        $loader->registerDirs(
-            array(
-                $config->application->engineDir
-            )
-        );
+        //$loader->registerNamespaces($config->loader->namespaces->toArray());
+        $loader->registerDirs(array(APP_PATH . 'engine/'));
         $loader->register();
-        //print_r($loader);
 
-        $di->set('router', function () {
-
-            $router = new Phalcon\Mvc\Router();
-
-            $router->setDefaultModule("Admin");
-
-            $router->add("/", array(
-                'module'     => 'Admin',
-                'controller' => 'Index',
-                'action'     => 'index',
-            ));
-
-            return $router;
-        });
-
-        //print_r($loader);
-
+        // Register routers
+        $router = new Phalcon\Mvc\Router();
+        $router->setDefaultModule("Admin");
+        $di->set('router', $router);
+/*
         // Generate urls
         $di->set('url', function () use ($config) {
             $url = new Phalcon\Mvc\Url();
@@ -58,33 +43,37 @@ class Bootstrap {
 
             return $url;
         }, true);
+*/
 
         // Setting up the view component
-        $di->set('view', function () use ($config) {
+        $view = new \Phalcon\Mvc\View();
+        $view->setViewsDir(APP_PATH . 'views/');
+        $view->setMainView('main');
+        $view->setLayoutsDir(APP_PATH . 'views/layouts/');
+        $view->setLayout('main');
+        $view->setPartialsDir(APP_PATH . 'views/partials/');
 
-            $view = new \Phalcon\Mvc\View();
+        $volt = new \Phalcon\Mvc\View\Engine\Volt($view, $di);
+        $volt->setOptions(array(
+            'compiledPath' => $config->app->cacheDir,
+            'compiledSeparator' => '_'
+        ));
+        $phtml = new \Phalcon\Mvc\View\Engine\Php($view, $di);
 
-            $view->setViewsDir($config->application->viewsDir);
+        $view->registerEngines(array(
+            '.volt' => $volt,
+            '.phtml' => $phtml
+        ));
+        $view->setRenderLevel(\Phalcon\Mvc\View::LEVEL_LAYOUT);
+        $di->set('view', $view);
 
-            $view->registerEngines(array(
-                '.volt' => function ($view, $di) use ($config) {
 
-                    $volt = new \Phalcon\Mvc\View\Engine\Volt($view, $di);
+        //Registering a dispatcher
+        $dispatcher = new \Phalcon\Mvc\Dispatcher();
+        $di->set('dispatcher', $dispatcher);
 
-                    $volt->setOptions(array(
-                        'compiledPath' => $config->application->cacheDir,
-                        'compiledSeparator' => '_'
-                    ));
 
-                    return $volt;
-                },
-                '.phtml' => 'Phalcon\Mvc\View\Engine\Php'
-            ));
-
-            return $view;
-        }, true);
-
-        // connect to db
+        // Connect to db
         $di->set('db', function () use ($config) {
             return new \Phalcon\Db\Adapter\Pdo\Mysql(array(
                 'host' => $config->database->host,
@@ -95,88 +84,63 @@ class Bootstrap {
             ));
         });
 
+        $cacheFrontend = new \Phalcon\Cache\Frontend\Data(array(
+            "lifetime" => 60,
+            "prefix" => '_',
+        ));
+
+        $cache = new \Phalcon\Cache\Backend\File($cacheFrontend, array(
+            "cacheDir" => ROOT_PATH . "/cache/backend/"
+        ));
+
+        $di->set('cache', $cache);
+        $di->set('modelsCache', $cache);
+
         // If the configuration specify the use of metadata adapter use it or use memory otherwise
         $di->set('modelsMetadata', function () {
             return new \Phalcon\Mvc\Model\MetaData\Memory();
         });
 
         // Start the session from file
-        $di->set('session', function () {
-            $session = new \Phalcon\Session\Adapter\Files();
-            $session->start();
-
-            return $session;
-        });
+        $session = new \Phalcon\Session\Adapter\Files();
+        $session->start();
+        $di->set('session', $session);
 
         // Handle the request
         $application = new \Phalcon\Mvc\Application($di);
-
-        //$application->registerModules($config->modules->toArray());
-
-        $application->registerModules(
-            array(
-                'Admin' => array(
-                    'className' => 'Modules\Admin\Module',
-                    'path'      => APP_PATH . 'modules/Admin/Module.php'
-                )
-            )
-        );
-
+        $application->registerModules($config->modules->toArray());
         $application->setDI($di);
+
+        // Register the flash service with custom CSS classes
+        $flash = new \Phalcon\Flash\Session(array(
+            'error'   => 'alert alert-danger',
+            'success' => 'alert alert-success',
+            'notice'  => 'alert alert-info'
+        ));
+        $di->set('flash', $flash);
+
+        // Render
         echo $application->handle()->getContent();
-       // $this->dispatcher($di);
     }
 
-    private function dispatcher($di) {
-        // Get the 'router' service
-        $router = $di['router'];
-
-        $router->handle();
-
-        $view = $di['view'];
-
-        $dispatcher = $di['dispatcher'];
-
-        // Pass the processed router parameters to the dispatcher
-        $dispatcher->setModuleName($router->getModuleName());
-        $dispatcher->setControllerName($router->getControllerName());
-        $dispatcher->setActionName($router->getActionName());
-        $dispatcher->setParams($router->getParams());
-
-        $ModuleClassName = \Phalcon\Text::camelize($router->getModuleName()) . '\Module';
-        print_r($ModuleClassName);
-        if (class_exists('Admin\Module')) {
-            echo 'exist...';
-            $module = new $ModuleClassName;
-            $module->registerAutoloaders();
-            $module->registerServices($di);
+    public function modulesConfig($modules_list)
+    {
+        //    $namespaces = array();
+        $modules = array();
+        if (!empty($modules_list)) {
+            foreach ($modules_list as $module) {
+                //    $namespaces["Modules\\$module"] = APP_PATH . 'modules/' . $module;
+                $modules[$module] = array(
+                    'className' => "Modules\\$module\\Module",
+                    'path' => APP_PATH . "modules/$module/Module.php"
+                );
+            }
         }
 
-        // Start the view
-        $view->start();
-
-        // Dispatch the request
-        $dispatcher->dispatch();
-
-        // Render the related views
-        $view->render(
-            $dispatcher->getControllerName(),
-            $dispatcher->getActionName(),
-            $dispatcher->getParams()
+        $modules_array = array(
+            //    'loader' => array('namespaces' => $namespaces),
+            'modules' => $modules,
         );
-
-        // Finish the view
-        $view->finish();
-
-        $response = $di['response'];
-
-        // Pass the output of the view to the response
-        $response->setContent($view->getContent());
-
-        // Send the request headers
-        $response->sendHeaders();
-
-        // Print the response
-        echo $response->getContent();
+        return $modules_array;
     }
 }
