@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "51f8122956af14840a5aa6c2829129f9",
+    "hash": "2eeeb661481ee21749b2253de14d73fe",
     "packages": [
         {
             "name": "ckeditor/ckeditor",
@@ -234,7 +234,7 @@
     ],
     "packages-dev": [],
     "aliases": [],
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "stability-flags": {
         "components/bootstrap-switch": 20,
         "phalcon/pretty-exceptions": 20

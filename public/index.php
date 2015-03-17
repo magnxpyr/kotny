@@ -9,6 +9,7 @@
 define('DS', DIRECTORY_SEPARATOR);
 define('ROOT_PATH', dirname(__DIR__).DS);
 define('APP_PATH', ROOT_PATH . 'app/');
+define('MEDIA_PATH', ROOT_PATH . 'media/');
 define('PUBLIC_PATH', __DIR__);
 
 // Check phalcon framework installation.

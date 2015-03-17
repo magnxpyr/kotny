@@ -14,14 +14,14 @@ class IndexController extends Controller
     public function initialize()
     {
         $this->tag->setTitle('Welcome');
-        $this->view->setTemplateAfter('main');
+    //    $this->view->setTemplateAfter('main');
     }
     public function indexAction()
     {
-        if (!$this->request->isPost()) {
+    //    if (!$this->request->isPost()) {
             $this->flash->notice('This is a sample application of the Phalcon Framework.
                 Please don\'t provide us any personal information. Thanks');
-        }
+   //     }
         echo 'It Works';
     }
 }

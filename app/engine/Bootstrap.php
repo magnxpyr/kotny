@@ -25,6 +25,10 @@ class Bootstrap {
             require APP_PATH . 'vendor/phalcon/pretty-exceptions/loader.php';
         }
 
+        // Registering the registry
+        $registry = new \Phalcon\Registry();
+        $di->set('registry', $registry);
+
         // Registering directories
         $loader = new \Phalcon\Loader();
         //$loader->registerNamespaces($config->loader->namespaces->toArray());
@@ -35,23 +39,20 @@ class Bootstrap {
         $router = new Phalcon\Mvc\Router();
         $router->setDefaultModule("Admin");
         $di->set('router', $router);
-/*
-        // Generate urls
-        $di->set('url', function () use ($config) {
-            $url = new Phalcon\Mvc\Url();
-            $url->setBaseUri($config->application->baseUri);
 
-            return $url;
-        }, true);
-*/
+        // Generate urls
+        $url = new Phalcon\Mvc\Url();
+        $url->setBaseUri($config->app->baseUri);
+        $di->set('url', $url);
 
         // Setting up the view component
         $view = new \Phalcon\Mvc\View();
         $view->setViewsDir(APP_PATH . 'views/');
+    //    $view->setLayoutsDir('layouts/');
+   //     $view->setPartialsDir('partials/');
         $view->setMainView('main');
-        $view->setLayoutsDir(APP_PATH . 'views/layouts/');
-        $view->setLayout('main');
-        $view->setPartialsDir(APP_PATH . 'views/partials/');
+        $view->setLayout('default');
+    //    $view->setTemplateBefore('main');
 
         $volt = new \Phalcon\Mvc\View\Engine\Volt($view, $di);
         $volt->setOptions(array(
@@ -105,6 +106,13 @@ class Bootstrap {
         $session = new \Phalcon\Session\Adapter\Files();
         $session->start();
         $di->set('session', $session);
+
+        // Register assets that will be loaded in every page
+        $assets = new \Phalcon\Assets\Manager();
+        $assets->collection('js')
+            ->addJs(APP_PATH . '/vendor/twbs/bootstrap/dist/js/bootstrap.min.js');
+
+        $di->set('assets', $assets);
 
         // Handle the request
         $application = new \Phalcon\Mvc\Application($di);
