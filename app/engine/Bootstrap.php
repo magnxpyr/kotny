@@ -8,6 +8,8 @@
 class Bootstrap {
 
     public function run() {
+        $voltOptions = array();
+
         // The FactoryDefault Dependency Injector automatically register the right services providing a full stack framework
         $di = new \Phalcon\DI\FactoryDefault();
 
@@ -23,6 +25,8 @@ class Bootstrap {
             ini_set('display_errors', 1);
             error_reporting(E_ALL);
             require APP_PATH . 'vendor/phalcon/pretty-exceptions/loader.php';
+            // Prevent caching annoyances
+            $voltOptions['compileAlways'] = true;
         }
 
         // Registering the registry
@@ -47,25 +51,24 @@ class Bootstrap {
 
         // Setting up the view component
         $view = new \Phalcon\Mvc\View();
-        $view->setViewsDir(APP_PATH . 'views/');
-    //    $view->setLayoutsDir('layouts/');
-   //     $view->setPartialsDir('partials/');
-        $view->setMainView('main');
-        $view->setLayout('default');
+    //    $view->setViewsDir(APP_PATH . 'views/');
+        $view->setLayoutsDir(APP_PATH. 'views/layouts/');
+        $view->setPartialsDir(APP_PATH. 'views/partials/');
+        $view->setMainView(APP_PATH. 'views/main');
+        $view->setLayout('main');
     //    $view->setTemplateBefore('main');
+     //   $view->setRenderLevel(\Phalcon\Mvc\View::LEVEL_BEFORE_TEMPLATE);
 
         $volt = new \Phalcon\Mvc\View\Engine\Volt($view, $di);
-        $volt->setOptions(array(
-            'compiledPath' => $config->app->cacheDir,
-            'compiledSeparator' => '_'
-        ));
+        $voltOptions['compiledPath'] = $config->app->cacheDir;
+        $voltOptions['compiledSeparator'] = '_';
+        $volt->setOptions($voltOptions);
         $phtml = new \Phalcon\Mvc\View\Engine\Php($view, $di);
 
         $view->registerEngines(array(
             '.volt' => $volt,
             '.phtml' => $phtml
         ));
-        $view->setRenderLevel(\Phalcon\Mvc\View::LEVEL_LAYOUT);
         $di->set('view', $view);
 
 
