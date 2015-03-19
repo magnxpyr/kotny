@@ -27,6 +27,5 @@ class Module
         //Registering the view component
         $view = $di->get('view');
         $view->setViewsDir(__DIR__ . '/views/');
-
     }
 }

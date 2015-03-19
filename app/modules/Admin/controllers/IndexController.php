@@ -14,7 +14,6 @@ class IndexController extends Controller
     public function initialize()
     {
         $this->tag->setTitle('Welcome');
-    //    $this->view->setTemplateAfter('main');
     }
     public function indexAction()
     {

@@ -1,10 +1,10 @@
 <div class="wrapper-in">
 
     <header>
-        {{ partial('main/header') }}
+        {{ partial('header') }}
     </header>
 
-    {{ partial('main/menu') }}
+    {{ partial('menu') }}
 
     <div id="main">
 
@@ -13,7 +13,7 @@
     </div>
 
     <footer>
-        {{ partial('main/footer') }}
+        {{ partial('footer') }}
     </footer>
 
 </div>

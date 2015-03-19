@@ -8,6 +8,8 @@
 class Bootstrap {
 
     public function run() {
+        // Define internal variables
+        define('VIEW_PATH', '../../../themes/default/');
         $voltOptions = array();
 
         // The FactoryDefault Dependency Injector automatically register the right services providing a full stack framework
@@ -51,13 +53,10 @@ class Bootstrap {
 
         // Setting up the view component
         $view = new \Phalcon\Mvc\View();
-    //    $view->setViewsDir(APP_PATH . 'views/');
-        $view->setLayoutsDir(APP_PATH. 'views/layouts/');
-        $view->setPartialsDir(APP_PATH. 'views/partials/');
-        $view->setMainView(APP_PATH. 'views/main');
-        $view->setLayout('main');
-    //    $view->setTemplateBefore('main');
-     //   $view->setRenderLevel(\Phalcon\Mvc\View::LEVEL_BEFORE_TEMPLATE);
+        $view->setLayoutsDir(VIEW_PATH . 'layouts/');
+        $view->setPartialsDir(VIEW_PATH . 'partials/');
+        $view->setMainView(VIEW_PATH . 'default');
+        $view->setLayout('default');
 
         $volt = new \Phalcon\Mvc\View\Engine\Volt($view, $di);
         $voltOptions['compiledPath'] = $config->app->cacheDir;
