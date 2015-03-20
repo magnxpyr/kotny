@@ -7,13 +7,9 @@
     "license" : "BSD-3-Clause",
 	"require" : {
         "php" : ">=5.3.6",
-        "twbs/bootstrap": "3.3.2",
-        "components/bootstrap-switch": "dev-master",
-        "ckeditor/ckeditor": "4.4.7",
-        "fortawesome/font-awesome": "4.3.0",
         "phalcon/pretty-exceptions" : "dev-master"
     },
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "config": {
         "vendor-dir": "app/vendor"
     }

@@ -22,10 +22,12 @@ class Bootstrap {
         $config = new \Phalcon\Config(array_merge_recursive($config, $modules_config));
         $di->set('config', $config);
 
-        // Load pretty exceptions
+        // Load development options
         if($config->app->development) {
+            // Display all errors
             ini_set('display_errors', 1);
             error_reporting(E_ALL);
+            // Load pretty exceptions
             require APP_PATH . 'vendor/phalcon/pretty-exceptions/loader.php';
             // Prevent caching annoyances
             $voltOptions['compileAlways'] = true;
@@ -49,6 +51,7 @@ class Bootstrap {
         // Generate urls
         $url = new Phalcon\Mvc\Url();
         $url->setBaseUri($config->app->baseUri);
+        $url->setBasePath(ROOT_PATH);
         $di->set('url', $url);
 
         // Setting up the view component
@@ -82,8 +85,7 @@ class Bootstrap {
                 'host' => $config->database->host,
                 'username' => $config->database->username,
                 'password' => $config->database->password,
-                'dbname' => $config->database->dbname,
-                "charset" => $config->database->charset
+                'dbname' => $config->database->dbname
             ));
         });
 
@@ -112,14 +114,14 @@ class Bootstrap {
         // Register assets that will be loaded in every page
         $assets = new \Phalcon\Assets\Manager();
         $assets->collection('js')
-            ->addJs(APP_PATH . '/vendor/twbs/bootstrap/dist/js/bootstrap.min.js');
+            ->addJs('vendor/jquery/jquery-2.1.3.min.js')
+            ->addJs('vendor/jquery/jquery-ui.min.js')
+            ->addJs('vendor/bootstrap/js/bootstrap.min.js');
+        $assets->collection('css')
+            ->addCss('vendor/jquery/jquery-ui.min.css')
+            ->addCss('vendor/bootstrap/css/bootstrap.min.css');
 
         $di->set('assets', $assets);
-
-        // Handle the request
-        $application = new \Phalcon\Mvc\Application($di);
-        $application->registerModules($config->modules->toArray());
-        $application->setDI($di);
 
         // Register the flash service with custom CSS classes
         $flash = new \Phalcon\Flash\Session(array(
@@ -128,6 +130,11 @@ class Bootstrap {
             'notice'  => 'alert alert-info'
         ));
         $di->set('flash', $flash);
+
+        // Handle the request
+        $application = new \Phalcon\Mvc\Application($di);
+        $application->registerModules($config->modules->toArray());
+        $application->setDI($di);
 
         // Render
         echo $application->handle()->getContent();

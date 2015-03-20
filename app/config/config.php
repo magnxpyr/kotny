@@ -6,13 +6,11 @@ return array(
         'host'      => 'localhost',
         'username'  => 'root',
         'password'  => 'bingo',
-        'dbname'    => 'cms',
-        'charset'   => 'utf8',
+        'dbname'    => 'cms'
     ),
     'app' => array(
         'cacheDir'      => ROOT_PATH . 'cache/',
-        'baseUri'       => '/',
-        'publicUri'     => '/',
+        'baseUri'       => '/cms/',
         'cryptSalt'     => '',
         'development'   => true
     ),
