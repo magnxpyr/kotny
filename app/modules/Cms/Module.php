@@ -13,7 +13,7 @@ class Module
     {
         $loader = new \Phalcon\Loader();
         $loader->registerNamespaces(array(
-            'Modules\Admin\Controllers' => __DIR__ . '/controllers/',
+            'Modules\Cms\Controllers' => __DIR__ . '/controllers/',
         ));
         $loader->register();
     }
@@ -22,17 +22,10 @@ class Module
     {
         //Attach a event listener to the dispatcher
         $dispatcher = $di->get('dispatcher');
-        $dispatcher->setDefaultNamespace('Modules\Admin\Controllers');
+        $dispatcher->setDefaultNamespace('Modules\Cms\Controllers');
 
         //Registering the view component
         $view = $di->get('view');
         $view->setViewsDir(__DIR__ . '/views/');
-        $view->setLayoutsDir(VIEW_PATH . 'layouts/');
-        $view->setPartialsDir(VIEW_PATH . 'partials/');
-        $view->setMainView(VIEW_PATH . 'admin');
-        $view->setLayout('admin');
-
-        $router = $di->get('router');
-
     }
 }

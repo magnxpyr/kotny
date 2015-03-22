@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * @copyright   2006 - 2015 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @url         http://www.magnxpyr.com
@@ -45,7 +45,12 @@ class Bootstrap {
 
         // Register routers
         $router = new Phalcon\Mvc\Router();
-        $router->setDefaultModule("Admin");
+        $router->setDefaultModule("Cms");
+        $router->add('/admin', array(
+            'module' => 'Admin',
+            'controller' => 'index',
+            'action' => 'index'
+        ));
         $di->set('router', $router);
 
         // Generate urls
@@ -113,11 +118,11 @@ class Bootstrap {
 
         // Register assets that will be loaded in every page
         $assets = new \Phalcon\Assets\Manager();
-        $assets->collection('js')
+        $assets->collection('footer')
             ->addJs('vendor/jquery/jquery-2.1.3.min.js')
             ->addJs('vendor/jquery/jquery-ui.min.js')
             ->addJs('vendor/bootstrap/js/bootstrap.min.js');
-        $assets->collection('css')
+        $assets->collection('header')
             ->addCss('vendor/jquery/jquery-ui.min.css')
             ->addCss('vendor/bootstrap/css/bootstrap.min.css');
 
@@ -125,9 +130,10 @@ class Bootstrap {
 
         // Register the flash service with custom CSS classes
         $flash = new \Phalcon\Flash\Session(array(
-            'error'   => 'alert alert-danger',
             'success' => 'alert alert-success',
-            'notice'  => 'alert alert-info'
+            'notice'  => 'alert alert-info',
+            'warning' => 'alert alert-warning',
+            'error'   => 'alert alert-danger'
         ));
         $di->set('flash', $flash);
 
