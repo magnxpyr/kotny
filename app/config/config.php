@@ -10,7 +10,7 @@ return array(
     ),
     'app' => array(
         'cacheDir'      => ROOT_PATH . 'cache/',
-        'baseUri'       => '/',
+        'baseUri'       => '/cms/',
         'cryptSalt'     => '',
         'development'   => true
     ),

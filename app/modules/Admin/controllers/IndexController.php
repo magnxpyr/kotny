@@ -7,8 +7,8 @@
 
 namespace Modules\Admin\Controllers;
 
-class IndexController extends \Phalcon\Mvc\Controller
-{
+class IndexController extends \Phalcon\Mvc\Controller {
+
     public function initialize() {
         $this->tag->setTitle('Welcome');
     }

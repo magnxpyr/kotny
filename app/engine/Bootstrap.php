@@ -46,10 +46,16 @@ class Bootstrap {
         // Register routers
         $router = new Phalcon\Mvc\Router();
         $router->setDefaultModule("Cms");
+        $router->removeExtraSlashes(true);
         $router->add('/admin', array(
-            'module' => 'Admin',
+            'module'     => 'Admin',
             'controller' => 'index',
-            'action' => 'index'
+            'action'     => 'index'
+        ));
+        $router->add('/admin/:controller/:action', array(
+            'module'     => 'Admin',
+            'controller' => 1,
+            'action'     => 2
         ));
         $di->set('router', $router);
 
@@ -114,15 +120,15 @@ class Bootstrap {
         // Start the session from file
         $session = new \Phalcon\Session\Adapter\Files();
         $session->start();
-        $di->set('session', $session);
+        $di->setShared('session', $session);
 
         // Register assets that will be loaded in every page
         $assets = new \Phalcon\Assets\Manager();
-        $assets->collection('footer')
+        $assets->collection('header-js')
             ->addJs('vendor/jquery/jquery-2.1.3.min.js')
             ->addJs('vendor/jquery/jquery-ui.min.js')
             ->addJs('vendor/bootstrap/js/bootstrap.min.js');
-        $assets->collection('header')
+        $assets->collection('header-css')
             ->addCss('vendor/jquery/jquery-ui.min.css')
             ->addCss('vendor/bootstrap/css/bootstrap.min.css');
 

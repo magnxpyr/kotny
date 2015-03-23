@@ -5,7 +5,7 @@
  * @url         http://www.magnxpyr.com
  */
 
-namespace Modules\Cms;
+namespace Modules\Admin;
 
 class Module
 {
@@ -31,8 +31,5 @@ class Module
         $view->setPartialsDir(VIEW_PATH . 'partials/');
         $view->setMainView(VIEW_PATH . 'admin');
         $view->setLayout('admin');
-
-        $router = $di->get('router');
-
     }
 }
