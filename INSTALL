@@ -1,1 +1,10 @@
 make sure /app/cache/ file has permission 777
+make sure /public/media/ file has permission 777
+
+
+// create acl mysql tables
+CREATE TABLE roles (name varchar(32) not null, description text, primary key(name));
+CREATE TABLE access_list (roles_name varchar(32) not null, resources_name varchar(32) not null, access_name varchar(32) not null, allowed int(3) not null, primary key(roles_name, resources_name, access_name));
+CREATE TABLE resources (name varchar(32) not null, description text, primary key(name));
+CREATE TABLE resources_accesses (resources_name varchar(32) not null, access_name varchar(32) not null, primary key(resources_name, access_name));
+CREATE TABLE roles_inherits (roles_name varchar(32) not null, roles_inherit varchar(32) not null, primary key(roles_name, roles_inherit));

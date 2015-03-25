@@ -29,6 +29,7 @@ class Bootstrap {
             error_reporting(E_ALL);
             // Load pretty exceptions
             require APP_PATH . 'vendor/phalcon/pretty-exceptions/loader.php';
+
             // Prevent caching annoyances
             $voltOptions['compileAlways'] = true;
         }
@@ -40,7 +41,10 @@ class Bootstrap {
         // Registering directories
         $loader = new \Phalcon\Loader();
         //$loader->registerNamespaces($config->loader->namespaces->toArray());
-        $loader->registerDirs(array(APP_PATH . 'engine/'));
+        $loader->registerNamespaces(array(
+            'Phalcon' => APP_PATH . 'vendor/phalcon/incubator/Library/Phalcon/',
+            'Engine' => APP_PATH . 'engine/'
+        ));
         $loader->register();
 
         // Register routers
@@ -85,20 +89,102 @@ class Bootstrap {
         $di->set('view', $view);
 
 
+        // Start the session from file
+        $session = new \Phalcon\Session\Adapter\Files();
+        $session->set('auth', array(
+            'name' => 'Guests'
+        ));
+        $session->start();
+        $di->setShared('session', $session);
+
+
+        //Obtain the standard eventsManager from the DI
+        $eventsManager = new \Phalcon\Events\Manager();
+
         //Registering a dispatcher
         $dispatcher = new \Phalcon\Mvc\Dispatcher();
+/*
+        //Instantiate the Security plugin
+        $security = new \Engine\Security($di);
+        $eventsManager->attach('dispatch', $security);
+
+        //Bind the EventsManager to the Dispatcher
+        $dispatcher->setEventsManager($eventsManager);
+*/
         $di->set('dispatcher', $dispatcher);
 
 
+
+        // Get the language from session
+        $language = $session->get("lang");
+        if (!$language) {
+            // Ask browser what is the best language
+            $language = $di->getShared('request')->getBestLanguage();
+        }
+        $lang_file = APP_PATH . "messages/" . $language . ".php";
+
+        //Check if we have a translation file for that lang
+    //    if (!file_exists($lang_file)) {
+            // Fallback to default
+        require APP_PATH . "messages/en.php";
+     //   }
+
+        $translator = new \Phalcon\Translate\Adapter\NativeArray(array('content' => $messages));
+
+        $di->setShared('t', $translator);
+
+
+
         // Connect to db
-        $di->set('db', function () use ($config) {
-            return new \Phalcon\Db\Adapter\Pdo\Mysql(array(
-                'host' => $config->database->host,
-                'username' => $config->database->username,
-                'password' => $config->database->password,
-                'dbname' => $config->database->dbname
+        $db = new \Phalcon\Db\Adapter\Pdo\Mysql(array(
+            'host' => $config->database->host,
+            'username' => $config->database->username,
+            'password' => $config->database->password,
+            'dbname' => $config->database->dbname
+        ));
+        $di->set('db', $db);
+
+        $acl = new \Phalcon\Acl\Adapter\Database(array(
+            'db' => $db,
+            'roles' => 'roles',
+            'rolesInherits' => 'roles_inherits',
+            'resources' => 'resources',
+            'resourcesAccesses' => 'resources_accesses',
+            'accessList' => 'access_list',
+        ));
+        $controller = $dispatcher->getControllerName();
+        $action = $dispatcher->getActionName();
+        echo $controller.' '.$action;
+        $allowed = $acl->isAllowed('Guests', $controller, $action);
+        if ($allowed != Phalcon\Acl::ALLOW) {
+            $dispatcher->forward(array(
+                'controller' => 'errors',
+                'action'     => 'show401'
             ));
-        });
+            return false;
+        }
+
+        //By default the action is deny access
+      //  $acl->setDefaultAction(Phalcon\Acl::ALLOW);
+
+        /*
+        //You can add roles/resources/accesses to list or insert them directly in the tables
+
+        //Add roles
+        $acl->addRole(new Phalcon\Acl\Role('guest'));
+
+        //Create the resource with its accesses
+        $acl->addResource('Cms', array('*'));
+
+        //Allow Admins to insert products
+        $acl->allow('Guests', 'Cms', '*');
+
+        //Do Admins are allowed to insert Products?
+        var_dump($acl->isAllowed('Guests', 'Cms', 'index'));
+        */
+    //    $di->set($acl, 'acl');
+
+
 
         $cacheFrontend = new \Phalcon\Cache\Frontend\Data(array(
             "lifetime" => 60,
@@ -116,11 +202,6 @@ class Bootstrap {
         $di->set('modelsMetadata', function () {
             return new \Phalcon\Mvc\Model\MetaData\Memory();
         });
-
-        // Start the session from file
-        $session = new \Phalcon\Session\Adapter\Files();
-        $session->start();
-        $di->setShared('session', $session);
 
         // Register assets that will be loaded in every page
         $assets = new \Phalcon\Assets\Manager();

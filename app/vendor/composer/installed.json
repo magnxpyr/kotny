@@ -36,5 +36,51 @@
             }
         ],
         "description": "Beauty-exceptions plugin for Phalcon"
+    },
+    {
+        "name": "phalcon/devtools",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/phalcon/phalcon-devtools.git",
+            "reference": "103c8989236f4df5206e7d37508216c46799394a"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/phalcon/phalcon-devtools/zipball/103c8989236f4df5206e7d37508216c46799394a",
+            "reference": "103c8989236f4df5206e7d37508216c46799394a",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.6"
+        },
+        "time": "2015-02-26 21:47:33",
+        "bin": [
+            "phalcon.php"
+        ],
+        "type": "library",
+        "installation-source": "source",
+        "autoload": {
+            "psr-0": {
+                "Phalcon": "scripts/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "BSD-3"
+        ],
+        "authors": [
+            {
+                "name": "Phalcon Team",
+                "email": "team@phalconphp.com"
+            }
+        ],
+        "description": "This tools provide you useful scripts to generate code helping to develop faster and easy applications that use with Phalcon framework.",
+        "homepage": "http://phalconphp.com",
+        "keywords": [
+            "framework",
+            "phalcon"
+        ]
     }
 ]

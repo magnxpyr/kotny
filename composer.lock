@@ -4,8 +4,52 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "41aea92497297090f8e056556d8b2795",
+    "hash": "1375ee421da4001387f29acffb0d8d9b",
     "packages": [
+        {
+            "name": "phalcon/devtools",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/phalcon/phalcon-devtools.git",
+                "reference": "103c8989236f4df5206e7d37508216c46799394a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/phalcon/phalcon-devtools/zipball/103c8989236f4df5206e7d37508216c46799394a",
+                "reference": "103c8989236f4df5206e7d37508216c46799394a",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.6"
+            },
+            "bin": [
+                "phalcon.php"
+            ],
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Phalcon": "scripts/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3"
+            ],
+            "authors": [
+                {
+                    "name": "Phalcon Team",
+                    "email": "team@phalconphp.com"
+                }
+            ],
+            "description": "This tools provide you useful scripts to generate code helping to develop faster and easy applications that use with Phalcon framework.",
+            "homepage": "http://phalconphp.com",
+            "keywords": [
+                "framework",
+                "phalcon"
+            ],
+            "time": "2015-02-26 21:47:33"
+        },
         {
             "name": "phalcon/pretty-exceptions",
             "version": "dev-master",
@@ -47,7 +91,8 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "phalcon/pretty-exceptions": 20
+        "phalcon/pretty-exceptions": 20,
+        "phalcon/devtools": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

@@ -7,9 +7,10 @@
 
 namespace Modules\Cms\Controllers;
 
-class IndexController extends \Phalcon\Mvc\Controller
+class IndexController extends \Engine\Controller
 {
     public function initialize() {
+        $this->_getTranslation();
         $this->tag->setTitle('Welcome');
     }
 
