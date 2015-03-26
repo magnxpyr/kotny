@@ -5,9 +5,9 @@
  * @url         http://www.magnxpyr.com
  */
 
-$messages = array(
+return array(
     "home"      =>  "Home",
-    "welcone"   =>  "Welcome",
+    "welcome"   =>  "Welcome",
     "ok"        =>  "Ok",
     "hi-name"   =>  "Hello %name%"
 );

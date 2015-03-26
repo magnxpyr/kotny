@@ -7,14 +7,9 @@
 
 namespace Modules\Cms\Controllers;
 
-class IndexController extends \Engine\Controller {
+class ErrorController extends \Engine\Controller {
 
-    public function mb_initialize() {
-     //   $this->tag->setTitle('bbbb');
-    }
-
-    public function indexAction() {
+    public function show404Action() {
 
     }
 }
-

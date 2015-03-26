@@ -9,10 +9,12 @@ return array(
         'dbname'    => 'cms'
     ),
     'app' => array(
-        'cacheDir'      => ROOT_PATH . 'cache/',
+        'offline' => false,
+        'site_name' => 'Magnxpyr CMS',
         'baseUri'       => '/cms/',
-        'cryptSalt'     => '',
-        'development'   => true
+        'cryptSalt'     => 'FBVtggIk5lAzEU9H',
+        'development'   => true,
+        'cacheDir'      => ROOT_PATH . 'cache/'
     ),
     'mail' => array(
         'fromName' => '',

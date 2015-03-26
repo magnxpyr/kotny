@@ -51,15 +51,28 @@ class Bootstrap {
         $router = new Phalcon\Mvc\Router();
         $router->setDefaultModule("Cms");
         $router->removeExtraSlashes(true);
+        /*
+        $router->notFound(array(
+            'module'        => 'Cms',
+            'controller'    => 'error',
+            'action'        => 'show404'
+        ));
+        */
         $router->add('/admin', array(
-            'module'     => 'Admin',
-            'controller' => 'index',
-            'action'     => 'index'
+            'module'        => 'Admin',
+            'controller'    => 'index',
+            'action'        => 'index'
         ));
         $router->add('/admin/:controller/:action', array(
-            'module'     => 'Admin',
-            'controller' => 1,
-            'action'     => 2
+            'module'        => 'Admin',
+            'controller'    => 1,
+            'action'        => 2
+        ));
+        $router->add('/admin/:controller/:action/:params', array(
+            'module'        => 'Admin',
+            'controller'    => 1,
+            'action'        => 2,
+            'params'        => 3
         ));
         $di->set('router', $router);
 
@@ -98,21 +111,41 @@ class Bootstrap {
         $di->setShared('session', $session);
 
 
+        // Connect to db
+        $db = new \Phalcon\Db\Adapter\Pdo\Mysql(array(
+            'host' => $config->database->host,
+            'username' => $config->database->username,
+            'password' => $config->database->password,
+            'dbname' => $config->database->dbname
+        ));
+        $di->setShared('db', $db);
+
+        // Register ACL to DI
+        $acl = new \Phalcon\Acl\Adapter\Database(array(
+            'db' => $db,
+            'roles' => 'roles',
+            'rolesInherits' => 'roles_inherits',
+            'resources' => 'resources',
+            'resourcesAccesses' => 'resources_accesses',
+            'accessList' => 'access_list',
+        ));
+        $di->set('acl', $acl);
+
+
         //Obtain the standard eventsManager from the DI
         $eventsManager = new \Phalcon\Events\Manager();
 
         //Registering a dispatcher
         $dispatcher = new \Phalcon\Mvc\Dispatcher();
-/*
+
         //Instantiate the Security plugin
         $security = new \Engine\Security($di);
         $eventsManager->attach('dispatch', $security);
 
         //Bind the EventsManager to the Dispatcher
         $dispatcher->setEventsManager($eventsManager);
-*/
-        $di->set('dispatcher', $dispatcher);
 
+        $di->set('dispatcher', $dispatcher);
 
 
         // Get the language from session
@@ -124,66 +157,14 @@ class Bootstrap {
         $lang_file = APP_PATH . "messages/" . $language . ".php";
 
         //Check if we have a translation file for that lang
-    //    if (!file_exists($lang_file)) {
+        if (!file_exists($lang_file)) {
             // Fallback to default
-        require APP_PATH . "messages/en.php";
-     //   }
-
-        $translator = new \Phalcon\Translate\Adapter\NativeArray(array('content' => $messages));
-
-        $di->setShared('t', $translator);
-
-
-
-        // Connect to db
-        $db = new \Phalcon\Db\Adapter\Pdo\Mysql(array(
-            'host' => $config->database->host,
-            'username' => $config->database->username,
-            'password' => $config->database->password,
-            'dbname' => $config->database->dbname
-        ));
-        $di->set('db', $db);
-
-        $acl = new \Phalcon\Acl\Adapter\Database(array(
-            'db' => $db,
-            'roles' => 'roles',
-            'rolesInherits' => 'roles_inherits',
-            'resources' => 'resources',
-            'resourcesAccesses' => 'resources_accesses',
-            'accessList' => 'access_list',
-        ));
-        $controller = $dispatcher->getControllerName();
-        $action = $dispatcher->getActionName();
-        echo $controller.' '.$action;
-        $allowed = $acl->isAllowed('Guests', $controller, $action);
-        if ($allowed != Phalcon\Acl::ALLOW) {
-            $dispatcher->forward(array(
-                'controller' => 'errors',
-                'action'     => 'show401'
-            ));
-            return false;
+            $lang_file = APP_PATH . "messages/en.php";
         }
 
-        //By default the action is deny access
-      //  $acl->setDefaultAction(Phalcon\Acl::ALLOW);
+        $translator = new \Phalcon\Translate\Adapter\NativeArray(array('content' => require $lang_file));
 
-        /*
-        //You can add roles/resources/accesses to list or insert them directly in the tables
-
-        //Add roles
-        $acl->addRole(new Phalcon\Acl\Role('guest'));
-
-        //Create the resource with its accesses
-        $acl->addResource('Cms', array('*'));
-
-        //Allow Admins to insert products
-        $acl->allow('Guests', 'Cms', '*');
-
-        //Do Admins are allowed to insert Products?
-        var_dump($acl->isAllowed('Guests', 'Cms', 'index'));
-        */
-    //    $di->set($acl, 'acl');
-
+        $di->setShared('t', $translator);
 
 
         $cacheFrontend = new \Phalcon\Cache\Frontend\Data(array(
@@ -203,6 +184,10 @@ class Bootstrap {
             return new \Phalcon\Mvc\Model\MetaData\Memory();
         });
 
+        // Register Tags
+        $tag = new \Phalcon\Tag();
+        $tag->setTitle($config->app->site_name);
+
         // Register assets that will be loaded in every page
         $assets = new \Phalcon\Assets\Manager();
         $assets->collection('header-js')
@@ -214,6 +199,7 @@ class Bootstrap {
             ->addCss('vendor/bootstrap/css/bootstrap.min.css');
 
         $di->set('assets', $assets);
+
 
         // Register the flash service with custom CSS classes
         $flash = new \Phalcon\Flash\Session(array(
