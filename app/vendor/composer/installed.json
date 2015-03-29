@@ -60,7 +60,7 @@
             "phalcon.php"
         ],
         "type": "library",
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "psr-0": {
                 "Phalcon": "scripts/"
