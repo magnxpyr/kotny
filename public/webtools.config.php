@@ -36,4 +36,4 @@ define('PTOOLS_IP', null);
  *
  * @var string
  */
-define('PTOOLSPATH', '/home/gatz/.phalcon/devtools');
+define('PTOOLSPATH', '/home/gatz/www/cms/app/vendor/phalcon/devtools/');
