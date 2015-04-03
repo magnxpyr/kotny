@@ -16,4 +16,9 @@ class Utils {
         }
         return $moduleName;
     }
+
+    // Return 128 bits random string
+    function gen_token($bytes = 16) {
+        return bin2hex(openssl_random_pseudo_bytes($bytes));
+    }
 }

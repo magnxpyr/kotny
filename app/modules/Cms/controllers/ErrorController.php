@@ -7,9 +7,12 @@
 
 namespace Modules\Cms\Controllers;
 
+use Phalcon\Mvc\View;
+
 class ErrorController extends \Engine\Controller {
 
     public function show404Action() {
-
+        $this->response->setStatusCode(404, 'Not Found');
+        //$this->view->pick('error/show404');
     }
 }

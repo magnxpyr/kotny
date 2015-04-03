@@ -47,17 +47,22 @@ class Bootstrap {
         ));
         $loader->register();
 
-        // Register routers
+        // Register routers with default behavior
+        // Set 'false' to disable default behavior and define all routes or you get 404
         $router = new Phalcon\Mvc\Router();
         $router->setDefaultModule("Cms");
         $router->removeExtraSlashes(true);
         /*
         $router->notFound(array(
-            'module'        => 'Cms',
             'controller'    => 'error',
             'action'        => 'show404'
         ));
         */
+        $router->add('/index', array(
+            'module'        => 'Cms',
+            'controller'    => 'index',
+            'action'        => 'index'
+        ));
         $router->add('/admin', array(
             'module'        => 'Admin',
             'controller'    => 'index',
@@ -131,6 +136,9 @@ class Bootstrap {
         ));
         $di->set('acl', $acl);
 
+        $response = new \Phalcon\Http\Response();
+        $di->set('response', $response);
+
 
         //Obtain the standard eventsManager from the DI
         $eventsManager = new \Phalcon\Events\Manager();
@@ -141,6 +149,19 @@ class Bootstrap {
         //Instantiate the Security plugin
         $security = new \Engine\Security($di);
         $eventsManager->attach('dispatch', $security);
+
+        $eventsManager->attach(
+            "dispatch:beforeException",
+            function($event, $dispatcher, $exception) use ($response)
+            {
+                switch ($exception->getCode()) {
+                    case \Phalcon\Mvc\Dispatcher::EXCEPTION_HANDLER_NOT_FOUND:
+                    case \Phalcon\Mvc\Dispatcher::EXCEPTION_ACTION_NOT_FOUND:
+                        $response->redirect('error/show404', false, 301);
+                        return false;
+                }
+            }
+        );
 
         //Bind the EventsManager to the Dispatcher
         $dispatcher->setEventsManager($eventsManager);
@@ -198,7 +219,7 @@ class Bootstrap {
             ->addCss('vendor/jquery/jquery-ui.min.css')
             ->addCss('vendor/bootstrap/css/bootstrap.min.css');
 
-        $di->set('assets', $assets);
+        $di->setShared('assets', $assets);
 
 
         // Register the flash service with custom CSS classes
@@ -208,7 +229,7 @@ class Bootstrap {
             'warning' => 'alert alert-warning',
             'error'   => 'alert alert-danger'
         ));
-        $di->set('flash', $flash);
+        $di->setShared('flash', $flash);
 
         // Handle the request
         $application = new \Phalcon\Mvc\Application($di);
