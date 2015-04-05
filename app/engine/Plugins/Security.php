@@ -5,22 +5,20 @@
  * @url         http://www.magnxpyr.com
  */
 
-namespace Engine;
+namespace Engine\Plugins;
 
-use Phalcon\Events\Event,
-    Phalcon\Mvc\User\Plugin,
-    Phalcon\Mvc\Dispatcher,
+use Phalcon\Mvc\User\Plugin,
     Phalcon\Acl;
 
 class Security extends Plugin
 {
-    public function beforeExecuteRoute(Event $event, Dispatcher $dispatcher)
+    public function beforeExecuteRoute($event, $dispatcher)
     {
         //Obtain the ACL list
         $acl = $this->di['acl'];
 
         //By default the action is deny access
-        $acl->setDefaultAction(Acl::DENY);
+        $acl->setDefaultAction(Acl::ALLOW);
 
         //Check whether the "auth" variable exists in session to define the active role
         $auth = $this->session->get('auth');
@@ -38,7 +36,6 @@ class Security extends Plugin
             //     echo $role . ' ' . $module .' '.$controller .' ' .$action;
 
 
-
             //Check if the Role have access to the controller (resource)
             $allowed = $acl->isAllowed($role, $module . '_' . $controller, $action);
             //   echo $allowed .' ' . Acl::ALLOW;
@@ -53,5 +50,6 @@ class Security extends Plugin
                 return false;
             }
         }
+
     }
 }

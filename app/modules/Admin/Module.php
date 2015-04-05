@@ -9,27 +9,15 @@ namespace Modules\Admin;
 
 class Module
 {
-    public function registerAutoloaders()
-    {
-        $loader = new \Phalcon\Loader();
-        $loader->registerNamespaces(array(
-            'Modules\Admin\Controllers' => __DIR__ . '/controllers/',
-        ));
-        $loader->register();
+    public function registerAutoloaders() {
     }
 
-    public function registerServices($di)
-    {
-        //Attach a event listener to the dispatcher
-        $dispatcher = $di->get('dispatcher');
-        $dispatcher->setDefaultNamespace('Modules\Admin\Controllers');
+    public function registerServices($di) {
+        // Attach a event listener to the dispatcher
+        $di->get('dispatcher')->setDefaultNamespace('Modules\Admin\Controller');
 
         //Registering the view component
         $view = $di->get('view');
-        $view->setViewsDir(__DIR__ . '/views/');
-        $view->setLayoutsDir(VIEW_PATH . 'layouts/');
-        $view->setPartialsDir(VIEW_PATH . 'partials/');
-        $view->setMainView(VIEW_PATH . 'admin');
-        $view->setLayout('admin');
+        $view->setViewsDir(__DIR__ . '/Views/');
     }
 }

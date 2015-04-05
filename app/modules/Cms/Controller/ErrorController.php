@@ -5,7 +5,7 @@
  * @url        http://www.magnxpyr.com
  */
 
-namespace Modules\Cms\Controllers;
+namespace Modules\Cms\Controller;
 
 use Phalcon\Mvc\View;
 
@@ -13,6 +13,9 @@ class ErrorController extends \Engine\Controller {
 
     public function show404Action() {
         $this->response->setStatusCode(404, 'Not Found');
-        //$this->view->pick('error/show404');
+    }
+
+    public function show500Action() {
+        $this->response->setStatusCode(500, 'Internal Server Error');
     }
 }

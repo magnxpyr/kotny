@@ -11,7 +11,8 @@ return array(
     'app' => array(
         'offline' => false,
         'site_name' => 'Magnxpyr CMS',
-        'baseUri'       => '/cms/',
+        'site_name_location' => 0,
+        'baseUri'       => '/',
         'cryptSalt'     => 'FBVtggIk5lAzEU9H',
         'development'   => true,
         'cacheDir'      => ROOT_PATH . 'cache/'

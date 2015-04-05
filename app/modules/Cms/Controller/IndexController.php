@@ -5,15 +5,17 @@
  * @url        http://www.magnxpyr.com
  */
 
-namespace Modules\Admin\Controllers;
+namespace Modules\Cms\Controller;
 
-class IndexController extends \Phalcon\Mvc\Controller {
+class IndexController extends \Engine\Controller {
 
     public function initialize() {
-        $this->tag->setTitle('Welcome');
+        $this->tag->setTitle('Homepage');
+        parent::initialize();
     }
 
     public function indexAction() {
 
     }
 }
+

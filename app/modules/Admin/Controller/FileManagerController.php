@@ -5,10 +5,11 @@
  * @url        http://www.magnxpyr.com
  */
 
-namespace Modules\Admin\Controllers;
+namespace Modules\Admin\Controller;
 
+use Engine\Controller;
 
-class FileManagerController extends \Phalcon\Mvc\Controller {
+class FileManagerController extends Controller {
 
     public function initialize() {
         $this->tag->setTitle('File Manager');

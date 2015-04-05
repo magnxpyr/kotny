@@ -9,23 +9,15 @@ namespace Modules\Cms;
 
 class Module
 {
-    public function registerAutoloaders()
-    {
-        $loader = new \Phalcon\Loader();
-        $loader->registerNamespaces(array(
-            'Modules\Cms\Controllers' => __DIR__ . '/controllers/',
-        ));
-        $loader->register();
+    public function registerAutoloaders() {
     }
 
-    public function registerServices($di)
-    {
+    public function registerServices($di) {
         //Attach a event listener to the dispatcher
-        $dispatcher = $di->get('dispatcher');
-        $dispatcher->setDefaultNamespace('Modules\Cms\Controllers');
+        $di->get('dispatcher')->setDefaultNamespace('Modules\Cms\Controller');
 
         //Registering the view component
         $view = $di->get('view');
-        $view->setViewsDir(__DIR__ . '/views/');
+        $view->setViewsDir(__DIR__ . '/Views/');
     }
 }

@@ -9,7 +9,12 @@ namespace Engine;
 
 class Controller extends \Phalcon\Mvc\Controller {
 
-    public function initialize() {
-    //    $this->tag->setTitle('aaa');
+    protected function initialize() {
+
+    }
+
+    protected function setAdminEnvironment() {
+        $this->view->setMainView(VIEW_PATH . 'admin');
+        $this->view->setLayout('admin');
     }
 }

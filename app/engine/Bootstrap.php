@@ -17,18 +17,20 @@ class Bootstrap {
 
         // Load config file
         $config = require_once APP_PATH . 'config/config.php';
+        // Load modules
         $modules_list = require_once APP_PATH . 'config/modules.php';
-        $modules_config = $this->modulesConfig($modules_list);
+        // Load loader
+        require_once APP_PATH . 'engine/Loader.php';
+        $loader = new \Engine\Loader();
+        $modules_config = $loader->modulesConfig($modules_list);
         $config = new \Phalcon\Config(array_merge_recursive($config, $modules_config));
+        $loader->init($config->loader->namespaces);
         $di->set('config', $config);
 
         // Load development options
         if($config->app->development) {
-            // Display all errors
-            ini_set('display_errors', 1);
-            error_reporting(E_ALL);
-            // Load pretty exceptions
-            require APP_PATH . 'vendor/phalcon/pretty-exceptions/loader.php';
+            $dev = new \Engine\Development();
+            $dev->init();
 
             // Prevent caching annoyances
             $voltOptions['compileAlways'] = true;
@@ -37,15 +39,6 @@ class Bootstrap {
         // Registering the registry
         $registry = new \Phalcon\Registry();
         $di->set('registry', $registry);
-
-        // Registering directories
-        $loader = new \Phalcon\Loader();
-        //$loader->registerNamespaces($config->loader->namespaces->toArray());
-        $loader->registerNamespaces(array(
-            'Phalcon' => APP_PATH . 'vendor/phalcon/incubator/Library/Phalcon/',
-            'Engine' => APP_PATH . 'engine/'
-        ));
-        $loader->register();
 
         // Register routers with default behavior
         // Set 'false' to disable default behavior and define all routes or you get 404
@@ -58,11 +51,13 @@ class Bootstrap {
             'action'        => 'show404'
         ));
         */
+        /*
         $router->add('/index', array(
             'module'        => 'Cms',
             'controller'    => 'index',
             'action'        => 'index'
         ));
+        */
         $router->add('/admin', array(
             'module'        => 'Admin',
             'controller'    => 'index',
@@ -146,22 +141,10 @@ class Bootstrap {
         //Registering a dispatcher
         $dispatcher = new \Phalcon\Mvc\Dispatcher();
 
-        //Instantiate the Security plugin
-        $security = new \Engine\Security($di);
-        $eventsManager->attach('dispatch', $security);
-
-        $eventsManager->attach(
-            "dispatch:beforeException",
-            function($event, $dispatcher, $exception) use ($response)
-            {
-                switch ($exception->getCode()) {
-                    case \Phalcon\Mvc\Dispatcher::EXCEPTION_HANDLER_NOT_FOUND:
-                    case \Phalcon\Mvc\Dispatcher::EXCEPTION_ACTION_NOT_FOUND:
-                        $response->redirect('error/show404', false, 301);
-                        return false;
-                }
-            }
-        );
+        // Attach the Security plugin
+        $eventsManager->attach('dispatch', new \Engine\Plugins\Security());
+        // Attach the Error handler
+        $eventsManager->attach('dispatch', new \Engine\Plugins\ErrorHandler());
 
         //Bind the EventsManager to the Dispatcher
         $dispatcher->setEventsManager($eventsManager);
@@ -188,8 +171,9 @@ class Bootstrap {
         $di->setShared('t', $translator);
 
 
+        // Set cache
         $cacheFrontend = new \Phalcon\Cache\Frontend\Data(array(
-            "lifetime" => 60,
+            "lifetime" => 172800,
             "prefix" => '_',
         ));
 
@@ -207,7 +191,14 @@ class Bootstrap {
 
         // Register Tags
         $tag = new \Phalcon\Tag();
-        $tag->setTitle($config->app->site_name);
+        switch($config->app->site_name_location) {
+            case 1:
+                $tag->prependTitle($config->app->site_name . ' | ');
+                break;
+            case 2:
+                $tag->appendTitle('|' . $config->app->site_name);
+                break;
+        }
 
         // Register assets that will be loaded in every page
         $assets = new \Phalcon\Assets\Manager();
@@ -238,26 +229,5 @@ class Bootstrap {
 
         // Render
         echo $application->handle()->getContent();
-    }
-
-    public function modulesConfig($modules_list)
-    {
-        //    $namespaces = array();
-        $modules = array();
-        if (!empty($modules_list)) {
-            foreach ($modules_list as $module) {
-                //    $namespaces["Modules\\$module"] = APP_PATH . 'modules/' . $module;
-                $modules[$module] = array(
-                    'className' => "Modules\\$module\\Module",
-                    'path' => APP_PATH . "modules/$module/Module.php"
-                );
-            }
-        }
-
-        $modules_array = array(
-            //    'loader' => array('namespaces' => $namespaces),
-            'modules' => $modules,
-        );
-        return $modules_array;
     }
 }
