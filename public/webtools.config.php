@@ -27,7 +27,7 @@
  *
  * @var string
  */
-define('PTOOLS_IP', null);
+define('PTOOLS_IP', '172.0.0.1');
 
 // ---------------------------- DO NOT EDIT BELOW ------------------------------
 
@@ -36,4 +36,4 @@ define('PTOOLS_IP', null);
  *
  * @var string
  */
-define('PTOOLSPATH', '/home/gatz/www/cms/app/vendor/phalcon/devtools/');
+define('PTOOLSPATH', '/home/gatz/www/phalcon/app/vendor/phalcon/devtools');

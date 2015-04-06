@@ -6,7 +6,7 @@
     "homepage" : "http://magnxpyr.com",
     "license" : "BSD-3-Clause",
 	"require" : {
-        "php" : ">=5.3.6",
+        "php" : ">=5.4",
         "phalcon/pretty-exceptions" : "dev-master",
         "phalcon/devtools": "dev-master"
     },

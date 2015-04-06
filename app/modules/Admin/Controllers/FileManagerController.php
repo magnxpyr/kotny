@@ -5,7 +5,7 @@
  * @url        http://www.magnxpyr.com
  */
 
-namespace Modules\Admin\Controller;
+namespace Modules\Admin\Controllers;
 
 use Engine\Controller;
 

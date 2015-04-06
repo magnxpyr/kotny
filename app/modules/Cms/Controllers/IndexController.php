@@ -5,15 +5,12 @@
  * @url        http://www.magnxpyr.com
  */
 
-namespace Modules\Admin\Controller;
+namespace Modules\Cms\Controllers;
 
-use Engine\Controller;
-
-class IndexController extends Controller {
+class IndexController extends \Engine\Controller {
 
     public function initialize() {
-        $this->tag->setTitle('Admin Homepage');
-        parent::setAdminEnvironment();
+        $this->tag->setTitle('Homepage');
         parent::initialize();
     }
 
@@ -21,3 +18,4 @@ class IndexController extends Controller {
 
     }
 }
+
