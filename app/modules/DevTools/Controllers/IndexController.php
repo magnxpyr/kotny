@@ -17,23 +17,11 @@
   |          Eduar Carvajal <eduar@phalconphp.com>                         |
   +------------------------------------------------------------------------+
 */
+namespace Modules\DevTools\Controllers;
 
-/**
- * Phalcon Developers Tools can only be used in local machines, however
- * you can set this to allow certain IP address.
- *
- * For example:
- *   192.168.0.1 or SUBNET 192., 10.0.2., 86.84.124.
- *
- * @var string
- */
-define('PTOOLS_IP', '172.0.0.1');
+class IndexController extends ControllerBase {
 
-// ---------------------------- DO NOT EDIT BELOW ------------------------------
+    public function indexAction() {
 
-/**
- * The path to the Phalcon Developers Tools.
- *
- * @var string
- */
-define('PTOOLSPATH', '/home/gatz/www/cms/app/vendor/phalcon/devtools');
+    }
+}

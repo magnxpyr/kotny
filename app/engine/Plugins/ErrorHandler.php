@@ -15,7 +15,7 @@ class ErrorHandler extends Plugin {
 
     // This action is executed before execute any action in the application
     public function beforeException($event, $dispatcher, $exception) {
-
+/*
         if ($exception instanceof Exception) {
             switch ($exception->getCode()) {
                 case Dispatcher::EXCEPTION_HANDLER_NOT_FOUND:
@@ -28,5 +28,6 @@ class ErrorHandler extends Plugin {
         $this->di['response']->redirect('error/show500', false, 301);
 
         return false;
+*/
     }
 }

@@ -51,13 +51,13 @@ class Bootstrap {
             'action'        => 'show404'
         ));
         */
-        /*
-        $router->add('/index', array(
+/*
+        $router->add('/:controller/:action', array(
             'module'        => 'Cms',
-            'controller'    => 'index',
-            'action'        => 'index'
+            'controller'    => 1,
+            'action'        => 2
         ));
-        */
+*/
         $router->add('/admin', array(
             'module'        => 'Admin',
             'controller'    => 'index',
@@ -74,10 +74,25 @@ class Bootstrap {
             'action'        => 2,
             'params'        => 3
         ));
+        $router->add('/devtools', array(
+            'module'        => 'DevTools',
+            'controller'    => 'index',
+            'action'        => 'index'
+        ));
+        $router->add('/devtools/:controller', array(
+            'module'        => 'DevTools',
+            'controller'    => 1,
+            'action'        => 'index'
+        ));
+        $router->add('/devtools/:controller/:action', array(
+            'module'        => 'DevTools',
+            'controller'    => 1,
+            'action'        => 2
+        ));
         $di->set('router', $router);
 
         // Generate urls
-        $url = new Phalcon\Mvc\Url();
+        $url = new \Phalcon\Mvc\Url();
         $url->setBaseUri($config->app->baseUri);
         $url->setBasePath(ROOT_PATH);
         $di->set('url', $url);

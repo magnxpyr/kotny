@@ -14,7 +14,7 @@ class Module
 
     public function registerServices($di) {
         // Attach a event listener to the dispatcher
-        $di->get('dispatcher')->setDefaultNamespace('Modules\Admin\Controller');
+        $di->get('dispatcher')->setDefaultNamespace('Modules\Admin\Controllers');
 
         //Registering the view component
         $view = $di->get('view');

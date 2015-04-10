@@ -12,7 +12,7 @@ return array(
         'offline' => false,
         'site_name' => 'Magnxpyr CMS',
         'site_name_location' => 0,
-        'baseUri'       => '/',
+        'baseUri'       => '/cms/',
         'cryptSalt'     => 'FBVtggIk5lAzEU9H',
         'development'   => true,
         'cacheDir'      => ROOT_PATH . 'cache/'
@@ -29,12 +29,6 @@ return array(
         )
     ),
     'application' => array(
-        'controllersDir' => __DIR__ . '/../../app/controllers/',
-        'modelsDir'      => __DIR__ . '/../../app/models/',
-        'viewsDir'       => __DIR__ . '/../../app/views/',
-        'pluginsDir'     => __DIR__ . '/../../app/plugins/',
-        'libraryDir'     => __DIR__ . '/../../app/library/',
-        'cacheDir'       => __DIR__ . '/../../app/cache/',
-        'baseUri'        => '/',
+        'controllersDir' => APP_PATH . 'config/'
     )
 );

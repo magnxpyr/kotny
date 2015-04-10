@@ -18,22 +18,18 @@
   +------------------------------------------------------------------------+
 */
 
-/**
- * Phalcon Developers Tools can only be used in local machines, however
- * you can set this to allow certain IP address.
- *
- * For example:
- *   192.168.0.1 or SUBNET 192., 10.0.2., 86.84.124.
- *
- * @var string
- */
-define('PTOOLS_IP', '172.0.0.1');
-
-// ---------------------------- DO NOT EDIT BELOW ------------------------------
+namespace Modules\DevTools\Builder;
 
 /**
- * The path to the Phalcon Developers Tools.
+ * BuilderException
  *
- * @var string
+ * Exception Builder made
+ *
+ * @category 	Phalcon
+ * @package 	Scripts
+ * @copyright   Copyright (c) 2011-2014 Phalcon Team (team@phalconphp.com)
+ * @license 	New BSD License
  */
-define('PTOOLSPATH', '/home/gatz/www/cms/app/vendor/phalcon/devtools');
+class BuilderException extends \Phalcon\Exception
+{
+}

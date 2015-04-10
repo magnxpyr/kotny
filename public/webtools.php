@@ -28,7 +28,12 @@ define('PUBLIC_PATH', __DIR__ . DS);
 require 'webtools.config.php';
 
 require_once APP_PATH . 'vendor/phalcon/pretty-exceptions/loader.php';
-
+/*
 require PTOOLSPATH . '/scripts/Phalcon/Web/Tools.php';
 
 Tools::main(PTOOLSPATH, PTOOLS_IP);
+*/
+require_once APP_PATH . 'engine/Bootstrap.php';
+
+$bootstrap = new Bootstrap();
+$bootstrap->run();
