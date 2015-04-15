@@ -18,7 +18,8 @@
   +------------------------------------------------------------------------+
 */
 namespace Modules\DevTools\Controllers;
-use Phalcon\Builder\BuilderException;
+use Modules\DevTools\Builder\BuilderException;
+use Modules\DevTools\Migrations;
 
 class MigrationsController extends ControllerBase
 {
@@ -28,7 +29,7 @@ class MigrationsController extends ControllerBase
      */
     protected function _getMigrationsDir()
     {
-        $migrationsDir = 'app/migrations';
+        $migrationsDir = ROOT_PATH . 'app/migrations';
         if (!file_exists($migrationsDir)) {
             mkdir($migrationsDir);
         }
@@ -43,7 +44,7 @@ class MigrationsController extends ControllerBase
 
         $folders = array();
 
-        $iterator = new DirectoryIterator($migrationsDir);
+        $iterator = new \DirectoryIterator($migrationsDir);
         foreach ($iterator as $fileinfo) {
             if (!$fileinfo->isDot()) {
                 $folders[$fileinfo->getFileName()] = $fileinfo->getFileName();
@@ -85,7 +86,7 @@ class MigrationsController extends ControllerBase
 
             try {
 
-                \Phalcon\Migrations::generate(array(
+                Migrations::generate(array(
                     'config' => Tools::getConfig(),
                     'directory' => null,
                     'tableName' => $tableName,

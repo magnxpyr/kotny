@@ -8,3 +8,17 @@ CREATE TABLE access_list (roles_name varchar(32) not null, resources_name varcha
 CREATE TABLE resources (name varchar(32) not null, description text, primary key(name));
 CREATE TABLE resources_accesses (resources_name varchar(32) not null, access_name varchar(32) not null, primary key(resources_name, access_name));
 CREATE TABLE roles_inherits (roles_name varchar(32) not null, roles_inherit varchar(32) not null, primary key(roles_name, roles_inherit));
+
+// create users table
+CREATE TABLE `users` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `role_id` int(10) unsigned,
+  `username` varchar(32) NOT NULL,
+  `password` char(40) NOT NULL,
+  `crypt` char(40) NOT NULL,
+  `name` varchar(120) NOT NULL,
+  `email` varchar(70) NOT NULL,
+  `created_at` datetime NOT NULL,
+  `active` char(1) NOT NULL,
+  PRIMARY KEY (`id`)
+)

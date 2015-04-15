@@ -9,7 +9,7 @@ namespace Modules\Admin\Controllers;
 
 use Engine\Controller;
 
-class FileManagerController extends Controller {
+class AdminFileManagerController extends Controller {
 
     public function initialize() {
         $this->tag->setTitle('File Manager');

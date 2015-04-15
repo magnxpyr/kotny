@@ -29,8 +29,7 @@ class Bootstrap {
 
         // Load development options
         if($config->app->development) {
-            $dev = new \Engine\Development();
-            $dev->init();
+            new \Engine\Development();
 
             // Prevent caching annoyances
             $voltOptions['compileAlways'] = true;
@@ -39,6 +38,10 @@ class Bootstrap {
         // Registering the registry
         $registry = new \Phalcon\Registry();
         $di->set('registry', $registry);
+
+        // Getting a request instance
+        $request = new Phalcon\Http\Request();
+        $di->set('request', $request);
 
         // Register routers with default behavior
         // Set 'false' to disable default behavior and define all routes or you get 404
@@ -58,6 +61,33 @@ class Bootstrap {
             'action'        => 2
         ));
 */
+        if(\Phalcon\Text::startsWith($request->get('_url'), '/admin')) {
+            $uri = explode('/', $request->get('_url'));
+            $router->add('/admin/:module', array(
+                'module' => ucfirst($uri[2]),
+                'controller' => 'admin_index',
+                'action' => 'index'
+            ));
+            if(count($uri) > 3) {
+                $router->add('/admin/:module/:controller', array(
+                    'module' => ucfirst($uri[2]),
+                    'controller' => 'admin_' . $uri[3],
+                    'action' => 'index'
+                ));
+                $router->add('/admin/:module/:controller/:action', array(
+                    'module' => ucfirst($uri[2]),
+                    'controller' => 'admin_' . $uri[3],
+                    'action' => 3
+                ));
+                $router->add('/admin/:module/:controller/:action/:params', array(
+                    'module' => ucfirst($uri[2]),
+                    'controller' => 'admin_' . $uri[3],
+                    'action' => 3,
+                    'params' => 4
+                ));
+            }
+        }
+        /*
         $router->add('/admin', array(
             'module'        => 'Admin',
             'controller'    => 'index',
@@ -73,6 +103,17 @@ class Bootstrap {
             'controller'    => 1,
             'action'        => 2,
             'params'        => 3
+        ));
+        */
+        $router->add('/user', array(
+            'module'        => 'User',
+            'controller'    => 'users',
+            'action'        => 'index'
+        ));
+        $router->add('/user/:action', array(
+            'module'        => 'User',
+            'controller'    => 'users',
+            'action'        => 1
         ));
         $router->add('/devtools', array(
             'module'        => 'DevTools',

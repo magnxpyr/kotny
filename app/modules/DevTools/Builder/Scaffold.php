@@ -21,9 +21,9 @@
 namespace Modules\DevTools\Builder;
 
 use Phalcon\Text;
-use Phalcon\Script\Color;
-use Phalcon\Builder\Component;
-use Phalcon\Builder\Model as ModelBuilder;
+use Modules\DevTools\Script\Color;
+use Modules\DevTools\Builder\Component;
+use Modules\DevTools\Builder\Model as ModelBuilder;
 use Phalcon\DI\FactoryDefault;
 use Phalcon\Db\Column;
 
@@ -146,20 +146,28 @@ class Scaffold extends Component
             return new $adapterName($configArray);
         });
 
+        $config = new \stdClass();
+        $config->application = new \stdClass();
+        $config->application->modelsDir = ROOT_PATH . '.phalcon/';
         if (isset($config->application->modelsDir)) {
-            $options['modelsDir'] = $path . $config->application->modelsDir;
+        //    $options['modelsDir'] = $path . $config->application->modelsDir;
+            $options['modelsDir'] = $config->application->modelsDir;
         } else {
             throw new BuilderException("The builder is unable to find the views directory");
         }
 
+        $config->application->controllersDir = ROOT_PATH . '.phalcon/';
         if (isset($config->application->controllersDir)) {
-            $options['controllersDir'] = $path . $config->application->controllersDir;
+        //    $options['controllersDir'] = $path . $config->application->controllersDir;
+            $options['controllersDir'] = $config->application->controllersDir;
         } else {
             throw new BuilderException("The builder is unable to find the controllers directory");
         }
 
+        $config->application->viewsDir = ROOT_PATH . '.phalcon/';
         if (isset($config->application->viewsDir)) {
-            $options['viewsDir'] = $path . $config->application->viewsDir;
+        //    $options['viewsDir'] = $path . $config->application->viewsDir;
+            $options['viewsDir'] = $config->application->viewsDir;
         } else {
             throw new BuilderException("The builder is unable to find the views directory");
         }
@@ -168,7 +176,6 @@ class Scaffold extends Component
 
         $options['className'] = Text::camelize($options['name']);
         $options['fileName'] = Text::uncamelize($options['className']);
-
 
         $modelsNamespace = $options['modelsNamespace'];
         if (isset($modelsNamespace) && substr($modelsNamespace, -1) !== '\\') {
@@ -187,7 +194,8 @@ class Scaffold extends Component
                 'fileName' => $options['fileName'],
                 'genSettersGetters' => $options['genSettersGetters'],
                 'directory' => $options['directory'],
-                'force' => $options['force']
+                'force' => $options['force'],
+                'modelsDir' => ROOT_PATH . '.phalcon/'
             ));
 
             $modelBuilder->build();

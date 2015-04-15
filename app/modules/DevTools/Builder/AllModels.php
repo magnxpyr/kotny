@@ -20,10 +20,9 @@
 
 namespace Modules\DevTools\Builder;
 
-use Phalcon\Builder\Component;
-use Phalcon\Builder\BuilderException;
+use Modules\DevTools\Builder\Component;
+use Modules\DevTools\Builder\BuilderException;
 use Phalcon\Text as Utils;
-use Phalcon\Script\Color;
 
 /**
  * AllModels
@@ -58,7 +57,7 @@ class AllModels extends Component
         }
 
         $config = $this->_getConfig($path . '/');
-        $modelsDir = $config->application->modelsDir;
+        $modelsDir = ROOT_PATH . '.phalcon';
         $forceProcess = $this->_options['force'];
 
         if (isset($this->_options['defineRelations'])) {
@@ -185,7 +184,7 @@ class AllModels extends Component
                     $foreignKeysModel = array();
                 }
 
-                $modelBuilder = new \Phalcon\Builder\Model(array(
+                $modelBuilder = new Model(array(
                     'name' => $name,
                     'schema' => $schema,
                     'extends' => isset($this->_options['extends']) ? $this->_options['extends'] : null,

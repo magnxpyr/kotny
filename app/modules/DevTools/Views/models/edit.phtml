@@ -6,13 +6,13 @@
  */
 
 ?>
-<?php Phalcon\Web\CodeMirror::importResources(); ?>
+<?php// Phalcon\Web\CodeMirror::importResources(); ?>
 
 <?php echo $this->getContent() ?>
 
 <p><h2>Editing Model: <?php echo $name; ?></h2></p>
 
-<form method="post" action="<?php echo $this->url->get("webtools.php?_url=/models/save") ?>">
+<form method="post" action="<?php echo $this->url->get("devtools/models/save") ?>">
 
 	<p>
 		<div align="right">

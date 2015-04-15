@@ -6,13 +6,13 @@ return array(
         'host'      => 'localhost',
         'username'  => 'root',
         'password'  => 'bingo',
-        'dbname'    => 'cms'
+        'dbname'    => 'cms',
     ),
     'app' => array(
         'offline' => false,
         'site_name' => 'Magnxpyr CMS',
         'site_name_location' => 0,
-        'baseUri'       => '/cms/',
+        'baseUri'       => '/',
         'cryptSalt'     => 'FBVtggIk5lAzEU9H',
         'development'   => true,
         'cacheDir'      => ROOT_PATH . 'cache/'
@@ -27,8 +27,5 @@ return array(
             'username' => '',
             'password' => ''
         )
-    ),
-    'application' => array(
-        'controllersDir' => APP_PATH . 'config/'
     )
 );

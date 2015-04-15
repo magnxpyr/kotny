@@ -18,8 +18,8 @@
   +------------------------------------------------------------------------+
 */
 namespace Modules\DevTools\Controllers;
-use Phalcon\Builder\BuilderException;
-use Phalcon\Builder\Scaffold;
+use Modules\DevTools\Builder\BuilderException;
+use Modules\DevTools\Builder\Scaffold;
 
 class ScaffoldController extends ControllerBase
 {
@@ -58,9 +58,11 @@ class ScaffoldController extends ControllerBase
                     'schema' => $schema,
                     'force'	=> $force,
                     'genSettersGetters' => $genSettersGetters,
-                    'directory' => null,
-                    'templatePath' => TEMPLATE_PATH,
-                    'templateEngine' => $templateEngine
+                    'directory' => APP_PATH,
+                    'templatePath' => APP_PATH . 'modules/DevTools/templates',
+                    'templateEngine' => $templateEngine,
+                    'modelsDir' => ROOT_PATH . '.phalcon/',
+                    'modelsNamespace' => null
                 ));
 
                 $scaffoldBuilder->build();

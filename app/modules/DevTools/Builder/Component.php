@@ -20,9 +20,6 @@
 
 namespace Modules\DevTools\Builder;
 
-use Phalcon\Script\Color;
-use Phalcon\Builder\BuilderException;
-
 /**
  * \Phalcon\Builder\Component
  *
@@ -143,7 +140,8 @@ abstract class Component
      */
     protected function _notifySuccess($message)
     {
-        print Color::success($message);
+    //    print Color::success($message);
+        print_r($message);
     }
 
     abstract public function build();

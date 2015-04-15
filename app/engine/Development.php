@@ -9,7 +9,7 @@ namespace Engine;
 
 class Development {
 
-    public function init() {
+    public function __construct() {
         // Display all errors
         ini_set('display_errors', 1);
         error_reporting(E_ALL);

@@ -20,7 +20,9 @@
 namespace Modules\DevTools\Controllers;
 
 
+use Modules\DevTools\Builder\AllModels;
 use Modules\DevTools\Builder\BuilderException;
+use Modules\DevTools\Builder\Model;
 
 class ModelsController extends ControllerBase
 {
@@ -47,21 +49,21 @@ class ModelsController extends ControllerBase
 
             try {
 
-                $component = '\Modules\DevTools\Builder\Model';
-                if ($tableName == 'all') {
-                    $component = '\Modules\DevTools\Builder\AllModels';
-                }
-
-                $modelBuilder = new $component(array(
+                $component = array(
                     'name'                  => $tableName,
                     'force'                 => $force,
-                    'modelsDir'             => APP_PATH . 'a',
-                    'directory'             => null,
+                    'modelsDir'             => ROOT_PATH . '.phalcon',
+                    'directory'             => APP_PATH,
                     'foreignKeys'           => $foreignKeys,
                     'defineRelations'       => $defineRelations,
                     'genSettersGetters'     => $genSettersGetters,
                     'namespace'             => null,
-                ));
+                );
+
+                if ($tableName == 'all')
+                    $modelBuilder = new AllModels($component);
+                else
+                    $modelBuilder = new Model($component);
 
                 $modelBuilder->build();
 
@@ -100,15 +102,15 @@ class ModelsController extends ControllerBase
 
     public function listAction()
     {
-        $this->view->setVar('modelsDir', Tools::getConfig()->application->modelsDir);
+        $this->view->setVar('modelsDir', ROOT_PATH . '.phalcon');
     }
 
-    public function editAction($fileName)
+    public function editAction()
     {
+       $fileName = $_GET['file'];
 
-        $fileName = str_replace('..', '', $fileName);
-
-        $modelsDir = Tools::getConfig()->application->modelsDir;
+        $modelsDir = ROOT_PATH . '.phalcon/';
+        print_r($modelsDir);
 
         if (!file_exists($modelsDir.'/'.$fileName)) {
             $this->flash->error('Model could not be found');

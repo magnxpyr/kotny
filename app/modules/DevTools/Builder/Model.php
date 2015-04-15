@@ -21,9 +21,8 @@
 namespace Modules\DevTools\Builder;
 
 use Phalcon\Db\Column;
-use Phalcon\Builder\Component;
-use Phalcon\Builder\BuilderException;
-use Phalcon\Script\Color;
+use \Modules\DevTools\Builder\Component;
+use \Modules\DevTools\Builder\BuilderException;
 use Phalcon\Text as Utils;
 
 /**
