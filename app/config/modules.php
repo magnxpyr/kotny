@@ -1,7 +1,7 @@
 <?php
 
 return array(
-    'Cms',
+    'Core',
     'Admin',
     'User',
     'Tools',

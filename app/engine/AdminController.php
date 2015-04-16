@@ -1,0 +1,17 @@
+<?php
+/*
+ * @copyright   2006 - 2015 Magnxpyr Network
+ * @license     New BSD License; see LICENSE
+ * @url         http://www.magnxpyr.com
+ */
+
+namespace Engine;
+
+abstract class AdminController extends Controller {
+
+    public function initialize() {
+        $this->view->setMainView(VIEW_PATH . 'admin');
+        $this->view->setLayout('admin');
+    }
+
+}

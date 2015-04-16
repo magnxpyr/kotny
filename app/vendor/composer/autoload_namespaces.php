@@ -6,5 +6,5 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname(dirname($vendorDir));
 
 return array(
-    'Phalcon' => array($vendorDir . '/phalcon/devtools/scripts'),
+    'Phalcon' => array($vendorDir . '/phalcon/incubator/Library'),
 );

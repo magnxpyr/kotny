@@ -4,32 +4,37 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "43ad23be01088ff736b792782df89c41",
+    "hash": "e6976fe1a6e483b611050e6e2f03e7e8",
     "packages": [
         {
-            "name": "phalcon/devtools",
+            "name": "phalcon/incubator",
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/phalcon/phalcon-devtools.git",
-                "reference": "103c8989236f4df5206e7d37508216c46799394a"
+                "url": "https://github.com/phalcon/incubator.git",
+                "reference": "6c562b6e79b24444cd67d20ccc2e327218289a1a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phalcon/phalcon-devtools/zipball/103c8989236f4df5206e7d37508216c46799394a",
-                "reference": "103c8989236f4df5206e7d37508216c46799394a",
+                "url": "https://api.github.com/repos/phalcon/incubator/zipball/6c562b6e79b24444cd67d20ccc2e327218289a1a",
+                "reference": "6c562b6e79b24444cd67d20ccc2e327218289a1a",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.6"
+                "ext-phalcon": ">=1.2.4",
+                "php": ">=5.3.6",
+                "swiftmailer/swiftmailer": ">=5.2"
             },
-            "bin": [
-                "phalcon.php"
-            ],
+            "require-dev": {
+                "codeception/codeception": "*",
+                "php-mock/php-mock": "<0.6",
+                "phpunit/phpunit": "4.5.*",
+                "squizlabs/php_codesniffer": "2.*"
+            },
             "type": "library",
             "autoload": {
                 "psr-0": {
-                    "Phalcon": "scripts/"
+                    "Phalcon": "Library/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -42,13 +47,13 @@
                     "email": "team@phalconphp.com"
                 }
             ],
-            "description": "This tools provide you useful scripts to generate code helping to develop faster and easy applications that use with Phalcon framework.",
+            "description": "Adapters, prototypes or functionality that can be potentially incorporated to the C-framework.",
             "homepage": "http://phalconphp.com",
             "keywords": [
                 "framework",
                 "phalcon"
             ],
-            "time": "2015-02-26 21:47:33"
+            "time": "2015-04-14 13:55:52"
         },
         {
             "name": "phalcon/pretty-exceptions",
@@ -85,6 +90,58 @@
             ],
             "description": "Beauty-exceptions plugin for Phalcon",
             "time": "2014-12-13 15:49:21"
+        },
+        {
+            "name": "swiftmailer/swiftmailer",
+            "version": "v5.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/swiftmailer/swiftmailer.git",
+                "reference": "31454f258f10329ae7c48763eb898a75c39e0a9f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/swiftmailer/swiftmailer/zipball/31454f258f10329ae7c48763eb898a75c39e0a9f",
+                "reference": "31454f258f10329ae7c48763eb898a75c39e0a9f",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "require-dev": {
+                "mockery/mockery": "~0.9.1"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "5.4-dev"
+                }
+            },
+            "autoload": {
+                "files": [
+                    "lib/swift_required.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Chris Corbyn"
+                },
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                }
+            ],
+            "description": "Swiftmailer, free feature-rich PHP mailer",
+            "homepage": "http://swiftmailer.org",
+            "keywords": [
+                "mail",
+                "mailer"
+            ],
+            "time": "2015-03-14 06:06:39"
         }
     ],
     "packages-dev": [],
@@ -92,7 +149,7 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "phalcon/pretty-exceptions": 20,
-        "phalcon/devtools": 20
+        "phalcon/incubator": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

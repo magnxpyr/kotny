@@ -5,10 +5,8 @@
  * @url         http://www.magnxpyr.com
  */
 
-namespace User\Controllers;
+namespace Core;
 
-use Engine\Controller;
-
-class AuthController extends Controller {
+class Module extends \Engine\Module{
 
 }

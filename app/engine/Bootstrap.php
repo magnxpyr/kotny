@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * @copyright   2006 - 2015 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @url         http://www.magnxpyr.com
@@ -46,7 +46,7 @@ class Bootstrap {
         // Register routers with default behavior
         // Set 'false' to disable default behavior and define all routes or you get 404
         $router = new Phalcon\Mvc\Router();
-        $router->setDefaultModule("Cms");
+        $router->setDefaultModule("Core");
         $router->removeExtraSlashes(true);
         /*
         $router->notFound(array(
@@ -63,25 +63,26 @@ class Bootstrap {
 */
         if(\Phalcon\Text::startsWith($request->get('_url'), '/admin')) {
             $uri = explode('/', $request->get('_url'));
+            $module = ucfirst($uri[1]);
             $router->add('/admin/:module', array(
-                'module' => ucfirst($uri[2]),
+                'module' => $module,
                 'controller' => 'admin_index',
                 'action' => 'index'
             ));
-            if(count($uri) > 3) {
+            if(count($uri) > 2) {
                 $router->add('/admin/:module/:controller', array(
-                    'module' => ucfirst($uri[2]),
-                    'controller' => 'admin_' . $uri[3],
+                    'module' => $module,
+                    'controller' => 'admin_' . $uri[2],
                     'action' => 'index'
                 ));
                 $router->add('/admin/:module/:controller/:action', array(
-                    'module' => ucfirst($uri[2]),
-                    'controller' => 'admin_' . $uri[3],
+                    'module' => $module,
+                    'controller' => 'admin_' . $uri[2],
                     'action' => 3
                 ));
                 $router->add('/admin/:module/:controller/:action/:params', array(
-                    'module' => ucfirst($uri[2]),
-                    'controller' => 'admin_' . $uri[3],
+                    'module' => $module,
+                    'controller' => 'admin_' . $uri[2],
                     'action' => 3,
                     'params' => 4
                 ));

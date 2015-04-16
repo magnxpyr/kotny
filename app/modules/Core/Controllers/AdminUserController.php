@@ -1,15 +1,15 @@
 <?php
-/**
+/*
  * @copyright   2006 - 2015 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @url        http://www.magnxpyr.com
  */
 
-namespace Modules\Cms\Controllers;
+namespace Core\Controllers;
 
-use Engine\Controller;
+use Engine\AdminController;
 
-class UserController extends Controller {
+class UserController extends AdminController {
 
     public function initialize() {
         $this->tag->setTitle('User');

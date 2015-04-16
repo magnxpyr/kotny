@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * @copyright   2006 - 2015 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @url         http://www.magnxpyr.com
@@ -28,10 +28,14 @@ class Loader extends \Phalcon\Loader {
         $modules = array();
         if (!empty($modules_list)) {
             foreach ($modules_list as $module) {
-                $namespaces["Modules\\$module"] = APP_PATH . 'modules/' . $module;
+                $namespaces[$module] = APP_PATH . 'modules/' . $module;
+                $module_path = APP_PATH . "modules/$module/Module.php";
+                if(!file_exists($module_path)) {
+                    $module_path = APP_PATH . 'engine/Module.php';
+                }
                 $modules[$module] = array(
-                    'className' => "Modules\\$module\\Module",
-                    'path' => APP_PATH . "modules/$module/Module.php"
+                    'className' => "$module\\Module",
+                    'path' => $module_path
                 );
             }
         }

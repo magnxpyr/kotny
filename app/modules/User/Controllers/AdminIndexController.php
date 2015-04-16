@@ -1,12 +1,18 @@
 <?php
+/*
+ * @copyright   2006 - 2015 Magnxpyr Network
+ * @license     New BSD License; see LICENSE
+ * @url         http://www.magnxpyr.com
+ */
 
-namespace Modules\User\Controllers;
+namespace User\Controllers;
 
+use Engine\AdminController;
 use Modules\User\Models\Users;
 use Phalcon\Mvc\Model\Criteria;
 use Phalcon\Paginator\Adapter\Model as Paginator;
 
-class AdminIndexController extends \Engine\Controller
+class AdminIndexController extends AdminController
 {
 
     /**

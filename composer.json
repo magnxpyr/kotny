@@ -8,7 +8,7 @@
 	"require" : {
         "php" : ">=5.4",
         "phalcon/pretty-exceptions" : "dev-master",
-        "phalcon/devtools": "dev-master"
+        "phalcon/incubator": "dev-master"
     },
     "minimum-stability": "stable",
     "config": {

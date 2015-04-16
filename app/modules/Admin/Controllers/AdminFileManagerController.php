@@ -1,18 +1,17 @@
 <?php
-/**
+/*
  * @copyright   2006 - 2015 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @url        http://www.magnxpyr.com
  */
 
-namespace Modules\Admin\Controllers;
+namespace Admin\Controllers;
 
-use Engine\Controller;
+use Engine\AdminController;
 
-class AdminFileManagerController extends Controller {
+class AdminFileManagerController extends AdminController {
 
     public function initialize() {
-        $this->tag->setTitle('File Manager');
 
         $this->assets->collection('header-css')->addCss("vendor/elFinder/css/theme.css");
         $this->assets->collection('header-css')->addCss("vendor/elFinder/css/common.css");
@@ -112,9 +111,12 @@ class AdminFileManagerController extends Controller {
 
         $this->assets->collection('header-js')->addJs("vendor/elFinder/js/jquery.dialogelfinder.js");
         $this->assets->collection('header-js')->addJs("vendor/elFinder/js/proxy/elFinderSupportVer1.js");
+
+        parent::initialize();
     }
 
     public function indexAction() {
+        $this->tag->setTitle('File Manager');
         $url = new \Phalcon\Mvc\Url();
         echo $url->getBaseUri();
         $this->view->setVar("connector", 'vendor/elFinder/php/connector.minimal.php');
