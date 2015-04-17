@@ -7,6 +7,8 @@
 
 namespace Engine;
 
+use Phalcon\Text;
+
 class Loader extends \Phalcon\Loader {
 
     public function init($namespaces) {
@@ -28,12 +30,14 @@ class Loader extends \Phalcon\Loader {
         $modules = array();
         if (!empty($modules_list)) {
             foreach ($modules_list as $module) {
-                $namespaces[$module] = APP_PATH . 'modules/' . $module;
+                $moduleName = $module;
+                $module = Text::camelize($module);
+                $namespaces[$module] = APP_PATH . "modules/$module";
                 $module_path = APP_PATH . "modules/$module/Module.php";
                 if(!file_exists($module_path)) {
                     $module_path = APP_PATH . 'engine/Module.php';
                 }
-                $modules[$module] = array(
+                $modules[$moduleName] = array(
                     'className' => "$module\\Module",
                     'path' => $module_path
                 );

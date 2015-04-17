@@ -7,6 +7,6 @@
 
 namespace Core;
 
-class Module extends \Engine\Module{
+class Module extends \Engine\Module {
 
 }

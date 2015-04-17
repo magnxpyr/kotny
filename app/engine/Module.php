@@ -7,19 +7,22 @@
 
 namespace Engine;
 
+use Phalcon\Text;
+
 abstract class Module {
 
     public function registerAutoloaders() {
     }
 
-    public function registerServices($di)
-    {
+    public function registerServices($di) {
+        $moduleName = Text::camelize($di['router']->getModuleName());
+
         //Attach a event listener to the dispatcher
         $dispatcher = $di->get('dispatcher');
-        $dispatcher->setDefaultNamespace($di['router']->getModuleName() . '\Controllers');
+        $dispatcher->setDefaultNamespace($moduleName . '\Controllers');
 
         //Registering the view component
         $view = $di->get('view');
-        $view->setViewsDir(APP_PATH . 'modules/' . $di['router']->getModuleName() . '/Views/');
+        $view->setViewsDir(APP_PATH . 'modules/' . $moduleName . '/Views/');
     }
 }

@@ -46,7 +46,7 @@ class Bootstrap {
         // Register routers with default behavior
         // Set 'false' to disable default behavior and define all routes or you get 404
         $router = new Phalcon\Mvc\Router();
-        $router->setDefaultModule("Core");
+        $router->setDefaultModule("core");
         $router->removeExtraSlashes(true);
         /*
         $router->notFound(array(
@@ -54,58 +54,38 @@ class Bootstrap {
             'action'        => 'show404'
         ));
         */
-/*
-        $router->add('/:controller/:action', array(
-            'module'        => 'Cms',
-            'controller'    => 1,
-            'action'        => 2
-        ));
-*/
-        if(\Phalcon\Text::startsWith($request->get('_url'), '/admin')) {
-            $uri = explode('/', $request->get('_url'));
-            $module = ucfirst($uri[1]);
-            $router->add('/admin/:module', array(
-                'module' => $module,
-                'controller' => 'admin_index',
+
+
+        $router->add('/admin/:module', array(
+                'module' => 1,
+                'controller' => 'admin-index',
                 'action' => 'index'
-            ));
-            if(count($uri) > 2) {
-                $router->add('/admin/:module/:controller', array(
-                    'module' => $module,
-                    'controller' => 'admin_' . $uri[2],
-                    'action' => 'index'
-                ));
-                $router->add('/admin/:module/:controller/:action', array(
-                    'module' => $module,
-                    'controller' => 'admin_' . $uri[2],
-                    'action' => 3
-                ));
-                $router->add('/admin/:module/:controller/:action/:params', array(
-                    'module' => $module,
-                    'controller' => 'admin_' . $uri[2],
-                    'action' => 3,
-                    'params' => 4
-                ));
-            }
-        }
-        /*
-        $router->add('/admin', array(
-            'module'        => 'Admin',
-            'controller'    => 'index',
-            'action'        => 'index'
         ));
-        $router->add('/admin/:controller/:action', array(
-            'module'        => 'Admin',
-            'controller'    => 1,
-            'action'        => 2
-        ));
-        $router->add('/admin/:controller/:action/:params', array(
-            'module'        => 'Admin',
-            'controller'    => 1,
-            'action'        => 2,
-            'params'        => 3
-        ));
-        */
+
+        $router->add('/admin/:module/:controller', array(
+            'module' => 1,
+            'controller' => 2,
+            'action' => 'index'
+        ))->convert('controller', function($controller) {
+            return "admin-$controller";
+        });
+        $router->add('/admin/:module/:controller/:action', array(
+            'module' => 1,
+            'controller' => 2,
+            'action' => 3
+        ))->convert('controller', function($controller) {
+            return "admin-$controller";
+        });
+        $router->add('/admin/:module/:controller/:action/:params', array(
+            'module' => 1,
+            'controller' => 2,
+            'action' => 3,
+            'params' => 4
+        ))->convert('controller', function($controller) {
+            return "admin-$controller";
+        });
+
+
         $router->add('/user', array(
             'module'        => 'User',
             'controller'    => 'users',

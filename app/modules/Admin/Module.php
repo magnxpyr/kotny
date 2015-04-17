@@ -5,7 +5,7 @@
  * @url         http://www.magnxpyr.com
  */
 
-namespace DevTools;
+namespace Admin;
 
 class Module extends \Engine\Module {
 
