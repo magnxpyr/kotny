@@ -76,10 +76,6 @@ div.scaffold h2 {
     padding: 9px 0 0;
 }
 
-.navbar-header {
-    height: 20px;
-}
-
 .alert {
     line-height: 5px;
 }
@@ -88,13 +84,8 @@ div.scaffold h2 {
     width: 80%;
 }
 
-.navbar-nav>li>a {
-    padding-top: 10px;
-    padding-bottom: 10px;
-}
-
 .navbar-brand {
-    padding: 10px 15px;
+    padding: 15px 15px;
 }
 
 .span4 {

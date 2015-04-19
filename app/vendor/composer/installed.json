@@ -98,12 +98,12 @@
         "source": {
             "type": "git",
             "url": "https://github.com/phalcon/incubator.git",
-            "reference": "6c562b6e79b24444cd67d20ccc2e327218289a1a"
+            "reference": "a5b5ee03be30945a47ea8a9371c31178830c079d"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/phalcon/incubator/zipball/6c562b6e79b24444cd67d20ccc2e327218289a1a",
-            "reference": "6c562b6e79b24444cd67d20ccc2e327218289a1a",
+            "url": "https://api.github.com/repos/phalcon/incubator/zipball/a5b5ee03be30945a47ea8a9371c31178830c079d",
+            "reference": "a5b5ee03be30945a47ea8a9371c31178830c079d",
             "shasum": ""
         },
         "require": {
@@ -117,7 +117,7 @@
             "phpunit/phpunit": "4.5.*",
             "squizlabs/php_codesniffer": "2.*"
         },
-        "time": "2015-04-14 13:55:52",
+        "time": "2015-04-17 05:33:58",
         "type": "library",
         "installation-source": "source",
         "autoload": {

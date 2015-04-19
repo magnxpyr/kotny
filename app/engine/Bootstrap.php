@@ -1,9 +1,12 @@
 <?php
-/*
+/**
  * @copyright   2006 - 2015 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @url         http://www.magnxpyr.com
+ * @authors     Stefan Chiriac <stefan@magnxpyr.com>
  */
+
+use Phalcon\Text;
 
 class Bootstrap {
 
@@ -18,12 +21,14 @@ class Bootstrap {
         // Load config file
         $config = require_once APP_PATH . 'config/config.php';
         // Load modules
-        $modules_list = require_once APP_PATH . 'config/modules.php';
+        $modulesList = require_once APP_PATH . 'config/modules.php';
         // Load loader
         require_once APP_PATH . 'engine/Loader.php';
         $loader = new \Engine\Loader();
-        $modules_config = $loader->modulesConfig($modules_list);
-        $config = new \Phalcon\Config(array_merge_recursive($config, $modules_config));
+        $modulesConfig = $loader->modulesConfig($modulesList);
+        $modulesRoutes = $modulesConfig['routes'];
+        unset($modulesConfig['routes']);
+        $config = new \Phalcon\Config(array_merge_recursive($config, $modulesConfig));
         $loader->init($config->loader->namespaces);
         $di->set('config', $config);
 
@@ -44,73 +49,25 @@ class Bootstrap {
         $di->set('request', $request);
 
         // Register routers with default behavior
-        // Set 'false' to disable default behavior and define all routes or you get 404
+        // Set 'false' to disable default behavior. After that define all routes or you get 404
         $router = new Phalcon\Mvc\Router();
-        $router->setDefaultModule("core");
         $router->removeExtraSlashes(true);
-        /*
-        $router->notFound(array(
-            'controller'    => 'error',
-            'action'        => 'show404'
-        ));
-        */
-
-
-        $router->add('/admin/:module', array(
-                'module' => 1,
-                'controller' => 'admin-index',
-                'action' => 'index'
-        ));
-
-        $router->add('/admin/:module/:controller', array(
-            'module' => 1,
-            'controller' => 2,
+        $router->setDefaults(array(
+            'module' => 'core',
+            'controller' => 'index',
             'action' => 'index'
-        ))->convert('controller', function($controller) {
-            return "admin-$controller";
-        });
-        $router->add('/admin/:module/:controller/:action', array(
-            'module' => 1,
-            'controller' => 2,
-            'action' => 3
-        ))->convert('controller', function($controller) {
-            return "admin-$controller";
-        });
-        $router->add('/admin/:module/:controller/:action/:params', array(
-            'module' => 1,
-            'controller' => 2,
-            'action' => 3,
-            'params' => 4
-        ))->convert('controller', function($controller) {
-            return "admin-$controller";
-        });
-
-
-        $router->add('/user', array(
-            'module'        => 'User',
-            'controller'    => 'users',
-            'action'        => 'index'
         ));
-        $router->add('/user/:action', array(
-            'module'        => 'User',
-            'controller'    => 'users',
-            'action'        => 1
+/*
+        $router->notFound(array(
+            'module' => 'core',
+            'controller' => 'error',
+            'action' => 'show404'
         ));
-        $router->add('/devtools', array(
-            'module'        => 'DevTools',
-            'controller'    => 'index',
-            'action'        => 'index'
-        ));
-        $router->add('/devtools/:controller', array(
-            'module'        => 'DevTools',
-            'controller'    => 1,
-            'action'        => 'index'
-        ));
-        $router->add('/devtools/:controller/:action', array(
-            'module'        => 'DevTools',
-            'controller'    => 1,
-            'action'        => 2
-        ));
+*/
+        foreach($modulesRoutes as $routeClass) {
+            $route = new $routeClass;
+            $route->init($router);
+        }
         $di->set('router', $router);
 
         // Generate urls
@@ -195,15 +152,15 @@ class Bootstrap {
             // Ask browser what is the best language
             $language = $di->getShared('request')->getBestLanguage();
         }
-        $lang_file = APP_PATH . "messages/" . $language . ".php";
+        $langFile = APP_PATH . "messages/" . $language . ".php";
 
         //Check if we have a translation file for that lang
-        if (!file_exists($lang_file)) {
+        if (!file_exists($langFile)) {
             // Fallback to default
-            $lang_file = APP_PATH . "messages/en.php";
+            $langFile = APP_PATH . "messages/en.php";
         }
 
-        $translator = new \Phalcon\Translate\Adapter\NativeArray(array('content' => require $lang_file));
+        $translator = new \Phalcon\Translate\Adapter\NativeArray(array('content' => require $langFile));
 
         $di->setShared('t', $translator);
 
@@ -239,13 +196,22 @@ class Bootstrap {
 
         // Register assets that will be loaded in every page
         $assets = new \Phalcon\Assets\Manager();
-        $assets->collection('header-js')
+        $assets
+            ->collection('header-js')
+            ->setTargetPath(PUBLIC_PATH . 'assets/default/js/header.min.js')
+            ->setTargetUri('assets/default/js/header.min.js')
             ->addJs('vendor/jquery/jquery-2.1.3.min.js')
             ->addJs('vendor/jquery/jquery-ui.min.js')
             ->addJs('vendor/bootstrap/js/bootstrap.min.js');
+        //    ->join(true)
+        //    ->addFilter(new Phalcon\Assets\Filters\Jsmin());
         $assets->collection('header-css')
+            ->setTargetPath(PUBLIC_PATH . 'assets/default/css/header.min.css')
+            ->setTargetUri('assets/default/css/header.min.css')
             ->addCss('vendor/jquery/jquery-ui.min.css')
             ->addCss('vendor/bootstrap/css/bootstrap.min.css');
+        //    ->join(true)
+        //    ->addFilter(new Phalcon\Assets\Filters\Cssmin());
 
         $di->setShared('assets', $assets);
 

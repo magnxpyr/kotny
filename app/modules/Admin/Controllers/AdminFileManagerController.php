@@ -1,8 +1,9 @@
 <?php
-/*
+/**
  * @copyright   2006 - 2015 Magnxpyr Network
  * @license     New BSD License; see LICENSE
- * @url        http://www.magnxpyr.com
+ * @url         http://www.magnxpyr.com
+ * @authors     Stefan Chiriac <stefan@magnxpyr.com>
  */
 
 namespace Admin\Controllers;
@@ -83,13 +84,16 @@ class AdminFileManagerController extends AdminController {
         $this->assets->collection('header-js')->addJs("vendor/elFinder/js/commands/sort.js");
         $this->assets->collection('header-js')->addJs("vendor/elFinder/js/commands/netmount.js");
 
+        /*
         $this->assets->collection('header-js')->addJs("vendor/elFinder/js/i18n/elfinder.ar.js");
         $this->assets->collection('header-js')->addJs("vendor/elFinder/js/i18n/elfinder.bg.js");
         $this->assets->collection('header-js')->addJs("vendor/elFinder/js/i18n/elfinder.ca.js");
         $this->assets->collection('header-js')->addJs("vendor/elFinder/js/i18n/elfinder.cs.js");
         $this->assets->collection('header-js')->addJs("vendor/elFinder/js/i18n/elfinder.de.js");
         $this->assets->collection('header-js')->addJs("vendor/elFinder/js/i18n/elfinder.el.js");
+        */
         $this->assets->collection('header-js')->addJs("vendor/elFinder/js/i18n/elfinder.en.js");
+        /*
         $this->assets->collection('header-js')->addJs("vendor/elFinder/js/i18n/elfinder.es.js");
         $this->assets->collection('header-js')->addJs("vendor/elFinder/js/i18n/elfinder.fa.js");
         $this->assets->collection('header-js')->addJs("vendor/elFinder/js/i18n/elfinder.fr.js");
@@ -108,6 +112,7 @@ class AdminFileManagerController extends AdminController {
         $this->assets->collection('header-js')->addJs("vendor/elFinder/js/i18n/elfinder.zh_CN.js");
         $this->assets->collection('header-js')->addJs("vendor/elFinder/js/i18n/elfinder.zh_TW.js");
         $this->assets->collection('header-js')->addJs("vendor/elFinder/js/i18n/elfinder.vi.js");
+        */
 
         $this->assets->collection('header-js')->addJs("vendor/elFinder/js/jquery.dialogelfinder.js");
         $this->assets->collection('header-js')->addJs("vendor/elFinder/js/proxy/elFinderSupportVer1.js");
@@ -117,8 +122,6 @@ class AdminFileManagerController extends AdminController {
 
     public function indexAction() {
         $this->tag->setTitle('File Manager');
-        $url = new \Phalcon\Mvc\Url();
-        echo $url->getBaseUri();
         $this->view->setVar("connector", 'vendor/elFinder/php/connector.minimal.php');
     }
 }

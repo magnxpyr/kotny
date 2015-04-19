@@ -1,8 +1,9 @@
 <?php
-/*
+/**
  * @copyright   2006 - 2015 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @url         http://www.magnxpyr.com
+ * @authors     Stefan Chiriac <stefan@magnxpyr.com>
  */
 
 namespace Engine;
@@ -19,7 +20,6 @@ class Loader extends \Phalcon\Loader {
         )));
         $this->register();
 
-
         // Composer loader
         require_once APP_PATH . 'vendor/autoload.php';
     }
@@ -28,18 +28,23 @@ class Loader extends \Phalcon\Loader {
     {
         $namespaces = array();
         $modules = array();
+        $routes = array();
         if (!empty($modules_list)) {
             foreach ($modules_list as $module) {
-                $moduleName = $module;
-                $module = Text::camelize($module);
                 $namespaces[$module] = APP_PATH . "modules/$module";
-                $module_path = APP_PATH . "modules/$module/Module.php";
+                $modulePath = APP_PATH . "modules/$module/Module.php";
+                $routePath = APP_PATH . "modules/$module/Routes.php";
+                if(file_exists($routePath)) {
+                    $routes[] = "$module\\Routes";
+                }
+                /*
                 if(!file_exists($module_path)) {
                     $module_path = APP_PATH . 'engine/Module.php';
                 }
-                $modules[$moduleName] = array(
+                */
+                $modules[Text::uncamelize($module)] = array(
                     'className' => "$module\\Module",
-                    'path' => $module_path
+                    'path' => $modulePath
                 );
             }
         }
@@ -47,6 +52,7 @@ class Loader extends \Phalcon\Loader {
         $modules_array = array(
             'loader' => array('namespaces' => $namespaces),
             'modules' => $modules,
+            'routes' => $routes
         );
 
         return $modules_array;

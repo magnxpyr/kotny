@@ -1,9 +1,9 @@
 <?php
 
 return array(
-    'core',
-    'admin',
-    'user',
-    'tools',
-    'dev-tools'
+    'Core',
+    'Admin',
+    'User',
+    'Tools',
+    'DevTools'
 );
