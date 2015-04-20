@@ -18,7 +18,7 @@
   +------------------------------------------------------------------------+
 */
 
-namespace Modules\DevTools\Builder;
+namespace Tools\Builder;
 
 use Phalcon\Text;
 use Modules\DevTools\Script\Color;

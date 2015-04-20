@@ -17,10 +17,11 @@
   |          Eduar Carvajal <eduar@phalconphp.com>                         |
   +------------------------------------------------------------------------+
 */
-namespace Modules\DevTools\Controllers;
-use Modules\DevTools\Builder\Controller;
+namespace Tools\Controllers;
+use Tools\Builder\Controller;
 use Phalcon\Tag;
 use Phalcon\Builder\BuilderException;
+use Tools\Helper\Tools;
 
 class ControllersController extends ControllerBase
 {
@@ -46,7 +47,7 @@ class ControllersController extends ControllerBase
 
                 $controllerBuilder = new Controller(array(
                     'name' => $controllerName,
-                    'directory' => null,
+                    'directory' => $dir,
                     'namespace' => null,
                     'baseClass' => null,
                     'force' => $force
@@ -54,6 +55,7 @@ class ControllersController extends ControllerBase
             //    $config['application']['controllersDir'] = APP_PATH . 'config/';
             //    $this->getDI()->set('config', $config);
                 $fileName = $controllerBuilder->build();
+                print_r($fileName); die;
 
                 $this->flash->success('The controller "'.$fileName.'" was created successfully');
 
@@ -81,7 +83,7 @@ class ControllersController extends ControllerBase
      */
     public function listAction()
     {
-        $this->view->setVar('controllersDir', Tools::getConfig()->application->controllersDir);
+        $this->view->setVar('controllersDir', '/home/gatz/www/cms/app/modules/Tools');
     }
 
     /**

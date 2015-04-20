@@ -18,7 +18,7 @@
   +------------------------------------------------------------------------+
 */
 
-namespace Modules\DevTools\Builder;
+namespace Tools\Builder;
 
 use Modules\DevTools\Builder\Component;
 use Modules\DevTools\Builder\BuilderException;

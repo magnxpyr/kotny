@@ -13,37 +13,6 @@ h2 {
     line-height: 26px;
 }
 
-input.span6, textarea.span6 {
-    display: inline-block;
-    float: none;
-    margin-left: 0;
-    width: 330px;
-}
-
-input, textarea, .uneditable-input {
-    color: #333333;
-    font-size: 14px;
-    line-height: 19px;
-    padding: 7px;
-}
-
-input, textarea {
-    -moz-transition: border 0.2s linear 0s, box-shadow 0.2s linear 0s;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) inset;
-}
-
-input, textarea, select, .uneditable-input {
-    border: 1px solid #CCCCCC;
-    border-radius: 3px 3px 3px 3px;
-    color: #666666;
-    display: inline-block;
-    font-size: 13px;
-    height: 18px;
-    line-height: 18px;
-    padding: 4px;
-    width: 210px;
-}
-
 div.center {
     text-align: center;
 }

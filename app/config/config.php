@@ -12,7 +12,7 @@ return array(
         'offline' => false,
         'site_name' => 'Magnxpyr CMS',
         'site_name_location' => 0,
-        'baseUri'       => '/', // must end with trailing slash /
+        'baseUri'       => '/cms/', // must end with trailing slash /
         'cryptSalt'     => 'FBVtggIk5lAzEU9H',
         'development'   => true,
         'cacheDir'      => ROOT_PATH . 'cache/'

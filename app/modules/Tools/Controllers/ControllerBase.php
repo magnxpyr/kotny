@@ -20,6 +20,7 @@
 namespace Tools\Controllers;
 
 use Engine\AdminController;
+use Tools\Helper\Tools;
 
 class ControllerBase extends AdminController
 {

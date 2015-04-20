@@ -1,43 +1,5 @@
 [
     {
-        "name": "phalcon/pretty-exceptions",
-        "version": "dev-master",
-        "version_normalized": "9999999-dev",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/phalcon/pretty-exceptions.git",
-            "reference": "7d07dce67cfd18e87e65fd395272e4ef3dff87ba"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/phalcon/pretty-exceptions/zipball/7d07dce67cfd18e87e65fd395272e4ef3dff87ba",
-            "reference": "7d07dce67cfd18e87e65fd395272e4ef3dff87ba",
-            "shasum": ""
-        },
-        "require": {
-            "php": "~5.3"
-        },
-        "time": "2014-12-13 15:49:21",
-        "type": "library",
-        "installation-source": "source",
-        "autoload": {
-            "psr-4": {
-                "Phalcon\\Utils\\": "Library/Phalcon/Utils"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Contributors",
-                "homepage": "https://github.com/phalcon/pretty-exceptions/graphs/contributors"
-            }
-        ],
-        "description": "Beauty-exceptions plugin for Phalcon"
-    },
-    {
         "name": "swiftmailer/swiftmailer",
         "version": "v5.4.0",
         "version_normalized": "5.4.0.0",
@@ -98,12 +60,12 @@
         "source": {
             "type": "git",
             "url": "https://github.com/phalcon/incubator.git",
-            "reference": "a5b5ee03be30945a47ea8a9371c31178830c079d"
+            "reference": "de11660e473b2c18897506dff0458b3aec18e551"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/phalcon/incubator/zipball/a5b5ee03be30945a47ea8a9371c31178830c079d",
-            "reference": "a5b5ee03be30945a47ea8a9371c31178830c079d",
+            "url": "https://api.github.com/repos/phalcon/incubator/zipball/de11660e473b2c18897506dff0458b3aec18e551",
+            "reference": "de11660e473b2c18897506dff0458b3aec18e551",
             "shasum": ""
         },
         "require": {
@@ -117,7 +79,7 @@
             "phpunit/phpunit": "4.5.*",
             "squizlabs/php_codesniffer": "2.*"
         },
-        "time": "2015-04-17 05:33:58",
+        "time": "2015-04-18 15:21:54",
         "type": "library",
         "installation-source": "source",
         "autoload": {
@@ -141,5 +103,43 @@
             "framework",
             "phalcon"
         ]
+    },
+    {
+        "name": "phalcon/pretty-exceptions",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/phalcon/pretty-exceptions.git",
+            "reference": "7d07dce67cfd18e87e65fd395272e4ef3dff87ba"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/phalcon/pretty-exceptions/zipball/7d07dce67cfd18e87e65fd395272e4ef3dff87ba",
+            "reference": "7d07dce67cfd18e87e65fd395272e4ef3dff87ba",
+            "shasum": ""
+        },
+        "require": {
+            "php": "~5.3"
+        },
+        "time": "2014-12-13 15:49:21",
+        "type": "library",
+        "installation-source": "source",
+        "autoload": {
+            "psr-4": {
+                "Phalcon\\Utils\\": "Library/Phalcon/Utils"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Contributors",
+                "homepage": "https://github.com/phalcon/pretty-exceptions/graphs/contributors"
+            }
+        ],
+        "description": "Beauty-exceptions plugin for Phalcon"
     }
 ]

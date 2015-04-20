@@ -18,7 +18,7 @@
   +------------------------------------------------------------------------+
 */
 
-namespace Modules\DevTools\Builder;
+namespace Tools\Builder;
 
 /**
  * BuilderException

@@ -17,7 +17,7 @@
   |          Eduar Carvajal <eduar@phalconphp.com>                         |
   +------------------------------------------------------------------------+
 */
-namespace Modules\DevTools\Controllers;
+namespace Tools\Controllers;
 
 
 use Modules\DevTools\Builder\AllModels;

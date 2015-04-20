@@ -18,7 +18,7 @@
   +------------------------------------------------------------------------+
 */
 
-namespace Modules\DevTools\Builder;
+namespace Tools\Builder;
 
 use Phalcon\Text as Utils;
 
@@ -80,6 +80,7 @@ class Controller extends Component
             $config = $this->_getConfig($path);
             if (!isset($config->application->controllersDir)) {
                 throw new BuilderException("Please specify a controller directory");
+                return;
             }
             $controllersDir = $config->application->controllersDir;
         } else {

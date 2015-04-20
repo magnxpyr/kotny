@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phalcon/incubator.git",
-                "reference": "a5b5ee03be30945a47ea8a9371c31178830c079d"
+                "reference": "de11660e473b2c18897506dff0458b3aec18e551"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phalcon/incubator/zipball/a5b5ee03be30945a47ea8a9371c31178830c079d",
-                "reference": "a5b5ee03be30945a47ea8a9371c31178830c079d",
+                "url": "https://api.github.com/repos/phalcon/incubator/zipball/de11660e473b2c18897506dff0458b3aec18e551",
+                "reference": "de11660e473b2c18897506dff0458b3aec18e551",
                 "shasum": ""
             },
             "require": {
@@ -53,7 +53,7 @@
                 "framework",
                 "phalcon"
             ],
-            "time": "2015-04-17 05:33:58"
+            "time": "2015-04-18 15:21:54"
         },
         {
             "name": "phalcon/pretty-exceptions",

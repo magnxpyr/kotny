@@ -17,9 +17,9 @@
   |          Eduar Carvajal <eduar@phalconphp.com>                         |
   +------------------------------------------------------------------------+
 */
-namespace Modules\DevTools\Controllers;
-use Modules\DevTools\Builder\BuilderException;
-use Modules\DevTools\Migrations;
+namespace Tools\Controllers;
+use Tools\Builder\BuilderException;
+use Tools\Migrations;
 
 class MigrationsController extends ControllerBase
 {

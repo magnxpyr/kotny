@@ -18,7 +18,7 @@
   +------------------------------------------------------------------------+
 */
 
-namespace Modules\DevTools\Builder;
+namespace Tools\Builder;
 
 use Phalcon\Db\Column;
 use \Modules\DevTools\Builder\Component;
