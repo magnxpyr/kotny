@@ -21,15 +21,10 @@ namespace Tools\Controllers;
 
 use Engine\AdminController;
 use Tools\Helper\Tools;
+use Phalcon\Mvc\Controller;
 
 class ControllerBase extends AdminController
 {
-    /**
-     * Initialize controller
-     *
-     * @return void
-     */
-
 
     /**
      * Check remote IP address to disable remote activity
