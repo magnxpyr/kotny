@@ -15,12 +15,8 @@
 </div>
 <div class="container-fluid">
 	<div class="row-fluid">
-		<div class="span2">
-			<div class="well">
-				<ul class="nav nav-list">
-					<?php \Modules\DevTools\Controllers\Tools::getMenu($this->view->getControllerName(), $this->view->getActionName()) ?>
-				</ul>
-			</div>
+		<div class="nav nav-tabs nav-justified">
+			<?php Tools\Controllers\Tools::getMenu($this->view->getControllerName(), $this->view->getActionName()) ?>
 		</div>
 		<div class="span10 well">
 			<?php echo $this->getContent() ?>

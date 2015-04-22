@@ -5,17 +5,21 @@
  * @var \Phalcon\Mvc\View\Engine $this
  */
 
+use Tools\Helpers\Tools;
 ?>
 <?php Phalcon\Web\CodeMirror::importResources(); ?>
 
 <div class="row">
     <div class="col-md-3 col-sm-4">
         <div class="list-group">
-            <?php require_once __DIR__ . "/../menu.phtml"; ?>
+            <?php echo Tools::getNavMenu($this->view->getControllerName()) ?>
         </div>
     </div>
     <div class="col-md-9 col-sm-8">
         <div class="default-view">
+            <ul class="nav nav-tabs">
+                <?php Tools::getMenu($this->view->getControllerName(), $this->view->getActionName()) ?>
+            </ul>
 
             <h2>Editing Controller <?php echo $name; ?></h2>
 

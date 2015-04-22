@@ -1,0 +1,59 @@
+<?php
+
+/**
+ * Local variables
+ * @var \Phalcon\Mvc\View\Engine $this
+ * @var \Tools\Controllers\ModulesController $modulesDir
+ */
+
+use Tools\Helpers\Tools;
+?>
+<div class="row">
+    <div class="col-md-3 col-sm-4">
+        <div class="list-group">
+            <?php echo Tools::getNavMenu($this->view->getControllerName()) ?>
+        </div>
+    </div>
+    <div class="col-md-9 col-sm-8">
+        <div class="default-view">
+            <ul class="nav nav-tabs">
+                <?php Tools::getMenu($this->view->getControllerName(), $this->view->getActionName()) ?>
+            </ul>
+
+            <h1>List Modules</h1>
+
+            <?php echo $this->getContent() ?>
+
+            <table class="table table-bordered table-striped">
+                <thead>
+                <tr>
+                    <td><b>Name</b></td>
+                    <td><b>Size</b></td>
+                    <td><b>Add</b></td>
+                </tr>
+                </thead>
+                <tbody>
+                <?php
+                $iterator = new DirectoryIterator($modulesDir);
+                foreach($iterator as $fileinfo){
+                    if(!$fileinfo->isDot() && file_exists($fileinfo->getPathname() . '/Module.php')){
+                        echo '<tr>
+								<td>', $fileinfo->getFileName(), '</td>
+								<td>', $fileinfo->getSize(), '</td>
+								<td>
+								    <div class="btn-group btn-group-sm" role="group">
+                                        <a class="btn btn-default" href="'. Tools::generateUrl('controllers','index', $fileinfo->getFileName()) .'">Controller</a>
+                                        <a class="btn btn-default" href="'. Tools::generateUrl('models','index', $fileinfo->getFileName()) .'">Model</a>
+                                        <a class="btn btn-default" href="'. Tools::generateUrl('scaffold','index', $fileinfo->getFileName()) .'">Scaffold</a>
+								    </div>
+                                </td>
+							</tr>';
+                    }
+                }
+                ?>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</div>

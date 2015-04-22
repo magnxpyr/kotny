@@ -10,10 +10,11 @@ namespace Tools;
 class Routes {
 
     public function init($router) {
-        $router->add('/admin/tools/:controller/:action', array(
+        $router->add('/admin/tools/:controller/:action/:params', array(
             'module' => 'tools',
             'controller' => 1,
-            'index' => 2
+            'action' => 2,
+            'params' => 3
         ));
     }
 

@@ -20,8 +20,8 @@
 namespace Tools\Controllers;
 
 use Engine\AdminController;
-use Tools\Helper\Tools;
-use Phalcon\Mvc\Controller;
+use Tools\Helpers\Tools;
+//use Phalcon\Mvc\Controller;
 
 class ControllerBase extends AdminController
 {
@@ -30,7 +30,7 @@ class ControllerBase extends AdminController
      * Check remote IP address to disable remote activity
      *
      * @return void
-     * @throws \Phalcon\Exception if connected remotely
+     * @throws \Exception if connected remotely
      */
     protected function checkAccess()
     {
@@ -39,7 +39,7 @@ class ControllerBase extends AdminController
         if ($ip && ($ip == '127.0.0.1' || $ip == '::1' || $this->checkToolsIp($ip)))
             return false;
 
-        throw new \Phalcon\Exception('WebTools can only be used on the local machine (Your IP: ' . $ip . ') or you can make changes in webtools.config.php file to allow IP or NET');
+        throw new \Exception('WebTools can only be used on the local machine (Your IP: ' . $ip . ') or you can make changes in your configuration file to allow IP or NET');
     }
 
     /**

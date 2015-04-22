@@ -21,8 +21,6 @@
 namespace Tools\Builder;
 
 use Phalcon\Db\Column;
-use \Modules\DevTools\Builder\Component;
-use \Modules\DevTools\Builder\BuilderException;
 use Phalcon\Text as Utils;
 
 /**
@@ -50,7 +48,7 @@ class Model extends Component
     public function __construct($options)
     {
         if (!isset($options['name'])) {
-            throw new BuilderException("Please, specify the model name");
+            throw new \Exception("Please, specify the model name");
         }
         if (!isset($options['force'])) {
             $options['force'] = false;

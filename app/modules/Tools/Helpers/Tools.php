@@ -17,16 +17,12 @@
   +------------------------------------------------------------------------+
 */
 
-namespace Tools\Helper;
+namespace Tools\Helpers;
 
 use Phalcon\Di;
 use Tools\Controllers\ControllerBase;
 
 class Tools extends ControllerBase {
-    /**
-     * @var \Phalcon\DI
-     */
-    private static $di;
 
     /**
      * Optional IP address for securing Phalcon Developers Tools area
@@ -41,6 +37,7 @@ class Tools extends ControllerBase {
      * @var array
      */
     private static $options = array(
+        /*
         'index' => array(
             'caption' => 'Home',
             'options' => array(
@@ -49,11 +46,15 @@ class Tools extends ControllerBase {
                 )
             )
         ),
-        'module' => array(
-            'caption' => 'Module',
+        */
+        'modules' => array(
+            'caption' => 'Modules',
             'options' => array(
                 'index' => array(
                     'caption' => 'Generate'
+                ),
+                'list' => array(
+                    'caption' => 'List'
                 )
             )
         ),
@@ -111,10 +112,11 @@ class Tools extends ControllerBase {
         foreach (self::$options as $controller => $option) {
             $ref = self::generateUrl($controller);
             if ($controllerName == $controller) {
-                echo '<a class="list-group-item active" href="' . $ref . '">' . $option['caption'] . '</a>' . PHP_EOL;
+                echo '<a class="list-group-item active"';
             } else {
-                echo '<a class="list-group-item" href="' . $ref . '">' . $option['caption'] . '</a>' . PHP_EOL;
+                echo '<a class="list-group-item"';
             }
+            echo  ' href="' . $ref . '">' . $option['caption'] . '</a>' . PHP_EOL;
         }
     }
 
@@ -127,18 +129,26 @@ class Tools extends ControllerBase {
      */
     public static function getMenu($controllerName, $actionName)
     {
-        $uri = self::getUrl()->get();
-
         foreach (self::$options[$controllerName]['options'] as $action => $option) {
+            $ref = self::generateUrl($controllerName, $action);
             if ($actionName == $action) {
-                echo '<li class="active">';
+                echo '<li role="presentation" class="active"><a href="' . $ref . '">' . $option['caption'] . '</a></li>' . PHP_EOL;
             } else {
-                echo '<li>';
+                echo '<li role="presentation"><a href="' . $ref . '">' . $option['caption'] . '</a></li>' . PHP_EOL;
             }
-
-            $ref = $uri . '/' . $controllerName . '/' . $action;
-            echo '<a href="' . $ref . '">' . $option['caption'] . '</a></li>' . PHP_EOL;
         }
+    }
+
+    /**
+     * Return the path to modules directory
+     *
+     * @return string
+     */
+    public static function getModulesDir() {
+        if(isset(self::getConfig()->tools)) {
+            return self::getConfig()->tools->modulesDir;
+        }
+        return APP_PATH . 'modules/';
     }
 
     /**
@@ -174,7 +184,7 @@ class Tools extends ControllerBase {
     /**
      * Return the config object in the services container
      *
-     * @return \Phalcon\Mvc\Url
+     * @return \Phalcon\Mvc\Model
      */
     public static function getConnection()
     {
@@ -192,7 +202,7 @@ class Tools extends ControllerBase {
     public static function generateUrl($controller, $action = 'index', $params = null) {
         $baseUri = self::getUrl()->get();
         $uriPath = self::getRouter()->getMatchedRoute()->getPattern();
-        return str_replace(array('//', ':controller', ':action'),array('/', $controller, $action), $baseUri . $uriPath) . $params;
+        return str_replace(array('//', ':controller', ':action', ':params'),array('/', $controller, $action, $params), $baseUri . $uriPath);
     }
 
     /**

@@ -65,7 +65,7 @@ class ControllersController extends ControllerBase
                     'params' => array($fileName)
                 ));
 
-            } catch (BuilderException $e) {
+            } catch (\Exception $e) {
                 $this->flash->error($e->getMessage());
             }
 
@@ -83,6 +83,7 @@ class ControllersController extends ControllerBase
      */
     public function listAction()
     {
+    //    $module = $this->request->getPost()
         $this->view->setVar('controllersDir', '/home/gatz/www/cms/app/modules/Tools');
     }
 
