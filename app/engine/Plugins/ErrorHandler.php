@@ -8,7 +8,6 @@
 
 namespace Engine\Plugins;
 
-use Phalcon\Mvc\Dispatcher;
 use Phalcon\Mvc\Dispatcher\Exception;
 use Phalcon\Mvc\User\Plugin;
 
@@ -16,19 +15,33 @@ class ErrorHandler extends Plugin {
 
     // This action is executed before execute any action in the application
     public function beforeException($event, $dispatcher, $exception) {
-/*
         if ($exception instanceof Exception) {
-            switch ($exception->getCode()) {
-                case Dispatcher::EXCEPTION_HANDLER_NOT_FOUND:
-                case Dispatcher::EXCEPTION_ACTION_NOT_FOUND:
-                    $this->di['response']->redirect('error/show404', false, 301);
-                    return false;
-            }
+            $dispatcher->forward(
+                [
+                    'module' => 'core',
+                    'namespace' => 'Core\Controllers',
+                    'controller' => 'error',
+                    'action' => 'show404'
+                ]
+            );
+            return false;
         }
 
-        $this->di['response']->redirect('error/show500', false, 301);
+        if ($this->di['config']->app->development) {
+            throw $exception;
+        } else {
+        //    EngineException::logException($exception);
+        }
 
-        return false;
-*/
+        // Handle other exceptions.
+        $dispatcher->forward(
+            [
+                'module' => 'core',
+                'namespace' => 'Core\Controllers',
+                'controller' => 'error',
+                'action' => 'show500'
+            ]
+        );
+        return $event->isStopped();
     }
 }

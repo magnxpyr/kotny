@@ -64,6 +64,7 @@ class Bootstrap {
             'action' => 'show404'
         ));
 */
+
         foreach($modulesRoutes as $routeClass) {
             $route = new $routeClass;
             $route->init($router);
