@@ -54,57 +54,6 @@
         ]
     },
     {
-        "name": "phalcon/incubator",
-        "version": "dev-master",
-        "version_normalized": "9999999-dev",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/phalcon/incubator.git",
-            "reference": "de11660e473b2c18897506dff0458b3aec18e551"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/phalcon/incubator/zipball/de11660e473b2c18897506dff0458b3aec18e551",
-            "reference": "de11660e473b2c18897506dff0458b3aec18e551",
-            "shasum": ""
-        },
-        "require": {
-            "ext-phalcon": ">=1.2.4",
-            "php": ">=5.3.6",
-            "swiftmailer/swiftmailer": ">=5.2"
-        },
-        "require-dev": {
-            "codeception/codeception": "*",
-            "php-mock/php-mock": "<0.6",
-            "phpunit/phpunit": "4.5.*",
-            "squizlabs/php_codesniffer": "2.*"
-        },
-        "time": "2015-04-18 15:21:54",
-        "type": "library",
-        "installation-source": "source",
-        "autoload": {
-            "psr-0": {
-                "Phalcon": "Library/"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "BSD-3"
-        ],
-        "authors": [
-            {
-                "name": "Phalcon Team",
-                "email": "team@phalconphp.com"
-            }
-        ],
-        "description": "Adapters, prototypes or functionality that can be potentially incorporated to the C-framework.",
-        "homepage": "http://phalconphp.com",
-        "keywords": [
-            "framework",
-            "phalcon"
-        ]
-    },
-    {
         "name": "phalcon/pretty-exceptions",
         "version": "dev-master",
         "version_normalized": "9999999-dev",
@@ -141,5 +90,94 @@
             }
         ],
         "description": "Beauty-exceptions plugin for Phalcon"
+    },
+    {
+        "name": "phalcon/incubator",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/phalcon/incubator.git",
+            "reference": "6761c6bf3336d099cfca8e1fe1589d7e9dc16c62"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/phalcon/incubator/zipball/6761c6bf3336d099cfca8e1fe1589d7e9dc16c62",
+            "reference": "6761c6bf3336d099cfca8e1fe1589d7e9dc16c62",
+            "shasum": ""
+        },
+        "require": {
+            "ext-phalcon": ">=1.2.4",
+            "php": ">=5.3.6",
+            "swiftmailer/swiftmailer": ">=5.2"
+        },
+        "require-dev": {
+            "codeception/codeception": "*",
+            "php-mock/php-mock": "<0.6",
+            "phpunit/phpunit": "4.5.*",
+            "squizlabs/php_codesniffer": "2.*"
+        },
+        "time": "2015-04-21 20:36:12",
+        "type": "library",
+        "installation-source": "source",
+        "autoload": {
+            "psr-0": {
+                "Phalcon": "Library/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "BSD-3"
+        ],
+        "authors": [
+            {
+                "name": "Phalcon Team",
+                "email": "team@phalconphp.com"
+            }
+        ],
+        "description": "Adapters, prototypes or functionality that can be potentially incorporated to the C-framework.",
+        "homepage": "http://phalconphp.com",
+        "keywords": [
+            "framework",
+            "phalcon"
+        ]
+    },
+    {
+        "name": "zazza/phalcon2-debug-widget",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/Zazza/phalcon2-debug-widget.git",
+            "reference": "c2f162381281ff8322d53a7b959a8ecdd73f1e5f"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/Zazza/phalcon2-debug-widget/zipball/c2f162381281ff8322d53a7b959a8ecdd73f1e5f",
+            "reference": "c2f162381281ff8322d53a7b959a8ecdd73f1e5f",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.0"
+        },
+        "time": "2015-04-24 13:07:29",
+        "type": "library",
+        "installation-source": "source",
+        "autoload": {
+            "psr-0": {
+                "PDW": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Dmitry Samotoy",
+                "email": "dmitry.samotoy@gmail.com"
+            }
+        ],
+        "description": "Phalcon debug toolbar for Phalcon 2"
     }
 ]

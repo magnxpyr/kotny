@@ -13,7 +13,6 @@ class Bootstrap {
     public function run() {
         // Define internal variables
         define('VIEW_PATH', '../../../themes/default/');
-        $voltOptions = array();
 
         // The FactoryDefault Dependency Injector automatically register the right services providing a full stack framework
         $di = new \Phalcon\DI\FactoryDefault();
@@ -31,14 +30,6 @@ class Bootstrap {
         $config = new \Phalcon\Config(array_merge_recursive($config, $modulesConfig));
         $loader->init($config->loader->namespaces);
         $di->set('config', $config);
-
-        // Load development options
-        if($config->app->development) {
-            new \Engine\Development();
-
-            // Prevent caching annoyances
-            $voltOptions['compileAlways'] = true;
-        }
 
         // Registering the registry
         $registry = new \Phalcon\Registry();
@@ -85,6 +76,10 @@ class Bootstrap {
         $view->setLayout('default');
 
         $volt = new \Phalcon\Mvc\View\Engine\Volt($view, $di);
+        if($config->app->development) {
+            // Prevent caching annoyances
+            $voltOptions['compileAlways'] = true;
+        }
         $voltOptions['compiledPath'] = $config->app->cacheDir;
         $voltOptions['compiledSeparator'] = '_';
         $volt->setOptions($voltOptions);
@@ -94,7 +89,7 @@ class Bootstrap {
             '.volt' => $volt,
             '.phtml' => $phtml
         ));
-        $di->set('view', $view);
+        $di->setShared('view', $view);
 
 
         // Start the session from file
@@ -225,6 +220,11 @@ class Bootstrap {
             'error'   => 'alert alert-danger'
         ));
         $di->setShared('flash', $flash);
+
+        if($config->app->development) {
+            // Load development options
+            new \Engine\Development($di);
+        }
 
         // Handle the request
         $application = new \Phalcon\Mvc\Application($di);

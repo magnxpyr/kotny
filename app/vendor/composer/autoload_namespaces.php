@@ -7,4 +7,5 @@ $baseDir = dirname(dirname($vendorDir));
 
 return array(
     'Phalcon' => array($vendorDir . '/phalcon/incubator/Library'),
+    'PDW' => array($vendorDir . '/zazza/phalcon2-debug-widget/src'),
 );

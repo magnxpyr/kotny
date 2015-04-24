@@ -10,7 +10,7 @@ namespace Engine;
 
 class Development {
 
-    public function __construct() {
+    public function __construct(\Phalcon\Di $di) {
         // Display all errors
         ini_set('display_errors', 1);
         error_reporting(E_ALL);
@@ -25,5 +25,7 @@ class Development {
         set_error_handler(function($errorCode, $errorMessage, $errorFile, $errorLine) use ($p) {
             return $p->handleError($errorCode, $errorMessage, $errorFile, $errorLine);
         });
+
+        new \PDW\DebugWidget($di);
     }
 }

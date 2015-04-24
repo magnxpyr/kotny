@@ -20,14 +20,12 @@
 namespace Tools\Controllers;
 use Tools\Builder\Controller;
 use Phalcon\Tag;
-use Phalcon\Builder\BuilderException;
-use Tools\Helper\Tools;
+use Tools\Helpers\Tools;
 
 class ControllersController extends ControllerBase
 {
 
-    public function indexAction()
-    {
+    public function indexAction() {
 
     }
 
@@ -99,7 +97,7 @@ class ControllersController extends ControllerBase
 
         $controllersDir = Tools::getConfig()->application->controllersDir;
         if (!file_exists($controllersDir.'/'.$fileName)) {
-            $this->flash->error('Controller could not be found', 'alert alert-error');
+            $this->flash->error('Controller could not be found');
 
             return $this->dispatcher->forward(array(
                 'controller' => 'controllers',

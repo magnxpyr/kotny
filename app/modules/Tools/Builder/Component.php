@@ -50,7 +50,7 @@ abstract class Component
      * @param $path
      *
      * @return mixed|\Phalcon\Config\Adapter\Ini
-     * @throws \Phalcon\Builder\BuilderException
+     * @throws \Exception
      */
     protected function _getConfig($path)
     {
@@ -85,7 +85,7 @@ abstract class Component
                 }
             }
         }
-        throw new BuilderException('Builder can\'t locate the configuration file');
+        throw new \Exception('Builder can\'t locate the configuration file');
     }
 
     /**
@@ -124,12 +124,12 @@ abstract class Component
      * Check if the current adapter is supported by Phalcon
      *
      * @param  string                            $adapter
-     * @throws \Phalcon\Builder\BuilderException
+     * @throws \Exception
      */
     public function isSupportedAdapter($adapter)
     {
         if (!class_exists('\Phalcon\Db\Adapter\Pdo\\' . $adapter)) {
-            throw new BuilderException("Adapter $adapter is not supported");
+            throw new \Exception("Adapter $adapter is not supported");
         }
     }
 

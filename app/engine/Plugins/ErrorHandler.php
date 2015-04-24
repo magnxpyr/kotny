@@ -27,7 +27,7 @@ class ErrorHandler extends Plugin {
             return false;
         }
 
-        if ($this->di['config']->app->development) {
+        if ($this->getDI()->getShared('config')->app->development) {
             throw $exception;
         } else {
         //    EngineException::logException($exception);

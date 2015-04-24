@@ -28,27 +28,23 @@ use Tools\Helpers\Tools;
                 <thead>
                 <tr>
                     <td><b>Name</b></td>
-                    <td><b>Size</b></td>
                     <td><b>Add</b></td>
                 </tr>
                 </thead>
                 <tbody>
                 <?php
-                $iterator = new DirectoryIterator($modulesDir);
-                foreach($iterator as $fileinfo){
-                    if(!$fileinfo->isDot() && file_exists($fileinfo->getPathname() . '/Module.php')){
-                        echo '<tr>
-								<td>', $fileinfo->getFileName(), '</td>
-								<td>', $fileinfo->getSize(), '</td>
-								<td>
-								    <div class="btn-group btn-group-sm" role="group">
-                                        <a class="btn btn-default" href="'. Tools::generateUrl('controllers','index', $fileinfo->getFileName()) .'">Controller</a>
-                                        <a class="btn btn-default" href="'. Tools::generateUrl('models','index', $fileinfo->getFileName()) .'">Model</a>
-                                        <a class="btn btn-default" href="'. Tools::generateUrl('scaffold','index', $fileinfo->getFileName()) .'">Scaffold</a>
-								    </div>
-                                </td>
-							</tr>';
-                    }
+
+                foreach(Tools::listModules() as $module){
+                    echo '<tr>
+                            <td>', $module, '</td>
+                            <td>
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <a class="btn btn-default" href="'. Tools::generateUrl('controllers','index', $module) .'">Controller</a>
+                                    <a class="btn btn-default" href="'. Tools::generateUrl('models','index', $module) .'">Model</a>
+                                    <a class="btn btn-default" href="'. Tools::generateUrl('scaffold','index', $module) .'">Scaffold</a>
+                                </div>
+                            </td>
+                        </tr>';
                 }
                 ?>
                 </tbody>

@@ -152,6 +152,22 @@ class Tools extends ControllerBase {
     }
 
     /**
+     * Return an array with modules name
+     *
+     * @return array
+     */
+    public static function listModules() {
+        $iterator = new \DirectoryIterator(self::getModulesDir());
+        $modules = array();
+        foreach($iterator as $fileinfo){
+            if(!$fileinfo->isDot() && file_exists($fileinfo->getPathname() . '/Module.php')){
+                $modules[] = $fileinfo->getFileName();
+            }
+        }
+        return $modules;
+    }
+
+    /**
      * Return the config object in the services container
      *
      * @return \Phalcon\Config

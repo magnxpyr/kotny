@@ -18,7 +18,7 @@ class ModulesController extends ControllerBase {
     }
 
     public function listAction() {
-        $this->view->setVar('modulesDir', Tools::getModulesDir());
+
     }
 
     public function createAction() {
