@@ -37,16 +37,6 @@ class Tools extends ControllerBase {
      * @var array
      */
     private static $options = array(
-        /*
-        'index' => array(
-            'caption' => 'Home',
-            'options' => array(
-                'index' => array(
-                    'caption' => 'Welcome'
-                )
-            )
-        ),
-        */
         'modules' => array(
             'caption' => 'Modules',
             'options' => array(
@@ -63,9 +53,6 @@ class Tools extends ControllerBase {
             'options' => array(
                 'index' => array(
                     'caption' => 'Generate',
-                ),
-                'list' => array(
-                    'caption' => 'List',
                 )
             )
         ),
@@ -74,9 +61,6 @@ class Tools extends ControllerBase {
             'options' => array(
                 'index' => array(
                     'caption' => 'Generate'
-                ),
-                'list' => array(
-                    'caption' => 'List',
                 )
             )
         ),
@@ -168,6 +152,27 @@ class Tools extends ControllerBase {
     }
 
     /**
+     * Return a string with all the module options
+     *
+     * @param string $selected
+     * @return string
+     */
+    public static function listModuleOptions($selected = null) {
+        $iterator = new \DirectoryIterator(self::getModulesDir());
+        $options = null;
+        foreach($iterator as $fileinfo){
+            if(!$fileinfo->isDot() && file_exists($fileinfo->getPathname() . '/Module.php')){
+                if($selected == $fileinfo->getFileName()) {
+                    $options .= '<option value=' . $fileinfo->getFileName() . ' selected>' . $fileinfo->getFileName() . '</option>';
+                } else {
+                    $options .= '<option value=' . $fileinfo->getFileName() . '>' . $fileinfo->getFileName() . '</option>';
+                }
+            }
+        }
+        return $options;
+    }
+
+    /**
      * Return the config object in the services container
      *
      * @return \Phalcon\Config
@@ -229,5 +234,24 @@ class Tools extends ControllerBase {
     public static function getToolsIp()
     {
         return self::$ip;
+    }
+
+    public static function getCopyright() {
+        return "/**\n* @copyright   2006 - 2015 Magnxpyr Network\n".
+         "* @license     New BSD License; see LICENSE\n".
+         "* @url         http://www.magnxpyr.com\n".
+         "* @authors     Stefan Chiriac <stefan@magnxpyr.com>\n*/";
+    }
+
+    public static function getControllersDir() {
+        return 'Controllers';
+    }
+
+    public static function getModelsDir() {
+        return 'Models';
+    }
+
+    public static function getViewsDir() {
+        return 'Views';
     }
 }

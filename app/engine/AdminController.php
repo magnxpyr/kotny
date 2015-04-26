@@ -11,7 +11,7 @@ namespace Engine;
 abstract class AdminController extends Controller {
 
     public function initialize() {
-        $this->view->setMainView(VIEW_PATH . 'admin');
+        $this->view->setMainView(THEMES_PATH . 'admin');
         $this->view->setLayout('admin');
     }
 

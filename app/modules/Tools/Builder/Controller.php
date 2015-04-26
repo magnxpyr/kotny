@@ -1,105 +1,69 @@
 <?php
-
-/*
-  +------------------------------------------------------------------------+
-  | Phalcon Developer Tools                                                |
-  +------------------------------------------------------------------------+
-  | Copyright (c) 2011-2014 Phalcon Team (http://www.phalconphp.com)       |
-  +------------------------------------------------------------------------+
-  | This source file is subject to the New BSD License that is bundled     |
-  | with this package in the file docs/LICENSE.txt.                        |
-  |                                                                        |
-  | If you did not receive a copy of the license and are unable to         |
-  | obtain it through the world-wide-web, please send an email             |
-  | to license@phalconphp.com so we can send you a copy immediately.       |
-  +------------------------------------------------------------------------+
-  | Authors: Andres Gutierrez <andres@phalconphp.com>                      |
-  |          Eduar Carvajal <eduar@phalconphp.com>                         |
-  +------------------------------------------------------------------------+
-*/
+/**
+ * @copyright   2006 - 2015 Magnxpyr Network
+ * @license     New BSD License; see LICENSE
+ * @url         http://www.magnxpyr.com
+ * @authors     Stefan Chiriac <stefan@magnxpyr.com>
+ */
 
 namespace Tools\Builder;
 
-use Phalcon\Text as Utils;
+use Phalcon\Text;
+use Tools\Helpers\Tools;
 
-/**
- * \Phalcon\Builder\Controller
- *
- * Builder to generate controller
- *
- * @category 	Phalcon
- * @package 	Builder
- * @copyright   Copyright (c) 2011-2014 Phalcon Team (team@phalconphp.com)
- * @license 	New BSD License
- */
-class Controller extends Component
-{
+class Controller {
 
     /**
      * Controller constructor
      *
-     * @param $options
+     * @param array $options
      * @throws \Exception
      */
     public function __construct($options)
     {
-        if (!isset($options['name'])) {
+        if (empty($options['name'])) {
             throw new \Exception("Please specify the controller name");
         }
-        if (!isset($options['force'])) {
+        if (empty($options['force'])) {
             $options['force'] = false;
+        }
+        if (empty($options['directory'])) {
+            $options['directory'] = Tools::getModulesDir() . $options['module'] . Tools::getControllersDir();
+        }
+        if (empty($options['namespace']) || $options['namespace'] != 'None') {
+            $options['namespace'] = $options['module'] . '\Controllers';
+        }
+        if (empty($options['baseClass'])) {
+            $options['baseClass'] = '\Phalcon\Mvc\Controller';
         }
         $this->_options = $options;
     }
 
     /**
+     * Build the controller
+     *
      * @return string
      * @throws \Exception
      */
-    public function build()
-    {
-        $path = '';
-        if (isset($this->_options['directory']) && $this->_options['directory']) {
-            $path = $this->_options['directory'] . '/';
-            print_r($path);
-        }
+    public function build() {
 
-        if (isset($this->_options['namespace'])) {
+        if ($this->_options['namespace'] != 'None') {
             $namespace = 'namespace '.$this->_options['namespace'].';'.PHP_EOL.PHP_EOL;
         } else {
             $namespace = '';
         }
 
-        if (isset($this->_options['baseClass'])) {
-            $baseClass = $this->_options['baseClass'];
-        } else {
-            $baseClass = '\Phalcon\Mvc\Controller';
-        }
-        $this->_options['controllersDir'] = $path;
-        if (!isset($this->_options['controllersDir'])) {
-            $config = $this->_getConfig($path);
-            if (!isset($config->application->controllersDir)) {
-                throw new \Exception("Please specify a controller directory");
-            }
-            $controllersDir = $config->application->controllersDir;
-        } else {
-            $controllersDir = $this->_options['controllersDir'];
-        }
+        $className = Text::camelize(str_replace(' ','_',$this->_options['name']))."Controller";
 
-        $name = $this->_options['name'];
-        $name = trim($name);
+        $controllerPath = $this->_options['directory'] . DIRECTORY_SEPARATOR . $className . ".php";
 
-        if (!$name) {
-            throw new \Exception("The controller name is required");
-        }
+        $base = explode('\\', $this->_options['baseClass']);
+        $baseClass = end($base);
 
-        $name = str_replace(' ','_',$name);
+        $useClass = 'use '.$this->_options['baseClass'].';'.PHP_EOL.PHP_EOL;
 
-        $className = Utils::camelize($name);
-
-        $controllerPath = $controllersDir . DIRECTORY_SEPARATOR . $className . "Controller.php";
-
-        $code = "<?php\n\n".$namespace."class ".$className."Controller extends ".$baseClass."\n{\n\n\tpublic function indexAction() {\n\n\t}\n\n}\n\n";
+        $code = "<?php\n".Tools::getCopyright()."\n\n".$namespace.$useClass."class $className extends $baseClass {
+            \n\tpublic function indexAction() {\n\n\t}\n}";
         $code = str_replace("\t", "    ", $code);
 
         if (!file_exists($controllerPath) || $this->_options['force'] == true) {
@@ -107,15 +71,9 @@ class Controller extends Component
                 throw new \Exception("Unable to write to '$controllerPath'");
             }
         } else {
-            throw new \Exception("The Controller '$name' already exists");
-        }
-
-        if ($this->isConsole()) {
-            $this->_notifySuccess('Controller "' . $name . '" was successfully created.');
+            throw new \Exception("The Controller '$className' already exists");
         }
 
         return $className . 'Controller.php';
-
     }
-
 }

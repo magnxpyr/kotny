@@ -38,7 +38,7 @@ use Phalcon\Db\Column;
  * @copyright   Copyright (c) 2011-2014 Phalcon Team (team@phalconphp.com)
  * @license 	New BSD License
  */
-class Scaffold extends Component
+class Scaffold
 {
 
     private function _findDetailField($entity)

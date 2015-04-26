@@ -22,6 +22,9 @@ namespace Tools\Controllers;
 class IndexController extends ControllerBase {
 
     public function indexAction() {
-
+        $this->dispatcher->forward(array(
+            'controller' => 'modules',
+            'action' => 'list'
+        ));
     }
 }

@@ -13,8 +13,18 @@ use Phalcon\Mvc\User\Plugin;
 
 class ErrorHandler extends Plugin {
 
-    // This action is executed before execute any action in the application
+    /**
+     * This action is executed before execute any action in the application
+     * If a page is not found throws an error
+     *
+     * @param \Phalcon\Events\Event $event
+     * @param \Phalcon\Mvc\Dispatcher $dispatcher
+     * @param \Phalcon\Mvc\Dispatcher\Exception $exception
+     * @throws \Phalcon\Mvc\Dispatcher\Exception
+     * @return \Phalcon\Mvc\View
+     */
     public function beforeException($event, $dispatcher, $exception) {
+
         if ($exception instanceof Exception) {
             $dispatcher->forward(
                 [
@@ -30,7 +40,7 @@ class ErrorHandler extends Plugin {
         if ($this->getDI()->getShared('config')->app->development) {
             throw $exception;
         } else {
-        //    EngineException::logException($exception);
+        //    log the exception
         }
 
         // Handle other exceptions.
@@ -39,7 +49,7 @@ class ErrorHandler extends Plugin {
                 'module' => 'core',
                 'namespace' => 'Core\Controllers',
                 'controller' => 'error',
-                'action' => 'show500'
+                'action' => 'show503'
             ]
         );
         return $event->isStopped();

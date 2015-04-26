@@ -1,156 +1,64 @@
 <?php
+/**
+ * @copyright   2006 - 2015 Magnxpyr Network
+ * @license     New BSD License; see LICENSE
+ * @url         http://www.magnxpyr.com
+ * @authors     Stefan Chiriac <stefan@magnxpyr.com>
+ */
 
-/*
-  +------------------------------------------------------------------------+
-  | Phalcon Developer Tools                                                |
-  +------------------------------------------------------------------------+
-  | Copyright (c) 2011-2014 Phalcon Team (http://www.phalconphp.com)       |
-  +------------------------------------------------------------------------+
-  | This source file is subject to the New BSD License that is bundled     |
-  | with this package in the file docs/LICENSE.txt.                        |
-  |                                                                        |
-  | If you did not receive a copy of the license and are unable to         |
-  | obtain it through the world-wide-web, please send an email             |
-  | to license@phalconphp.com so we can send you a copy immediately.       |
-  +------------------------------------------------------------------------+
-  | Authors: Andres Gutierrez <andres@phalconphp.com>                      |
-  |          Eduar Carvajal <eduar@phalconphp.com>                         |
-  +------------------------------------------------------------------------+
-*/
 namespace Tools\Controllers;
+
 use Tools\Builder\Controller;
 use Phalcon\Tag;
 use Tools\Helpers\Tools;
 
-class ControllersController extends ControllerBase
-{
+class ControllersController extends ControllerBase {
 
     public function indexAction() {
-
+        $selectedModule = null;
+        if(!empty($this->router->getParams()))
+            $selectedModule = $this->router->getParams()[0];
+        $this->view->setVar('selectedModule' , $selectedModule);
+        $this->view->setVar('directoryPath', Tools::getModulesDir() . $selectedModule . Tools::getControllersDir());
     }
 
     /**
      * Generate controller
      */
-    public function createAction()
-    {
+    public function createAction() {
 
         if ($this->request->isPost()) {
 
             $controllerName = $this->request->getPost('name', 'string');
+            $directory = $this->request->getPost('directory', 'string');
+            $moduleName = $this->request->getPost('module', 'string');
+            $namespace = $this->request->getPost('namespace', 'string');
+            $baseClass = $this->request->getPost('baseClass', 'string');
             $force = $this->request->getPost('force', 'int');
-            $dir = $this->request->getPost('dir', 'string');
+            $view = $this->request->getPost('view', 'int');
 
             try {
-
                 $controllerBuilder = new Controller(array(
                     'name' => $controllerName,
-                    'directory' => $dir,
-                    'namespace' => null,
-                    'baseClass' => null,
+                    'module' => $moduleName,
+                    'directory' => $directory,
+                    'namespace' => $namespace,
+                    'baseClass' => $baseClass,
                     'force' => $force
                 ));
-            //    $config['application']['controllersDir'] = APP_PATH . 'config/';
-            //    $this->getDI()->set('config', $config);
+
                 $fileName = $controllerBuilder->build();
-                print_r($fileName); die;
+
+                //build view
 
                 $this->flash->success('The controller "'.$fileName.'" was created successfully');
-
-                return $this->dispatcher->forward(array(
-                    'controller' => 'controllers',
-                    'action' => 'edit',
-                    'params' => array($fileName)
-                ));
-
             } catch (\Exception $e) {
                 $this->flash->error($e->getMessage());
             }
-
         }
 
         return $this->dispatcher->forward(array(
-            'controller' => 'controllers',
             'action' => 'index'
         ));
-
-    }
-
-    /**
-     *
-     */
-    public function listAction()
-    {
-    //    $module = $this->request->getPost()
-        $this->view->setVar('controllersDir', '/home/gatz/www/cms/app/modules/Tools');
-    }
-
-    /**
-     * @param $fileName
-     *
-     * @return mixed
-     */
-    public function editAction($fileName)
-    {
-
-        $fileName = str_replace('..', '', $fileName);
-
-        $controllersDir = Tools::getConfig()->application->controllersDir;
-        if (!file_exists($controllersDir.'/'.$fileName)) {
-            $this->flash->error('Controller could not be found');
-
-            return $this->dispatcher->forward(array(
-                'controller' => 'controllers',
-                'action' => 'list'
-            ));
-        }
-
-        $this->tag->setDefault('code', file_get_contents($controllersDir.'/'.$fileName));
-        $this->tag->setDefault('name', $fileName);
-        $this->view->setVar('name', $fileName);
-
-    }
-
-    /**
-     * @return mixed
-     */
-    public function saveAction()
-    {
-
-        if ($this->request->isPost()) {
-
-            $fileName = $this->request->getPost('name', 'string');
-
-            $fileName = str_replace('..', '', $fileName);
-
-            $controllersDir = Tools::getConfig()->application->controllersDir;
-            if (!file_exists($controllersDir . '/' . $fileName)) {
-                $this->flash->error('Controller could not be found');
-
-                return $this->dispatcher->forward(array(
-                    'controller' => 'controllers',
-                    'action' => 'list'
-                ));
-            }
-
-            if (!is_writable($controllersDir.'/'.$fileName)) {
-                $this->flash->error('Controller file does not has write access');
-
-                return $this->dispatcher->forward(array(
-                    'controller' => 'controllers',
-                    'action' => 'list'
-                ));
-            }
-
-            file_put_contents($controllersDir.'/'.$fileName, $this->request->getPost('code'));
-
-            $this->flash->success('The controller "'.$fileName.'" was saved successfully');
-        }
-
-        return $this->dispatcher->forward(array(
-            'controller' => 'controllers',
-            'action' => 'list'
-        ));
-
     }
 }

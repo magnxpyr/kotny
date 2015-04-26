@@ -12,11 +12,15 @@ use Phalcon\Mvc\View;
 
 class ErrorController extends \Engine\Controller {
 
+    protected function initialize() {
+        $this->view->setViewsDir(APP_PATH . 'themes/'.DEFAULT_THEME.'/views/');
+    }
+
     public function show404Action() {
         $this->response->setStatusCode(404, 'Not Found');
     }
 
-    public function show500Action() {
-        $this->response->setStatusCode(500, 'Internal Server Error');
+    public function show503Action() {
+        $this->response->setStatusCode(503, 'Service unavailable');
     }
 }

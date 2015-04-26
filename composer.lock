@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "5e6a5e1011e48137691d8571a1fb7ac4",
+    "hash": "fbf147424d20d3ddf5d1c9480bbcbd94",
     "packages": [
         {
             "name": "phalcon/incubator",
@@ -142,42 +142,6 @@
                 "mailer"
             ],
             "time": "2015-03-14 06:06:39"
-        },
-        {
-            "name": "zazza/phalcon2-debug-widget",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Zazza/phalcon2-debug-widget.git",
-                "reference": "c2f162381281ff8322d53a7b959a8ecdd73f1e5f"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Zazza/phalcon2-debug-widget/zipball/c2f162381281ff8322d53a7b959a8ecdd73f1e5f",
-                "reference": "c2f162381281ff8322d53a7b959a8ecdd73f1e5f",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "PDW": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Dmitry Samotoy",
-                    "email": "dmitry.samotoy@gmail.com"
-                }
-            ],
-            "description": "Phalcon debug toolbar for Phalcon 2",
-            "time": "2015-04-24 13:07:29"
         }
     ],
     "packages-dev": [],
@@ -185,8 +149,7 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "phalcon/pretty-exceptions": 20,
-        "phalcon/incubator": 20,
-        "zazza/phalcon2-debug-widget": 20
+        "phalcon/incubator": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

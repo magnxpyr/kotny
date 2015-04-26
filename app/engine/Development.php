@@ -10,7 +10,13 @@ namespace Engine;
 
 class Development {
 
-    public function __construct(\Phalcon\Di $di) {
+    /**
+     * Initialize the development tools.
+     * Set pretty exceptions, debug widget and disable error handler
+     *
+     * @param \Phalcon\Di $di
+     */
+    public function __construct($di) {
         // Display all errors
         ini_set('display_errors', 1);
         error_reporting(E_ALL);

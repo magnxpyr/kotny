@@ -34,7 +34,7 @@ use Phalcon\Text as Utils;
  * @copyright   Copyright (c) 2011-2014 Phalcon Team (team@phalconphp.com)
  * @license    New BSD License
  */
-class Model extends Component
+class Model
 {
     /**
      * Mapa de datos escalares a objetos

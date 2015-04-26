@@ -3,6 +3,8 @@
 /**
  * Local variables
  * @var \Phalcon\Mvc\View\Engine $this
+ * @var string $selectedModule
+ * @var string $directoryPath
  */
 
 use Tools\Helpers\Tools;
@@ -15,24 +17,19 @@ use Tools\Helpers\Tools;
     </div>
     <div class="col-md-9 col-sm-8">
         <div class="default-view">
-            <ul class="nav nav-tabs">
-                <?php Tools::getMenu($this->view->getControllerName(), $this->getView()->getActionName()) ?>
-            </ul>
-
             <h1>Create Controller</h1>
 
             <?php echo $this->getContent() ?>
             <div class="col-lg-8 col-md-10">
-                <form method="post" autocomplete="off" action="<?php echo Tools::generateUrl('index', 'create') ?>">
+                <form method="post" autocomplete="off" action="<?php echo Tools::generateUrl('controllers', 'create') ?>">
                     <fieldset>
                         <div class="control-group">
                             <div class="form-group">
                                 <label class="control-label" for="name">Module</label>
-                                <?php echo Phalcon\Tag::select(array(
-                                    'module',
-                                    'class' => 'form-control',
-                                    'required' => 'required'
-                                ), Tools::listModules()) ?>
+                                <select id="module" name="module" class="form-control">
+                                <?php echo Tools::listModuleOptions($selectedModule) ?>
+                                </select>
+
                             </div>
                             <div class="form-group">
                                 <label class="control-label" for="name">Controller name</label>
@@ -45,16 +42,35 @@ use Tools\Helpers\Tools;
                             <div class="form-group">
                                 <label class="control-label" for="name">Directory</label>
                                 <?php echo Phalcon\Tag::textField(array(
-                                    'dir',
+                                    'directory',
                                     'class' => 'form-control',
-                                    'required' => 'required'
+                                    'value' => $directoryPath
                                 )) ?>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label" for="name">Namespace</label>
+                                <?php echo Phalcon\Tag::textField(array(
+                                    'namespace',
+                                    'class' => 'form-control',
+                                    'value' => $selectedModule . Tools::getControllersDir()
+                                )) ?>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label" for="name">Base Class</label>
+                                <?php echo Phalcon\Tag::textField(array(
+                                    'baseClass',
+                                    'class' => 'form-control'
+                                )) ?>
+                            </div>
+                            <div class="form-group">
+                                <label class="help" data-original-title="" title="">
+                                    <?php echo Phalcon\Tag::checkField(array("view", "value" => 1)) . ' Create View' ?>
+                                </label>
                             </div>
                             <div class="form-group">
                                 <label class="help" data-original-title="" title="">
                                     <?php echo Phalcon\Tag::checkField(array("force", "value" => 1)) . ' Force' ?>
                                 </label>
-
                             </div>
                             <div align="right">
                                 <input type="submit" class="btn btn-primary" value="Generate"/>
