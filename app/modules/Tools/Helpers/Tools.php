@@ -124,55 +124,6 @@ class Tools extends ControllerBase {
     }
 
     /**
-     * Return the path to modules directory
-     *
-     * @return string
-     */
-    public static function getModulesDir() {
-        if(isset(self::getConfig()->tools)) {
-            return self::getConfig()->tools->modulesDir;
-        }
-        return APP_PATH . 'modules/';
-    }
-
-    /**
-     * Return an array with modules name
-     *
-     * @return array
-     */
-    public static function listModules() {
-        $iterator = new \DirectoryIterator(self::getModulesDir());
-        $modules = array();
-        foreach($iterator as $fileinfo){
-            if(!$fileinfo->isDot() && file_exists($fileinfo->getPathname() . '/Module.php')){
-                $modules[] = $fileinfo->getFileName();
-            }
-        }
-        return $modules;
-    }
-
-    /**
-     * Return a string with all the module options
-     *
-     * @param string $selected
-     * @return string
-     */
-    public static function listModuleOptions($selected = null) {
-        $iterator = new \DirectoryIterator(self::getModulesDir());
-        $options = null;
-        foreach($iterator as $fileinfo){
-            if(!$fileinfo->isDot() && file_exists($fileinfo->getPathname() . '/Module.php')){
-                if($selected == $fileinfo->getFileName()) {
-                    $options .= '<option value=' . $fileinfo->getFileName() . ' selected>' . $fileinfo->getFileName() . '</option>';
-                } else {
-                    $options .= '<option value=' . $fileinfo->getFileName() . '>' . $fileinfo->getFileName() . '</option>';
-                }
-            }
-        }
-        return $options;
-    }
-
-    /**
      * Return the config object in the services container
      *
      * @return \Phalcon\Config
@@ -237,14 +188,51 @@ class Tools extends ControllerBase {
     }
 
     /**
-     * Return the copyright header
+     * Return an array with modules name
+     *
+     * @return array
+     */
+    public static function listModules() {
+        $iterator = new \DirectoryIterator(self::getModulesDir());
+        $modules = array();
+        foreach($iterator as $fileinfo){
+            if(!$fileinfo->isDot() && file_exists($fileinfo->getPathname() . '/Module.php')){
+                $modules[] = $fileinfo->getFileName();
+            }
+        }
+        return $modules;
+    }
+
+    /**
+     * Return a string with all the module options
+     *
+     * @param string $selected
      * @return string
      */
-    public static function getCopyright() {
-        return "/**\n* @copyright   2006 - 2015 Magnxpyr Network\n".
-         "* @license     New BSD License; see LICENSE\n".
-         "* @url         http://www.magnxpyr.com\n".
-         "* @authors     Stefan Chiriac <stefan@magnxpyr.com>\n*/";
+    public static function listModuleOptions($selected = null) {
+        $iterator = new \DirectoryIterator(self::getModulesDir());
+        $options = null;
+        foreach($iterator as $fileinfo){
+            if(!$fileinfo->isDot() && file_exists($fileinfo->getPathname() . '/Module.php')){
+                if($selected == $fileinfo->getFileName()) {
+                    $options .= '<option value=' . $fileinfo->getFileName() . ' selected>' . $fileinfo->getFileName() . '</option>';
+                } else {
+                    $options .= '<option value=' . $fileinfo->getFileName() . '>' . $fileinfo->getFileName() . '</option>';
+                }
+            }
+        }
+        return $options;
+    }
+
+    /**
+     * Return the path to modules directory
+     * @return string
+     */
+    public static function getModulesDir() {
+        if(isset(self::getConfig()->tools)) {
+            return self::getConfig()->tools->modulesDir;
+        }
+        return APP_PATH . 'modules/';
     }
 
     /**
@@ -269,5 +257,16 @@ class Tools extends ControllerBase {
      */
     public static function getViewsDir() {
         return 'Views';
+    }
+
+    /**
+     * Return the copyright header
+     * @return string
+     */
+    public static function getCopyright() {
+        return "/**\n* @copyright   2006 - 2015 Magnxpyr Network\n".
+        "* @license     New BSD License; see LICENSE\n".
+        "* @url         http://www.magnxpyr.com\n".
+        "* @authors     Stefan Chiriac <stefan@magnxpyr.com>\n*/";
     }
 }

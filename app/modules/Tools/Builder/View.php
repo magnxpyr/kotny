@@ -8,53 +8,56 @@
 
 namespace Tools\Builder;
 
+use Phalcon\Text;
 use Tools\Helpers\Tools;
 
 class View extends Component {
 
-    public function __constructor($options) {
+    public function __construct($options) {
         if (empty($options['name'])) {
-            throw new \Exception("Please specify the controller name");
+            throw new \Exception("Please specify the view name");
         }
-        if (empty($options['force'])) {
+        if (!isset($options['force'])) {
             $options['force'] = false;
         }
-        if (empty($options['directory'])) {
-            $options['directory'] = Tools::getModulesDir() . $options['module'] . Tools::getControllersDir();
+        if (!isset($options['directory'])) {
+            $options['directory'] = Tools::getModulesDir() . $options['module'] . DIRECTORY_SEPARATOR . Tools::getViewsDir();
         }
+        if (!isset($options['action'])) {
+            $options['action'] = 'index';
+        }
+        $this->_options = $options;
     }
 
     /**
      * Generate view
      */
     public function build() {
-        if ($this->_options['namespace'] != 'None') {
-            $namespace = 'namespace '.$this->_options['namespace'].';'.PHP_EOL.PHP_EOL;
-        } else {
-            $namespace = '';
-        }
 
-        $className = Text::camelize(str_replace(' ','_',$this->_options['name']))."Controller";
+        $action = Text::uncamelize($this->_options['action']);
 
-        $controllerPath = $this->_options['directory'] . DIRECTORY_SEPARATOR . $className . ".php";
+        $viewName = explode('-', str_replace('_', '-', Text::uncamelize($this->_options['name'])));
+        array_pop($viewName);
+        $viewName = implode('-', $viewName);
+        $viewDir = $this->_options['directory'] . DIRECTORY_SEPARATOR . $viewName;
+        $viewPath = $viewDir . DIRECTORY_SEPARATOR . $action . '.volt';
 
-        $base = explode('\\', $this->_options['baseClass']);
-        $baseClass = end($base);
-
-        $useClass = 'use '.$this->_options['baseClass'].';'.PHP_EOL.PHP_EOL;
-
-        $code = "<?php\n".Tools::getCopyright()."\n\n".$namespace.$useClass."class $className extends $baseClass {
-            \n\tpublic function indexAction() {\n\n\t}\n}";
+        $code = "<?php\n".Tools::getCopyright()."\n?>\n";
         $code = str_replace("\t", "    ", $code);
 
-        if (!file_exists($controllerPath) || $this->_options['force'] == true) {
-            if (!@file_put_contents($controllerPath, $code)) {
-                throw new \Exception("Unable to write to '$controllerPath'");
+        if (!file_exists($viewPath) || $this->_options['force'] == true) {
+            if(!is_dir($viewDir)) {
+                mkdir($viewDir, 0777, true);
+                chmod($viewDir, 0777);
             }
+            if (!@file_put_contents($viewPath, $code)) {
+                throw new \Exception("Unable to write to '$viewPath'");
+            }
+            chmod($viewPath, 0777);
         } else {
-            throw new \Exception("The Controller '$className' already exists");
+            throw new \Exception("The View '$action' already exists");
         }
 
-        return $className . 'Controller.php';
+        return $viewName;
     }
 }
