@@ -21,7 +21,7 @@
 namespace Tools\Builder;
 
 use Phalcon\Db\Column;
-use Phalcon\Text as Utils;
+use Phalcon\Text;
 
 /**
  * ModelBuilderComponent
@@ -34,8 +34,7 @@ use Phalcon\Text as Utils;
  * @copyright   Copyright (c) 2011-2014 Phalcon Team (team@phalconphp.com)
  * @license    New BSD License
  */
-class Model
-{
+class Model extends Component {
     /**
      * Mapa de datos escalares a objetos
      *
@@ -54,7 +53,7 @@ class Model
             $options['force'] = false;
         }
         if (!isset($options['className'])) {
-            $options['className'] = Utils::camelize($options['name']);
+            $options['className'] = Text::camelize($options['name']);
         }
         if (!isset($options['fileName'])) {
             $options['fileName'] = $options['name'];
@@ -94,8 +93,7 @@ class Model
     public function build()
     {
         $getSource = "
-    public function getSource()
-    {
+    public function getSource() {
         return '%s';
     }
 ";
@@ -108,8 +106,7 @@ class Model
      * @param %s \$%s
      * @return \$this
      */
-    public function set%s(\$%s)
-    {
+    public function set%s(\$%s) {
         \$this->%s = \$%s;
 
         return \$this;
@@ -156,8 +153,7 @@ class Model
      *
      * @return %s
      */
-    public function get%s()
-    {
+    public function get%s() {
         if (\$this->%s) {
             return new %s(\$this->%s);
         } else {
@@ -172,8 +168,7 @@ class Model
      *
      * @return %s
      */
-    public function get%s()
-    {
+    public function get%s() {
         return \$this->%s;
     }
 ";
@@ -182,8 +177,7 @@ class Model
     /**
      * Validations and business logic
      */
-    public function validation()
-    {
+    public function validation() {
 %s
     }
 ";
@@ -192,8 +186,7 @@ class Model
     /**
      * Initialize method for model.
      */
-    public function initialize()
-    {
+    public function initialize() {
 %s
     }
 ";
@@ -202,16 +195,14 @@ class Model
     /**
      * @return %s[]
      */
-    public static function find(\$parameters = array())
-    {
+    public static function find(\$parameters = array()) {
         return parent::find(\$parameters);
     }
 
     /**
      * @return %s
      */
-    public static function findFirst(\$parameters = array())
-    {
+    public static function findFirst(\$parameters = array()) {
         return parent::findFirst(\$parameters);
     }
 ";
@@ -221,14 +212,13 @@ class Model
 
         $templateCode = "<?php
 
-%s%s%sclass %s extends %s
-{
+%s%s%sclass %s extends %s {
 %s
 }
 ";
 
         if (!$this->_options['name']) {
-            throw new BuilderException("You must specify the table name");
+            throw new \Exception("You must specify the table name");
         }
 
         $path = '';
@@ -244,7 +234,7 @@ class Model
 
         if (!isset($this->_options['modelsDir'])) {
             if (!isset($config->application->modelsDir)) {
-                throw new BuilderException(
+                throw new \Exception(
                     "Builder doesn't knows where is the models directory"
                 );
             }
@@ -267,7 +257,7 @@ class Model
 
         if (file_exists($modelPath)) {
             if (!$this->_options['force']) {
-                throw new BuilderException(
+                throw new \Exception(
                     "The model file '" . $className .
                     ".php' already exists in models dir"
                 );
@@ -275,13 +265,13 @@ class Model
         }
 
         if (!isset($config->database)) {
-            throw new BuilderException(
+            throw new \Exception(
                 "Database configuration cannot be loaded from your config file"
             );
         }
 
         if (!isset($config->database->adapter)) {
-            throw new BuilderException(
+            throw new \Exception(
                 "Adapter was not found in the config. " .
                 "Please specify a config variable [database][adapter]"
             );
@@ -352,7 +342,7 @@ class Model
         if ($db->tableExists($table, $schema)) {
             $fields = $db->describeColumns($table, $schema);
         } else {
-            throw new BuilderException('Table "' . $table . '" does not exist');
+            throw new \Exception('Table "' . $table . '" does not exist');
         }
         
         foreach ($db->listTables() as $tableName) {
@@ -447,7 +437,7 @@ class Model
                 $possibleMethods = array();
                 if ($useSettersGetters) {
                     foreach ($fields as $field) {
-                        $methodName = Utils::camelize($field->getName());
+                        $methodName = Text::camelize($field->getName());
                         $possibleMethods['set' . $methodName] = true;
                         $possibleMethods['get' . $methodName] = true;
                     }
@@ -556,7 +546,7 @@ class Model
                     $attributes[] = sprintf(
                         $templateAttributes, $type, 'protected', $field->getName()
                     );
-                    $setterName = Utils::camelize($field->getName());
+                    $setterName = Text::camelize($field->getName());
                     $setters[] = sprintf(
                         $templateSetter,
                         $field->getName(),
@@ -661,11 +651,7 @@ class Model
         );
 
         if (!@file_put_contents($modelPath, $code)) {
-                throw new BuilderException("Unable to write to '$modelPath'");
-        }
-
-        if ($this->isConsole()) {
-            $this->_notifySuccess('Model "' . $this->_options['name'] .'" was successfully created.');
+                throw new \Exception("Unable to write to '$modelPath'");
         }
     }
 

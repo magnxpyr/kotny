@@ -21,9 +21,7 @@
 namespace Tools\Builder;
 
 use Phalcon\Text;
-use Modules\DevTools\Script\Color;
-use Modules\DevTools\Builder\Component;
-use Modules\DevTools\Builder\Model as ModelBuilder;
+use Tools\Builder\Model as ModelBuilder;
 use Phalcon\DI\FactoryDefault;
 use Phalcon\Db\Column;
 
@@ -99,7 +97,7 @@ class Scaffold
 
     /**
      * @return bool
-     * @throws \Phalcon\Builder\BuilderException
+     * @throws \Exception
      */
     public function build()
     {
@@ -117,7 +115,7 @@ class Scaffold
         $config = $this->_getConfig($path);
 
         if (!isset($config->database->adapter)) {
-            throw new BuilderException("Adapter was not found in the config. Please specify a config variable [database][adapter]");
+            throw new \Exception("Adapter was not found in the config. Please specify a config variable [database][adapter]");
         }
 
         $adapter = ucfirst($config->database->adapter);
@@ -153,7 +151,7 @@ class Scaffold
         //    $options['modelsDir'] = $path . $config->application->modelsDir;
             $options['modelsDir'] = $config->application->modelsDir;
         } else {
-            throw new BuilderException("The builder is unable to find the views directory");
+            throw new \Exception("The builder is unable to find the views directory");
         }
 
         $config->application->controllersDir = ROOT_PATH . '.phalcon/';
@@ -161,7 +159,7 @@ class Scaffold
         //    $options['controllersDir'] = $path . $config->application->controllersDir;
             $options['controllersDir'] = $config->application->controllersDir;
         } else {
-            throw new BuilderException("The builder is unable to find the controllers directory");
+            throw new \Exception("The builder is unable to find the controllers directory");
         }
 
         $config->application->viewsDir = ROOT_PATH . '.phalcon/';
@@ -169,7 +167,7 @@ class Scaffold
         //    $options['viewsDir'] = $path . $config->application->viewsDir;
             $options['viewsDir'] = $config->application->viewsDir;
         } else {
-            throw new BuilderException("The builder is unable to find the views directory");
+            throw new \Exception("The builder is unable to find the views directory");
         }
 
         $options['manager'] = $di->getShared('modelsManager');
@@ -276,7 +274,7 @@ class Scaffold
      * @param $type
      *
      * @return string
-     * @throws \Phalcon\Builder\BuilderException
+     * @throws \Exception
      */
     private function _resolveType($type)
     {
@@ -306,7 +304,7 @@ class Scaffold
                 return 'text';
                 break;
             default:
-                throw new BuilderException('Data type could not be resolved');
+                throw new \Exception('Data type could not be resolved');
         }
     }
 
@@ -671,7 +669,7 @@ class Scaffold
      * @param $options
      * @param $type
      *
-     * @throws \Phalcon\Builder\BuilderException
+     * @throws \Exception
      */
     private function makeView($path, $options, $type)
     {
@@ -690,7 +688,7 @@ class Scaffold
 
         $templatePath = $options['templatePath'] . '/scaffold/no-forms/views/' .$type. '.phtml';
         if (!file_exists($templatePath)) {
-            throw new BuilderException("Template '" . $templatePath . "' does not exist");
+            throw new \Exception("Template '" . $templatePath . "' does not exist");
         }
 
         $code = file_get_contents($templatePath);
@@ -711,7 +709,7 @@ class Scaffold
      * @param $options
      * @param $type
      *
-     * @throws \Phalcon\Builder\BuilderException
+     * @throws \Exception
      */
     private function makeViewVolt($path, $options, $type)
     {
@@ -730,7 +728,7 @@ class Scaffold
 
         $templatePath = $options['templatePath'] . '/scaffold/no-forms/views/' .$type. '.volt';
         if (!file_exists($templatePath)) {
-            throw new BuilderException("Template '" . $templatePath . "' does not exist");
+            throw new \Exception("Template '" . $templatePath . "' does not exist");
         }
 
         $code = file_get_contents($templatePath);
@@ -808,7 +806,7 @@ class Scaffold
      * @param $path
      * @param $options
      *
-     * @throws \Phalcon\Builder\BuilderException
+     * @throws \Exception
      */
     private function _makeViewSearch($path, $options)
     {
@@ -827,7 +825,7 @@ class Scaffold
 
         $templatePath = $options['templatePath'] . '/scaffold/no-forms/views/search.phtml';
         if (!file_exists($templatePath)) {
-            throw new BuilderException("Template '" . $templatePath . "' does not exist");
+            throw new \Exception("Template '" . $templatePath . "' does not exist");
         }
 
         $headerCode = '';
@@ -878,7 +876,7 @@ class Scaffold
      * @param $path
      * @param $options
      *
-     * @throws \Phalcon\Builder\BuilderException
+     * @throws \Exception
      */
     private function _makeViewSearchVolt($path, $options)
     {
@@ -897,7 +895,7 @@ class Scaffold
 
         $templatePath = $options['templatePath'] . '/scaffold/no-forms/views/search.volt';
         if (!file_exists($templatePath)) {
-            throw new BuilderException("Template '" . $templatePath . "' does not exist");
+            throw new \Exception("Template '" . $templatePath . "' does not exist");
         }
 
         $headerCode = '';

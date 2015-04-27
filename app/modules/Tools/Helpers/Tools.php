@@ -215,9 +215,9 @@ class Tools extends ControllerBase {
     /**
      * Return a new url according to params
      *
-     * @params string $controller
-     * @params string $action
-     * @params string $params
+     * @param string $controller
+     * @param string $action
+     * @param string $params
      * @return string
      */
     public static function generateUrl($controller, $action = 'index', $params = null) {
@@ -236,6 +236,10 @@ class Tools extends ControllerBase {
         return self::$ip;
     }
 
+    /**
+     * Return the copyright header
+     * @return string
+     */
     public static function getCopyright() {
         return "/**\n* @copyright   2006 - 2015 Magnxpyr Network\n".
          "* @license     New BSD License; see LICENSE\n".
@@ -243,14 +247,26 @@ class Tools extends ControllerBase {
          "* @authors     Stefan Chiriac <stefan@magnxpyr.com>\n*/";
     }
 
+    /**
+     * Return the Controller directory
+     * @return string
+     */
     public static function getControllersDir() {
         return 'Controllers';
     }
 
+    /**
+     * Return the Model directory
+     * @return string
+     */
     public static function getModelsDir() {
         return 'Models';
     }
 
+    /**
+     * Return the View directory
+     * @return string
+     */
     public static function getViewsDir() {
         return 'Views';
     }

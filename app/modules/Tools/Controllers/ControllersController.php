@@ -10,13 +10,15 @@ namespace Tools\Controllers;
 
 use Tools\Builder\Controller;
 use Phalcon\Tag;
+use Tools\Builder\View;
 use Tools\Helpers\Tools;
 
 class ControllersController extends ControllerBase {
 
     public function indexAction() {
         $selectedModule = null;
-        if(!empty($this->router->getParams()))
+        $params = $this->router->getParams();
+        if(!empty($params))
             $selectedModule = $this->router->getParams()[0];
         $this->view->setVar('selectedModule' , $selectedModule);
         $this->view->setVar('directoryPath', Tools::getModulesDir() . $selectedModule . Tools::getControllersDir());
@@ -47,11 +49,22 @@ class ControllersController extends ControllerBase {
                     'force' => $force
                 ));
 
-                $fileName = $controllerBuilder->build();
+                $controllerFileName = $controllerBuilder->build();
 
-                //build view
+                $this->flash->success('The controller "'.$controllerFileName.'" was created successfully');
 
-                $this->flash->success('The controller "'.$fileName.'" was created successfully');
+                if(!empty($view)) {
+                    $viewBuilder = new View(array(
+                        'name' => $controllerName,
+                        'module' => $moduleName,
+                        'directory' => $directory,
+                        'force' => $force
+                    ));
+
+                    $viewBuilder->build();
+                }
+
+                $this->flash->success('The view for controller "'.$controllerFileName.'" was created successfully');
             } catch (\Exception $e) {
                 $this->flash->error($e->getMessage());
             }

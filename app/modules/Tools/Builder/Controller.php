@@ -14,6 +14,12 @@ use Tools\Helpers\Tools;
 class Controller {
 
     /**
+     * Contains the params from view
+     * @var array
+     */
+    protected $_options;
+
+    /**
      * Controller constructor
      *
      * @param array $options

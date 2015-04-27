@@ -9,6 +9,9 @@
 namespace Tools\Builder;
 
 
-class Module {
+class Module extends Component {
 
+    public function build() {
+
+    }
 }
