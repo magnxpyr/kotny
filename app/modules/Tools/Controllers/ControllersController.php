@@ -20,8 +20,8 @@ class ControllersController extends ControllerBase {
         $params = $this->router->getParams();
         if(!empty($params))
             $selectedModule = $this->router->getParams()[0];
-        $this->view->setVar('selectedModule' , $selectedModule);
-        $this->view->setVar('directoryPath', Tools::getModulesDir() . $selectedModule . Tools::getControllersDir());
+        $this->view->selectedModule = $selectedModule;
+        $this->view->directoryPath = Tools::getModulesPath() . $selectedModule . Tools::getControllersDir();
     }
 
     /**

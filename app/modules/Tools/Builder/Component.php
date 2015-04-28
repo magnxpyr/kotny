@@ -46,49 +46,6 @@ abstract class Component {
     }
 
     /**
-     * Tries to find the current configuration in the application
-     *
-     * @param $path
-     *
-     * @return mixed|\Phalcon\Config\Adapter\Ini
-     * @throws \Exception
-     */
-    protected function _getConfig($path) {
-        foreach (array('app/config/', 'config/') as $configPath) {
-            if (file_exists($path . $configPath . "config.ini")) {
-                return new \Phalcon\Config\Adapter\Ini($path . $configPath . "/config.ini");
-            } else {
-                if (file_exists($path . $configPath. "/config.php")) {
-                    $config = include($path . $configPath . "/config.php");
-                    if (is_array($config)) {
-                        $config = new \Phalcon\Config($config);
-                    }
-
-                    return $config;
-                }
-            }
-        }
-
-        $directory = new \RecursiveDirectoryIterator('.');
-        $iterator = new \RecursiveIteratorIterator($directory);
-        foreach ($iterator as $f) {
-            if (preg_match('/tools\.php$/i', $f->getPathName())) {
-                $config = include $f->getPathName();
-                if (is_array($config)) {
-                    $config = new \Phalcon\Config($config);
-                }
-
-                return $config;
-            } else {
-                if (preg_match('/tools\.ini$/i', $f->getPathName())) {
-                    return new \Phalcon\Config\Adapter\Ini($f->getPathName());
-                }
-            }
-        }
-        throw new \Exception('Builder can\'t locate the configuration file');
-    }
-
-    /**
      * Check if a path is absolute
      *
      * @param $path

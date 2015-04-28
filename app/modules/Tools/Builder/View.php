@@ -21,7 +21,7 @@ class View extends Component {
             $options['force'] = false;
         }
         if (!isset($options['directory'])) {
-            $options['directory'] = Tools::getModulesDir() . $options['module'] . DIRECTORY_SEPARATOR . Tools::getViewsDir();
+            $options['directory'] = Tools::getModulesPath() . $options['module'] . DIRECTORY_SEPARATOR . Tools::getViewsDir();
         }
         if (!isset($options['action'])) {
             $options['action'] = 'index';

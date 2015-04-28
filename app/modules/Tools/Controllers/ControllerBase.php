@@ -23,8 +23,12 @@ use Engine\AdminController;
 use Tools\Helpers\Tools;
 //use Phalcon\Mvc\Controller;
 
-class ControllerBase extends AdminController
-{
+class ControllerBase extends AdminController {
+
+    protected function initialize() {
+        $this->_checkAccess();
+        parent::initialize();
+    }
 
     /**
      * Check remote IP address to disable remote activity
@@ -32,12 +36,11 @@ class ControllerBase extends AdminController
      * @return void
      * @throws \Exception if connected remotely
      */
-    protected function checkAccess()
-    {
+    protected function _checkAccess() {
         $ip = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : false;
 
         if ($ip && ($ip == '127.0.0.1' || $ip == '::1' || $this->checkToolsIp($ip)))
-            return false;
+            return;
 
         throw new \Exception('WebTools can only be used on the local machine (Your IP: ' . $ip . ') or you can make changes in your configuration file to allow IP or NET');
     }
@@ -48,8 +51,7 @@ class ControllerBase extends AdminController
      * @param  bool $all
      * @return void
      */
-    protected function listTables($all = false)
-    {
+    protected function listTables($all = false) {
         $config = Tools::getConfig();
         $connection = Tools::getConnection();
 
@@ -73,14 +75,12 @@ class ControllerBase extends AdminController
     }
 
     /**
-     * Check if IP address for securing Phalcon Developers Tools area matches
-     * the given
+     * Check if IP address for securing Developers Tools area matches the given
      *
      * @param  string $ip
      * @return bool
      */
-    private function checkToolsIp($ip)
-    {
+    private function checkToolsIp($ip) {
         return strpos($ip, Tools::getToolsIp()) === 0;
     }
 }

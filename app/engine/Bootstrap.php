@@ -199,7 +199,8 @@ class Bootstrap {
             ->setTargetUri('assets/default/js/header.min.js')
             ->addJs('vendor/jquery/jquery-2.1.3.min.js')
             ->addJs('vendor/jquery/jquery-ui.min.js')
-            ->addJs('vendor/bootstrap/js/bootstrap.min.js');
+            ->addJs('vendor/bootstrap/js/bootstrap.min.js')
+            ->addJs('assets/default/js/mg.js');
         //    ->join(true)
         //    ->addFilter(new Phalcon\Assets\Filters\Jsmin());
         $assets->collection('header-css')

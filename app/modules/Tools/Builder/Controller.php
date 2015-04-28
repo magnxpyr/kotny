@@ -28,7 +28,7 @@ class Controller extends Component {
             $options['force'] = false;
         }
         if (empty($options['directory'])) {
-            $options['directory'] = Tools::getModulesDir() . $options['module'] .DIRECTORY_SEPARATOR. Tools::getControllersDir();
+            $options['directory'] = Tools::getModulesPath() . $options['module'] .DIRECTORY_SEPARATOR. Tools::getControllersDir();
         }
         if (empty($options['namespace']) || $options['namespace'] != 'None') {
             $options['namespace'] = $options['module'] . '\Controllers';

@@ -1,42 +1,35 @@
 <?php
+/**
+ * @copyright   2006 - 2015 Magnxpyr Network
+ * @license     New BSD License; see LICENSE
+ * @url         http://www.magnxpyr.com
+ * @authors     Stefan Chiriac <stefan@magnxpyr.com>
+ */
 
-/*
-  +------------------------------------------------------------------------+
-  | Phalcon Developer Tools                                                |
-  +------------------------------------------------------------------------+
-  | Copyright (c) 2011-2014 Phalcon Team (http://www.phalconphp.com)       |
-  +------------------------------------------------------------------------+
-  | This source file is subject to the New BSD License that is bundled     |
-  | with this package in the file docs/LICENSE.txt.                        |
-  |                                                                        |
-  | If you did not receive a copy of the license and are unable to         |
-  | obtain it through the world-wide-web, please send an email             |
-  | to license@phalconphp.com so we can send you a copy immediately.       |
-  +------------------------------------------------------------------------+
-  | Authors: Andres Gutierrez <andres@phalconphp.com>                      |
-  |          Eduar Carvajal <eduar@phalconphp.com>                         |
-  +------------------------------------------------------------------------+
-*/
 namespace Tools\Controllers;
 
 
-use Modules\DevTools\Builder\AllModels;
-use Modules\DevTools\Builder\BuilderException;
-use Modules\DevTools\Builder\Model;
+use Tools\Builder\AllModels;
+use Tools\Builder\Model;
+use Tools\Helpers\Tools;
 
-class ModelsController extends ControllerBase
-{
+class ModelsController extends ControllerBase {
 
-    public function indexAction()
-    {
+    public function indexAction() {
+        $selectedModule = null;
+        $params = $this->router->getParams();
+        if(!empty($params))
+            $selectedModule = $this->router->getParams()[0];
+        $this->view->selectedModule = $selectedModule;
+        $this->view->directoryPath = Tools::getModulesPath() . $selectedModule . Tools::getModelsDir();
+
         $this->listTables(true);
     }
 
     /**
      * Generate models
      */
-    public function createAction()
-    {
+    public function createAction() {
 
         if ($this->request->isPost()) {
 
@@ -98,71 +91,5 @@ class ModelsController extends ControllerBase
             'action' => 'list'
         ));
 
-    }
-
-    public function listAction()
-    {
-        $this->view->setVar('modelsDir', ROOT_PATH . '.phalcon');
-    }
-
-    public function editAction()
-    {
-       $fileName = $_GET['file'];
-
-        $modelsDir = ROOT_PATH . '.phalcon/';
-        print_r($modelsDir);
-
-        if (!file_exists($modelsDir.'/'.$fileName)) {
-            $this->flash->error('Model could not be found');
-
-            return $this->dispatcher->forward(array(
-                'controller' => 'models',
-                'action' => 'list'
-            ));
-        }
-
-        $this->tag->setDefault('code', file_get_contents($modelsDir.'/'.$fileName));
-        $this->tag->setDefault('name', $fileName);
-        $this->view->setVar('name', $fileName);
-
-    }
-
-    public function saveAction()
-    {
-
-        if ($this->request->isPost()) {
-
-            $fileName = $this->request->getPost('name', 'string');
-
-            $fileName = str_replace('..', '', $fileName);
-
-            $modelsDir = Tools::getConfig()->application->modelsDir;
-            if (!file_exists($modelsDir.'/'.$fileName)) {
-                $this->flash->error('Model could not be found');
-
-                return $this->dispatcher->forward(array(
-                    'controller' => 'models',
-                    'action' => 'list'
-                ));
-            }
-
-            if (!is_writable($modelsDir.'/'.$fileName)) {
-                $this->flash->error('Model file does not has write access');
-
-                return $this->dispatcher->forward(array(
-                    'controller' => 'models',
-                    'action' => 'list'
-                ));
-            }
-
-            file_put_contents($modelsDir.'/'.$fileName, $this->request->getPost('code'));
-
-            $this->flash->success('The model "'.$fileName.'" was saved successfully');
-        }
-
-        return $this->dispatcher->forward(array(
-            'controller' => 'models',
-            'action' => 'list'
-        ));
     }
 }

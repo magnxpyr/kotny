@@ -1,48 +1,95 @@
 <?php
-
 /**
  * Local variables
  * @var \Phalcon\Mvc\View\Engine $this
+ * @var string $selectedModule
+ * @var string $databaseName
+ * @var array $tables
  */
 
+use Tools\Helpers\Tools;
 ?>
-<?php echo $this->getContent() ?>
+<div class="row">
+    <div class="col-md-3 col-sm-4">
+        <div class="list-group">
+            <?php echo Tools::getNavMenu($this->view->getControllerName()) ?>
+        </div>
+    </div>
+    <div class="col-md-9 col-sm-8">
+        <div class="default-view">
+            <h1>Generate Models</h1>
 
-<h1>Generate Models</h1>
+            <?php echo $this->getContent() ?>
 
-<form method="post" autocomplete="off" class="form-horizontal" action="<?php echo $this->url->get("devtools/models/create") ?>">
-
-    <table class="table table-striped table-bordered table-condensed">
-        <tr>
-            <td><b>Schema</b></td>
-            <td><?php echo $this->tag->textField(array('schema', 'value' => $databaseName)) ?></td>
-        </tr>
-        <tr>
-            <td><b>Table name</b></td>
-            <td><i><?php echo $this->tag->selectStatic('tableName', $tables) ?></i></td>
-        </tr>
-        <tr>
-            <td><b>Add setters and getters</b></td>
-            <td><i><input type="checkbox" name="genSettersGetters" value="1"/></i></td>
-        </tr>
-        <tr>
-            <td><b>Set Foreign Keys</b></td>
-            <td><i><input type="checkbox" name="foreignKeys" value="1"/></i></td>
-        </tr>
-        <tr>
-            <td><b>Define Relations</b></td>
-            <td><i><input type="checkbox" name="defineRelations" value="1"/></i></td>
-        </tr>
-        <tr>
-            <td><b>Force</b></td>
-            <td><i><input type="checkbox" name="force" value="1"/></i></td>
-        </tr>
-        <tr>
-            <td colspan="2">
-                <div align="right">
-                    <input type="submit" class="btn btn-primary" value="Generate"/>
-                </div>
-            </td>
-        </tr>
-    </table>
-</form>
+            <div class="col-lg-8 col-md-10">
+                <form method="post" autocomplete="off" action="<?php echo Tools::generateUrl('controllers', 'create') ?>">
+                    <div class="control-group">
+                        <div class="form-group">
+                            <?php echo Tools::renderModulesInput($selectedModule) ?>
+                            <span class="hint-block">Leave empty if you don't use modules</span>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" for="schema" >Schema</label>
+                            <?php echo Phalcon\Tag::textField(array(
+                                'schema',
+                                'class' => 'form-control',
+                                'value' => $databaseName
+                            )) ?>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" for="tableName" >Table Name</label>
+                            <?php echo Phalcon\Tag::selectStatic(array(
+                                'tableName',
+                                'class' => 'form-control'
+                            ), $tables) ?>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" for="name">Directory</label>
+                            <?php echo Phalcon\Tag::textField(array(
+                                'directory',
+                                'class' => 'form-control sticky-value',
+                            )) ?>
+                            <span class="hint-block">Leave empty for <code><?php echo Tools::getModulesPath(). '@ModuleName'. DIRECTORY_SEPARATOR . Tools::getModelsDir() ?></code></span>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" for="name" aria-describedby="helpNamespace">Namespace</label>
+                            <?php echo Phalcon\Tag::textField(array(
+                                'namespace',
+                                'class' => 'form-control sticky-value',
+                            )) ?>
+                            <span id="helpNamespace" class="hint-block">Leave empty for <code>@ModuleName\<?php echo Tools::getModelsDir() ?></code></span>
+                        </div>
+                        <div class="form-group">
+                            <?php echo Tools::renderModelsInput() ?>
+                            <span id="helpBaseClass" class="hint-block">Leave empty for <code>\Phalcon\Mvc\Model</code></span>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <?php echo Phalcon\Tag::checkField(array('genSettersGetters', 'value' => '1')). ' Add setters and getters' ?>
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <?php echo Phalcon\Tag::checkField(array('foreignKeys', 'value' => '1')). ' Set Foreign Keys' ?>
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <?php echo Phalcon\Tag::checkField(array('defineRelations', 'value' => '1')). ' Define Relations' ?>
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <?php echo Phalcon\Tag::checkField(array('force', 'value' => '1')). ' Force' ?>
+                            </label>
+                            <span class="hint-block">Overwrite files if they already exists</code></span>
+                        </div>
+                        <div align="right">
+                            <input type="submit" class="btn btn-primary" value="Generate"/>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
