@@ -44,25 +44,22 @@ class Model extends Component {
 
     public function __construct($options) {
         if (empty($options['name'])) {
-            throw new \Exception("Please specify the model name");
+            $options['name'] = Text::camelize($options['tableName']);
         }
         if (empty($options['directory'])) {
-            $options['directory'] = Tools::getModulesPath() . $options['module'] .DIRECTORY_SEPARATOR. Tools::getControllersDir();
+            $options['directory'] = Tools::getModulesPath() . $options['module'] .DIRECTORY_SEPARATOR. Tools::getModelsDir();
         }
         if (empty($options['namespace']) || $options['namespace'] != 'None') {
             $options['namespace'] = $options['module'] . '\\' . Tools::getModelsDir();
         }
         if (empty($options['baseClass'])) {
-            $options['baseClass'] = '\Phalcon\Mvc\Model';
+            $options['baseClass'] = 'Phalcon\Mvc\Model';
         }
         if (!isset($options['tableName'])) {
-            throw new \Exception("Please, specify the model name");
+            throw new \Exception("Please, specify the table name");
         }
         if (!isset($options['force'])) {
             $options['force'] = false;
-        }
-        if (!isset($options['className'])) {
-            $options['className'] = Text::camelize($options['tableName']);
         }
         if (!isset($options['fileName'])) {
             $options['fileName'] = $options['tableName'];
@@ -150,7 +147,6 @@ class Model extends Component {
 
         $templateAttributes = "
     /**
-     *
      * @var %s
      */
     %s \$%s;
@@ -220,64 +216,32 @@ class Model extends Component {
         $templateUseAs = 'use %s as %s;';
 
         $templateCode = "<?php
-
 %s%s%sclass %s extends %s {
 %s
 }
 ";
 
-        if (!$this->_options['tableName']) {
-            throw new \Exception("You must specify the table name");
-        }
-
-        $path = '';
-        if (isset($this->_options['directory'])) {
-            if ($this->_options['directory']) {
-                $path = $this->_options['directory'] . '/';
-            }
-        } else {
-            $path = '.';
-        }
-
-        $config = Tools::getConfig();
-
-        if (!isset($this->_options['modelsDir'])) {
-            throw new \Exception(
-                "Builder doesn't knows where is the models directory"
-            );
-            $modelsDir = $config->application->modelsDir;
-        } else {
-            $modelsDir = $this->_options['modelsDir'];
-        }            
-        
-        $modelsDir = rtrim(rtrim($modelsDir, '/'), '\\') . DIRECTORY_SEPARATOR;             
-        
-        if ($this->isAbsolutePath($modelsDir) == false) {
-            $modelPath = $path . DIRECTORY_SEPARATOR . $modelsDir;
-        } else {
-            $modelPath = $modelsDir;
-        }                                 
-
         $methodRawCode = array();
-        $className = $this->_options['className'];
-        $modelPath .= $className . '.php';
+        $modelPath = $this->_options['directory'] . DIRECTORY_SEPARATOR . $this->_options['name'] . '.php';
 
         if (file_exists($modelPath)) {
             if (!$this->_options['force']) {
                 throw new \Exception(
-                    "The model file '" . $className .
-                    ".php' already exists in models dir"
+                    "The model file '" . $this->_options['name'] .
+                    ".php' already exists in " . $this->_options['directory']
                 );
             }
         }
 
-        if (!isset($config->database)) {
-            throw new \Exception(
-                "Database configuration cannot be loaded from your config file"
-            );
+        if(isset(Tools::getConfig()->database)) {
+            $dbConfig = Tools::getConfig()->database;
+        } elseif (isset(Tools::getConfig()->db)) {
+            $dbConfig = Tools::getConfig()->db;
+        } else {
+            throw new \Exception("Database configuration cannot be loaded from your config file");
         }
 
-        if (!isset($config->database->adapter)) {
+        if (!isset($dbConfig->adapter)) {
             throw new \Exception(
                 "Adapter was not found in the config. " .
                 "Please specify a config variable [database][adapter]"
@@ -285,7 +249,7 @@ class Model extends Component {
         }
 
         if (isset($this->_options['namespace'])) {
-            $namespace = 'namespace ' . $this->_options['namespace'] . ';'
+            $namespace = PHP_EOL . PHP_EOL. 'namespace ' . $this->_options['namespace'] . ';'
                 . PHP_EOL . PHP_EOL;
             $methodRawCode[] = sprintf($getSource, $this->_options['tableName']);
         } else {
@@ -299,31 +263,26 @@ class Model extends Component {
             $genDocMethods = false;
         }
 
-        $adapter = $config->database->adapter;
-        $this->isSupportedAdapter($adapter);
+        $this->isSupportedAdapter($dbConfig->adapter);
 
-        if (isset($config->database->adapter)) {
-            $adapter = $config->database->adapter;
+        if (isset($dbConfig->adapter)) {
+            $adapter = $dbConfig->adapter;
         } else {
             $adapter = 'Mysql';
         }
 
-        if (is_object($config->database)) {
-            $configArray = $config->database->toArray();
-        } else {
-            $configArray = $config->database;
-        }
+        $configArray = $dbConfig->toArray();
 
         // An array for use statements
-        $uses = array();
+        $uses = array(sprintf($templateUse, $this->_options['baseClass']));
 
-        $adapterName = 'Phalcon\Db\Adapter\Pdo\\' . $adapter;
+        $adapterName = '\Phalcon\Db\Adapter\Pdo\\' . $adapter;
         unset($configArray['adapter']);
         $db = new $adapterName($configArray);
 
         $initialize = array();
         if (isset($this->_options['schema'])) {
-            if ($this->_options['schema'] != $config->database->dbname) {
+            if ($this->_options['schema'] != $dbConfig->dbname) {
                 $initialize[] = sprintf(
                     $templateThis, 'setSchema', '"' . $this->_options['schema'] . '"'
                 );
@@ -335,7 +294,7 @@ class Model extends Component {
                 $templateThis, 'setSchema', '"' . $schema . '"'
             );
         } else {
-            $schema = $config->database->dbname;
+            $schema = $dbConfig->dbname;
         }
 
         if ($this->_options['fileName'] != $this->_options['tableName']) {
@@ -450,7 +409,7 @@ class Model extends Component {
                     }
                 }
 
-                require $modelPath;
+                require_once $modelPath;
 
                 $linesCode = file($modelPath);
                 $fullClassName = $this->_options['className'];
@@ -506,25 +465,11 @@ class Model extends Component {
                 $validations[] = sprintf(
                     $templateValidateEmail, $field->getName()
                 );
-                $uses[] = sprintf(
-                    $templateUseAs,
-                    'Phalcon\Mvc\Model\Validator\Email',
-                    'Email'
-                );
+                $uses[] = sprintf($templateUse, '\Phalcon\Mvc\Model\Validator\Email');
             }
         }
         if (count($validations)) {
             $validations[] = $templateValidationFailed;
-        }
-
-        /**
-         * Check if there has been an extender class
-         */
-        $extends = '\\Phalcon\\Mvc\\Model';
-        if (isset($this->_options['extends'])) {
-            if (!empty($this->_options['extends'])) {
-                $extends = $this->_options['extends'];
-            }
         }
 
         /**
@@ -617,11 +562,6 @@ class Model extends Component {
             $initCode = '';
         }
 
-        $license = '';
-        if (file_exists('license.txt')) {
-            $license = trim(file_get_contents('license.txt')) . PHP_EOL . PHP_EOL;
-        }
-
         $content = join('', $attributes);
 
         if ($useSettersGetters) {
@@ -635,31 +575,32 @@ class Model extends Component {
         }
 
         if ($genDocMethods) {
-            $content .= sprintf($templateFind, $className, $className);
+            $content .= sprintf($templateFind, $this->_options['name'], $this->_options['name']);
         }
 
         if (isset($this->_options['mapColumn'])) {
             $content .= $this->_genColumnMapCode($fields);
         }
 
-        $str_use = '';
-        if (!empty($uses)) {
-            $str_use = implode(PHP_EOL, $uses) . PHP_EOL . PHP_EOL;
-        }
+        $str_use = implode(PHP_EOL, $uses) . PHP_EOL . PHP_EOL;
+
+        $base = explode('\\', $this->_options['baseClass']);
+        $baseClass = end($base);
 
         $code = sprintf(
             $templateCode,
-            $license,
+            Tools::getCopyright(),
             $namespace,
             $str_use,
-            $className,
-            $extends,
+            $this->_options['name'],
+            $baseClass,
             $content
         );
 
         if (!@file_put_contents($modelPath, $code)) {
-                throw new \Exception("Unable to write to '$modelPath'");
+            throw new \Exception("Unable to write to '$modelPath'");
         }
+        chmod($modelPath, 0777);
     }
 
     /**

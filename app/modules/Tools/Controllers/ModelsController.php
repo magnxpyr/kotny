@@ -87,15 +87,13 @@ class ModelsController extends ControllerBase {
                 } else {
                     $this->flash->success('Model "'.$tableName.'" was created successfully');
                 }
-
             } catch (\Exception $e) {
                 $this->flash->error($e->getMessage());
             }
-
         }
 
         return $this->dispatcher->forward(array(
-            'action' => 'list'
+            'action' => 'index'
         ));
     }
 }
