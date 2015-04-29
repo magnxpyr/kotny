@@ -10,7 +10,7 @@ return [
 //    'modulesDir' => '',
 //    'controllersDir' => '',
 //    'formsDir' => '',
-    'allow' => '',
+//    'allow' => '',
     'baseController' => ['Engine\Controller', 'Engine\AdminController'],
     'baseModel' => [],
     'baseForm' => []

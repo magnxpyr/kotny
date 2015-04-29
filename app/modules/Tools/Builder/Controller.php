@@ -31,7 +31,7 @@ class Controller extends Component {
             $options['directory'] = Tools::getModulesPath() . $options['module'] .DIRECTORY_SEPARATOR. Tools::getControllersDir();
         }
         if (empty($options['namespace']) || $options['namespace'] != 'None') {
-            $options['namespace'] = $options['module'] . '\Controllers';
+            $options['namespace'] = $options['module'] . '\\' . Tools::getControllersDir();
         }
         if (empty($options['baseClass'])) {
             $options['baseClass'] = '\Phalcon\Mvc\Controller';

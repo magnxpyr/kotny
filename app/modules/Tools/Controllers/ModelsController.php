@@ -33,9 +33,14 @@ class ModelsController extends ControllerBase {
 
         if ($this->request->isPost()) {
 
+            $name =$this->request->getPost('module', 'string');
+            $module = $this->request->getPost('module', 'string');
             $force = $this->request->getPost('force', 'int');
-            $schema = $this->request->getPost('schema');
-            $tableName = $this->request->getPost('tableName');
+            $schema = $this->request->getPost('schema', 'string');
+            $directory = $this->request->getPost('directory', 'string');
+            $namespace = $this->request->getPost('namespace', 'string');
+            $baseClass = $this->request->getPost('baseClass', 'string');
+            $tableName = $this->request->getPost('tableName', 'string');
             $genSettersGetters = $this->request->getPost('genSettersGetters', 'int');
             $foreignKeys = $this->request->getPost('foreignKeys', 'int');
             $defineRelations = $this->request->getPost('defineRelations', 'int');
@@ -43,14 +48,17 @@ class ModelsController extends ControllerBase {
             try {
 
                 $component = array(
-                    'name'                  => $tableName,
-                    'force'                 => $force,
-                    'modelsDir'             => ROOT_PATH . '.phalcon',
-                    'directory'             => APP_PATH,
-                    'foreignKeys'           => $foreignKeys,
-                    'defineRelations'       => $defineRelations,
-                    'genSettersGetters'     => $genSettersGetters,
-                    'namespace'             => null,
+                    'module' => $module,
+                    'name' => $name,
+                    'baseClass' => $baseClass,
+                    'tableName' => $tableName,
+                    'schema' => $schema,
+                    'force' => $force,
+                    'directory' => $directory,
+                    'foreignKeys' => $foreignKeys,
+                    'defineRelations' => $defineRelations,
+                    'genSettersGetters' => $genSettersGetters,
+                    'namespace' => $namespace,
                 );
 
                 if ($tableName == 'all')
@@ -80,16 +88,14 @@ class ModelsController extends ControllerBase {
                     $this->flash->success('Model "'.$tableName.'" was created successfully');
                 }
 
-            } catch (BuilderException $e) {
+            } catch (\Exception $e) {
                 $this->flash->error($e->getMessage());
             }
 
         }
 
         return $this->dispatcher->forward(array(
-            'controller' => 'models',
             'action' => 'list'
         ));
-
     }
 }

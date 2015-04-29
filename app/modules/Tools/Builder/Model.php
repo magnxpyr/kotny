@@ -1,5 +1,4 @@
 <?php
-
 /*
   +------------------------------------------------------------------------+
   | Phalcon Developer Tools                                                |
@@ -17,46 +16,56 @@
   |          Eduar Carvajal <eduar@phalconphp.com>                         |
   +------------------------------------------------------------------------+
 */
+/**
+ * @copyright   2006 - 2015 Magnxpyr Network
+ * @license     New BSD License; see LICENSE
+ * @url         http://www.magnxpyr.com
+ * @authors     Stefan Chiriac <stefan@magnxpyr.com>
+ */
 
 namespace Tools\Builder;
 
 use Phalcon\Db\Column;
 use Phalcon\Text;
+use Tools\Helpers\Tools;
 
 /**
  * ModelBuilderComponent
  *
  * Builder to generate models
  *
- * @category    Phalcon
+ * @category    Tools
  * @package    Builder
  * @subpackage  Model
  * @copyright   Copyright (c) 2011-2014 Phalcon Team (team@phalconphp.com)
  * @license    New BSD License
  */
 class Model extends Component {
-    /**
-     * Mapa de datos escalares a objetos
-     *
-     * @var array
-     */
-    private $_typeMap = array(//'Date' => 'Date',
-        //'Decimal' => 'Decimal'
-    );
 
-    public function __construct($options)
-    {
-        if (!isset($options['name'])) {
+    public function __construct($options) {
+        if (empty($options['name'])) {
+            throw new \Exception("Please specify the model name");
+        }
+        if (empty($options['directory'])) {
+            $options['directory'] = Tools::getModulesPath() . $options['module'] .DIRECTORY_SEPARATOR. Tools::getControllersDir();
+        }
+        if (empty($options['namespace']) || $options['namespace'] != 'None') {
+            $options['namespace'] = $options['module'] . '\\' . Tools::getModelsDir();
+        }
+        if (empty($options['baseClass'])) {
+            $options['baseClass'] = '\Phalcon\Mvc\Model';
+        }
+        if (!isset($options['tableName'])) {
             throw new \Exception("Please, specify the model name");
         }
         if (!isset($options['force'])) {
             $options['force'] = false;
         }
         if (!isset($options['className'])) {
-            $options['className'] = Text::camelize($options['name']);
+            $options['className'] = Text::camelize($options['tableName']);
         }
         if (!isset($options['fileName'])) {
-            $options['fileName'] = $options['name'];
+            $options['fileName'] = $options['tableName'];
         }
         $this->_options = $options;
     }
@@ -217,7 +226,7 @@ class Model extends Component {
 }
 ";
 
-        if (!$this->_options['name']) {
+        if (!$this->_options['tableName']) {
             throw new \Exception("You must specify the table name");
         }
 
@@ -230,14 +239,12 @@ class Model extends Component {
             $path = '.';
         }
 
-        $config = $this->_getConfig($path);
+        $config = Tools::getConfig();
 
         if (!isset($this->_options['modelsDir'])) {
-            if (!isset($config->application->modelsDir)) {
-                throw new \Exception(
-                    "Builder doesn't knows where is the models directory"
-                );
-            }
+            throw new \Exception(
+                "Builder doesn't knows where is the models directory"
+            );
             $modelsDir = $config->application->modelsDir;
         } else {
             $modelsDir = $this->_options['modelsDir'];
@@ -280,7 +287,7 @@ class Model extends Component {
         if (isset($this->_options['namespace'])) {
             $namespace = 'namespace ' . $this->_options['namespace'] . ';'
                 . PHP_EOL . PHP_EOL;
-            $methodRawCode[] = sprintf($getSource, $this->_options['name']);
+            $methodRawCode[] = sprintf($getSource, $this->_options['tableName']);
         } else {
             $namespace = '';
         }
@@ -331,14 +338,14 @@ class Model extends Component {
             $schema = $config->database->dbname;
         }
 
-        if ($this->_options['fileName'] != $this->_options['name']) {
+        if ($this->_options['fileName'] != $this->_options['tableName']) {
             $initialize[] = sprintf(
                 $templateThis, 'setSource',
-                '\'' . $this->_options['name'] . '\''
+                '\'' . $this->_options['tableName'] . '\''
             );
         }
 
-        $table = $this->_options['name'];
+        $table = $this->_options['tableName'];
         if ($db->tableExists($table, $schema)) {
             $fields = $db->describeColumns($table, $schema);
         } else {
@@ -347,7 +354,7 @@ class Model extends Component {
         
         foreach ($db->listTables() as $tableName) {
             foreach ($db->describeReferences($tableName) as $reference) {
-                if ($reference->getReferencedTable() == $this->_options['name']) {
+                if ($reference->getReferencedTable() == $this->_options['tableName']) {
                     if (isset($this->_options['namespace'])) {
                         $entityNamespace = "{$this->_options['namespace']}\\";
                     }
@@ -365,7 +372,7 @@ class Model extends Component {
                 }
             }
         }
-        foreach ($db->describeReferences($this->_options['name']) as $reference) {
+        foreach ($db->describeReferences($this->_options['tableName']) as $reference) {
             if (isset($this->_options['namespace'])) {
                 $entityNamespace = "{$this->_options['namespace']}\\";
             }
@@ -688,8 +695,7 @@ class Model extends Component {
     /**
      * Independent Column Mapping.
      */
-    public function columnMap()
-    {
+    public function columnMap() {
         return array(
             %s
         );

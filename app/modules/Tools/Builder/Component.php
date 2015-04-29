@@ -1,5 +1,4 @@
 <?php
-
 /*
   +------------------------------------------------------------------------+
   | Phalcon Developer Tools                                                |
@@ -21,11 +20,11 @@
 namespace Tools\Builder;
 
 /**
- * \Phalcon\Builder\Component
+ * Tools\Builder\Component
  *
  * Base class for builder components
  *
- * @category 	Phalcon
+ * @category 	Tools
  * @package 	Builder
  * @subpackage  Component
  * @copyright   Copyright (c) 2011-2014 Phalcon Team (team@phalconphp.com)
