@@ -46,14 +46,11 @@ class ModulesController extends ControllerBase {
 
             } catch (\Exception $e) {
                 $this->flash->error($e->getMessage());
-                return $this->dispatcher->forward(array(
-                    'action' => 'index'
-                ));
             }
         }
 
         return $this->dispatcher->forward(array(
-            'action' => 'list'
+            'action' => 'index'
         ));
     }
 }

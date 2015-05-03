@@ -1,5 +1,4 @@
 <?php
-
 /*
   +------------------------------------------------------------------------+
   | Phalcon Developer Tools                                                |
@@ -18,32 +17,32 @@
   +------------------------------------------------------------------------+
 */
 namespace Tools\Controllers;
-use Modules\DevTools\Builder\BuilderException;
-use Modules\DevTools\Builder\Scaffold;
 
-class ScaffoldController extends ControllerBase
-{
+use Tools\Builder\Scaffold;
 
-    public function indexAction()
-    {
+class ScaffoldController extends ControllerBase {
 
+    public function indexAction() {
         $this->listTables();
-
         $this->view->templateEngines = array(
             'volt' => 'volt',
             'php' => 'php'
         );
 
+        $selectedModule = null;
+        $params = $this->router->getParams();
+        if(!empty($params))
+            $selectedModule = $this->router->getParams()[0];
+        $this->view->selectedModule = $selectedModule;
     }
 
     /**
      * Generate Scaffold
      */
-    public function generateAction()
-    {
+    public function generateAction() {
 
         if ($this->request->isPost()) {
-
+            $module = $this->request->getPost('module', 'string');
             $schema = $this->request->getPost('schema', 'string');
             $tableName = $this->request->getPost('tableName', 'string');
             $version = $this->request->getPost('version', 'string');
@@ -52,33 +51,32 @@ class ScaffoldController extends ControllerBase
             $genSettersGetters = $this->request->getPost('genSettersGetters', 'int');
 
             try {
-
                 $scaffoldBuilder = new Scaffold(array(
+                    'module' => $module,
                     'name' => $tableName,
                     'schema' => $schema,
                     'force'	=> $force,
                     'genSettersGetters' => $genSettersGetters,
-                    'directory' => APP_PATH,
-                    'templatePath' => APP_PATH . 'modules/DevTools/templates',
+                    'directory' => null,
+                    'templatePath' => __DIR__ . '../../templates/',
                     'templateEngine' => $templateEngine,
-                    'modelsDir' => ROOT_PATH . '.phalcon/',
-                    'modelsNamespace' => null
+                    'modelsDir' => null,
+                    'modelsNamespace' => null,
+                    'controllersNamespace' => null,
+                    'controllersDir' => null
                 ));
 
                 $scaffoldBuilder->build();
 
                 $this->flash->success('Scaffold for table "'.$tableName.'" was generated successfully');
 
-            } catch (BuilderException $e) {
+            } catch (\Exception $e) {
                 $this->flash->error($e->getMessage());
             }
-
         }
 
         return $this->dispatcher->forward(array(
-            'controller' => 'scaffold',
             'action' => 'index'
         ));
     }
-
 }

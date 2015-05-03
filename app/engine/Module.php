@@ -8,14 +8,26 @@
 
 namespace Engine;
 
+use Phalcon\DiInterface;
+use Phalcon\Mvc\ModuleDefinitionInterface;
 use Phalcon\Text;
 
-abstract class Module {
+abstract class Module implements ModuleDefinitionInterface {
 
-    public function registerAutoloaders() {
+    /**
+     * Registers an autoloader related to the module
+     *
+     * @param \Phalcon\DiInterface $di
+     */
+    public function registerAutoloaders(DiInterface $di = null) {
     }
 
-    public function registerServices($di) {
+    /**
+     * Registers an autoloader related to the module
+     *
+     * @param \Phalcon\DiInterface $di
+     */
+    public function registerServices(DiInterface $di) {
         $moduleName = Text::camelize($di['router']->getModuleName());
 
         //Attach a event listener to the dispatcher

@@ -8,7 +8,6 @@
 
 namespace Tools\Builder;
 
-use Phalcon\Text;
 use Tools\Helpers\Tools;
 
 class Controller extends Component {
@@ -28,13 +27,15 @@ class Controller extends Component {
             $options['force'] = false;
         }
         if (empty($options['directory'])) {
-            $options['directory'] = Tools::getModulesPath() . $options['module'] .DIRECTORY_SEPARATOR. Tools::getControllersDir();
+            $options['directory'] = Tools::getModulesPath() . $options['module'] .DIRECTORY_SEPARATOR. Tools::getControllersDir() . DIRECTORY_SEPARATOR;
+        } else {
+            $options['directory'] .= DIRECTORY_SEPARATOR;
         }
         if (empty($options['namespace']) || $options['namespace'] != 'None') {
-            $options['namespace'] = $options['module'] . '\\' . Tools::getControllersDir();
+            $options['namespace'] = Tools::getBaseModule() . $options['module'] . '\\' . Tools::getControllersDir();
         }
         if (empty($options['baseClass'])) {
-            $options['baseClass'] = '\Phalcon\Mvc\Controller';
+            $options['baseClass'] = 'Phalcon\Mvc\Controller';
         }
         $this->_options = $options;
     }
@@ -60,19 +61,20 @@ class Controller extends Component {
 
         $useClass = 'use '.$this->_options['baseClass'].';'.PHP_EOL.PHP_EOL;
 
-        $code = "<?php\n".Tools::getCopyright()."\n\n".$namespace.$useClass."class ".$this->_options['name']." extends $baseClass {
+        $code = "<?php\n".Tools::getCopyright()."\n\n".$namespace.$useClass.
+            "class ".$this->_options['name']." extends $baseClass {
             \n\tpublic function indexAction() {\n\n\t}\n}";
         $code = str_replace("\t", "    ", $code);
 
         if (!file_exists($controllerPath) || $this->_options['force'] == true) {
             if(!is_dir($this->_options['directory'])) {
-                mkdir($this->_options['directory'], 0777, true);
-                chmod($this->_options['directory'], 0777);
+                @mkdir($this->_options['directory'], 0777, true);
+                @chmod($this->_options['directory'], 0777);
             }
             if (!@file_put_contents($controllerPath, $code)) {
                 throw new \Exception("Unable to write to '$controllerPath'");
             }
-            chmod($controllerPath, 0777);
+            @chmod($controllerPath, 0777);
         } else {
             throw new \Exception("The Controller '".$this->_options['name']."' already exists");
         }

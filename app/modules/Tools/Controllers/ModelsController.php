@@ -8,7 +8,6 @@
 
 namespace Tools\Controllers;
 
-
 use Tools\Builder\AllModels;
 use Tools\Builder\Model;
 use Tools\Helpers\Tools;
@@ -33,7 +32,7 @@ class ModelsController extends ControllerBase {
 
         if ($this->request->isPost()) {
 
-            $name =$this->request->getPost('module', 'string');
+            $name =$this->request->getPost('name', 'string');
             $module = $this->request->getPost('module', 'string');
             $force = $this->request->getPost('force', 'int');
             $schema = $this->request->getPost('schema', 'string');
@@ -46,7 +45,6 @@ class ModelsController extends ControllerBase {
             $defineRelations = $this->request->getPost('defineRelations', 'int');
 
             try {
-
                 $component = array(
                     'module' => $module,
                     'name' => $name,

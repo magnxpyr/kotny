@@ -1,5 +1,4 @@
 <?php
-
 /*
   +------------------------------------------------------------------------+
   | Phalcon Developer Tools                                                |
@@ -17,48 +16,45 @@
   |          Eduar Carvajal <eduar@phalconphp.com>                         |
   +------------------------------------------------------------------------+
 */
+/**
+ * @copyright   2006 - 2015 Magnxpyr Network
+ * @license     New BSD License; see LICENSE
+ * @url         http://www.magnxpyr.com
+ * @authors     Stefan Chiriac <stefan@magnxpyr.com>
+ */
 
 namespace Tools\Builder;
 
-use Modules\DevTools\Builder\Component;
-use Modules\DevTools\Builder\BuilderException;
-use Phalcon\Text as Utils;
+use Phalcon\Text;
+use Tools\Helpers\Tools;
 
-/**
- * AllModels
- *
- * Builder to generate all models
- *
- * @category    Phalcon
- * @package    Scripts
- * @copyright   Copyright (c) 2011-2014 Phalcon Team (team@phalconphp.com)
- * @license    New BSD License
- */
-class AllModels
-{
+class AllModels extends Component {
 
     public $exist = array();
 
-    public function __construct($options)
-    {
+    public function __construct($options) {
+        if (empty($options['name'])) {
+            $options['name'] = Text::camelize($options['tableName']);
+        }
+        if (empty($options['directory'])) {
+            $options['directory'] = Tools::getModulesPath() . $options['module'] .DIRECTORY_SEPARATOR. Tools::getModelsDir();
+        }
+        if (empty($options['namespace']) || $options['namespace'] != 'None') {
+            $options['namespace'] = Tools::getBaseModule() . $options['module'] . '\\' . Tools::getModelsDir();
+        }
+        if (empty($options['baseClass'])) {
+            $options['baseClass'] = 'Phalcon\Mvc\Model';
+        }
+        if (empty($options['tableName'])) {
+            throw new \Exception("Please, specify the table name");
+        }
         if (!isset($options['force'])) {
             $options['force'] = false;
         }
-
         $this->_options = $options;
     }
 
-    public function build()
-    {
-
-        $path = '.';
-        if (isset($this->_options['directory'])) {
-            $path = $this->_options['directory'];
-        }
-
-        $config = $this->_getConfig($path . '/');
-        $modelsDir = ROOT_PATH . '.phalcon';
-        $forceProcess = $this->_options['force'];
+    public function build() {
 
         if (isset($this->_options['defineRelations'])) {
             $defineRelations = $this->_options['defineRelations'];
@@ -78,19 +74,23 @@ class AllModels
             $genSettersGetters = false;
         }
 
-        $adapter = $config->database->adapter;
-        $this->isSupportedAdapter($adapter);
+        if(isset(Tools::getConfig()->database)) {
+            $dbConfig = Tools::getConfig()->database;
+        } elseif(Tools::getConfig()->db) {
+            $dbConfig = Tools::getConfig()->db;
+        }
 
-        if (isset($config->database->adapter)) {
-            $adapter = $config->database->adapter;
+        if (isset($dbConfig->adapter)) {
+            $adapter = $dbConfig->adapter;
+            $this->isSupportedAdapter($adapter);
         } else {
             $adapter = 'Mysql';
         }
 
-        if (is_object($config->database)) {
-            $configArray = $config->database->toArray();
+        if (is_object($dbConfig)) {
+            $configArray = $dbConfig->toArray();
         } else {
-            $configArray = $config->database;
+            $configArray = $dbConfig;
         }
 
         $adapterName = 'Phalcon\Db\Adapter\Pdo\\' . $adapter;
@@ -106,7 +106,7 @@ class AllModels
         } elseif ($adapter == 'Postgresql') {
             $schema = 'public';
         } else {
-            $schema = isset($config->database->schema)?$config->database->schema:$config->database->dbname;
+            $schema = isset($dbConfig->schema) ? $dbConfig->schema : $dbConfig->dbname;
         }
 
         $hasMany = array();
@@ -126,13 +126,13 @@ class AllModels
                     $foreignKeys[$name] = array();
                 }
 
-                $camelCaseName = Utils::camelize($name);
-                $refSchema = ($adapter != 'Postgresql') ? $schema : $config->database->dbname;
+                $camelCaseName = Text::camelize($name);
+                $refSchema = ($adapter != 'Postgresql') ? $schema : $dbConfig->dbname;
 
                 foreach ($db->describeReferences($name, $schema) as $reference) {
                     $columns = $reference->getColumns();
                     $referencedColumns = $reference->getReferencedColumns();
-                    $referencedModel = Utils::camelize($reference->getReferencedTable());
+                    $referencedModel = Text::camelize($reference->getReferencedTable());
                     if ($defineRelations) {
                         if ($reference->getReferencedSchema() == $refSchema) {
                             if (count($columns) == 1) {
@@ -163,8 +163,8 @@ class AllModels
         }
 
         foreach ($db->listTables($schema) as $name) {
-            $className = Utils::camelize($name);
-            if (!file_exists($modelsDir . '/' . $className . '.php') || $forceProcess) {
+            $className = Text::camelize($name);
+            if (!file_exists($this->_options['directory'] . DIRECTORY_SEPARATOR . $className . '.php') || $this->_options['force']) {
 
                 if (isset($hasMany[$name])) {
                     $hasManyModel = $hasMany[$name];
@@ -185,29 +185,24 @@ class AllModels
                 }
 
                 $modelBuilder = new Model(array(
-                    'name' => $name,
+                    'module' => $this->_options['module'],
+                    'name' => $className,
+                    'tableName' => $name,
                     'schema' => $schema,
-                    'extends' => isset($this->_options['extends']) ? $this->_options['extends'] : null,
+                    'baseClass' => $this->_options['baseClass'],
                     'namespace' => $this->_options['namespace'],
-                    'force' => $forceProcess,
+                    'force' => $this->_options['force'],
                     'hasMany' => $hasManyModel,
                     'belongsTo' => $belongsToModel,
                     'foreignKeys' => $foreignKeysModel,
                     'genSettersGetters' => $genSettersGetters,
                     'directory' => $this->_options['directory'],
-                    'modelsDir' => $this->_options['modelsDir'],
                 ));
 
                 $modelBuilder->build();
             } else {
-                if ( $this->isConsole() ) {
-
-                    print Color::info("Skipping model \"$name\" because it already exist");
-                } else {
-                    $this->exist[] = $name;
-                }
+                $this->exist[] = $className;
             }
         }
-
     }
 }

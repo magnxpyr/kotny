@@ -29,17 +29,6 @@ use Phalcon\Db\Column;
 use Phalcon\Text;
 use Tools\Helpers\Tools;
 
-/**
- * ModelBuilderComponent
- *
- * Builder to generate models
- *
- * @category    Tools
- * @package    Builder
- * @subpackage  Model
- * @copyright   Copyright (c) 2011-2014 Phalcon Team (team@phalconphp.com)
- * @license    New BSD License
- */
 class Model extends Component {
 
     public function __construct($options) {
@@ -47,22 +36,21 @@ class Model extends Component {
             $options['name'] = Text::camelize($options['tableName']);
         }
         if (empty($options['directory'])) {
-            $options['directory'] = Tools::getModulesPath() . $options['module'] .DIRECTORY_SEPARATOR. Tools::getModelsDir();
+            $options['directory'] = Tools::getModulesPath() . $options['module'] .DIRECTORY_SEPARATOR. Tools::getModelsDir(). DIRECTORY_SEPARATOR;
+        } else {
+            $options['directory'] .= DIRECTORY_SEPARATOR;
         }
         if (empty($options['namespace']) || $options['namespace'] != 'None') {
-            $options['namespace'] = $options['module'] . '\\' . Tools::getModelsDir();
+            $options['namespace'] = Tools::getBaseNamespace() . $options['module'] . '\\' . Tools::getModelsDir();
         }
         if (empty($options['baseClass'])) {
             $options['baseClass'] = 'Phalcon\Mvc\Model';
         }
-        if (!isset($options['tableName'])) {
+        if (empty($options['tableName'])) {
             throw new \Exception("Please, specify the table name");
         }
         if (!isset($options['force'])) {
             $options['force'] = false;
-        }
-        if (!isset($options['fileName'])) {
-            $options['fileName'] = $options['tableName'];
         }
         $this->_options = $options;
     }
@@ -233,12 +221,8 @@ class Model extends Component {
             }
         }
 
-        if(isset(Tools::getConfig()->database)) {
-            $dbConfig = Tools::getConfig()->database;
-        } elseif (isset(Tools::getConfig()->db)) {
-            $dbConfig = Tools::getConfig()->db;
-        } else {
-            throw new \Exception("Database configuration cannot be loaded from your config file");
+        if(Tools::getDb()) {
+            $dbConfig = Tools::getDb();
         }
 
         if (!isset($dbConfig->adapter)) {
@@ -297,7 +281,7 @@ class Model extends Component {
             $schema = $dbConfig->dbname;
         }
 
-        if ($this->_options['fileName'] != $this->_options['tableName']) {
+        if ($this->_options['name'] != $this->_options['tableName']) {
             $initialize[] = sprintf(
                 $templateThis, 'setSource',
                 '\'' . $this->_options['tableName'] . '\''
@@ -597,10 +581,15 @@ class Model extends Component {
             $content
         );
 
+        if(!@is_dir($this->_options['directory'])) {
+            @mkdir($this->_options['directory']);
+            @chmod($this->_options['directory'], 0777);
+        }
+
         if (!@file_put_contents($modelPath, $code)) {
             throw new \Exception("Unable to write to '$modelPath'");
         }
-        chmod($modelPath, 0777);
+        @chmod($modelPath, 0777);
     }
 
     /**
@@ -650,5 +639,4 @@ class Model extends Component {
 
         return sprintf($template, join(", \n            ", $contents));
     }
-
 }

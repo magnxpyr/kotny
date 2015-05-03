@@ -6,7 +6,6 @@
  * @authors     Stefan Chiriac <stefan@magnxpyr.com>
  */
 
-
 namespace Tools\Helpers;
 
 use Phalcon\Config;
@@ -37,6 +36,11 @@ class Tools extends ControllerBase {
 
     /**
      * @var \Phalcon\Mvc\Model
+     */
+    private static $_connection;
+
+    /**
+     * @var \Phalcon\Config
      */
     private static $_db;
 
@@ -98,19 +102,20 @@ class Tools extends ControllerBase {
      * Print navigation menu of the given controller
      *
      * @param  string $controllerName
-     * @return void
+     * @return string
      */
-    public static function getNavMenu($controllerName)
-    {
+    public static function getNavMenu($controllerName) {
+        $html = '';
         foreach (self::$_options as $controller => $option) {
             $ref = self::generateUrl($controller);
             if ($controllerName == $controller) {
-                echo '<a class="list-group-item active"';
+                $html .= '<a class="list-group-item active"';
             } else {
-                echo '<a class="list-group-item"';
+                $html .= '<a class="list-group-item"';
             }
-            echo  ' href="' . $ref . '">' . $option['caption'] . '</a>' . PHP_EOL;
+            $html .=  ' href="' . $ref . '">' . $option['caption'] . '</a>' . PHP_EOL;
         }
+        return $html;
     }
 
     /**
@@ -118,17 +123,19 @@ class Tools extends ControllerBase {
      *
      * @param  string $controllerName
      * @param  string $actionName
-     * @return void
+     * @return string
      */
     public static function getMenu($controllerName, $actionName) {
+        $html = '';
         foreach (self::$_options[$controllerName]['options'] as $action => $option) {
             $ref = self::generateUrl($controllerName, $action);
             if ($actionName == $action) {
-                echo '<li role="presentation" class="active"><a href="' . $ref . '">' . $option['caption'] . '</a></li>' . PHP_EOL;
+                $html .= '<li role="presentation" class="active"><a href="' . $ref . '">' . $option['caption'] . '</a></li>' . PHP_EOL;
             } else {
-                echo '<li role="presentation"><a href="' . $ref . '">' . $option['caption'] . '</a></li>' . PHP_EOL;
+                $html .= '<li role="presentation"><a href="' . $ref . '">' . $option['caption'] . '</a></li>' . PHP_EOL;
             }
         }
+        return $html;
     }
 
     /**
@@ -164,7 +171,7 @@ class Tools extends ControllerBase {
     }
 
     /**
-     * Return the config object in the services container
+     * Return the url object in the services container
      *
      * @return \Phalcon\Mvc\Url
      */
@@ -175,7 +182,7 @@ class Tools extends ControllerBase {
     }
 
     /**
-     * Return the config object in the services container
+     * Return the router object in the services container
      *
      * @return \Phalcon\Mvc\Router
      */
@@ -186,13 +193,33 @@ class Tools extends ControllerBase {
     }
 
     /**
-     * Return the config object in the services container
+     * Return the db object in the services container
      *
      * @return \Phalcon\Mvc\Model
      */
     public static function getConnection() {
-        if(is_null(self::$_db))
-            self::$_db = Di::getDefault()->getShared('db');
+        if(is_null(self::$_connection))
+            self::$_connection = Di::getDefault()->getShared('db');
+        return self::$_connection;
+    }
+
+    /**
+     * Return the db config object in the services container
+     *
+     * @throws \Exception
+     * @return \Phalcon\Mvc\Model
+     */
+    public static function getDb() {
+        if(is_null(self::$_db)) {
+            if(isset(self::getConfig()->database)) {
+                $dbConfig = self::getConfig()->database;
+            } elseif (isset(self::getConfig()->db)) {
+                $dbConfig = self::getConfig()->db;
+            } else {
+                throw new \Exception("Database configuration cannot be loaded from your config file");
+            }
+            return $dbConfig;
+        }
         return self::$_db;
     }
 
@@ -310,6 +337,72 @@ class Tools extends ControllerBase {
     }
 
     /**
+     * Return the base controllers class
+     * @return array
+     */
+    public static function getBaseController() {
+        if(isset(self::_getToolsConfig()->baseController)) {
+            return self::_getToolsConfig()->baseController;
+        }
+        return array('Phalcon\Mvc\Controller');
+    }
+
+    /**
+     * Return the base model class
+     * @return array
+     */
+    public static function getBaseModel() {
+        if(isset(self::_getToolsConfig()->baseModel)) {
+            return self::_getToolsConfig()->baseModel;
+        }
+        return array('Phalcon\Mvc\Model');
+    }
+
+    /**
+     * Return the base form class
+     * @return array
+     */
+    public static function getBaseForm() {
+        if(isset(self::_getToolsConfig()->baseForm)) {
+            return self::_getToolsConfig()->baseForm;
+        }
+        return array('Phalcon\Mvc\Model');
+    }
+
+    /**
+     * Return the base module class
+     * @return string
+     */
+    public static function getBaseModule() {
+        if(isset(self::_getToolsConfig()->baseModule)) {
+            return self::_getToolsConfig()->baseModule;
+        }
+        return '';
+    }
+
+    /**
+     * Return the base route class
+     * @return string
+     */
+    public static function getBaseRoute() {
+        if(isset(self::_getToolsConfig()->baseModule)) {
+            return self::_getToolsConfig()->baseModule;
+        }
+        return '';
+    }
+
+    /**
+     * Return the base namespace
+     * @return string
+     */
+    public static function getBaseNamespace() {
+        if(isset(self::_getToolsConfig()->baseNamespace)) {
+            return self::_getToolsConfig()->baseNamespace . '\\';
+        }
+        return '';
+    }
+
+    /**
      * Return the path to modules directory
      * @return string
      * @throws \Exception
@@ -329,7 +422,6 @@ class Tools extends ControllerBase {
         if(isset(self::_getToolsConfig()->controllersDir)) {
             return self::_getToolsConfig()->controllersDir;
         }
-
         return 'Controllers';
     }
 
@@ -342,6 +434,17 @@ class Tools extends ControllerBase {
             return self::_getToolsConfig()->modelsDir;
         }
         return 'Models';
+    }
+
+    /**
+     * Return the Form directory
+     * @return string
+     */
+    public static function getFormsDir() {
+        if(isset(self::_getToolsConfig()->formsDir)) {
+            return self::_getToolsConfig()->formsDir;
+        }
+        return 'Forms';
     }
 
     /**
@@ -364,5 +467,16 @@ class Tools extends ControllerBase {
             return self::_getToolsConfig()->copyright;
         }
         return '';
+    }
+
+    /**
+     * Use minimal version
+     * @return bool
+     */
+    public static function fullVersion() {
+        if(isset(self::_getToolsConfig()->full)) {
+            return self::_getToolsConfig()->full;
+        }
+        return true;
     }
 }

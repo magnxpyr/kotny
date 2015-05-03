@@ -13,5 +13,8 @@ return [
 //    'allow' => '',
     'baseController' => ['Engine\Controller', 'Engine\AdminController'],
     'baseModel' => [],
-    'baseForm' => []
+    'baseForm' => [],
+    'baseModule' => 'Engine\Module',
+ //   'baseRoute' => ''
+    'full' => false
 ];

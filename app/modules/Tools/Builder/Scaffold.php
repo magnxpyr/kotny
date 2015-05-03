@@ -1,5 +1,4 @@
 <?php
-
 /*
   +------------------------------------------------------------------------+
   | Phalcon Developer Tools                                                |
@@ -17,6 +16,12 @@
   |          Eduar Carvajal <eduar@phalconphp.com>                         |
   +------------------------------------------------------------------------+
 */
+/**
+ * @copyright   2006 - 2015 Magnxpyr Network
+ * @license     New BSD License; see LICENSE
+ * @url         http://www.magnxpyr.com
+ * @authors     Stefan Chiriac <stefan@magnxpyr.com>
+ */
 
 namespace Tools\Builder;
 
@@ -24,20 +29,192 @@ use Phalcon\Text;
 use Tools\Builder\Model as ModelBuilder;
 use Phalcon\DI\FactoryDefault;
 use Phalcon\Db\Column;
+use Tools\Helpers\Tools;
 
-/**
- * ScaffoldBuilderComponent
- *
- * Build CRUDs using Phalcon
- *
- * @category 	Phalcon
- * @package 	Builder
- * @subpackage  Scaffold
- * @copyright   Copyright (c) 2011-2014 Phalcon Team (team@phalconphp.com)
- * @license 	New BSD License
- */
-class Scaffold
-{
+class Scaffold extends Component {
+
+    public function __construct($options) {
+        if (empty($options['name'])) {
+            $options['name'] = Text::camelize($options['tableName']);
+        }
+        if (empty($options['controllersDir'])) {
+            $options['controllersDir'] = Tools::getModulesPath() . $options['module'] .DIRECTORY_SEPARATOR. Tools::getControllersDir().DIRECTORY_SEPARATOR;
+        } else {
+            $options['controllersDir'] .= DIRECTORY_SEPARATOR;
+        }
+        if (empty($options['controllersNamespace']) || $options['namespace'] != 'None') {
+            $options['controllersNamespace'] = Tools::getBaseNamespace() . $options['module'] . '\\' . Tools::getControllersDir();
+        }
+        if (empty($options['modelsDir'])) {
+            $options['modelsDir'] = Tools::getModulesPath() . $options['module'] .DIRECTORY_SEPARATOR. Tools::getModelsDir().DIRECTORY_SEPARATOR;
+        } else {
+            $options['modelsDir'] .= DIRECTORY_SEPARATOR;
+        }
+        if (empty($options['modelsNamespace']) || $options['namespace'] != 'None') {
+            $options['modelsNamespace'] = Tools::getBaseNamespace() . $options['module'] . '\\' . Tools::getModelsDir();
+        }
+        if (empty($options['viewsDir'])) {
+            $options['viewsDir'] = Tools::getModulesPath() . $options['module'] .DIRECTORY_SEPARATOR. Tools::getViewsDir().DIRECTORY_SEPARATOR;
+        } else {
+            $options['viewsDir'] .= DIRECTORY_SEPARATOR;
+        }
+        if (empty($options['baseClass'])) {
+            $options['baseClass'] = 'Phalcon\Mvc\Model';
+        }
+        if (empty($options['tableName'])) {
+            throw new \Exception("Please, specify the table name");
+        }
+        if (!isset($options['force'])) {
+            $options['force'] = false;
+        }
+        $this->_options = $options;
+    }
+
+    /**
+     * @return bool
+     * @throws \Exception
+     */
+    public function build() {
+        $config = $this->_options;
+
+        if(Tools::getDb()) {
+            $config = Tools::getDb();
+        }
+
+        if (!isset($config->adapter)) {
+            throw new \Exception("Adapter was not found in the config. Please specify a config variable [database][adapter]");
+        }
+
+        $adapter = ucfirst($config->adapter);
+
+        $this->isSupportedAdapter($adapter);
+
+        $di = new FactoryDefault();
+
+        $di->set('db', function () use ($adapter, $config) {
+
+            if (isset($config->adapter)) {
+                $adapter = $config->adapter;
+            } else {
+                $adapter = 'Mysql';
+            }
+
+            if (is_object($config)) {
+                $configArray = $config->toArray();
+            } else {
+                $configArray = $config;
+            }
+
+            $adapterName = 'Phalcon\Db\Adapter\Pdo\\' . $adapter;
+            unset($configArray['adapter']);
+
+            return new $adapterName($configArray);
+        });
+
+        $options['manager'] = $di->getShared('modelsManager');
+
+        $options['className'] = Text::camelize($options['name']);
+        $options['fileName'] = Text::uncamelize($options['className']);
+
+        $modelsNamespace = $options['modelsNamespace'];
+        if (isset($modelsNamespace) && substr($modelsNamespace, -1) !== '\\') {
+            $modelsNamespace .= "\\";
+        }
+
+        $modelName = Text::camelize($config['name']);
+        $modelClass = $modelsNamespace . $modelName;
+        if(!@dir($config['modelsDir'])) {
+            mkdir($config['modelsDir']);
+            chmod($config['modelsDir'], 0777);
+        }
+        $modelPath = $config['modelsDir'].'/'.$modelName.'.php';
+        if (!file_exists($modelPath)) {
+            $modelBuilder = new ModelBuilder(array(
+                'module' => $options['module'],
+                'name' => null,
+                'tableName' => $options['tableName'],
+                'schema' => $options['schema'],
+                'baseClass' => null,
+                'namespace' => $options['modelsNamespace'],
+                'foreignKeys' => null,
+                'defineRelations' => null,
+                'genSettersGetters' => $options['genSettersGetters'],
+                'directory' => $options['modelsDir'],
+                'force' => $options['force']
+            ));
+
+            $modelBuilder->build();
+        }
+
+        if (!class_exists($modelClass)) {
+            require $modelPath;
+        }
+
+        $entity = new $modelClass();
+
+        $metaData = $di['modelsMetadata'];
+
+        $attributes = $metaData->getAttributes($entity);
+        $dataTypes = $metaData->getDataTypes($entity);
+        $identityField = $metaData->getIdentityField($entity);
+        $primaryKeys = $metaData->getPrimaryKeyAttributes($entity);
+
+        $setParams = array();
+        $selectDefinition = array();
+
+        $relationField = '';
+
+        $options['name'] 				 = strtolower(Text::camelize($this->_options['name']));
+        $options['plural'] 				 = $this->_getPossiblePlural($this->_options['name']);
+        $options['singular']			 = $this->_getPossibleSingular($this->_options['name']);
+        $options['entity']				 = $entity;
+        $options['setParams'] 			 = $setParams;
+        $options['attributes'] 			 = $attributes;
+        $options['dataTypes'] 			 = $dataTypes;
+        $options['primaryKeys']          = $primaryKeys;
+        $options['identityField']		 = $identityField;
+        $options['relationField'] 		 = $relationField;
+        $options['selectDefinition']	 = $selectDefinition;
+        $options['autocompleteFields'] 	 = array();
+        $options['belongsToDefinitions'] = array();
+
+        //Build Controller
+        $this->_makeController($options);
+
+        if (isset($options['templateEngine']) && $options['templateEngine'] == 'volt') {
+            //View layouts
+            $this->_makeLayoutsVolt($options);
+
+            //View index.phtml
+            $this->_makeViewIndexVolt(null, $options);
+
+            //View search.phtml
+            $this->_makeViewSearchVolt(null, $options);
+
+            //View new.phtml
+            $this->_makeViewNewVolt(null, $options);
+
+            //View edit.phtml
+            $this->_makeViewEditVolt(null, $options);
+        } else {
+            //View layouts
+            $this->_makeLayouts(null, $options);
+
+            //View index.phtml
+            $this->_makeViewIndex(null, $options);
+
+            //View search.phtml
+            $this->_makeViewSearch(null, $options);
+
+            //View new.phtml
+            $this->_makeViewNew(null, $options);
+
+            //View edit.phtml
+            $this->_makeViewEdit(null, $options);
+        }
+
+        return true;
+    }
 
     private function _findDetailField($entity)
     {
@@ -93,181 +270,6 @@ class Scaffold
         }
 
         return $className;
-    }
-
-    /**
-     * @return bool
-     * @throws \Exception
-     */
-    public function build()
-    {
-
-        $options = $this->_options;
-
-        $path = '';
-        if (isset($this->_options['directory'])) {
-            if ($this->_options['directory']) {
-                $path = $this->_options['directory'] . '/';
-            }
-        }
-
-        $name = $options['name'];
-        $config = $this->_getConfig($path);
-
-        if (!isset($config->database->adapter)) {
-            throw new \Exception("Adapter was not found in the config. Please specify a config variable [database][adapter]");
-        }
-
-        $adapter = ucfirst($config->database->adapter);
-
-        $this->isSupportedAdapter($adapter);
-
-        $di = new FactoryDefault();
-
-        $di->set('db', function () use ($adapter, $config) {
-
-            if (isset($config->database->adapter)) {
-                $adapter = $config->database->adapter;
-            } else {
-                $adapter = 'Mysql';
-            }
-
-            if (is_object($config->database)) {
-                $configArray = $config->database->toArray();
-            } else {
-                $configArray = $config->database;
-            }
-
-            $adapterName = 'Phalcon\Db\Adapter\Pdo\\' . $adapter;
-            unset($configArray['adapter']);
-
-            return new $adapterName($configArray);
-        });
-
-        $config = new \stdClass();
-        $config->application = new \stdClass();
-        $config->application->modelsDir = ROOT_PATH . '.phalcon/';
-        if (isset($config->application->modelsDir)) {
-        //    $options['modelsDir'] = $path . $config->application->modelsDir;
-            $options['modelsDir'] = $config->application->modelsDir;
-        } else {
-            throw new \Exception("The builder is unable to find the views directory");
-        }
-
-        $config->application->controllersDir = ROOT_PATH . '.phalcon/';
-        if (isset($config->application->controllersDir)) {
-        //    $options['controllersDir'] = $path . $config->application->controllersDir;
-            $options['controllersDir'] = $config->application->controllersDir;
-        } else {
-            throw new \Exception("The builder is unable to find the controllers directory");
-        }
-
-        $config->application->viewsDir = ROOT_PATH . '.phalcon/';
-        if (isset($config->application->viewsDir)) {
-        //    $options['viewsDir'] = $path . $config->application->viewsDir;
-            $options['viewsDir'] = $config->application->viewsDir;
-        } else {
-            throw new \Exception("The builder is unable to find the views directory");
-        }
-
-        $options['manager'] = $di->getShared('modelsManager');
-
-        $options['className'] = Text::camelize($options['name']);
-        $options['fileName'] = Text::uncamelize($options['className']);
-
-        $modelsNamespace = $options['modelsNamespace'];
-        if (isset($modelsNamespace) && substr($modelsNamespace, -1) !== '\\') {
-            $modelsNamespace .= "\\";
-        }
-
-        $modelName = Text::camelize($name);
-        $modelClass = $modelsNamespace . $modelName;
-        $modelPath = $config->application->modelsDir.'/'.$modelName.'.php';
-        if (!file_exists($modelPath)) {
-
-            $modelBuilder = new ModelBuilder(array(
-                'name' => $name,
-                'schema' => $options['schema'],
-                'className' => $options['className'],
-                'fileName' => $options['fileName'],
-                'genSettersGetters' => $options['genSettersGetters'],
-                'directory' => $options['directory'],
-                'force' => $options['force'],
-                'modelsDir' => ROOT_PATH . '.phalcon/'
-            ));
-
-            $modelBuilder->build();
-        }
-
-        if (!class_exists($modelClass)) {
-            require $modelPath;
-        }
-
-        $entity = new $modelClass();
-
-        $metaData = $di['modelsMetadata'];
-
-        $attributes = $metaData->getAttributes($entity);
-        $dataTypes = $metaData->getDataTypes($entity);
-        $identityField = $metaData->getIdentityField($entity);
-        $primaryKeys = $metaData->getPrimaryKeyAttributes($entity);
-
-        $setParams = array();
-        $selectDefinition = array();
-
-        $relationField = '';
-
-        $single = $name;
-        $options['name'] 				 = strtolower(Text::camelize($single));
-        $options['plural'] 				 = $this->_getPossiblePlural($name);
-        $options['singular']			 = $this->_getPossibleSingular($name);
-        $options['entity']				 = $entity;
-        $options['setParams'] 			 = $setParams;
-        $options['attributes'] 			 = $attributes;
-        $options['dataTypes'] 			 = $dataTypes;
-        $options['primaryKeys']          = $primaryKeys;
-        $options['identityField']		 = $identityField;
-        $options['relationField'] 		 = $relationField;
-        $options['selectDefinition']	 = $selectDefinition;
-        $options['autocompleteFields'] 	 = array();
-        $options['belongsToDefinitions'] = array();
-
-        //Build Controller
-        $this->_makeController($path, $options);
-
-        if (isset($options['templateEngine']) && $options['templateEngine'] == 'volt') {
-            //View layouts
-            $this->_makeLayoutsVolt($path, $options);
-
-            //View index.phtml
-            $this->_makeViewIndexVolt($path, $options);
-
-            //View search.phtml
-            $this->_makeViewSearchVolt($path, $options);
-
-            //View new.phtml
-            $this->_makeViewNewVolt($path, $options);
-
-            //View edit.phtml
-            $this->_makeViewEditVolt($path, $options);
-        } else {
-            //View layouts
-            $this->_makeLayouts($path, $options);
-
-            //View index.phtml
-            $this->_makeViewIndex($path, $options);
-
-            //View search.phtml
-            $this->_makeViewSearch($path, $options);
-
-            //View new.phtml
-            $this->_makeViewNew($path, $options);
-
-            //View edit.phtml
-            $this->_makeViewEdit($path, $options);
-        }
-
-        return true;
     }
 
     /**
@@ -531,7 +533,7 @@ class Scaffold
      * @param string $path
      * @param array  $options
      */
-    private function _makeController($path, $options)
+    private function _makeController($options)
     {
 
         $controllerPath = $options['controllersDir'] . $options['className'] . 'Controller.php';
@@ -567,10 +569,6 @@ class Scaffold
 
         $code = str_replace('$pkVar$', '$' . $options['attributes'][0], $code);
         $code = str_replace('$pk$', $options['attributes'][0], $code);
-
-        if ($this->isConsole()) {
-            echo $controllerPath, PHP_EOL;
-        }
 
         $code = str_replace("\t", "    ", $code);
         file_put_contents($controllerPath, $code);
@@ -611,10 +609,6 @@ class Scaffold
             }
             $code .= "\t" . '<?php echo $this->getContent(); ?>' . PHP_EOL . '</div>';
 
-            if ($this->isConsole()) {
-                echo $viewPath, PHP_EOL;
-            }
-
             $code = str_replace("\t", "    ", $code);
             file_put_contents($viewPath, $code);
 
@@ -625,7 +619,7 @@ class Scaffold
      * @param $path
      * @param $options
      */
-    private function _makeLayoutsVolt($path, $options)
+    private function _makeLayoutsVolt($options)
     {
 
         //Make Layouts dir
@@ -653,10 +647,6 @@ class Scaffold
                 $code .= '<div align="center">' . PHP_EOL;
             }
             $code .= "\t" . '{{ content() }}' . PHP_EOL . '</div>';
-
-            if ($this->isConsole()) {
-                echo $viewPath, PHP_EOL;
-            }
 
             $code = str_replace("\t", "    ", $code);
             file_put_contents($viewPath, $code);
@@ -696,10 +686,6 @@ class Scaffold
         $code = str_replace('$plural$', $options['plural'], $code);
         $code = str_replace('$captureFields$', self::_makeFields($path, $options, $type), $code);
 
-        if ($this->isConsole()) {
-            echo $viewPath, PHP_EOL;
-        }
-
         $code = str_replace("\t", "    ", $code);
         file_put_contents($viewPath, $code);
     }
@@ -735,10 +721,6 @@ class Scaffold
 
         $code = str_replace('$plural$', $options['plural'], $code);
         $code = str_replace('$captureFields$', self::_makeFieldsVolt($path, $options, $type), $code);
-
-        if ($this->isConsole()) {
-            echo $viewPath, PHP_EOL;
-        }
 
         $code = str_replace("\t", "    ", $code);
         file_put_contents($viewPath, $code);
@@ -864,10 +846,6 @@ class Scaffold
         $code = str_replace('$singularVar$', '$' . $options['singular'], $code);
         $code = str_replace('$pk$', $idField, $code);
 
-        if ($this->isConsole()) {
-            echo $viewPath, PHP_EOL;
-        }
-
         $code = str_replace("\t", "    ", $code);
         file_put_contents($viewPath, $code);
     }
@@ -933,10 +911,6 @@ class Scaffold
         $code = str_replace('$rowColumns$', $rowCode, $code);
         $code = str_replace('$singularVar$', $options['singular'], $code);
         $code = str_replace('$pk$', $idField, $code);
-
-        if ($this->isConsole()) {
-            echo $viewPath, PHP_EOL;
-        }
 
         $code = str_replace("\t", "    ", $code);
         file_put_contents($viewPath, $code);
