@@ -2,8 +2,8 @@
 /**
  * @copyright   2006 - 2015 Magnxpyr Network
  * @license     New BSD License; see LICENSE
- * @url         http://www.magnxpyr.com
- * @authors     Stefan Chiriac <stefan@magnxpyr.com>
+ * @link        http://www.magnxpyr.com
+ * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
 namespace Core\Controllers;
@@ -17,7 +17,7 @@ class ErrorController extends \Engine\Controller {
     }
 
     public function show404Action() {
-        $this->response->setStatusCode(404, 'Not Found');
+        $this->response->setStatusCode(404, 'Page Not Found');
     }
 
     public function show503Action() {

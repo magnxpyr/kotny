@@ -2,8 +2,8 @@
 /**
  * @copyright   2006 - 2015 Magnxpyr Network
  * @license     New BSD License; see LICENSE
- * @url         http://www.magnxpyr.com
- * @authors     Stefan Chiriac <stefan@magnxpyr.com>
+ * @link        http://www.magnxpyr.com
+ * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
 namespace Engine\Plugins;
@@ -45,7 +45,7 @@ class Security extends Plugin
                 //If he doesn't have access forward him to the index controller
                 $this->flash->error("You don't have access to this module");
 
-                $this->di['response']->redirect('error/show404', false, 301);
+                $this->response->setStatusCode(404, 'Page Not Found');
 
                 //Returning "false" we tell to the dispatcher to stop the current operation
                 return false;

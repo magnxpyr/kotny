@@ -16,6 +16,12 @@
   |          Eduar Carvajal <eduar@phalconphp.com>                         |
   +------------------------------------------------------------------------+
 */
+/**
+ * @copyright   2006 - 2015 Magnxpyr Network
+ * @license     New BSD License; see LICENSE
+ * @link        http://www.magnxpyr.com
+ * @author      Stefan Chiriac <stefan@magnxpyr.com>
+ */
 namespace Tools\Controllers;
 
 use Tools\Builder\Scaffold;
@@ -39,7 +45,7 @@ class ScaffoldController extends ControllerBase {
     /**
      * Generate Scaffold
      */
-    public function generateAction() {
+    public function createAction() {
 
         if ($this->request->isPost()) {
             $module = $this->request->getPost('module', 'string');
@@ -53,12 +59,13 @@ class ScaffoldController extends ControllerBase {
             try {
                 $scaffoldBuilder = new Scaffold(array(
                     'module' => $module,
-                    'name' => $tableName,
+                    'name' => null,
+                    'tableName' => $tableName,
                     'schema' => $schema,
                     'force'	=> $force,
                     'genSettersGetters' => $genSettersGetters,
                     'directory' => null,
-                    'templatePath' => __DIR__ . '../../templates/',
+                    'templatePath' => __DIR__ . '/../templates/',
                     'templateEngine' => $templateEngine,
                     'modelsDir' => null,
                     'modelsNamespace' => null,

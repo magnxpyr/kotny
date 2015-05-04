@@ -1,5 +1,4 @@
 <?php
-
 /*
   +------------------------------------------------------------------------+
   | Phalcon Developer Tools                                                |
@@ -18,27 +17,26 @@
   +------------------------------------------------------------------------+
 */
 namespace Tools\Controllers;
-use Tools\Builder\BuilderException;
-use Tools\Migrations;
 
-class MigrationsController extends ControllerBase
-{
+use Tools\Builder\Migrations;
+use Tools\Helpers\Tools;
+
+class MigrationsController extends ControllerBase {
 
     /**
      * @return string
      */
-    protected function _getMigrationsDir()
-    {
-        $migrationsDir = ROOT_PATH . 'app/migrations';
+    protected function _getMigrationsDir() {
+        $migrationsDir = Tools::getMigrationsPath();
         if (!file_exists($migrationsDir)) {
             mkdir($migrationsDir);
+            @chmod($migrationsDir, 0777);
         }
 
         return $migrationsDir;
     }
 
-    protected function _prepareVersions()
-    {
+    protected function _prepareVersions() {
 
         $migrationsDir = $this->_getMigrationsDir();
 
@@ -60,11 +58,9 @@ class MigrationsController extends ControllerBase
         } else {
             $this->view->setVar('version', 'None');
         }
-
     }
 
-    public function indexAction()
-    {
+    public function indexAction() {
         $this->_prepareVersions();
         $this->listTables();
     }
@@ -72,11 +68,9 @@ class MigrationsController extends ControllerBase
     /**
      * Generates migrations
      */
-    public function generateAction()
-    {
+    public function generateAction() {
 
          if ($this->request->isPost()) {
-
             $exportData = '';
             $tableName = $this->request->getPost('table-name', 'string');
             $version = $this->request->getPost('version', 'string');
@@ -85,7 +79,6 @@ class MigrationsController extends ControllerBase
             $migrationsDir = $this->_getMigrationsDir();
 
             try {
-
                 Migrations::generate(array(
                     'config' => Tools::getConfig(),
                     'directory' => null,
@@ -97,36 +90,28 @@ class MigrationsController extends ControllerBase
                 ));
 
                 $this->flash->success("The migration was generated successfully");
-            } catch (BuilderException $e) {
+            } catch (\Exception $e) {
                 $this->flash->error($e->getMessage());
             }
-
         }
 
         return $this->dispatcher->forward(array(
-            'controller' => 'migrations',
             'action' => 'index'
         ));
-
     }
 
-    /*
-     *
-     */
-    public function runAction()
-    {
+
+    public function runAction() {
 
         if ($this->request->isPost()) {
-
             $version = '';
             $exportData = '';
             $force = $this->request->getPost('force', 'int');
 
             try {
-
                 $migrationsDir = $this->_getMigrationsDir();
 
-                \Phalcon\Migrations::run(array(
+                Migrations::run(array(
                     'config' => Tools::getConfig(),
                     'directory' => null,
                     'tableName' => 'all',
@@ -135,13 +120,11 @@ class MigrationsController extends ControllerBase
                 ));
 
                 $this->flash->success("The migration was executed successfully");
-            } catch (BuilderException $e) {
+            } catch (\Exception $e) {
                 $this->flash->error($e->getMessage());
             }
         }
 
         $this->_prepareVersions();
-
     }
-
 }

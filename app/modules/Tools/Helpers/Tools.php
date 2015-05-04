@@ -415,6 +415,17 @@ class Tools extends ControllerBase {
     }
 
     /**
+     * Return the View directory
+     * @return string
+     */
+    public static function getMigrationsPath() {
+        if(isset(self::_getToolsConfig()->migrationsPath)) {
+            return self::_getToolsConfig()->migrationsPath;
+        }
+        throw new \Exception("Migrations path is not defined");
+    }
+
+    /**
      * Return the Controller directory
      * @return string
      */

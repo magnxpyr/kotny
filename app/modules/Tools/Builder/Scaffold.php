@@ -19,8 +19,8 @@
 /**
  * @copyright   2006 - 2015 Magnxpyr Network
  * @license     New BSD License; see LICENSE
- * @url         http://www.magnxpyr.com
- * @authors     Stefan Chiriac <stefan@magnxpyr.com>
+ * @link        http://www.magnxpyr.com
+ * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
 namespace Tools\Builder;
@@ -34,6 +34,9 @@ use Tools\Helpers\Tools;
 class Scaffold extends Component {
 
     public function __construct($options) {
+        if (empty($options['tableName'])) {
+            throw new \Exception("Please, specify the table name");
+        }
         if (empty($options['name'])) {
             $options['name'] = Text::camelize($options['tableName']);
         }
@@ -61,9 +64,6 @@ class Scaffold extends Component {
         if (empty($options['baseClass'])) {
             $options['baseClass'] = 'Phalcon\Mvc\Model';
         }
-        if (empty($options['tableName'])) {
-            throw new \Exception("Please, specify the table name");
-        }
         if (!isset($options['force'])) {
             $options['force'] = false;
         }
@@ -75,7 +75,7 @@ class Scaffold extends Component {
      * @throws \Exception
      */
     public function build() {
-        $config = $this->_options;
+        $options = $this->_options;
 
         if(Tools::getDb()) {
             $config = Tools::getDb();
@@ -113,21 +113,23 @@ class Scaffold extends Component {
 
         $options['manager'] = $di->getShared('modelsManager');
 
-        $options['className'] = Text::camelize($options['name']);
-        $options['fileName'] = Text::uncamelize($options['className']);
+        $options['className'] = $options['name'];
+        $options['fileName'] = str_replace('_', '-', Text::uncamelize($options['className']));
 
         $modelsNamespace = $options['modelsNamespace'];
         if (isset($modelsNamespace) && substr($modelsNamespace, -1) !== '\\') {
             $modelsNamespace .= "\\";
         }
 
-        $modelName = Text::camelize($config['name']);
+        $modelName = $options['name'];
         $modelClass = $modelsNamespace . $modelName;
-        if(!@dir($config['modelsDir'])) {
-            mkdir($config['modelsDir']);
-            chmod($config['modelsDir'], 0777);
+        if(!@dir($options['modelsDir'])) {
+            if(!@mkdir($options['modelsDir'])) {
+                throw new \Exception('Could not create directory on '. $options['modelsDir']);
+            }
+            @chmod($options['modelsDir'], 0777);
         }
-        $modelPath = $config['modelsDir'].'/'.$modelName.'.php';
+        $modelPath = $options['modelsDir']. DIRECTORY_SEPARATOR .$modelName.'.php';
         if (!file_exists($modelPath)) {
             $modelBuilder = new ModelBuilder(array(
                 'module' => $options['module'],
@@ -136,8 +138,8 @@ class Scaffold extends Component {
                 'schema' => $options['schema'],
                 'baseClass' => null,
                 'namespace' => $options['modelsNamespace'],
-                'foreignKeys' => null,
-                'defineRelations' => null,
+                'foreignKeys' => true,
+                'defineRelations' => true,
                 'genSettersGetters' => $options['genSettersGetters'],
                 'directory' => $options['modelsDir'],
                 'force' => $options['force']
@@ -147,7 +149,7 @@ class Scaffold extends Component {
         }
 
         if (!class_exists($modelClass)) {
-            require $modelPath;
+            require_once $modelPath;
         }
 
         $entity = new $modelClass();
@@ -164,9 +166,10 @@ class Scaffold extends Component {
 
         $relationField = '';
 
-        $options['name'] 				 = strtolower(Text::camelize($this->_options['name']));
-        $options['plural'] 				 = $this->_getPossiblePlural($this->_options['name']);
-        $options['singular']			 = $this->_getPossibleSingular($this->_options['name']);
+        $options['name'] 				 = Text::uncamelize($options['name']);
+        $options['plural'] 				 = $this->_getPossiblePlural($options['name']);
+        $options['singular']			 = $this->_getPossibleSingular($options['name']);
+        $options['modelClass']           = $options['modelsNamespace'] . '\\' . $this->_options['name'];
         $options['entity']				 = $entity;
         $options['setParams'] 			 = $setParams;
         $options['attributes'] 			 = $attributes;
@@ -183,7 +186,7 @@ class Scaffold extends Component {
 
         if (isset($options['templateEngine']) && $options['templateEngine'] == 'volt') {
             //View layouts
-            $this->_makeLayoutsVolt($options);
+        //    $this->_makeLayoutsVolt($options);
 
             //View index.phtml
             $this->_makeViewIndexVolt(null, $options);
@@ -198,7 +201,7 @@ class Scaffold extends Component {
             $this->_makeViewEditVolt(null, $options);
         } else {
             //View layouts
-            $this->_makeLayouts(null, $options);
+       //     $this->_makeLayouts(null, $options);
 
             //View index.phtml
             $this->_makeViewIndex(null, $options);
@@ -533,8 +536,7 @@ class Scaffold extends Component {
      * @param string $path
      * @param array  $options
      */
-    private function _makeController($options)
-    {
+    private function _makeController($options) {
 
         $controllerPath = $options['controllersDir'] . $options['className'] . 'Controller.php';
 
@@ -548,8 +550,16 @@ class Scaffold extends Component {
 
         $code = file_get_contents($path);
 
+        $code = str_replace('$modelClass$', $options['modelClass'], $code);
+
+        if(Tools::getCopyright() == null) {
+            $code = str_replace('$copyright$', '', $code);
+        } else {
+            $code = str_replace('$copyright$', PHP_EOL . Tools::getCopyright() . PHP_EOL, $code);
+        }
+
         if (isset($options['controllersNamespace']) === true) {
-            $code = str_replace('$namespace$', 'namespace '.$options['controllersNamespace'].';'.PHP_EOL, $code);
+            $code = str_replace('$namespace$', 'namespace '.$options['controllersNamespace'].';', $code);
         } else {
             $code = str_replace('$namespace$', ' ', $code);
         }
@@ -572,6 +582,7 @@ class Scaffold extends Component {
 
         $code = str_replace("\t", "    ", $code);
         file_put_contents($controllerPath, $code);
+        @chmod($controllerPath, 0777);
     }
 
     /**
@@ -592,7 +603,7 @@ class Scaffold extends Component {
         }
 
         $fileName = $options['fileName'];
-        $viewPath = $dirPathLayouts . '/' . $fileName . '.phtml';
+        $viewPath = $dirPathLayouts . DIRECTORY_SEPARATOR . $fileName . '.phtml';
         if (!file_exists($viewPath) || $options['force']) {
 
             //View model layout
@@ -623,7 +634,7 @@ class Scaffold extends Component {
     {
 
         //Make Layouts dir
-        $dirPathLayouts	= $options['viewsDir'] . '/layouts';
+        $dirPathLayouts	= $options['viewsDir'] . DIRECTORY_SEPARATOR . 'layouts';
 
         //If not exists dir; we make it
         if (is_dir($dirPathLayouts) == false) {
@@ -631,7 +642,7 @@ class Scaffold extends Component {
         }
 
         $fileName = Text::uncamelize($options['fileName']);
-        $viewPath = $dirPathLayouts . '/' . $fileName . '.volt';
+        $viewPath = $dirPathLayouts . DIRECTORY_SEPARATOR . $fileName . '.volt';
         if (!file_exists($viewPath || $options['force'])) {
 
             //View model layout
@@ -650,7 +661,7 @@ class Scaffold extends Component {
 
             $code = str_replace("\t", "    ", $code);
             file_put_contents($viewPath, $code);
-
+            @chmod($viewPath, 0777);
         }
     }
 
@@ -667,9 +678,10 @@ class Scaffold extends Component {
         $dirPath = $options['viewsDir'] . $options['fileName'];
         if (is_dir($dirPath) == false) {
             mkdir($dirPath);
+            @chmod($dirPath, 0777);
         }
 
-        $viewPath = $dirPath . '/' .$type. '.phtml';
+        $viewPath = $dirPath . DIRECTORY_SEPARATOR .$type. '.phtml';
         if (file_exists($viewPath)) {
             if (!$options['force']) {
                 return;
@@ -688,6 +700,7 @@ class Scaffold extends Component {
 
         $code = str_replace("\t", "    ", $code);
         file_put_contents($viewPath, $code);
+        @chmod($viewPath, 0777);
     }
 
     /**
@@ -703,9 +716,10 @@ class Scaffold extends Component {
         $dirPath = $options['viewsDir'] . $options['fileName'];
         if (is_dir($dirPath) == false) {
             mkdir($dirPath);
+            @chmod($dirPath, 0777);
         }
 
-        $viewPath = $dirPath . '/' .$type. '.volt';
+        $viewPath = $dirPath . DIRECTORY_SEPARATOR .$type. '.volt';
         if (file_exists($viewPath)) {
             if (!$options['force']) {
                 return;
@@ -724,6 +738,7 @@ class Scaffold extends Component {
 
         $code = str_replace("\t", "    ", $code);
         file_put_contents($viewPath, $code);
+        @chmod($viewPath, 0777);
     }
 
     /**
@@ -798,7 +813,7 @@ class Scaffold extends Component {
             mkdir($dirPath);
         }
 
-        $viewPath = $dirPath . '/search.phtml';
+        $viewPath = $dirPath . DIRECTORY_SEPARATOR . 'search.phtml';
         if (file_exists($viewPath)) {
             if (!$options['force']) {
                 return;
@@ -848,6 +863,7 @@ class Scaffold extends Component {
 
         $code = str_replace("\t", "    ", $code);
         file_put_contents($viewPath, $code);
+        @chmod($viewPath, 0777);
     }
 
     /**
@@ -864,7 +880,7 @@ class Scaffold extends Component {
             mkdir($dirPath);
         }
 
-        $viewPath = $dirPath . '/search.volt';
+        $viewPath = $dirPath . DIRECTORY_SEPARATOR . 'search.volt';
         if (file_exists($viewPath)) {
             if (!$options['force']) {
                 return;
@@ -914,5 +930,6 @@ class Scaffold extends Component {
 
         $code = str_replace("\t", "    ", $code);
         file_put_contents($viewPath, $code);
+        @chmod($viewPath, 0777);
     }
 }
