@@ -36,9 +36,7 @@ class Migrations {
      * Generate migrations
      *
      * @param array $options
-     *
      * @throws \Exception
-     * @todo Refactor
      */
     public static function generate(array $options) {
         $tableName = $options['tableName'];
@@ -108,10 +106,6 @@ class Migrations {
      * Run migrations
      *
      * @param array $options
-     *
-     * @throws Exception
-     * @throws ModelException
-     * @throws ScriptException
      * @throws \Exception
      */
     public static function run(array $options)

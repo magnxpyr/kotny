@@ -70,10 +70,11 @@ class MigrationsController extends ControllerBase {
      */
     public function generateAction() {
 
-         if ($this->request->isPost()) {
+        if ($this->request->isPost()) {
             $exportData = '';
             $tableName = $this->request->getPost('table-name', 'string');
             $version = $this->request->getPost('version', 'string');
+            $noAi = $this->request->getPost('noAi', 'int');
             $force = $this->request->getPost('force', 'int');
 
             $migrationsDir = $this->_getMigrationsDir();
@@ -86,17 +87,18 @@ class MigrationsController extends ControllerBase {
                     'exportData' => $exportData,
                     'migrationsDir' => $migrationsDir,
                     'originalVersion' => $version,
-                    'force' => $force
+                    'force' => $force,
+                    'no-ai' => $noAi
                 ));
 
                 $this->flash->success("The migration was generated successfully");
             } catch (\Exception $e) {
-                $this->flash->error($e->getMessage());
+             $this->flash->error($e->getMessage());
             }
         }
 
         return $this->dispatcher->forward(array(
-            'action' => 'index'
+         'action' => 'index'
         ));
     }
 

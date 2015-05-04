@@ -91,22 +91,6 @@ class Migration
         if($database->adapter == 'Mysql') {
             self::$_connection->query('SET FOREIGN_KEY_CHECKS=0');
         }
-
-        if (Migrations::isConsole()) {
-            $profiler = new Profiler();
-
-            $eventsManager = new EventsManager();
-            $eventsManager->attach('db', function ($event, $connection) use ($profiler) {
-                if ($event->getType() == 'beforeQuery') {
-                    $profiler->startProfile($connection->getSQLStatement());
-                }
-                if ($event->getType() == 'afterQuery') {
-                    $profiler->stopProfile();
-                }
-            });
-
-            self::$_connection->setEventsManager($eventsManager);
-        }
     }
 
     /**

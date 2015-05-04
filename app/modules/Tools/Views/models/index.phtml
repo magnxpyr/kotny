@@ -21,7 +21,7 @@ use Tools\Helpers\Tools;
         <?php echo $this->getContent() ?>
 
         <div class="col-lg-8 col-md-10">
-            <form method="post" autocomplete="off" action="<?php echo Tools::generateUrl('models', 'create') ?>">
+            <form method="post" autocomplete="off" action="<?php echo Tools::generateUrl($this->view->getControllerName(), 'create') ?>">
                 <div class="control-group">
                     <div class="form-group">
                         <?php echo Tools::renderModulesInput($selectedModule) ?>
