@@ -80,7 +80,10 @@ class Migrations {
         }
 
         if (!file_exists($migrationsDir.'/'.$version)) {
-            mkdir($migrationsDir.'/'.$version);
+            if(!@mkdir($migrationsDir.'/'.$version)) {
+                throw new \Exception("Cannot create migration version directory");
+            }
+            @chmod($migrationsDir.'/'.$version, 0777);
         }
 
         if (isset($config->database)) {
@@ -95,10 +98,12 @@ class Migrations {
             $migrations = ModelMigration::generateAll($version, $exportData);
             foreach ($migrations as $tableName => $migration) {
                 file_put_contents($migrationsDir.'/'.$version.'/'.$tableName.'.php', '<?php '.PHP_EOL.PHP_EOL.$migration);
+                @chmod($migrationsDir.'/'.$version.'/'.$tableName.'.php', 0777);
             }
         } else {
             $migration = ModelMigration::generate($version, $tableName, $exportData);
             file_put_contents($migrationsDir.'/'.$version.'/'.$tableName.'.php', '<?php '.PHP_EOL.PHP_EOL.$migration);
+            @chmod($migrationsDir.'/'.$version.'/'.$tableName.'.php', 0777);
         }
     }
 
@@ -110,7 +115,7 @@ class Migrations {
      */
     public static function run(array $options)
     {
-        $path = $options['directory'];
+        $path = $options['migrationsDir'] . DIRECTORY_SEPARATOR . 'migration-version';
         $migrationsDir = $options['migrationsDir'];
         $config = $options['config'];
         $version = null ;
@@ -147,14 +152,8 @@ class Migrations {
             }
         }
 
-        if (is_file($path.'.phalcon')) {
-            unlink($path.'.phalcon');
-            mkdir($path.'.phalcon');
-        }
-
-        $migrationFid = $path.'.phalcon/migration-version';
-        if (file_exists($migrationFid)) {
-            $fromVersion = trim(file_get_contents($migrationFid));
+        if (file_exists($path)) {
+            $fromVersion = trim(file_get_contents($path));
         } else {
             $fromVersion = null;
         }
@@ -194,8 +193,8 @@ class Migrations {
             }
         }
 
-        file_put_contents($migrationFid, (string) $version);
-        @chmod($migrationFid, 0777);
+        file_put_contents($path, (string) $version);
+        @chmod($path, 0777);
     }
 }
 

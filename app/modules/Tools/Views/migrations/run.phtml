@@ -4,6 +4,7 @@
  * Local variables
  * @var \Phalcon\Mvc\View\Engine $this
  * @var string $version
+ * @todo list versions and run individually
  */
 
 use Tools\Helpers\Tools;
@@ -25,7 +26,6 @@ use Tools\Helpers\Tools;
 
         <div class="col-lg-8 col-md-10">
             <form method="post" autocomplete="off" action="<?php echo Tools::generateUrl($this->view->getControllerName(), 'run') ?>">
-
                 <table class="table table-striped table-bordered table-condensed">
                     <tr>
                         <td><b>Current Version</b></td>
@@ -39,7 +39,6 @@ use Tools\Helpers\Tools;
                         </td>
                     </tr>
                 </table>
-
             </form>
         </div>
     </div>

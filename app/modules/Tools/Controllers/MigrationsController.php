@@ -24,12 +24,15 @@ use Tools\Helpers\Tools;
 class MigrationsController extends ControllerBase {
 
     /**
+     * @throws \Exception
      * @return string
      */
     protected function _getMigrationsDir() {
         $migrationsDir = Tools::getMigrationsPath();
         if (!file_exists($migrationsDir)) {
-            mkdir($migrationsDir);
+            if(!@mkdir($migrationsDir)) {
+                throw new \Exception("Unable to create migration directory on ".Tools::getMigrationsPath());
+            }
             @chmod($migrationsDir, 0777);
         }
 
@@ -44,7 +47,7 @@ class MigrationsController extends ControllerBase {
 
         $iterator = new \DirectoryIterator($migrationsDir);
         foreach ($iterator as $fileinfo) {
-            if (!$fileinfo->isDot()) {
+            if (!$fileinfo->isDot() && $fileinfo->isDir()) {
                 $folders[$fileinfo->getFileName()] = $fileinfo->getFileName();
             }
         }
@@ -62,7 +65,7 @@ class MigrationsController extends ControllerBase {
 
     public function indexAction() {
         $this->_prepareVersions();
-        $this->listTables();
+        $this->listTables(true);
     }
 
     /**

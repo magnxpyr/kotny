@@ -77,14 +77,6 @@ class Tools extends ControllerBase {
                 )
             )
         ),
-        'scaffold' => array(
-            'caption' => 'Scaffold',
-            'options' => array(
-                'index' => array(
-                    'caption' => 'Generate'
-                )
-            )
-        ),
         'migrations' => array(
             'caption' => 'Migrations',
             'options' => array(
@@ -93,6 +85,14 @@ class Tools extends ControllerBase {
                 ),
                 'run' => array(
                     'caption' => 'Run'
+                )
+            )
+        ),
+        'scaffold' => array(
+            'caption' => 'Scaffold',
+            'options' => array(
+                'index' => array(
+                    'caption' => 'Generate'
                 )
             )
         )

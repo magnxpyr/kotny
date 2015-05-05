@@ -236,7 +236,7 @@ class Migration
             }
 
             $oldColumn = $field->getName();
-            $tableDefinition[] = "\t\t\t\tnew Column(\n\t\t\t\t\t'" . $field->getName() . "',\n\t\t\t\t\tarray(\n\t\t\t\t\t\t" . join(",\n\t\t\t\t\t\t", $fieldDefinition) . "\n\t\t\t\t\t)\n\t\t\t\t)";
+            $tableDefinition[] = "\t\t\t\t\tnew Column(\n\t\t\t\t\t\t'" . $field->getName() . "',\n\t\t\t\t\t\tarray(\n\t\t\t\t\t\t\t" . join(",\n\t\t\t\t\t\t\t", $fieldDefinition) . "\n\t\t\t\t\t\t)\n\t\t\t\t\t)";
             $allFields[] = "'".$field->getName()."'";
         }
 
@@ -247,7 +247,7 @@ class Migration
             foreach ($dbIndex->getColumns() as $indexColumn) {
                 $indexDefinition[] = "'" . $indexColumn . "'";
             }
-            $indexesDefinition[] = "\t\t\t\tnew Index('".$indexName."', array(" . join(", ", $indexDefinition) . "))";
+            $indexesDefinition[] = "\t\t\t\t\tnew Index('".$indexName."', array(" . join(", ", $indexDefinition) . "))";
         }
 
         $referencesDefinition = array();
@@ -270,16 +270,16 @@ class Migration
             $referenceDefinition[] = "'columns' => array(" . join(",", $columns) . ")";
             $referenceDefinition[] = "'referencedColumns' => array(".join(",", $referencedColumns) . ")";
 
-            $referencesDefinition[] = "\t\t\t\tnew Reference('" . $constraintName."', array(\n\t\t\t\t\t" . join(",\n\t\t\t\t\t", $referenceDefinition) . "\n\t\t\t\t))";
+            $referencesDefinition[] = "\t\t\t\t\tnew Reference('" . $constraintName."', array(\n\t\t\t\t\t\t" . join(",\n\t\t\t\t\t", $referenceDefinition) . "\n\t\t\t\t\t))";
         }
 
         $optionsDefinition = array();
         $tableOptions = self::$_connection->tableOptions($table, $defaultSchema);
         foreach ($tableOptions as $optionName => $optionValue) {
-	    if(self::$_skipAI && strtoupper($optionName) == "AUTO_INCREMENT") {
-		$optionValue = '';
-	    }
-	    $optionsDefinition[] = "\t\t\t\t'" . strtoupper($optionName) . "' => '" . $optionValue . "'";
+            if(self::$_skipAI && strtoupper($optionName) == "AUTO_INCREMENT") {
+                $optionValue = '';
+            }
+            $optionsDefinition[] = "\t\t\t\t\t'" . strtoupper($optionName) . "' => '" . $optionValue . "'";
         }
 
         $classVersion = preg_replace('/[^0-9A-Za-z]/', '', $version);
@@ -287,26 +287,25 @@ class Migration
         $classData = "use Phalcon\\Db\\Column;
 use Phalcon\\Db\\Index;
 use Phalcon\\Db\\Reference;
-use Phalcon\\Mvc\\Model\\Migration;
+use Tools\\Builder\\Mvc\\Model\\Migration;
 
-class ".$className." extends Migration\n".
-"{\n\n".
-        "\tpublic function up()\n".
-        "\t{\n\t\t\$this->morphTable(\n\t\t\t'" . $table . "',\n\t\t\tarray(" .
-        "\n\t\t\t'columns' => array(\n" . join(",\n", $tableDefinition) . "\n\t\t\t),";
+class ".$className." extends Migration {\n\n".
+        "\tpublic function up() {\n".
+        "\t\t\$this->morphTable(\n\t\t\t'" . $table . "',\n\t\t\tarray(" .
+        "\n\t\t\t\t'columns' => array(\n" . join(",\n", $tableDefinition) . "\n\t\t\t\t),";
         if (count($indexesDefinition)) {
-            $classData .= "\n\t\t\t'indexes' => array(\n" . join(",\n", $indexesDefinition) . "\n\t\t\t),";
+            $classData .= "\n\t\t\t\t'indexes' => array(\n" . join(",\n", $indexesDefinition) . "\n\t\t\t\t),";
         }
 
         if (count($referencesDefinition)) {
-            $classData .= "\n\t\t\t'references' => array(\n".join(",\n", $referencesDefinition) . "\n\t\t\t),";
+            $classData .= "\n\t\t\t\t'references' => array(\n".join(",\n", $referencesDefinition) . "\n\t\t\t\t),";
         }
 
         if (count($optionsDefinition)) {
-            $classData .= "\n\t\t\t'options' => array(\n".join(",\n", $optionsDefinition) . "\n\t\t\t)\n";
+            $classData .= "\n\t\t\t\t'options' => array(\n".join(",\n", $optionsDefinition) . "\n\t\t\t\t)\n";
         }
 
-        $classData .= "\t\t)\n\t\t);\n\t}";
+        $classData .= "\t\t\t)\n\t\t);\n\t}";
         if ($exportData == 'always' || $exportData == 'oncreate') {
 
             if ($exportData == 'oncreate') {
