@@ -14,15 +14,12 @@ define('PUBLIC_PATH', __DIR__ . DS);
 
 // Check phalcon framework installation.
 if (!extension_loaded('phalcon')) {
-    printf('Install Phalcon framework %s', '> 1.3.x');
+    printf('Install Phalcon framework %s', '> 2.0.x');
     exit(1);
 }
 
-try {
-    require_once APP_PATH . 'engine/Bootstrap.php';
+require_once APP_PATH . 'engine/Bootstrap.php';
 
-    $bootstrap = new Bootstrap();
-    $bootstrap->run();
-} catch (\Exception $e) {
-    echo $e->getMessage();
-}
+$bootstrap = new Bootstrap();
+$bootstrap->run();
+

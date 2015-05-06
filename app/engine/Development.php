@@ -8,6 +8,8 @@
 
 namespace Engine;
 
+use Phalcon\Debug;
+
 class Development {
 
     /**
@@ -20,6 +22,9 @@ class Development {
         // Display all errors
         ini_set('display_errors', 1);
         error_reporting(E_ALL);
+        $debug = new Debug();
+        $debug->listen();
+        /*
         // Load pretty exceptions
         $p = new \Phalcon\Utils\PrettyExceptions();
         // Sets the exception handler
@@ -33,5 +38,6 @@ class Development {
         });
 
         new \PDW\DebugWidget($di);
+        */
     }
 }

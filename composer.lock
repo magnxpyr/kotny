@@ -1,7 +1,7 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
     "hash": "fbf147424d20d3ddf5d1c9480bbcbd94",
@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phalcon/incubator.git",
-                "reference": "6761c6bf3336d099cfca8e1fe1589d7e9dc16c62"
+                "reference": "687ef4f566104ece90466728d71af18050901263"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phalcon/incubator/zipball/6761c6bf3336d099cfca8e1fe1589d7e9dc16c62",
-                "reference": "6761c6bf3336d099cfca8e1fe1589d7e9dc16c62",
+                "url": "https://api.github.com/repos/phalcon/incubator/zipball/687ef4f566104ece90466728d71af18050901263",
+                "reference": "687ef4f566104ece90466728d71af18050901263",
                 "shasum": ""
             },
             "require": {
@@ -53,7 +53,7 @@
                 "framework",
                 "phalcon"
             ],
-            "time": "2015-04-21 20:36:12"
+            "time": "2015-05-06 07:27:06"
         },
         {
             "name": "phalcon/pretty-exceptions",
