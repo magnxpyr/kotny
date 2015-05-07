@@ -140,7 +140,7 @@ class Bootstrap {
         //Bind the EventsManager to the Dispatcher
         $dispatcher->setEventsManager($eventsManager);
 
-        $di->set('dispatcher', $dispatcher);
+        $di->setShared('dispatcher', $dispatcher);
 
 
         // Get the language from session

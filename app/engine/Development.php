@@ -9,6 +9,7 @@
 namespace Engine;
 
 use Phalcon\Debug;
+use Engine\Library\Debugger;
 
 class Development {
 
@@ -24,20 +25,9 @@ class Development {
         error_reporting(E_ALL);
         $debug = new Debug();
         $debug->listen();
-        /*
-        // Load pretty exceptions
-        $p = new \Phalcon\Utils\PrettyExceptions();
-        // Sets the exception handler
-        set_exception_handler(function($e) use ($p){
-            return $p->handle($e);
-        });
 
-        // Sets the error handler
-        set_error_handler(function($errorCode, $errorMessage, $errorFile, $errorLine) use ($p) {
-            return $p->handleError($errorCode, $errorMessage, $errorFile, $errorLine);
-        });
+    //    new \PDW\DebugWidget($di);
 
-        new \PDW\DebugWidget($di);
-        */
+        new Debugger($di);
     }
 }
