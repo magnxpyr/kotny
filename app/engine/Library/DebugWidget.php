@@ -1,15 +1,15 @@
 <?php
 
-namespace PDW;
+namespace Engine\Library;
 
+use Phalcon\Di\InjectionAwareInterface;
 use Phalcon\DiInterface,
-	Phalcon\Db\Profiler as Profiler,
-	Phalcon\Escaper as Escaper,
-	Phalcon\Mvc\Url as URL,
-	Phalcon\Mvc\View as View;
+	Phalcon\Db\Profiler,
+	Phalcon\Escaper,
+	Phalcon\Mvc\Url,
+	Phalcon\Mvc\View;
 
-class DebugWidget implements \Phalcon\DI\InjectionAwareInterface
-{
+class DebugWidget implements InjectionAwareInterface {
 
 	protected $_di;
 	private $startTime;
@@ -17,7 +17,7 @@ class DebugWidget implements \Phalcon\DI\InjectionAwareInterface
 	private $queryCount = 0;
 	protected $_profiler;
 	protected $_viewsRendered = array();
-        protected $_serviceNames = array();
+	protected $_serviceNames = array();
 
 	public function __construct(
 		$di,
@@ -50,23 +50,50 @@ class DebugWidget implements \Phalcon\DI\InjectionAwareInterface
 		$this->_serviceNames = $serviceNames;
 	}
 
-	public function setDI(DiInterface $di)
-	{
+    /**
+     * @param \Phalcon\DiInterface $di
+     */
+	public function setDI(DiInterface $di) {
 		$this->_di = $di;
 	}
 
-	public function getDI()
-	{
+	public function getDI() {
 		return $this->_di;
 	}
 
-	public function getServices($event)
-	{
+    public function getStartTime() {
+        return $this->startTime;
+    }
+
+    public function getEndTime() {
+        return $this->endTime;
+    }
+
+    public function getQueryCount() {
+        return $this->queryCount;
+    }
+
+    public function getProfiler() {
+        return $this->_profiler;
+    }
+
+    public function getRenderedViews() {
+        return $this->_viewsRendered;
+    }
+
+    /**
+     * @param \Phalcon\Events\Event $event
+     * @return array
+     */
+	public function getServices($event) {
 		return $this->_serviceNames[$event];
 	}
 
-	public function beforeQuery($event, $connection)
-	{
+    /**
+     * @param \Phalcon\Events\Event $event
+     * @param \Phalcon\Db\Adapter $connection
+     */
+	public function beforeQuery($event, $connection) {
 		$this->_profiler->startProfile(
 			$connection->getRealSQLStatement(),
 			$connection->getSQLVariables(),
@@ -74,8 +101,11 @@ class DebugWidget implements \Phalcon\DI\InjectionAwareInterface
 		);
 	}
 
-	public function afterQuery($event, $connection)
-	{
+    /**
+     * @param \Phalcon\Events\Event $event
+     * @param \Phalcon\Db\Adapter $connection
+     */
+	public function afterQuery($event, $connection) {
 		$this->_profiler->stopProfile();
 		$this->queryCount++;
 	}
@@ -83,12 +113,11 @@ class DebugWidget implements \Phalcon\DI\InjectionAwareInterface
 	/**
 	 * Gets/Saves information about views and stores truncated viewParams.
 	 *
-	 * @param unknown $event
-	 * @param unknown $view
-	 * @param unknown $file
+	 * @param \Phalcon\Events\Event $event
+	 * @param \Phalcon\Mvc\View $view
+	 * @param \Phalcon\Http\Request\File $file
 	 */
-	public function beforeRenderView($event,$view,$file)
-	{
+	public function beforeRenderView($event,$view,$file) {
 		$params = array();
 		$toView = $view->getParamsToView();
 		$toView = !$toView? array() : $toView;
@@ -121,6 +150,13 @@ class DebugWidget implements \Phalcon\DI\InjectionAwareInterface
 	}
 
 
+    /**
+     * Return the content
+     *
+     * @param \Phalcon\Events\Event $event
+     * @param \Phalcon\Mvc\View $view
+     * @param \Phalcon\Http\Request\File $viewFile
+     */
 	public function afterRender($event,$view,$viewFile)
 	{
 		$this->endTime = microtime(true);
@@ -137,72 +173,41 @@ class DebugWidget implements \Phalcon\DI\InjectionAwareInterface
 
 	/**
 	 * Returns scripts to be inserted before <head>
-	 * Since setBaseUri may or may not end in a /, double slashes are removed.
 	 *
 	 * @return string
 	 */
-	public function getInsertScripts()
-	{
+	public function getInsertScripts() {
 		$escaper = new Escaper();
 		$url = $this->getDI()->get('url');
 		$scripts = "";
 
-		$css = array('/pdw-assets/style.css', '/pdw-assets/lib/prism/prism.css');
+		$css = array('/assets/default/css/pdw.css');
 		foreach ($css as $src) {
 			$link = $url->get($src);
-			$link = str_replace("//", "/", $link);
 			$scripts .= "<link rel='stylesheet' type='text/css' href='" . $escaper->escapeHtmlAttr($link) . "' />";
 		}
 
 		$js = array(
-				'/pdw-assets/jquery.min.js',
-				'/pdw-assets/lib/prism/prism.js',
-				'/pdw-assets/pdw.js'
+				'/assets/default/js/pdw.js'
 		);
 		foreach ($js as $src) {
 			$link = $url->get($src);
-			$link = str_replace("//", "/", $link);
 			$scripts .= "<script tyle='text/javascript' src='" . $escaper->escapeHtmlAttr($link) . "'></script>";
 		}
 
 		return $scripts;
 	}
 
-	public function renderToolbar()
-	{
-		$view = new View();
-		$viewDir = dirname(__FILE__) .'/views/';
-		$view->setViewsDir($viewDir);
+    public function renderToolbar() {
+        $view = new View();
+        $viewDir = APP_PATH .'modules/Core/Views/';
+        $view->setViewsDir($viewDir);
+        $this->router = $this->_di->get('router')->getMatchedRoute();
 
-		// set vars
-		$view->debugWidget = $this;
+        // set vars
+        $view->debugWidget = $this;
 
-		$content = $view->getRender('toolbar', 'index');
-		return $content;
-	}
-
-	public function getStartTime()
-	{
-		return $this->startTime;
-	}
-
-	public function getEndTime()
-	{
-		return $this->endTime;
-	}
-
-	public function getRenderedViews()
-	{
-		return $this->_viewsRendered;
-	}
-
-	public function getQueryCount()
-	{
-		return $this->queryCount;
-	}
-
-	public function getProfiler()
-	{
-		return $this->_profiler;
-	}
+        $content = $view->getRender('toolbar', 'index');
+        return $content;
+    }
 }

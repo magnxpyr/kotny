@@ -65,7 +65,7 @@ class ScaffoldController extends ControllerBase {
                     'force'	=> $force,
                     'genSettersGetters' => $genSettersGetters,
                     'directory' => null,
-                    'templatePath' => __DIR__ . '/../templates/',
+                    'templatePath' => __DIR__ . '/../Builder/templates/',
                     'templateEngine' => $templateEngine,
                     'modelsDir' => null,
                     'modelsNamespace' => null,
@@ -82,7 +82,7 @@ class ScaffoldController extends ControllerBase {
             }
         }
 
-        return $this->dispatcher->forward(array(
+        $this->dispatcher->forward(array(
             'action' => 'index'
         ));
     }

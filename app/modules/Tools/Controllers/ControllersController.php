@@ -68,7 +68,7 @@ class ControllersController extends ControllerBase {
             }
         }
 
-        return $this->dispatcher->forward(array(
+        $this->dispatcher->forward(array(
             'action' => 'index'
         ));
     }

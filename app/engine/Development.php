@@ -8,8 +8,8 @@
 
 namespace Engine;
 
+use Engine\Library\DebugWidget;
 use Phalcon\Debug;
-use Engine\Library\Debugger;
 
 class Development {
 
@@ -26,8 +26,7 @@ class Development {
         $debug = new Debug();
         $debug->listen();
 
-    //    new \PDW\DebugWidget($di);
-
-        new Debugger($di);
+        // Display the debug bar
+        new DebugWidget($di);
     }
 }

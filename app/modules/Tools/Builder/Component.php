@@ -52,7 +52,7 @@ abstract class Component {
      * @return bool
      */
     public function isAbsolutePath($path) {
-        if (PHP_OS == "WINNT") {
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
             if (preg_match('/^[A-Z]:\\\\/', $path)) {
                 return true;
             }
@@ -61,7 +61,6 @@ abstract class Component {
                 return true;
             }
         }
-
         return false;
     }
 

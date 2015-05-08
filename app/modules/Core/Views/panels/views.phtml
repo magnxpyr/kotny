@@ -1,4 +1,8 @@
 <?php
+/**
+ * @var array $debugWidget
+ */
+
 $views = $debugWidget->getRenderedViews();
 ?>
 <div id='pdw-panel-views' class='pdw-panel views'>
@@ -8,14 +12,13 @@ $views = $debugWidget->getRenderedViews();
 	<div class='panel-content'>
 		<?php foreach($views as $rendered): ?>
 		<h3 class='collapser'><?php echo pathinfo($rendered['path'], PATHINFO_BASENAME); ?></h3>
-		<table class='pdw-data-table'>
+		<table class='pdw-data-table table-striped'>
 			<tbody>
 			<?php
 				foreach($rendered as $k=>$v):
-					$class = ($k == 'params')? "language-php" : "";
 					echo "<tr>";
 						echo "<td style='width: 125px;'>{$k}</td>";
-						echo "<td><pre><code class='{$class}'>";
+						echo "<td><pre><code>";
 							print_r($v);
 						echo "</code></pre></td>";
 					echo "</tr>";

@@ -12,6 +12,7 @@ class Bootstrap {
 
     public function run() {
         // Define internal variables
+        define('MG_VERSION', '0.1.0');
         define('DEFAULT_THEME', 'default');
         define('THEMES_PATH', '../../../themes/'.DEFAULT_THEME.'/');
 

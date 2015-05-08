@@ -1,6 +1,10 @@
 <?php
-	$profiles = $debugWidget->getProfiler()->getProfiles();
-	$profiles = !$profiles? array() : $profiles;
+/**
+ * @var array $debugWidget
+ */
+
+$profiles = $debugWidget->getProfiler()->getProfiles();
+$profiles = !$profiles ? array() : $profiles;
 ?>
 <div id='pdw-panel-db' class='pdw-panel db'>
 	<div class='title'>
@@ -8,29 +12,29 @@
 	</div>
 	<div class='panel-content'>
 		<h3 class='collapser'>SQL Queries</h3>
-		<table class='pdw-data-table'>
+		<table class='pdw-data-table table-striped'>
 			<thead>
 				<tr>
 					<th>Query</th>
-					<th style="width: 100px">Time (s)</th>
+					<th style="width: 100px">Time (ms)</th>
 				</tr>
 			</thead>
 			<tbody>
 			<?php
 				$total = 0;
 				foreach ($profiles as $profile):
-					$time = $profile->getTotalElapsedSeconds();
+					$time = $profile->getTotalElapsedSeconds()*1000;
 					$total += $time;
 					echo "<tr>";
-						echo "<td><pre><code class='language-sql'>" . $profile->getSQLStatement() . "</code></pre></td>";
-						echo "<td><pre>" . print_r($profile->getSQLVariables(), true) . "</pre></td>";
-						echo "<td>" . round($time, 6) . "</td>";
+						echo "<td><pre><code>" . $profile->getSQLStatement() . "</code></pre></td>";
+					//	echo "<td><pre>" . print_r($profile->getSQLVariables(), true) . "</pre></td>";
+						echo "<td>" . round($time, 3) . "</td>";
 					echo "</tr>";
 				endforeach;
 			?>
 			<tr>
 				<td><strong>Total:</strong></td>
-				<td><strong><?php echo round($total, 6); ?></strong></td>
+				<td><strong><?php echo round($total, 3); ?></strong></td>
 			</tr>
 			</tbody>
 		</table>
