@@ -33,12 +33,11 @@ use Phalcon\Events\Manager as EventsManager;
  *
  * Migrations of DML y DDL over databases
  *
- * @package     Phalcon\Mvc\Model
+ * @package     Tools\Builder\Mvc\Model
  * @copyright   Copyright (c) 2011-2015 Phalcon Team (team@phalconphp.com)
  * @license     New BSD License
  */
-class Migration
-{
+class Migration {
     /**
      * Migration database connection
      * @var \Phalcon\Db
@@ -146,22 +145,30 @@ class Migration
      * @return string
      * @throws Exception
      */
-    public static function generate($version, $table, $exportData=null)
-    {
+    public static function generate($version, $table, $exportData=null) {
         $oldColumn = null;
         $allFields = array();
         $numericFields = array();
         $tableDefinition = array();
 
-                if (isset(self::$_databaseConfig->schema)) {
-                        $defaultSchema = self::$_databaseConfig->schema;
-                } elseif (isset(self::$_databaseConfig->adapter) && self::$_databaseConfig->adapter == 'Postgresql') {
-                        $defaultSchema =  'public';
-                } elseif (isset(self::$_databaseConfig->dbname)) {
-                        $defaultSchema = self::$_databaseConfig->dbname;
-                } else {
-                        $defaultSchema = null;
-                }
+        if (isset(self::$_databaseConfig->schema)) {
+                $defaultSchema = self::$_databaseConfig->schema;
+        } elseif (isset(self::$_databaseConfig->adapter) && self::$_databaseConfig->adapter == 'Postgresql') {
+                $defaultSchema =  'public';
+        } elseif (isset(self::$_databaseConfig->dbname)) {
+                $defaultSchema = self::$_databaseConfig->dbname;
+        } else {
+                $defaultSchema = null;
+        }
+
+        if(!@self::$_connection->tableExists($table, $defaultSchema)) {
+            return self::generateEmpty(array(
+                'version' => $version,
+                'table' => $table,
+                'defaultSchema' => $defaultSchema,
+                'exportData' => $exportData
+            ));
+        }
 
         $description = self::$_connection->describeColumns($table, $defaultSchema);
         foreach ($description as $field) {
@@ -343,6 +350,10 @@ class ".$className." extends Migration {\n\n".
         $classData.="\n}\n";
         $classData = str_replace("\t", "    ", $classData);
 
+        return $classData;
+    }
+
+    private static function generateEmpty($options) {
         return $classData;
     }
 

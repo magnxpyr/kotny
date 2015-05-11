@@ -113,8 +113,7 @@ class Migrations {
      * @param array $options
      * @throws \Exception
      */
-    public static function run(array $options)
-    {
+    public static function run(array $options) {
         $path = $options['migrationsDir'] . DIRECTORY_SEPARATOR . 'migration-version';
         $migrationsDir = $options['migrationsDir'];
         $config = $options['config'];
