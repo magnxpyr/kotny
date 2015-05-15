@@ -198,7 +198,7 @@ class Bootstrap {
             ->collection('header-js')
             ->setTargetPath(PUBLIC_PATH . 'assets/default/js/header.min.js')
             ->setTargetUri('assets/default/js/header.min.js')
-            ->addJs('vendor/jquery/jquery-2.1.3.min.js')
+            ->addJs('vendor/jquery/jquery-1.11.3.min.js')
             ->addJs('vendor/jquery/jquery-ui.min.js')
             ->addJs('vendor/bootstrap/js/bootstrap.min.js')
             ->addJs('assets/default/js/mg.js');

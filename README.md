@@ -2,7 +2,7 @@ Magnxpyr CMS
 ==============
 Third Party
 -----------
-* jQuery 2.1.3: https://jquery.org/ (MIT)
+* jQuery 1.11.3: https://jquery.org/ (MIT)
 * jQuery UI 1.11.4
 * Bootstrap 3
 * Bootstrap Switch
