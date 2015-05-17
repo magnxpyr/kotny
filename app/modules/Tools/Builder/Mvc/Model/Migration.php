@@ -354,6 +354,48 @@ class ".$className." extends Migration {\n\n".
     }
 
     private static function generateEmpty($options) {
+        $classVersion = preg_replace('/[^0-9A-Za-z]/', '', $options['version']);
+        $className = Text::camelize($options['table']) . 'Migration_'.$classVersion;
+        $classData = "use Phalcon\\Db\\Column;
+use Phalcon\\Db\\Index;
+use Phalcon\\Db\\Reference;
+use Tools\\Builder\\Mvc\\Model\\Migration;
+
+class ".$className." extends Migration {\n\n".
+            "\tpublic function up() {\n".
+            "\t\t\$this->morphTable(\n\t\t\t'" . $options['table'] . "',\n\t\t\tarray(" .
+            "\n\t\t\t\t'columns' => array(\n
+                    new Column(
+                        'id',
+                        array(
+                            'type' => Column::TYPE_INTEGER,
+                            'notNull' => true,
+                            'size' => 32,
+                            'first' => true
+                        )
+                    ),
+                    new Column(
+                        'name',
+                        array(
+                            'type' => Column::TYPE_VARCHAR,
+                            'notNull' => true,
+                            'size' => 32,
+                            'after' => 'id'
+                        )
+                    ),\n\t\t\t\t),";
+
+        $classData .= "\n\t\t\t\t'indexes' => array(\n\t\t\t\t\tnew Index('PRIMARY', array('id', 'name'))\n\t\t\t\t),";
+
+        $classData .= "\n\t\t\t\t'options' => array(\n
+                'TABLE_TYPE' => 'BASE TABLE',
+                'AUTO_INCREMENT' => '',
+                'ENGINE' => 'InnoDB',
+                'TABLE_COLLATION' => 'utf8_general_ci'\n\t\t\t\t)\n";
+
+        $classData .= "\t\t\t)\n\t\t);\n\t}";
+
+        $classData.="\n}\n";
+        $classData = str_replace("\t", "    ", $classData);
         return $classData;
     }
 
