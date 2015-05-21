@@ -46,7 +46,10 @@ class Scaffold extends Component {
             $options['controllersDir'] .= DIRECTORY_SEPARATOR;
         }
         if (empty($options['controllersNamespace']) || $options['namespace'] != 'None') {
-            $options['controllersNamespace'] = Tools::getBaseNamespace() . $options['module'] . '\\' . Tools::getControllersDir();
+            if(empty($options['module']))
+                $options['controllersNamespace'] = Tools::getBaseNamespace() . Tools::getControllersDir();
+            else
+                $options['controllersNamespace'] = Tools::getBaseNamespace() . $options['module'] . '\\' . Tools::getControllersDir();
         }
         if (empty($options['modelsDir'])) {
             $options['modelsDir'] = Tools::getModulesPath() . $options['module'] .DIRECTORY_SEPARATOR. Tools::getModelsDir().DIRECTORY_SEPARATOR;
@@ -54,7 +57,10 @@ class Scaffold extends Component {
             $options['modelsDir'] .= DIRECTORY_SEPARATOR;
         }
         if (empty($options['modelsNamespace']) || $options['namespace'] != 'None') {
-            $options['modelsNamespace'] = Tools::getBaseNamespace() . $options['module'] . '\\' . Tools::getModelsDir();
+            if(empty($options['module']))
+                $options['modelsNamespace'] = Tools::getBaseNamespace() . Tools::getModelsDir();
+            else
+                $options['modelsNamespace'] = Tools::getBaseNamespace() . $options['module'] . '\\' . Tools::getModelsDir();
         }
         if (empty($options['viewsDir'])) {
             $options['viewsDir'] = Tools::getModulesPath() . $options['module'] .DIRECTORY_SEPARATOR. Tools::getViewsDir().DIRECTORY_SEPARATOR;
@@ -186,7 +192,7 @@ class Scaffold extends Component {
 
         if (isset($options['templateEngine']) && $options['templateEngine'] == 'volt') {
             //View layouts
-        //    $this->_makeLayoutsVolt($options);
+            //    $this->_makeLayoutsVolt($options);
 
             //View index.phtml
             $this->_makeViewIndexVolt(null, $options);
@@ -201,7 +207,7 @@ class Scaffold extends Component {
             $this->_makeViewEditVolt(null, $options);
         } else {
             //View layouts
-       //     $this->_makeLayouts(null, $options);
+            //     $this->_makeLayouts(null, $options);
 
             //View index.phtml
             $this->_makeViewIndex(null, $options);
@@ -388,10 +394,10 @@ class Scaffold extends Component {
     private function _makeField($attribute, $dataType, $relationField, $selectDefinition)
     {
         $code = "\t" . '<tr>' . PHP_EOL .
-                "\t\t" . '<td align="right">' . PHP_EOL .
-                "\t\t\t" . '<label for="' . $attribute . '">' . $this->_getPossibleLabel($attribute) . '</label>' . PHP_EOL .
-                "\t\t" . '</td>' . PHP_EOL .
-                "\t\t" . '<td align="left">';
+            "\t\t" . '<td align="right">' . PHP_EOL .
+            "\t\t\t" . '<label for="' . $attribute . '">' . $this->_getPossibleLabel($attribute) . '</label>' . PHP_EOL .
+            "\t\t" . '</td>' . PHP_EOL .
+            "\t\t" . '<td align="left">';
 
         if (isset($relationField[$attribute])) {
             $code .= PHP_EOL . "\t\t\t\t" . '<?php echo $this->tag->select(array("' . $attribute . '", $' . $selectDefinition[$attribute]['varName'] .
@@ -435,10 +441,10 @@ class Scaffold extends Component {
     private function _makeFieldVolt($attribute, $dataType, $relationField, $selectDefinition)
     {
         $code = "\t" . '<tr>' . PHP_EOL .
-                "\t\t" . '<td align="right">' . PHP_EOL .
-                "\t\t\t" . '<label for="' . $attribute . '">' . $this->_getPossibleLabel($attribute) . '</label>' . PHP_EOL .
-                "\t\t" . '</td>' . PHP_EOL .
-                "\t\t" . '<td align="left">';
+            "\t\t" . '<td align="right">' . PHP_EOL .
+            "\t\t\t" . '<label for="' . $attribute . '">' . $this->_getPossibleLabel($attribute) . '</label>' . PHP_EOL .
+            "\t\t" . '</td>' . PHP_EOL .
+            "\t\t" . '<td align="left">';
 
         if (isset($relationField[$attribute])) {
             $code .= PHP_EOL . "\t\t\t\t" . '{{ select("' . $attribute . '", ' . $selectDefinition[$attribute]['varName'] .

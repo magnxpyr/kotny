@@ -364,7 +364,7 @@ use Tools\\Builder\\Mvc\\Model\\Migration;
 class ".$className." extends Migration {\n\n".
             "\tpublic function up() {\n".
             "\t\t\$this->morphTable(\n\t\t\t'" . $options['table'] . "',\n\t\t\tarray(" .
-            "\n\t\t\t\t'columns' => array(\n
+            "\n\t\t\t\t'columns' => array(
                     new Column(
                         'id',
                         array(
@@ -384,13 +384,13 @@ class ".$className." extends Migration {\n\n".
                         )
                     ),\n\t\t\t\t),";
 
-        $classData .= "\n\t\t\t\t'indexes' => array(\n\t\t\t\t\tnew Index('PRIMARY', array('id', 'name'))\n\t\t\t\t),";
+        $classData .= "\n\t\t\t\t'indexes' => array(\n\t\t\t\t\tnew Index('PRIMARY', array('id'))\n\t\t\t\t),";
 
-        $classData .= "\n\t\t\t\t'options' => array(\n
-                'TABLE_TYPE' => 'BASE TABLE',
-                'AUTO_INCREMENT' => '',
-                'ENGINE' => 'InnoDB',
-                'TABLE_COLLATION' => 'utf8_general_ci'\n\t\t\t\t)\n";
+        $classData .= "\n\t\t\t\t'options' => array(
+                    'TABLE_TYPE' => 'BASE TABLE',
+                    'AUTO_INCREMENT' => '',
+                    'ENGINE' => 'InnoDB',
+                    'TABLE_COLLATION' => 'utf8_general_ci'\n\t\t\t\t)\n";
 
         $classData .= "\t\t\t)\n\t\t);\n\t}";
 

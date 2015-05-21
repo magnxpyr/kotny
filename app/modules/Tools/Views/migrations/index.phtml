@@ -39,10 +39,12 @@ use Tools\Helpers\Tools;
                     </div>
                     <div class="form-group">
                         <label class="control-label" for="schema" >Table name</label>
-                        <?php echo Phalcon\Tag::selectStatic(array(
-                            'table-name',
-                            'class' => 'form-control'
-                        ), $tables) ?>
+                        <input list="table-name" name="table-name" class="form-control">
+                        <datalist id="table-name">
+                            <?php foreach($tables as $table) {
+                                echo "<option value='$table'>";
+                            } ?>
+                        </datalist>
                     </div>
                     <div class="form-group">
                         <label>

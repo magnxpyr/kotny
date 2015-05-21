@@ -17,6 +17,5 @@ return [
     'baseForm' => [],
     'baseModule' => 'Engine\Module',
  //   'baseRoute' => ''
-    'full' => false,
-    'advanced' => true
+    'full' => false
 ];

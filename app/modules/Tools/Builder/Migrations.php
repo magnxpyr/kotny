@@ -174,7 +174,7 @@ class Migrations {
 
         foreach ($versionsBetween as $version) {
             if ($tableName == 'all') {
-                 $iterator = new \DirectoryIterator($migrationsDir.'/'.$version);
+                $iterator = new \DirectoryIterator($migrationsDir.'/'.$version);
                 foreach ($iterator as $fileinfo) {
                     if ($fileinfo->isFile()) {
                         if (preg_match('/\.php$/', $fileinfo->getFilename())) {

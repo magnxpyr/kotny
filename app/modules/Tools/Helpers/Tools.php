@@ -233,8 +233,12 @@ class Tools extends ControllerBase {
      */
     public static function generateUrl($controller, $action = 'index', $params = null) {
         $baseUri = self::getUrl()->get();
-        $uriPath = self::getRouter()->getMatchedRoute()->getPattern();
-        return str_replace(array('//', ':controller', ':action', ':params'),array('/', $controller, $action, $params), $baseUri . $uriPath);
+        if(self::getRouter()->getMatchedRoute() !== null) {
+            $uriPath = self::getRouter()->getMatchedRoute()->getPattern();
+            return str_replace(array('//', ':controller', ':action', ':params'), array('/', $controller, $action, $params), $baseUri . $uriPath);
+        } else {
+            return $baseUri . "$controller/$action/$params";
+        }
     }
 
     /**
@@ -260,19 +264,18 @@ class Tools extends ControllerBase {
      * @return string
      */
     public static function renderModulesInput($selected = null) {
-        $input = '<label class="control-label" for="name">Module</label>
-                    <input list="module" name="module" value="' . $selected . '" class="form-control">
-                    <datalist id="module">';
-
         $iterator = new \DirectoryIterator(self::getModulesPath());
         $options = null;
         foreach($iterator as $fileinfo){
             if(!$fileinfo->isDot() && file_exists($fileinfo->getPathname() . '/Module.php')){
-                $input .= '<option value=' . $fileinfo->getFileName() . '>';
+                $options .= '<option value=' . $fileinfo->getFileName() . '>';
+                if($selected == null) $selected = $fileinfo->getFileName();
             }
         }
 
-        $input .= '</datalist>';
+        $input = '<label class="control-label" for="name">Module</label>
+                    <input list="module" name="module" value="' . $selected . '" class="form-control">
+                    <datalist id="module">' . $options . '</datalist>';
 
         return $input;
     }
