@@ -12,6 +12,10 @@ use Phalcon\DiInterface;
 use Phalcon\Mvc\ModuleDefinitionInterface;
 use Phalcon\Text;
 
+/**
+ * Class Module
+ * @package Engine
+ */
 abstract class Module implements ModuleDefinitionInterface {
 
     /**

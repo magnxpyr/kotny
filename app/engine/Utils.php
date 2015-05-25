@@ -8,6 +8,10 @@
 
 namespace Engine;
 
+/**
+ * Class Utils
+ * @package Engine
+ */
 class Utils
 {
     // Return 128 bits random string

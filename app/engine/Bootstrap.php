@@ -4,10 +4,8 @@
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
+ * @package     Engine
  */
-
-use Phalcon\Text;
-
 class Bootstrap {
 
     public function run() {
@@ -148,14 +146,14 @@ class Bootstrap {
         $language = $session->get("lang");
         if (!$language) {
             // Ask browser what is the best language
-            $language = $di->getShared('request')->getBestLanguage();
+            $language = $request->getBestLanguage();
         }
         $langFile = APP_PATH . "messages/" . $language . ".php";
 
         //Check if we have a translation file for that lang
         if (!file_exists($langFile)) {
             // Fallback to default
-            $langFile = APP_PATH . "messages/en.php";
+            $langFile = APP_PATH . "messages/en-US.php";
         }
 
         $translator = new \Phalcon\Translate\Adapter\NativeArray(array('content' => require $langFile));
@@ -193,36 +191,25 @@ class Bootstrap {
         }
 
         // Register assets that will be loaded in every page
-        $assets = new \Phalcon\Assets\Manager();
-        $assets
-            ->collection('header-js')
-            ->setTargetPath(PUBLIC_PATH . 'assets/default/js/header.min.js')
-            ->setTargetUri('assets/default/js/header.min.js')
-            ->addJs('vendor/jquery/jquery-1.11.3.min.js')
-            ->addJs('vendor/jquery/jquery-ui.min.js')
-            ->addJs('vendor/bootstrap/js/bootstrap.min.js')
-            ->addJs('assets/default/js/mg.js');
-        //    ->join(true)
-        //    ->addFilter(new Phalcon\Assets\Filters\Jsmin());
-        $assets->collection('header-css')
-            ->setTargetPath(PUBLIC_PATH . 'assets/default/css/header.min.css')
-            ->setTargetUri('assets/default/css/header.min.css')
-            ->addCss('vendor/jquery/jquery-ui.min.css')
-            ->addCss('vendor/bootstrap/css/bootstrap.min.css');
-        //    ->join(true)
-        //    ->addFilter(new Phalcon\Assets\Filters\Cssmin());
-
-        $di->setShared('assets', $assets);
-
+        $di->setShared('assets', function() {
+            return new \Phalcon\Assets\Manager();
+        });
 
         // Register the flash service with custom CSS classes
-        $flash = new \Phalcon\Flash\Session(array(
+        $flash = [
             'success' => 'alert alert-success',
             'notice'  => 'alert alert-info',
             'warning' => 'alert alert-warning',
             'error'   => 'alert alert-danger'
-        ));
-        $di->setShared('flash', $flash);
+        ];
+
+        $di->setShared('flash', function() use ($flash) {
+            return new \Phalcon\Flash\Direct($flash);
+        });
+
+        $di->setShared('flashSession', function() use ($flash) {
+            return new \Phalcon\Flash\Session($flash);
+        });
 
         if($config->app->development) {
             // Load development options
@@ -233,6 +220,16 @@ class Bootstrap {
         $application = new \Phalcon\Mvc\Application($di);
         $application->registerModules($config->modules->toArray());
         $application->setDI($di);
+        if ($request->isAjax()) {
+            $return = new \stdClass();
+            $return->success = true;
+
+            if ($request->getHeader(404) || $request->getHeader(503)) {
+                $return->success = false;
+            }
+            $application->response->setContentType('application/json', 'UTF-8');
+            $application->response->setContent(json_encode($return));
+        }
 
         // Render
         echo $application->handle()->getContent();

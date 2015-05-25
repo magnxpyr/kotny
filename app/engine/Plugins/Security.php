@@ -11,6 +11,10 @@ namespace Engine\Plugins;
 use Phalcon\Mvc\User\Plugin,
     Phalcon\Acl;
 
+/**
+ * Class Security
+ * @package Engine\Plugins
+ */
 class Security extends Plugin
 {
     public function beforeExecuteRoute($event, $dispatcher)

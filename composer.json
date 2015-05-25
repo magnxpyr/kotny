@@ -1,16 +1,37 @@
 {
     "name": "magnxpyr/cms",
-    "description" : "MagnXPyr CMS",
-    "version": "0.1.0",
-    "keywords" : ["phalcon", "php", "cms", "magnxpyr"],
-    "homepage" : "http://magnxpyr.com",
-    "license" : "BSD-3-Clause",
-	"require" : {
-        "php" : ">=5.4",
-        "phalcon/incubator": "dev-master"
+    "version": "0.1",
+    "title": "Magnxpyr CMS",
+    "description": "Open Source Content Management System (CMS) written with Phalcon PHP Framework 2.0.x.",
+    "type": "project",
+    "keywords": [
+        "phalcon",
+        "modules",
+        "modular",
+        "magnxpyr",
+        "php",
+        "cms"
+    ],
+    "homepage": "http://www.magnxpyr.com/",
+    "author": {
+        "name": "Magnxpyr Network",
+        "url": "http://www.magnxpyr.com"
     },
-    "minimum-stability": "stable",
-    "config": {
-        "vendor-dir": "app/vendor"
+    "maintainers": [
+        {
+            "name": "Stefan Chiriac",
+            "url": "http://www.magnxpyr.com"
+        }
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/magnxpyr/cms"
+    },
+    "bugs": "https://github.com/magnxpyr/cms/issues",
+    "license": "BSD-3",
+    "require": {
+        "php": ">=5.4",
+        "ext-intl": "*",
+        "ext-phalcon": "~2.0"
     }
 }

@@ -54,70 +54,32 @@
         ]
     },
     {
-        "name": "phalcon/pretty-exceptions",
-        "version": "dev-master",
-        "version_normalized": "9999999-dev",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/phalcon/pretty-exceptions.git",
-            "reference": "7d07dce67cfd18e87e65fd395272e4ef3dff87ba"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/phalcon/pretty-exceptions/zipball/7d07dce67cfd18e87e65fd395272e4ef3dff87ba",
-            "reference": "7d07dce67cfd18e87e65fd395272e4ef3dff87ba",
-            "shasum": ""
-        },
-        "require": {
-            "php": "~5.3"
-        },
-        "time": "2014-12-13 15:49:21",
-        "type": "library",
-        "installation-source": "source",
-        "autoload": {
-            "psr-4": {
-                "Phalcon\\Utils\\": "Library/Phalcon/Utils"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Contributors",
-                "homepage": "https://github.com/phalcon/pretty-exceptions/graphs/contributors"
-            }
-        ],
-        "description": "Beauty-exceptions plugin for Phalcon"
-    },
-    {
         "name": "phalcon/incubator",
         "version": "dev-master",
         "version_normalized": "9999999-dev",
         "source": {
             "type": "git",
             "url": "https://github.com/phalcon/incubator.git",
-            "reference": "687ef4f566104ece90466728d71af18050901263"
+            "reference": "b56b223b3c0a5288881aaf6ae23673e352a906cd"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/phalcon/incubator/zipball/687ef4f566104ece90466728d71af18050901263",
-            "reference": "687ef4f566104ece90466728d71af18050901263",
+            "url": "https://api.github.com/repos/phalcon/incubator/zipball/b56b223b3c0a5288881aaf6ae23673e352a906cd",
+            "reference": "b56b223b3c0a5288881aaf6ae23673e352a906cd",
             "shasum": ""
         },
         "require": {
-            "ext-phalcon": ">=1.2.4",
-            "php": ">=5.3.6",
+            "ext-phalcon": "~2.0",
+            "php": ">=5.3.9",
             "swiftmailer/swiftmailer": ">=5.2"
         },
         "require-dev": {
             "codeception/codeception": "*",
             "php-mock/php-mock": "<0.6",
-            "phpunit/phpunit": "4.5.*",
+            "phpunit/phpunit": "4.6.*",
             "squizlabs/php_codesniffer": "2.*"
         },
-        "time": "2015-05-06 07:27:06",
+        "time": "2015-05-13 21:28:01",
         "type": "library",
         "installation-source": "source",
         "autoload": {
@@ -139,6 +101,7 @@
         "homepage": "http://phalconphp.com",
         "keywords": [
             "framework",
+            "incubator",
             "phalcon"
         ]
     }

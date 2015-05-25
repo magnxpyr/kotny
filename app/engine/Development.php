@@ -11,6 +11,10 @@ namespace Engine;
 use Engine\Library\DebugWidget;
 use Phalcon\Debug;
 
+/**
+ * Class Development
+ * @package Engine
+ */
 class Development {
 
     /**

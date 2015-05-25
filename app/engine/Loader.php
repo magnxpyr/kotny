@@ -10,6 +10,10 @@ namespace Engine;
 
 use Phalcon\Text;
 
+/**
+ * Class Loader
+ * @package Engine
+ */
 class Loader extends \Phalcon\Loader {
 
     public function init($namespaces) {

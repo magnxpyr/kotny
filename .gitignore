@@ -1,3 +1,4 @@
-/cache/
+cache
 /config/development/
-/.idea
+.idea
+phalcon.iml

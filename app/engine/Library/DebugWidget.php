@@ -9,6 +9,10 @@ use Phalcon\DiInterface,
 	Phalcon\Mvc\Url,
 	Phalcon\Mvc\View;
 
+/**
+ * Class DebugWidget
+ * @package Engine\Library
+ */
 class DebugWidget implements InjectionAwareInterface {
 
 	protected $_di;

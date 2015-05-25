@@ -11,6 +11,10 @@ namespace Engine\Plugins;
 use Phalcon\Mvc\Dispatcher\Exception;
 use Phalcon\Mvc\User\Plugin;
 
+/**
+ * Class ErrorHandler
+ * @package Engine\Plugins
+ */
 class ErrorHandler extends Plugin {
 
     /**
