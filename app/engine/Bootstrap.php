@@ -222,6 +222,7 @@ class Bootstrap {
         $application->setDI($di);
         if ($request->isAjax()) {
             $return = new \stdClass();
+            $return->html = $application->view->getContent();
             $return->success = true;
 
             if ($request->getHeader(404) || $request->getHeader(503)) {
