@@ -18,6 +18,6 @@
     {{ content() }}
     <hr>
     <footer>
-        <p>&copy; Company 2015</p>
+        <p>Powered by <a href="http://www.magnxpyr.com">Magnxpyr Network</a> &copy; {{ date('Y') }}</p>
     </footer>
 </div>

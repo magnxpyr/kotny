@@ -204,7 +204,7 @@ class DebugWidget implements InjectionAwareInterface {
 
     public function renderToolbar() {
         $view = new View();
-        $viewDir = APP_PATH .'modules/Core/Views/';
+        $viewDir = APP_PATH .'modules/Core/Views/debugWidget/';
         $view->setViewsDir($viewDir);
         $this->router = $this->_di->get('router')->getMatchedRoute();
 

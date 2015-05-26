@@ -8,10 +8,10 @@
 
 namespace Admin;
 
-class Routes
-{
-    public function init($router)
-    {
+class Routes {
+
+    public function init($router) {
+
         $router->add('/admin', array(
             'module' => 'admin',
             'controller' => 'admin-index',

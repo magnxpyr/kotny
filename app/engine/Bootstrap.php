@@ -80,7 +80,7 @@ class Bootstrap {
             // Prevent caching annoyances
             $voltOptions['compileAlways'] = true;
         }
-        $voltOptions['compiledPath'] = $config->app->cacheDir;
+        $voltOptions['compiledPath'] = $config->app->cacheDir . 'volt/';
         $voltOptions['compiledSeparator'] = '_';
         $volt->setOptions($voltOptions);
         $phtml = new \Phalcon\Mvc\View\Engine\Php($view, $di);
