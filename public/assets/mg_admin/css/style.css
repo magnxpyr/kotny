@@ -1,0 +1,112 @@
+/*AdminLTE rewrite*/
+.content-wrapper, .right-side {
+    background-color: #fff;
+}
+.main-footer {
+    border-top: none;
+}
+.main-header > .navbar {
+    min-height: 36px;
+}
+.main-header .sidebar-toggle {
+    padding: 10px;
+}
+.navbar-nav>li>a {
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+}
+
+.sidebar-menu>li>a {
+    padding: 8px 5px 8px 13px;
+}
+
+.main-sidebar, .left-side {
+    padding-top: 40px;
+    width: 180px;
+}
+
+@media (min-width: 768px) {
+    .main-header .logo {
+        height: 40px;
+        line-height: 40px;
+        width: 180px;
+    }
+    .main-header > .navbar {
+        min-height: 36px;
+        margin-left: 180px;
+    }
+    .content-wrapper, .right-side, .main-footer {
+        margin-left: 180px;
+    }
+    .sidebar-mini.sidebar-collapse .sidebar-menu > li:hover > a > span {
+        top: 0;
+        margin-left: -3px;
+        padding: 8px 5px 8px 20px;
+        background-color: inherit;
+    }
+    .sidebar-mini.sidebar-collapse .sidebar-menu > li:hover > .treeview-menu {
+        top: 35px;
+        margin-left: 0;
+    }
+}
+
+@media (max-width: 767px) {
+    .sidebar-open .content-wrapper,
+    .sidebar-open .right-side,
+    .sidebar-open .main-footer {
+        -webkit-transform: translate(180px, 0);
+        -ms-transform: translate(180px, 0);
+        -o-transform: translate(180px, 0);
+        transform: translate(180px, 0);
+    }
+
+    .main-header .logo {
+        display: none;
+    }
+
+    .main-sidebar, .left-side, .control-sidebar {
+        padding-top: 40px !important;
+    }
+}
+/* AdminLTE End */
+
+.hint-block {
+    display: none;
+}
+
+.sticky-value {
+    padding: 6px 12px;
+    background: lightyellow;
+    white-space: pre;
+    word-wrap: break-word;
+}
+
+div.popover {
+    max-width: 500px;
+    word-wrap: break-word;
+    text-align:left;
+}
+
+.form-group label.help {
+    border-bottom: 1px dashed #888;
+    cursor: help;
+}
+
+.form-control {
+    display: block;
+    width: 100%;
+    height: 34px;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px !important;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075) !important;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075) !important;
+    -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s !important;
+    -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s !important;
+    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s !important;
+}
