@@ -32,7 +32,7 @@ abstract class AdminController extends Controller {
      * Setup assets
      * @return void
      */
-    private function _setupAssets() {
+    protected function _setupAssets() {
         $this->assets
             ->collection('header-js-min')
             ->setTargetPath(PUBLIC_PATH . 'assets/mg_admin/js/header.min.js')
@@ -62,6 +62,74 @@ abstract class AdminController extends Controller {
             ->addCss('vendor/font-awesome/css/font-awesome.min.css');
     }
 
+    protected function _setupNavigation() {
+        return [
+            'admin' => [
+                'href' => 'admin',
+                'title' => 'Dashboard',
+                'prepend' => '<i class="glyphicon glyphicon-home"></i>'
+            ],
+            'users' => [
+                'title' => 'Manage',
+                'items' => [ // type - dropdown
+                    'admin/users' => [
+                        'title' => 'Users and Roles',
+                        'href' => 'admin/users',
+                        'prepend' => '<i class="glyphicon glyphicon-user"></i>'
+                    ],
+                    'admin/pages' => [
+                        'title' => 'Pages',
+                        'href' => 'admin/pages',
+                        'prepend' => '<i class="glyphicon glyphicon-list-alt"></i>'
+                    ],
+                    'admin/menus' => [
+                        'title' => 'Menus',
+                        'href' => 'admin/menus',
+                        'prepend' => '<i class="glyphicon glyphicon-th-list"></i>'
+                    ],
+                    'admin/languages' => [
+                        'title' => 'Languages',
+                        'href' => 'admin/languages',
+                        'prepend' => '<i class="glyphicon glyphicon-globe"></i>'
+                    ],
+                    'admin/files' => [
+                        'title' => 'Files',
+                        'href' => 'admin/files',
+                        'prepend' => '<i class="glyphicon glyphicon-file"></i>'
+                    ],
+                    'admin/packages' => [
+                        'title' => 'Packages',
+                        'href' => 'admin/packages',
+                        'prepend' => '<i class="glyphicon glyphicon-th"></i>'
+                    ]
+                ]
+            ],
+        ];
+    }
 
+    protected function _renderItems($items, $isActive = false) {
+        $content = '';
+        foreach($items as $item) {
+            if (isset($item['items']) && !empty($item['items'])) {
+                $content = $this->_renderChild($content, $item['title'], $item, $isActive);
+            } else {
+                $content = $this->_renderTopLevel($content, $item['title'], $item, $isActive);
+            }
+        }
+        return $content;
+    }
 
+    protected function _renderTopLevel($content, $title, $items, $isActive = false) {
+        foreach($items as $item) {
+
+        }
+        return $content;
+    }
+
+    protected function _renderChild($content, $title, $items, $isActive = false) {
+        foreach($items as $item) {
+
+        }
+        return $content;
+    }
 }
