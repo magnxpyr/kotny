@@ -1,3 +1,9 @@
+<?php
+/**
+ * @var \Phalcon\Mvc\View\Engine $this
+ * @var array $navigation
+ */
+?>
 <div class="wrapper">
 
     <!-- Main Header -->
@@ -167,21 +173,7 @@
             <!-- Sidebar Menu -->
             <ul class="sidebar-menu">
                 <!-- Optionally, you can add icons to the links -->
-                <li class="active"><a href="#"><i class='fa fa-dashboard'></i> <span>Dashboard</span></a></li>
-                <li><a href="#"><i class='fa fa-link'></i> <span>Another Link</span></a></li>
-                <li class="treeview">
-                    <a href="#"><i class='fa fa-link'></i> <span>Multilevel</span> <i class="fa fa-angle-left pull-right"></i></a>
-                    <ul class="treeview-menu">
-                        <li><a href="#">Link in level 2</a></li>
-                        <li class="treeview">
-                            <a href="#"><i class='fa fa-link'></i> <span>Multilevel</span> <i class="fa fa-angle-left pull-right"></i></a>
-                            <ul class="treeview-menu">
-                                <li><a href="#">Link in level 2</a></li>
-                                <li><a href="#">Link in level 2</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
+                <?php echo $navigation ?>
             </ul><!-- /.sidebar-menu -->
         </section>
         <!-- /.sidebar -->
@@ -234,7 +226,7 @@
                 <h3 class="control-sidebar-heading">Recent Activity</h3>
                 <ul class='control-sidebar-menu'>
                     <li>
-                        <a href='javascript::;'>
+                        <a href='#'>
                             <i class="menu-icon fa fa-birthday-cake bg-red"></i>
                             <div class="menu-info">
                                 <h4 class="control-sidebar-subheading">Langdon's Birthday</h4>

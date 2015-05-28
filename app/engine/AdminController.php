@@ -22,10 +22,11 @@ abstract class AdminController extends Controller {
         if($this->request->isAjax()) {
             return;
         }
-    //    parent::initialize();
         $this->view->setMainView(THEMES_PATH . 'admin');
         $this->view->setLayout('admin');
         $this->_setupAssets();
+        $this->view->navigation = $this->_setupNavigation();
+        $this->view->sidebar_collapse = isset($_COOKIE['sidebar-collapse']) && $_COOKIE['sidebar-collapse'] == 1 ? 'sidebar-collapse' : '';
     }
 
     /**
@@ -39,9 +40,10 @@ abstract class AdminController extends Controller {
             ->setTargetUri('assets/mg_admin/js/header.min.js')
             ->addJs('vendor/jquery/jquery-1.11.3.min.js')
             ->addJs('vendor/jquery/jquery-ui.min.js')
+            ->addJs('vendor/jquery/jquery.cookie.js')
             ->addJs('vendor/bootstrap/js/bootstrap.min.js')
             ->addJs('assets/default/js/mg.js')
-            ->addJs('assets/mg_admin/js/app.min.js')
+            ->addJs('assets/mg_admin/js/app.js')
             ->join(true)
             ->addFilter(new \Phalcon\Assets\Filters\Jsmin());
         $this->assets
@@ -63,72 +65,73 @@ abstract class AdminController extends Controller {
     }
 
     protected function _setupNavigation() {
-        return [
+        $navigation = [
             'admin' => [
-                'href' => 'admin',
+                'href' => '/admin',
                 'title' => 'Dashboard',
                 'prepend' => '<i class="glyphicon glyphicon-home"></i>'
             ],
-            'users' => [
-                'title' => 'Manage',
+            'tools' => [
+                'title' => 'Web Tools',
+                'prepend' => '<i class="glyphicon glyphicon-user"></i>',
                 'items' => [ // type - dropdown
-                    'admin/users' => [
-                        'title' => 'Users and Roles',
-                        'href' => 'admin/users',
-                        'prepend' => '<i class="glyphicon glyphicon-user"></i>'
+                    'users' => [
+                        'title' => 'Modules',
+                        'href' => '/admin/tools/modules/index',
+                        'prepend' => '<i class="fa fa-circle-o"></i>'
                     ],
-                    'admin/pages' => [
-                        'title' => 'Pages',
-                        'href' => 'admin/pages',
-                        'prepend' => '<i class="glyphicon glyphicon-list-alt"></i>'
+                    'pages' => [
+                        'title' => 'Controllers',
+                        'href' => '/admin/tools/controllers/index',
+                        'prepend' => '<i class="fa fa-circle-o"></i>'
                     ],
-                    'admin/menus' => [
-                        'title' => 'Menus',
-                        'href' => 'admin/menus',
-                        'prepend' => '<i class="glyphicon glyphicon-th-list"></i>'
+                    'menus' => [
+                        'title' => 'Models',
+                        'href' => '/admin/tools/models/index',
+                        'prepend' => '<i class="fa fa-circle-o"></i>'
                     ],
-                    'admin/languages' => [
-                        'title' => 'Languages',
-                        'href' => 'admin/languages',
-                        'prepend' => '<i class="glyphicon glyphicon-globe"></i>'
+                    'languages' => [
+                        'title' => 'Migrations',
+                        'href' => '/admin/tools/migrations/index',
+                        'prepend' => '<i class="fa fa-circle-o"></i>'
                     ],
-                    'admin/files' => [
-                        'title' => 'Files',
-                        'href' => 'admin/files',
-                        'prepend' => '<i class="glyphicon glyphicon-file"></i>'
-                    ],
-                    'admin/packages' => [
-                        'title' => 'Packages',
-                        'href' => 'admin/packages',
-                        'prepend' => '<i class="glyphicon glyphicon-th"></i>'
+                    'files' => [
+                        'title' => 'Scaffold',
+                        'href' => '/admin/tools/scaffold/index',
+                        'prepend' => '<i class="fa fa-circle-o"></i>'
                     ]
                 ]
-            ],
+            ]
         ];
+
+        $html = $this->_renderItems($navigation);
+        return $html['html'];
     }
 
-    protected function _renderItems($items, $isActive = false) {
-        $content = '';
+    protected function _renderItems($items, $isActive = 0) {
+        $content = ['html' => '', 'active' => $isActive];
+        $route = '/admin/'.$this->router->getModuleName().'/'.$this->router->getControllerName();
         foreach($items as $item) {
-            if (isset($item['items']) && !empty($item['items'])) {
-                $content = $this->_renderChild($content, $item['title'], $item, $isActive);
-            } else {
-                $content = $this->_renderTopLevel($content, $item['title'], $item, $isActive);
+            if($content['active'] != 3 && isset($item['href'])) {
+                $content['active'] = strpos($item['href'], $route) !== false ? 1 : 0;
             }
-        }
-        return $content;
-    }
-
-    protected function _renderTopLevel($content, $title, $items, $isActive = false) {
-        foreach($items as $item) {
-
-        }
-        return $content;
-    }
-
-    protected function _renderChild($content, $title, $items, $isActive = false) {
-        foreach($items as $item) {
-
+            if (!empty($item['items'])) {
+                $content['html'] .= "<li class=\"treeview\">";
+                $content['html'] .= sprintf("<a href=\"#\">%s</i><span>%s</span><i class=\"fa fa-angle-left pull-right\"></i></a>", $item['prepend'], $item['title']);
+                $content['html'] .= "<ul class=\"treeview-menu\">";
+                $result = $this->_renderItems($item['items'], $content['active']);
+                $content['active'] = $result['active'];
+                $content['html'] .= $result['html'];
+                $content['html'] .= "</ul></li>";
+            } else {
+                if($content['active'] == 1) {
+                    $content['html'] .= '<li class="active">';
+                    $content['active'] = 3;
+                } else {
+                    $content['html'] .= '<li>';
+                }
+                $content['html'] .= sprintf("<a href=\"%s\">%s<span>%s</span></a></li>", $this->url->get($item['href']), $item['prepend'], $item['title']);
+            }
         }
         return $content;
     }

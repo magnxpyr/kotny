@@ -1,3 +1,8 @@
+<?php
+/**
+ * @var string $sidebar_collapse
+ */
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -11,7 +16,7 @@
     <meta name="description" content="CMS">
     <meta name="author" content="Magnxpyr Network">
 </head>
-<body class="skin-blue sidebar-mini sidebar-collapse">
+<body class="skin-blue sidebar-mini <?php echo $sidebar_collapse ?>">
 <?php echo $this->getContent(); ?>
 </body>
 </html>
