@@ -25,6 +25,14 @@
     width: 180px;
 }
 
+.sidebar-menu li.active > a > .glyphicon-menu-left {
+    margin-top: -10px;
+    -webkit-transform: rotate(-90deg);
+    -ms-transform: rotate(-90deg);
+    -o-transform: rotate(-90deg);
+    transform: rotate(-90deg);
+}
+
 @media (min-width: 768px) {
     .main-header .logo {
         height: 40px;

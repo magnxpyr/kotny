@@ -121,7 +121,7 @@ class AdminFileManagerController extends AdminController {
     }
 
     public function indexAction() {
-        $this->tag->setTitle('File Manager');
+        $this->_setTitle('File Manager');
         $this->view->setVar("connector", 'vendor/elFinder/php/connector.minimal.php');
     }
 }

@@ -19,6 +19,7 @@ class AdminUserController extends AdminController {
      * Index action
      */
     public function indexAction() {
+        $this->_setTitle("Admin User");
         $this->persistent->parameters = null;
     }
 

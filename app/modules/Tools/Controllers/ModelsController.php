@@ -15,6 +15,7 @@ use Tools\Helpers\Tools;
 class ModelsController extends ControllerBase {
 
     public function indexAction() {
+        $this->_setTitle("Create Model");
         $selectedModule = null;
         $params = $this->router->getParams();
         if(!empty($params))

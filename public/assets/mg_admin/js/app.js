@@ -314,9 +314,9 @@ function _init() {
         if ($(window).width() > (screenSizes.sm - 1)) {
           $("body").toggleClass('sidebar-collapse');
           if($("body").hasClass('sidebar-collapse')) {
-            $.cookie('sidebar-collapse', 1);
+            Cookies.set('mg-sdbrClp', 1);
           } else {
-            $.cookie('sidebar-collapse', 0);
+            Cookies.set('mg-sdbrClp', 0);
           }
         }
         //Handle sidebar push menu for small screens

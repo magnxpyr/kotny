@@ -26,7 +26,7 @@ abstract class AdminController extends Controller {
         $this->view->setLayout('admin');
         $this->_setupAssets();
         $this->view->navigation = $this->_setupNavigation();
-        $this->view->sidebar_collapse = isset($_COOKIE['sidebar-collapse']) && $_COOKIE['sidebar-collapse'] == 1 ? 'sidebar-collapse' : '';
+        $this->view->sidebar_collapse = isset($_COOKIE['mg-sdbrClp']) && $_COOKIE['mg-sdbrClp'] == 1 ? 'sidebar-collapse' : '';
     }
 
     /**
@@ -40,7 +40,7 @@ abstract class AdminController extends Controller {
             ->setTargetUri('assets/mg_admin/js/header.min.js')
             ->addJs('vendor/jquery/jquery-1.11.3.min.js')
             ->addJs('vendor/jquery/jquery-ui.min.js')
-            ->addJs('vendor/jquery/jquery.cookie.js')
+            ->addJs('vendor/js/js.cookie.js')
             ->addJs('vendor/bootstrap/js/bootstrap.min.js')
             ->addJs('assets/default/js/mg.js')
             ->addJs('assets/mg_admin/js/app.js')
@@ -105,28 +105,35 @@ abstract class AdminController extends Controller {
         ];
 
         $html = $this->_renderItems($navigation);
-        return $html['html'];
+        return $html;
     }
 
     protected function _renderItems($items, $isActive = 0) {
-        $content = ['html' => '', 'active' => $isActive];
+        $content = ['html' => '', 'breadcrumb' => '', 'active' => $isActive];
         $route = '/admin/'.$this->router->getModuleName().'/'.$this->router->getControllerName();
         foreach($items as $item) {
-            if($content['active'] != 3 && isset($item['href'])) {
-                $content['active'] = strpos($item['href'], $route) !== false ? 1 : 0;
-            }
             if (!empty($item['items'])) {
-                $content['html'] .= "<li class=\"treeview\">";
-                $content['html'] .= sprintf("<a href=\"#\">%s</i><span>%s</span><i class=\"fa fa-angle-left pull-right\"></i></a>", $item['prepend'], $item['title']);
-                $content['html'] .= "<ul class=\"treeview-menu\">";
                 $result = $this->_renderItems($item['items'], $content['active']);
+                /*
+                if($result['active'] == 2)  {
+                    $content['breadcrumb'] .= "<li>".$item['prepend'].' '.$item['title']."</li>".$result['breadcrumb'];
+                }
+                */
+                $active = $result['active'] == 2 ? 'active' : '';
+                $content['html'] .= "<li class=\"treeview $active\">";
+                $content['html'] .= sprintf("<a href=\"#\">%s</i><span>%s</span><i class=\"glyphicon glyphicon-menu-left pull-right\"></i></a>", $item['prepend'], $item['title']);
+                $content['html'] .= "<ul class=\"treeview-menu\">";
                 $content['active'] = $result['active'];
                 $content['html'] .= $result['html'];
                 $content['html'] .= "</ul></li>";
             } else {
+                if($content['active'] != 2 && isset($item['href'])) {
+                    $content['active'] = strpos($item['href'], $route) !== false ? 1 : 0;
+                }
                 if($content['active'] == 1) {
                     $content['html'] .= '<li class="active">';
-                    $content['active'] = 3;
+                //    $content['breadcrumb'] .= '<li class="active">'.$item['title'].'</li>';
+                    $content['active'] = 2;
                 } else {
                     $content['html'] .= '<li>';
                 }

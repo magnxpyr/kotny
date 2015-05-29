@@ -10,8 +10,8 @@ return [
     ],
     'app' => [
         'offline' => false,
-        'site_name' => 'Magnxpyr CMS',
-        'site_name_location' => 0,
+        'site_name' => 'Magnxpyr Network',
+        'site_name_location' => 1,
         'baseUri'       => '/', // must end with trailing slash /
         'cryptSalt'     => 'FBVtggIk5lAzEU9H',
         'development'   => true,

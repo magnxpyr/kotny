@@ -64,6 +64,7 @@ class MigrationsController extends ControllerBase {
     }
 
     public function indexAction() {
+        $this->_setTitle("Generate Migration");
         $this->_prepareVersions();
         $this->listTables(true);
     }
@@ -107,6 +108,7 @@ class MigrationsController extends ControllerBase {
 
 
     public function runAction() {
+        $this->_setTitle("Run Migration");
 
         if ($this->request->isPost()) {
             $version = '';

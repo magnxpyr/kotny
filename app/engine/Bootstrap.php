@@ -179,17 +179,6 @@ class Bootstrap {
             return new \Phalcon\Mvc\Model\MetaData\Memory();
         });
 
-        // Register Tags
-        $tag = new \Phalcon\Tag();
-        switch($config->app->site_name_location) {
-            case 1:
-                $tag->prependTitle($config->app->site_name . ' | ');
-                break;
-            case 2:
-                $tag->appendTitle('|' . $config->app->site_name);
-                break;
-        }
-
         // Register assets that will be loaded in every page
         $di->setShared('assets', function() {
             return new \Phalcon\Assets\Manager();

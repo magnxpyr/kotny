@@ -14,10 +14,11 @@ use Tools\Builder\Module;
 class ModulesController extends ControllerBase {
 
     public function indexAction() {
-
+        $this->_setTitle("Create Module");
     }
 
     public function listAction() {
+        $this->_setTitle("List Modules");
 
     }
 

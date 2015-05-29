@@ -29,6 +29,7 @@ use Tools\Builder\Scaffold;
 class ScaffoldController extends ControllerBase {
 
     public function indexAction() {
+        $this->_setTitle("Generate Scaffold");
         $this->listTables();
         $this->view->templateEngines = array(
             'volt' => 'volt',

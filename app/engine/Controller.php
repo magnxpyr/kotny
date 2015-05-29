@@ -53,4 +53,20 @@ abstract class Controller extends \Phalcon\Mvc\Controller {
             ->collection('header-css')
             ->addCss('vendor/bootstrap/css/bootstrap.min.css');
     }
+
+    /**
+     * Set page title
+     * @param string $title
+     */
+    protected function _setTitle($title) {
+        switch($this->di->getShared('config')->app->site_name_location) {
+            case 1:
+                $this->tag->setTitle($this->di->getShared('config')->app->site_name . ' | ' . $title);
+                break;
+            case 2:
+                $this->tag->setTitle($title . '|' . $this->di->getShared('config')->app->site_name);
+                break;
+        }
+        $this->view->title = $title;
+    }
 }

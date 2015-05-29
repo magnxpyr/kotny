@@ -26,8 +26,8 @@ use Tools\Helpers\Tools;
 class ControllerBase extends AdminController {
 
     protected function initialize() {
-        $this->_checkAccess();
         parent::initialize();
+        $this->_checkAccess();
     }
 
     /**
