@@ -8,12 +8,11 @@
  */
 
 use Tools\Helpers\Tools;
+
+echo $this->getContent();
 ?>
 <div class="row">
     <div class="col-md-9 col-sm-8">
-
-        <?php echo $this->getContent() ?>
-
         <div class="col-lg-8 col-md-10">
             <form method="post" autocomplete="off" action="<?php echo Tools::generateUrl($this->view->getControllerName(), 'create') ?>">
                 <div class="control-group">

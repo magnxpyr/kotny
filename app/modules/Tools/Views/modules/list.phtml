@@ -7,15 +7,14 @@
  */
 
 use Tools\Helpers\Tools;
+
+echo $this->getContent();
 ?>
 <div class="row">
     <div class="col-md-9 col-sm-8">
         <ul class="nav nav-tabs">
             <?php echo Tools::getMenu($this->view->getControllerName(), $this->view->getActionName()) ?>
         </ul>
-
-        <?php echo $this->getContent() ?>
-
         <table class="table table-bordered table-striped">
             <thead>
             <tr>

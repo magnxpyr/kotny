@@ -69,36 +69,47 @@ abstract class AdminController extends Controller {
             'admin' => [
                 'href' => '/admin',
                 'title' => 'Dashboard',
-                'prepend' => '<i class="glyphicon glyphicon-home"></i>'
+                'prepend' => '<i class="fa fa-dashboard"></i>'
             ],
             'tools' => [
                 'title' => 'Web Tools',
-                'prepend' => '<i class="glyphicon glyphicon-user"></i>',
+                'prepend' => '<i class="fa fa-list-alt"></i>',
                 'items' => [ // type - dropdown
-                    'users' => [
+                    'modules' => [
                         'title' => 'Modules',
                         'href' => '/admin/tools/modules/index',
                         'prepend' => '<i class="fa fa-circle-o"></i>'
                     ],
-                    'pages' => [
+                    'controllers' => [
                         'title' => 'Controllers',
                         'href' => '/admin/tools/controllers/index',
                         'prepend' => '<i class="fa fa-circle-o"></i>'
                     ],
-                    'menus' => [
+                    'models' => [
                         'title' => 'Models',
                         'href' => '/admin/tools/models/index',
                         'prepend' => '<i class="fa fa-circle-o"></i>'
                     ],
-                    'languages' => [
+                    'migrations' => [
                         'title' => 'Migrations',
                         'href' => '/admin/tools/migrations/index',
                         'prepend' => '<i class="fa fa-circle-o"></i>'
                     ],
-                    'files' => [
+                    'scaffold' => [
                         'title' => 'Scaffold',
                         'href' => '/admin/tools/scaffold/index',
                         'prepend' => '<i class="fa fa-circle-o"></i>'
+                    ]
+                ]
+            ],
+            'user_roles' => [
+                'title' => 'Users & Roles',
+                'prepend' => '<i class="fa fa-group"></i>',
+                'items' => [
+                    'user' => [
+                        'title' => 'Users',
+                        'href' => '/admin/core/user/index',
+                        'prepend' => '<i class="fa fa-user"></i>'
                     ]
                 ]
             ]
@@ -121,7 +132,7 @@ abstract class AdminController extends Controller {
                 */
                 $active = $result['active'] == 2 ? 'active' : '';
                 $content['html'] .= "<li class=\"treeview $active\">";
-                $content['html'] .= sprintf("<a href=\"#\">%s</i><span>%s</span><i class=\"glyphicon glyphicon-menu-left pull-right\"></i></a>", $item['prepend'], $item['title']);
+                $content['html'] .= sprintf("<a href=\"#\">%s</i><span>%s</span><i class=\"fa fa-angle-left pull-right\"></i></a>", $item['prepend'], $item['title']);
                 $content['html'] .= "<ul class=\"treeview-menu\">";
                 $content['active'] = $result['active'];
                 $content['html'] .= $result['html'];

@@ -23,29 +23,21 @@ class UserMigration_100 extends Migration {
                     new Column('username', array(
                             'type' => Column::TYPE_VARCHAR,
                             'notNull' => true,
-                            'size' => 150,
+                            'size' => 50,
                             'after' => 'id'
                         )
                     ),
-                    new Column('auth_key', array(
+                    new Column('auth_token', array(
                             'type' => Column::TYPE_VARCHAR,
-                            'notNull' => true,
                             'size' => 32,
                             'after' => 'username'
-                        )
-                    ),
-                    new Column('hash_key', array(
-                            'type' => Column::TYPE_VARCHAR,
-                            'notNull' => true,
-                            'size' => 32,
-                            'after' => 'auth_key'
                         )
                     ),
                     new Column('password', array(
                             'type' => Column::TYPE_VARCHAR,
                             'notNull' => true,
                             'size' => 255,
-                            'after' => 'hash_key'
+                            'after' => 'salt_key'
                         )
                     ),
                     new Column('reset_token', array(
@@ -58,7 +50,6 @@ class UserMigration_100 extends Migration {
                     new Column('email', array(
                             'type' => Column::TYPE_VARCHAR,
                             'notNull' => true,
-                            'primary' => false,
                             'size' => 255,
                             'after' => 'reset_token'
                         )
@@ -74,30 +65,30 @@ class UserMigration_100 extends Migration {
                             'type' => Column::TYPE_INTEGER,
                             'notNull' => true,
                             'size' => 6,
+                    //        'default' => '0',
                             'after' => 'role'
                         )
                     ),
-                    new Column('register_date', array(
-                            'type' => Column::TYPE_INTEGER,
+                    new Column('created_at', array(
+                            'type' => 'TIMESTAMP',
                             'notNull' => true,
-                            'size' => 11,
+                   //         'default' => 'CURRENT_TIMESTAMP',
                             'after' => 'status'
                         )
                     ),
-                    new Column('last_visit_date', array(
-                            'type' => Column::TYPE_INTEGER,
-                            'notNull' => true,
-                            'size' => 11,
-                            'after' => 'register_date'
+                    new Column('visited_at', array(
+                            'type' => 'TIMESTAMP',
+                            'after' => 'created_at'
                         )
                     ),
                 ),
                 'indexes' => array(
-                    new Index('PRIMARY', array('id', 'username', 'email')),
+                    new Index('PRIMARY', array('id')),
+                    new Index('UNIQUE', array( 'username', 'email'), 'UNIQUE')
                 ),
                 'options' => array(
                     'TABLE_TYPE' => 'BASE TABLE',
-                    'AUTO_INCREMENT' => '',
+                    'AUTO_INCREMENT' => '0',
                     'ENGINE' => 'InnoDB',
                     'TABLE_COLLATION' => 'utf8_general_ci'
                 )

@@ -1,10 +1,10 @@
 <?php
 /**
-* @copyright   2006 - 2015 Magnxpyr Network
-* @license     New BSD License; see LICENSE
-* @link        http://www.magnxpyr.com
-* @author      Stefan Chiriac <stefan@magnxpyr.com>
-*/
+ * @copyright   2006 - 2015 Magnxpyr Network
+ * @license     New BSD License; see LICENSE
+ * @link        http://www.magnxpyr.com
+ * @author      Stefan Chiriac <stefan@magnxpyr.com>
+ */
 
 namespace Core\Controllers;
 
@@ -19,7 +19,7 @@ class AdminUserController extends AdminController {
      * Index action
      */
     public function indexAction() {
-        $this->_setTitle("Admin User");
+        $this->_setTitle("Users");
         $this->persistent->parameters = null;
     }
 
@@ -90,9 +90,11 @@ class AdminUserController extends AdminController {
             $this->tag->setDefault("id", $user->getId());
             $this->tag->setDefault("username", $user->getUsername());
             $this->tag->setDefault("auth_key", $user->getAuthKey());
-            $this->tag->setDefault("password_hash", $user->getPasswordHash());
-            $this->tag->setDefault("password_reset_token", $user->getPasswordResetToken());
+            $this->tag->setDefault("hash_key", $user->getHashKey());
+            $this->tag->setDefault("password", $user->getPassword());
+            $this->tag->setDefault("reset_token", $user->getResetToken());
             $this->tag->setDefault("email", $user->getEmail());
+            $this->tag->setDefault("role", $user->getRole());
             $this->tag->setDefault("status", $user->getStatus());
             $this->tag->setDefault("register_date", $user->getRegisterDate());
             $this->tag->setDefault("last_visit_date", $user->getLastVisitDate());
@@ -115,9 +117,11 @@ class AdminUserController extends AdminController {
 
         $user->setUsername($this->request->getPost("username"));
         $user->setAuthKey($this->request->getPost("auth_key"));
-        $user->setPasswordHash($this->request->getPost("password_hash"));
-        $user->setPasswordResetToken($this->request->getPost("password_reset_token"));
+        $user->setHashKey($this->request->getPost("hash_key"));
+        $user->setPassword($this->request->getPost("password"));
+        $user->setResetToken($this->request->getPost("reset_token"));
         $user->setEmail($this->request->getPost("email", "email"));
+        $user->setRole($this->request->getPost("role"));
         $user->setStatus($this->request->getPost("status"));
         $user->setRegisterDate($this->request->getPost("register_date"));
         $user->setLastVisitDate($this->request->getPost("last_visit_date"));
@@ -165,9 +169,11 @@ class AdminUserController extends AdminController {
 
         $user->setUsername($this->request->getPost("username"));
         $user->setAuthKey($this->request->getPost("auth_key"));
-        $user->setPasswordHash($this->request->getPost("password_hash"));
-        $user->setPasswordResetToken($this->request->getPost("password_reset_token"));
+        $user->setHashKey($this->request->getPost("hash_key"));
+        $user->setPassword($this->request->getPost("password"));
+        $user->setResetToken($this->request->getPost("reset_token"));
         $user->setEmail($this->request->getPost("email", "email"));
+        $user->setRole($this->request->getPost("role"));
         $user->setStatus($this->request->getPost("status"));
         $user->setRegisterDate($this->request->getPost("register_date"));
         $user->setLastVisitDate($this->request->getPost("last_visit_date"));
