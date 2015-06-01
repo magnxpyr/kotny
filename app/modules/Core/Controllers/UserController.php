@@ -57,7 +57,7 @@ class UserController extends Controller {
                 }
             } else {
                 $form->clear();
-                $this->flash->success('Thanks for sign-up, please log-in to manage your account');
+                $this->flash->success('Thanks for signing up, please log-in to manage your account');
             }
         }
         $this->view->form = $form;

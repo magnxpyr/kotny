@@ -12,7 +12,7 @@ echo $this->getContent();
 <div class="row">
     <div class="col-md-9 col-sm-8">
         <div class="col-lg-8 col-md-10">
-            <?php echo $this->tag->form(array('user/register')); ?>
+            <?php echo $this->tag->form(array('user/login')); ?>
 
             <fieldset>
                 <div class="form-group">
@@ -20,15 +20,6 @@ echo $this->getContent();
                     <div class="input-group">
                         <span class="input-group-addon" id="username-addon"><i class="glyphicon glyphicon-user"></i></span>
                         <?php echo $form->render('username', array('class' => 'form-control', 'aria-describedby' => "username-addon")); ?>
-                    </div>
-                </div>
-
-                <div class="form-group">
-
-                    <?php echo $form->label('email', array('class' => 'control-label')); ?>
-                    <div class="input-group">
-                        <span class="input-group-addon" id="email-addon">@</span>
-                        <?php echo $form->render('email', array('class' => 'form-control', 'aria-describedby' => "email-addon")); ?>
                     </div>
                 </div>
 
@@ -41,16 +32,12 @@ echo $this->getContent();
                 </div>
 
                 <div class="form-group">
-                    <?php echo $form->label('repeatPassword', array('class' => 'control-label')); ?>
-                    <div class="input-group">
-                        <span class="input-group-addon" id="password-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                        <?php echo $form->render('repeatPassword', array('class' => 'form-control', 'aria-describedby' => "password-addon")); ?>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <p class="help-block">By signing up, you accept the terms of use and privacy policy.</p>
-                    <?php echo $this->tag->submitButton(array('Register', 'class' => 'btn btn-primary')); ?>
+                    <?php /**
+                     * @TODO Forgot password
+                     * @TODO Remember me
+                     * */ ?>
+                    <p class="help-block"></p>
+                    <?php echo $this->tag->submitButton(array('Login', 'class' => 'btn btn-primary')); ?>
                 </div>
             </fieldset>
         </div>

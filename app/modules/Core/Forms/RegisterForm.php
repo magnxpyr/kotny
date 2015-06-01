@@ -38,14 +38,14 @@ class RegisterForm extends Form {
 
         // Email
         $email = new Text('email');
-        $email->setLabel('E-Mail');
+        $email->setLabel('Email');
         $email->setFilters('email');
         $email->addValidators(array(
             new PresenceOf(array(
-                'message' => 'E-mail is required'
+                'message' => 'Email is required'
             )),
             new Email(array(
-                'message' => 'E-mail is not valid'
+                'message' => 'Email is not valid'
             ))
         ));
         $this->add($email);
