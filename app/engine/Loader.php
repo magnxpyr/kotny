@@ -28,8 +28,7 @@ class Loader extends \Phalcon\Loader {
         require_once APP_PATH . 'vendor/autoload.php';
     }
 
-    public function modulesConfig($modules_list)
-    {
+    public function modulesConfig($modules_list) {
         $namespaces = array();
         $modules = array();
         $routes = array();

@@ -166,7 +166,7 @@ class User extends Model {
      * @param integer $register_date
      * @return $this
      */
-    public function setRegisterDate($created_at) {
+    public function setCreatedAt($created_at) {
         $this->created_at = $created_at;
 
         return $this;
@@ -178,7 +178,7 @@ class User extends Model {
      * @param integer $last_visit_date
      * @return $this
      */
-    public function setLastVisitDate($visited_at) {
+    public function setVisitedAt($visited_at) {
         $this->visited_at = $visited_at;
 
         return $this;
@@ -261,7 +261,7 @@ class User extends Model {
      *
      * @return integer
      */
-    public function getCreatedAtDate() {
+    public function getCreatedAt() {
         return $this->created_at;
     }
 
@@ -270,7 +270,7 @@ class User extends Model {
      *
      * @return integer
      */
-    public function getVisitedAtDate() {
+    public function getVisitedAt() {
         return $this->visited_at;
     }
 

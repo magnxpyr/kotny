@@ -4,7 +4,8 @@
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
- * @var \Core\Forms\RegisterForm $form
+ * @var \Core\Forms\LoginForm $form
+ * @var \Phalcon\Mvc\View\Engine $this
  */
 
 echo $this->getContent();
@@ -40,6 +41,17 @@ echo $this->getContent();
                     <?php echo $this->tag->submitButton(array('Login', 'class' => 'btn btn-primary')); ?>
                 </div>
             </fieldset>
+        </div>
+
+        <div class="col-lg-8 col-md-6">
+
+            <div class="page-header">
+                <h2>Don't have an account yet?</h2>
+            </div>
+            <p>Create an account to take full advantage of our website</p>
+            <div class="clearfix center">
+                <?php echo $this->tag->linkTo(array('user/register', 'class' => 'btn btn-primary btn-large btn-success'), 'Sign Up'); ?>
+            </div>
         </div>
     </div>
 </div>

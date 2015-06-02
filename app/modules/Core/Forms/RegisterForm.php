@@ -11,6 +11,7 @@ namespace Core\Forms;
 use Phalcon\Forms\Form;
 use Phalcon\Forms\Element\Text;
 use Phalcon\Forms\Element\Password;
+use Phalcon\Validation\Validator\Alpha;
 use Phalcon\Validation\Validator\PresenceOf;
 use Phalcon\Validation\Validator\Email;
 
@@ -26,15 +27,18 @@ class RegisterForm extends Form {
     public function initialize($entity = null, $options = null) {
 
         // Username
-        $name = new Text('username');
-        $name->setLabel('Username');
-        $name->setFilters(array('alpha'));
-        $name->addValidators(array(
+        $username = new Text('username');
+        $username->setLabel('Username');
+        $username->setFilters('alphanum');
+        $username->addValidators(array(
             new PresenceOf(array(
                 'message' => 'Please enter your desired user name'
             )),
+            new Alpha(array(
+                'message' => 'User name is not valid'
+            ))
         ));
-        $this->add($name);
+        $this->add($username);
 
         // Email
         $email = new Text('email');

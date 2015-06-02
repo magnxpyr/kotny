@@ -38,6 +38,7 @@ class UserController extends Controller {
         $form = new RegisterForm();
         if ($this->request->isPost()) {
         //    $name = $this->request->getPost('name', array('string', 'striptags'));
+            /*
             $username = $this->request->getPost('username', 'alphanum');
             $email = $this->request->getPost('email', 'email');
             $password = $this->request->getPost('password');
@@ -59,7 +60,35 @@ class UserController extends Controller {
                 $form->clear();
                 $this->flash->success('Thanks for signing up, please log-in to manage your account');
             }
+            */
+            $post = $this->request->getPost();
+            $user = new User();
+            $user->setRole(1);
+            $user->setStatus(0);
+            $form->bind($post, $user);
+            if ($form->isValid()) {
+                if ($user->save()) {
+                    $form->clear();
+                    $this->flash->success('Thanks for signing up, please log-in to manage your account');
+                } else {
+                    $this->_flashErrors($user);
+                }
+            } else {
+                $this->_flashErrors($form);
+            }
         }
         $this->view->form = $form;
+    }
+
+    /**
+     * Register an authenticated user into session data
+     * @param User $user
+     */
+    private function _registerSession(User $user)
+    {
+        $this->session->set('auth', array(
+            'id' => $user->getId(),
+            'username' => $user->getUsername()
+        ));
     }
 }
