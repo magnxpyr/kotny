@@ -14,6 +14,11 @@ echo $this->getContent();
     <div class="col-md-9 col-sm-8">
         <div class="col-lg-8 col-md-10">
             <?php echo $this->tag->form(array('user/login')); ?>
+            <?php echo $this->tag->hiddenField(array(
+                'id' => 'token',
+                'name' => $this->security->getTokenKey(),
+                'value' => $this->security->getToken()
+            )); ?>
 
             <fieldset>
                 <div class="form-group">
