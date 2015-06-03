@@ -11,14 +11,10 @@
 echo $this->getContent();
 ?>
 <div class="row">
-    <div class="col-md-9 col-sm-8">
-        <div class="col-lg-8 col-md-10">
+    <div class="col-md-6 col-sm-6">
+        <div class="col-sm-6 col-md-9">
             <?php echo $this->tag->form(array('user/login')); ?>
-            <?php echo $this->tag->hiddenField(array(
-                'id' => 'token',
-                'name' => $this->security->getTokenKey(),
-                'value' => $this->security->getToken()
-            )); ?>
+            <?php echo $form->render('csrf', ['value' => $this->security->getToken()]); ?>
 
             <fieldset>
                 <div class="form-group">
@@ -38,25 +34,33 @@ echo $this->getContent();
                 </div>
 
                 <div class="form-group">
-                    <?php /**
-                     * @TODO Forgot password
-                     * @TODO Remember me
-                     * */ ?>
+                    <div class="input-group">
+                        <?php echo $form->render('remember') . ' ' . $form->label('remember'); ?>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="input-group">
+                        <?php echo $this->tag->linkTo('user/forgotPassword', 'Forgot my password'); ?>
+                    </div>
+                </div>
+
+                <div class="form-group">
                     <p class="help-block"></p>
-                    <?php echo $this->tag->submitButton(array('Login', 'class' => 'btn btn-primary')); ?>
+                    <?php echo $form->render('Login'); ?>
                 </div>
             </fieldset>
         </div>
-
-        <div class="col-lg-8 col-md-6">
-
+    </div>
+        <div class="col-sm-6 col-md-6">
             <div class="page-header">
                 <h2>Don't have an account yet?</h2>
             </div>
-            <p>Create an account to take full advantage of our website</p>
-            <div class="clearfix center">
-                <?php echo $this->tag->linkTo(array('user/register', 'class' => 'btn btn-primary btn-large btn-success'), 'Sign Up'); ?>
-            </div>
+            <p>Create an account to take full advantage of our website
+
+                <?php echo $this->tag->linkTo(array('user/register', 'Sign Up', 'class' => 'btn btn-success')); ?>
+            </p>
+
         </div>
-    </div>
+
 </div>

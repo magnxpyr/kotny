@@ -15,7 +15,7 @@ namespace Engine;
 class Utils
 {
     // Return 128 bits random string
-    public static function gen_token($bytes = 16) {
+    public static function generateToken($bytes = 16) {
         return bin2hex(openssl_random_pseudo_bytes($bytes));
     }
 }

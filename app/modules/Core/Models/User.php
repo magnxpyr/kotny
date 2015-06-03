@@ -275,6 +275,21 @@ class User extends Model {
     }
 
     /**
+     * Initialize method for model.
+     */
+    public function initialize() {
+        $this->setSource('user');
+    }
+
+    /**
+     * Get table source
+     * @return string
+     */
+    public function getSource() {
+        return 'user';
+    }
+
+    /**
      * Validations and business logic
      */
     public function validation() {
@@ -303,13 +318,17 @@ class User extends Model {
     }
 
     /**
-     * Initialize method for model.
+     * Send an e-mail to users allowing him/her to reset his/her password
      */
-    public function initialize() {
-        $this->setSource('user');
-    }
-
-    public function getSource() {
-        return 'user';
+    public function afterCreate() {
+        /*
+        $this->getDI()
+            ->getMail()
+            ->send(array(
+                $this->user->email => $this->user->name
+            ), "Reset your password", 'reset', array(
+                'resetUrl' => '/reset-password/' . $this->code . '/' . $this->user->email
+            ));
+        */
     }
 }

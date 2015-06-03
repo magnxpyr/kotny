@@ -26,83 +26,86 @@ class UserController extends Controller {
         $this->_setTitle('Login');
         $form = new LoginForm();
         if ($this->request->isPost()) {
-            if ($this->security->checkToken()) {
-            //    $post = $this->request->getPost('username', 'alphanum');
-            //    if ($form->isValid()) {
-                    $username = $this->request->getPost('username', 'alphanum');
-                    $password = $this->request->getPost('password');
-                    $user = User::findFirst("username='$username'");
-                    if($username) {
-                        if ($this->security->checkHash($password, $user->password)) {
-                            $this->registerSession($user);
-                            $this->response->redirect('user/login');
-                        } else {
-                            $this->flash->error('Username or password is invalid');
-                        }
+            if ($form->isValid($this->request->getPost())) {
+                $username = $this->request->getPost('username', 'alphanum');
+                $password = $this->request->getPost('password');
+                $user = User::findFirst("username='$username'");
+                if($user) {
+                    if ($this->security->checkHash($password, $user->getPassword())) {
+                        $this->session->set('auth', array(
+                            'id' => $user->getId(),
+                            'username' => $user->getUsername(),
+                            'email' => $user->getEmail(),
+                            'role' => $user->getRole()
+                        ));
+                        $this->response->redirect('user/login');
+                    } else {
+                        $this->flash->error($this->_t('Username or password is invalid'));
                     }
-            //    } else {
-           //         $this->_flashErrors($form);
-           //     }
+                } else {
+                    $this->flash->error($this->_t('Username or password is invalid'));
+                }
+            } else {
+                $this->_flashErrors($form);
             }
         }
         $this->view->form = $form;
     }
 
     /**
-     * Register user
+     * Register user account
      */
     public function registerAction() {
         $this->_setTitle('Register');
         $form = new RegisterForm();
         if ($this->request->isPost()) {
-            $username = $this->request->getPost('username', 'alphanum');
-            $email = $this->request->getPost('email', 'email');
-            $password = $this->request->getPost('password');
-            $repeatPassword = $this->request->getPost('repeatPassword');
-            if ($password != $repeatPassword) {
-                $this->flash->error('Passwords don\'t match');
-            }
-            $user = new User();
-            $user->setUsername($username);
-            $user->setPassword($this->security->hash($password));
-            $user->setEmail($email);
-            $user->setRole(1);
-            $user->setStatus(0);
-            if (!$user->save()) {
-                foreach ($user->getMessages() as $message) {
-                    $this->flash->error((string) $message);
+            if($form->isValid($this->request->getPost())) {
+                $username = $this->request->getPost('username', 'alphanum');
+                $email = $this->request->getPost('email', 'email');
+                $password = $this->request->getPost('password');
+                $repeatPassword = $this->request->getPost('repeatPassword');
+                if ($password != $repeatPassword) {
+                    $this->flash->error($this->_t('Passwords don\'t match'));
+                }
+                $user = new User();
+                $user->setUsername($username);
+                $user->setPassword($this->security->hash($password));
+                $user->setEmail($email);
+                $user->setRole(1);
+                $user->setStatus(0);
+                $user->setResetToken($this->security->getRandomBytes());
+                if (!$user->save()) {
+                    $this->_flashErrors($user);
+                } else {
+                    $form->clear();
+                    $this->flash->success($this->_t('Thanks for signing up, please log-in to manage your account'));
                 }
             } else {
-                $form->clear();
-                $this->flash->success('Thanks for signing up, please log-in to manage your account');
+                $this->_flashErrors($form);
             }
         }
         $this->view->form = $form;
     }
 
     /**
-     * Register an authenticated user into session data
-     * @param User $user
+     * Remove user session
+     * @return \Phalcon\Http\Response|\Phalcon\Http\ResponseInterface
      */
-    private function registerSession(User $user) {
-        $this->session->set('auth', array(
-            'id' => $user->getId(),
-            'username' => $user->getUsername()
-        ));
-    }
-
     public function logoutAction() {
+        /*
         if ($this->request->isPost()) {
             if ($this->security->checkToken()) {
+        */
                 $this->session->remove('auth');
-                $this->response->redirect('');
                 return $this->response->send();
+        /*
             } else {
                 die("Security errors");
             }
         } else {
             die("Security errors");
         }
+        */
     }
 
     /**

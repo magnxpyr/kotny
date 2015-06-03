@@ -8,23 +8,26 @@
 
 namespace Core\Forms;
 
+use Core\Models\User;
+use Phalcon\Forms\Element\Submit;
 use Phalcon\Forms\Form;
 use Phalcon\Forms\Element\Text;
 use Phalcon\Forms\Element\Password;
 use Phalcon\Validation\Validator\Alpha;
 use Phalcon\Validation\Validator\PresenceOf;
 use Phalcon\Validation\Validator\Email;
+use Phalcon\Validation\Validator\Uniqueness;
 
 /**
  * Class RegisterForm
  * @package Core\Forms
  */
 class RegisterForm extends Form {
+
     /**
-     * @param null $entity
-     * @param null $options
+     * Initialize the Register Form
      */
-    public function initialize($entity = null, $options = null) {
+    public function initialize() {
 
         // Username
         $username = new Text('username');
@@ -73,5 +76,10 @@ class RegisterForm extends Form {
             ))
         ));
         $this->add($repeatPassword);
+
+        // Submit
+        $this->add(new Submit('Register', array(
+            'class' => 'btn btn-success'
+        )));
     }
 }

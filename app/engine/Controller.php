@@ -25,6 +25,15 @@ abstract class Controller extends \Phalcon\Mvc\Controller {
     }
 
     /**
+     * Get the translated text
+     * @param $text
+     * @return string
+     */
+    protected function _t($text) {
+        return $this->di->getShared('t')[$text];
+    }
+
+    /**
      * Set page title
      * @param string $title
      */

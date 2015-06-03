@@ -160,6 +160,13 @@ class Bootstrap {
 
         $di->setShared('t', $translator);
 
+        // Set up crypt service
+        $di->set('crypt', function() use ($config) {
+            $crypt = new \Phalcon\Crypt();
+            $crypt->setKey($config->app->cryptKey);
+            return $crypt;
+        });
+
 
         // Set cache
         $cacheFrontend = new \Phalcon\Cache\Frontend\Data(array(
