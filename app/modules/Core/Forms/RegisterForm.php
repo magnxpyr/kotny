@@ -31,54 +31,54 @@ class RegisterForm extends Form {
 
         // Username
         $username = new Text('username');
-        $username->setLabel('Username');
+        $username->setLabel($this->t['Username']);
         $username->setFilters('alphanum');
         $username->addValidators(array(
             new PresenceOf(array(
-                'message' => 'Please enter your desired user name'
+                'message' => $this->t['Please enter your desired username']
             )),
             new Alpha(array(
-                'message' => 'User name is not valid'
+                'message' => $this->t['Username is not valid']
             ))
         ));
         $this->add($username);
 
         // Email
         $email = new Text('email');
-        $email->setLabel('Email');
+        $email->setLabel($this->t['Email']);
         $email->setFilters('email');
         $email->addValidators(array(
             new PresenceOf(array(
-                'message' => 'Email is required'
+                'message' => $this->t['Email is required']
             )),
             new Email(array(
-                'message' => 'Email is not valid'
+                'message' => $this->t['Email is not valid']
             ))
         ));
         $this->add($email);
 
         // Password
         $password = new Password('password');
-        $password->setLabel('Password');
+        $password->setLabel($this->t['Password']);
         $password->addValidators(array(
             new PresenceOf(array(
-                'message' => 'Password is required'
+                'message' => $this->t['Password is required']
             ))
         ));
         $this->add($password);
 
         // Confirm Password
         $repeatPassword = new Password('repeatPassword');
-        $repeatPassword->setLabel('Repeat Password');
+        $repeatPassword->setLabel($this->t['Repeat Password']);
         $repeatPassword->addValidators(array(
             new PresenceOf(array(
-                'message' => 'Confirmation password is required'
+                'message' => $this->t['Confirmation password is required']
             ))
         ));
         $this->add($repeatPassword);
 
         // Submit
-        $this->add(new Submit('Register', array(
+        $this->add(new Submit($this->t['Register'], array(
             'class' => 'btn btn-success'
         )));
     }

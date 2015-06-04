@@ -14,8 +14,10 @@ use Phalcon\Forms\Element\Submit;
 use Phalcon\Validation\Validator\PresenceOf;
 use Phalcon\Validation\Validator\StringLength;
 use Phalcon\Validation\Validator\Confirmation;
+
 /**
- * Phalcon\UserPlugin\Forms\User\ChangePasswordForm
+ * Class ChangePasswordForm
+ * @package Core\Forms
  */
 class ChangePasswordForm extends Form {
 
@@ -28,36 +30,34 @@ class ChangePasswordForm extends Form {
         $currentPassword = new Password('currentPassword');
         $currentPassword->addValidators(array(
             new PresenceOf(array(
-                'message' => 'Current password is required'
+                'message' => $this->t['Current password is required']
             ))
         ));
         $this->add($currentPassword);
 
         // New password
         $password = new Password('password');
+        $password->setLabel($this->t['Password']);
         $password->addValidators(array(
             new PresenceOf(array(
-                'message' => 'Password is required'
-            )),
-            new StringLength(array(
-                'min' => 8,
-                'messageMinimum' => 'Password is too short. Minimum 8 characters'
+                'message' => $this->t['Password is required']
             )),
             new Confirmation(array(
-                'message' => 'Password doesn\'t match confirmation',
+                'message' => $this->t['Passwords don\'t match'],
                 'with' => 'confirmPassword'
             ))
         ));
         $this->add($password);
 
         // Confirm new password
-        $confirmPassword = new Password('confirmPassword');
-        $confirmPassword->addValidators(array(
+        $repeatPassword = new Password('repeatPassword');
+        $repeatPassword->setLabel($this->t['Repeat Password']);
+        $repeatPassword->addValidators(array(
             new PresenceOf(array(
-                'message' => 'The confirmation password is required'
+                'message' => $this->t['Confirmation password is required']
             ))
         ));
-        $this->add($confirmPassword);
+        $this->add($repeatPassword);
 
         // Submit button
         $this->add(new Submit('Send', array(

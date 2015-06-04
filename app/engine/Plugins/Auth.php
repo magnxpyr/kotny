@@ -21,45 +21,38 @@ class Auth extends Component {
 
     /**
      * Checks the user credentials
-     *
-     * @param  array  $credentials
-     * @return boolean
+     * @param $credentials
+     * @throws \Exception
      */
-    public function check($credentials)
-    {
+    public function check($credentials) {
         $user = User::findFirstByUsername($credentials['username']);
         if (!$user) {
         //    $this->registerUserThrottling(null);
-            throw new \Exception('Wrong email/password combination');
+            throw new \Exception($this->t['Username or password is invalid']);
         }
         if (!$this->security->checkHash($credentials['password'], $user->getPassword())) {
         //    $this->registerUserThrottling($user->getId());
-            throw new \Exception('Wrong email/password combination');
+            throw new \Exception($this->t['Username or password is invalid']);
         }
     //    $this->checkUserFlags($user);
         $this->saveSuccessLogin($user);
         if (isset($credentials['remember'])) {
             $this->createRememberEnviroment($user);
         }
-        $this->setIdentity($user);
+        $this->setSession($user);
     }
     /**
-     * Set identity in session
-     *
+     * Set user session
      * @param object $user
      */
-    private function setIdentity($user)
-    {
-        $st_identity = array(
+    private function setSession($user) {
+        $this->session->set('auth', [
             'id'    => $user->getId(),
             'email' => $user->getEmail(),
-            'name'  => $user->getName(),
-        );
-        if ($user->profile) {
-            $st_identity['profile_picture'] = $user->profile->getPicture();
-        }
-        $this->session->set('auth-identity', $st_identity);
+            'username'  => $user->getUsername(),
+        ]);
     }
+
     /**
      * Login user - normal way
      *
@@ -387,7 +380,7 @@ class Auth extends Component {
      * Creates the remember me environment settings the related cookies and generating tokens
      * @param \Core\Models\User $user
      */
-    public function createRememberEnviroment($user)
+    public function setRememberMe($user)
     {
         $user_agent = $this->request->getUserAgent();
         $selector = '';

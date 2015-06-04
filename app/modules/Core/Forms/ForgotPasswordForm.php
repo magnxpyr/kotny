@@ -27,20 +27,20 @@ class ForgotPasswordForm extends Form {
 
         // Email
         $email = new Text('email', array(
-            'placeholder' => 'Email'
+            'placeholder' => $this->t['Email']
         ));
         $email->addValidators(array(
             new PresenceOf(array(
-                'message' => 'The e-mail is required'
+                'message' => $this->t['The e-mail is required']
             )),
             new Email(array(
-                'message' => 'The e-mail is not valid'
+                'message' => $this->t['The e-mail is not valid']
             ))
         ));
         $this->add($email);
 
         // Submit button
-        $this->add(new Submit('Send', array(
+        $this->add(new Submit($this->t['Send'], array(
             'class' => 'btn btn-primary'
         )));
     }
