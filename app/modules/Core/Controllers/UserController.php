@@ -38,7 +38,7 @@ class UserController extends Controller {
                             'email' => $user->getEmail(),
                             'role' => $user->getRole()
                         ));
-                        $this->response->redirect('user/login');
+                        $this->response->redirect();
                     } else {
                         $this->flash->error($this->t['Username or password is invalid']);
                     }

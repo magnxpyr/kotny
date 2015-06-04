@@ -71,7 +71,7 @@ class UserMigration_100 extends Migration {
                     ),
                     new Column('created_at', array(
                             'type' => 'TIMESTAMP',
-                            'notNull' => true,
+                   //         'notNull' => true,
                    //         'default' => 'CURRENT_TIMESTAMP',
                             'after' => 'status'
                         )

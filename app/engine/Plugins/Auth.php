@@ -8,6 +8,8 @@
 
 namespace Engine\Plugins;
 
+use Core\Models\AuthTokens;
+use Core\Models\User;
 use Phalcon\Mvc\User\Component;
 
 /**
@@ -15,8 +17,8 @@ use Phalcon\Mvc\User\Component;
  * Class Auth
  * @package Engine\Plugins
  */
-class Auth extends Component
-{
+class Auth extends Component {
+
     /**
      * Checks the user credentials
      *
@@ -25,16 +27,16 @@ class Auth extends Component
      */
     public function check($credentials)
     {
-        $user = User::findFirstByEmail(strtolower($credentials['email']));
-        if ($user == false) {
-            $this->registerUserThrottling(null);
-            throw new Exception('Wrong email/password combination');
+        $user = User::findFirstByUsername($credentials['username']);
+        if (!$user) {
+        //    $this->registerUserThrottling(null);
+            throw new \Exception('Wrong email/password combination');
         }
         if (!$this->security->checkHash($credentials['password'], $user->getPassword())) {
-            $this->registerUserThrottling($user->getId());
-            throw new Exception('Wrong email/password combination');
+        //    $this->registerUserThrottling($user->getId());
+            throw new \Exception('Wrong email/password combination');
         }
-        $this->checkUserFlags($user);
+    //    $this->checkUserFlags($user);
         $this->saveSuccessLogin($user);
         if (isset($credentials['remember'])) {
             $this->createRememberEnviroment($user);
@@ -383,22 +385,20 @@ class Auth extends Component
     }
     /**
      * Creates the remember me environment settings the related cookies and generating tokens
-     *
-     * @param Phalcon\UserPlugin\Models\User\User $user
+     * @param \Core\Models\User $user
      */
     public function createRememberEnviroment($user)
     {
         $user_agent = $this->request->getUserAgent();
+        $selector = '';
         $token = md5($user->getEmail() . $user->getPassword() . $user_agent);
-        $remember = new UserRememberTokens();
+        $expire = time() + 86400 * 30;
+        $remember = new AuthTokens();
         $remember->setUserId($user->getId());
         $remember->setToken($token);
-        $remember->setUserAgent($user_agent);
-        $remember->setCreatedAt(time());
+        $remember->setExpires($expire);
         if ($remember->save() != false) {
-            $expire = time() + 86400 * 30;
-            $this->cookies->set('RMU', $user->getId(), $expire);
-            $this->cookies->set('RMT', $token, $expire);
+            $this->cookies->set('mgRm', "$selector:$token", $expire);
         }
     }
     /**
