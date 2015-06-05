@@ -19,13 +19,13 @@ abstract class AdminController extends Controller {
      * @return void
      */
     protected function initialize() {
-        if($this->request->isAjax()) {
+        if ($this->request->isAjax()) {
             return;
         }
         $this->view->setMainView(THEMES_PATH . 'admin');
         $this->view->setLayout('admin');
-        $this->_setupAssets();
-        $this->view->navigation = $this->_setupNavigation();
+        $this->setupAssets();
+        $this->view->navigation = $this->setupNavigation();
         $this->view->sidebar_collapse = isset($_COOKIE['mg-sdbrClp']) && $_COOKIE['mg-sdbrClp'] == 1 ? 'sidebar-collapse' : '';
     }
 
@@ -33,7 +33,7 @@ abstract class AdminController extends Controller {
      * Setup assets
      * @return void
      */
-    protected function _setupAssets() {
+    protected function setupAssets() {
         $this->assets
             ->collection('header-js-min')
             ->setTargetPath(PUBLIC_PATH . 'assets/mg_admin/js/header.min.js')
@@ -64,7 +64,7 @@ abstract class AdminController extends Controller {
             ->addCss('vendor/font-awesome/css/font-awesome.min.css');
     }
 
-    protected function _setupNavigation() {
+    protected function setupNavigation() {
         $navigation = [
             'admin' => [
                 'href' => '/admin',
@@ -115,16 +115,16 @@ abstract class AdminController extends Controller {
             ]
         ];
 
-        $html = $this->_renderItems($navigation);
+        $html = $this->renderItems($navigation);
         return $html;
     }
 
-    protected function _renderItems($items, $isActive = 0) {
+    protected function renderItems($items, $isActive = 0) {
         $content = ['html' => '', 'breadcrumb' => '', 'active' => $isActive];
         $route = '/admin/'.$this->router->getModuleName().'/'.$this->router->getControllerName();
-        foreach($items as $item) {
+        foreach ($items as $item) {
             if (!empty($item['items'])) {
-                $result = $this->_renderItems($item['items'], $content['active']);
+                $result = $this->renderItems($item['items'], $content['active']);
                 /*
                 if($result['active'] == 2)  {
                     $content['breadcrumb'] .= "<li>".$item['prepend'].' '.$item['title']."</li>".$result['breadcrumb'];

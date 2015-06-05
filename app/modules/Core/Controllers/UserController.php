@@ -12,41 +12,30 @@ use Core\Forms\LoginForm;
 use Core\Forms\RegisterForm;
 use Core\Models\User;
 use Engine\Controller;
+use Engine\Plugins\Auth;
 
 /**
  * Class UserController
  * @package Core\Controllers
  */
-class UserController extends Controller {
-
+class UserController extends Controller
+{
     /**
      * Login user
      */
-    public function loginAction() {
-        $this->_setTitle('Login');
+    public function loginAction()
+    {
+        $this->setTitle('Login');
         $form = new LoginForm();
         if ($this->request->isPost()) {
             if ($form->isValid($this->request->getPost())) {
-                $username = $this->request->getPost('username', 'alphanum');
-                $password = $this->request->getPost('password');
-                $user = User::findFirstByUsername($username);
-                if($user) {
-                    if ($this->security->checkHash($password, $user->getPassword())) {
-                        $this->session->set('auth', array(
-                            'id' => $user->getId(),
-                            'username' => $user->getUsername(),
-                            'email' => $user->getEmail(),
-                            'role' => $user->getRole()
-                        ));
-                        $this->response->redirect();
-                    } else {
-                        $this->flash->error($this->t['Username or password is invalid']);
-                    }
-                } else {
-                    $this->flash->error($this->t['Username or password is invalid']);
+                try {
+                    $auth = new Auth();
+                    $auth->check($this->request->getPost());
+                } catch (\Exception $e) {
+                    $this->flashErrors($e);
                 }
-            } else {
-                $this->_flashErrors($form);
+                $this->response->redirect();
             }
         }
         $this->view->form = $form;
@@ -55,8 +44,9 @@ class UserController extends Controller {
     /**
      * Register user account
      */
-    public function registerAction() {
-        $this->_setTitle('Register');
+    public function registerAction()
+    {
+        $this->setTitle('Register');
         $form = new RegisterForm();
         if ($this->request->isPost()) {
             if($form->isValid($this->request->getPost())) {
@@ -75,13 +65,13 @@ class UserController extends Controller {
                 $user->setStatus(0);
                 $user->setResetToken($this->security->getRandomBytes());
                 if (!$user->save()) {
-                    $this->_flashErrors($user);
+                    $this->flashErrors($user);
                 } else {
                     $form->clear();
                     $this->flash->success($this->t['Thanks for signing up, please log-in to manage your account']);
                 }
             } else {
-                $this->_flashErrors($form);
+                $this->flashErrors($form);
             }
         }
         $this->view->form = $form;
@@ -91,7 +81,8 @@ class UserController extends Controller {
      * Remove user session
      * @return \Phalcon\Http\Response|\Phalcon\Http\ResponseInterface
      */
-    public function logoutAction() {
+    public function logoutAction()
+    {
         $this->session->remove('auth');
         return $this->response->send();
     }

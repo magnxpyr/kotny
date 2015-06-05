@@ -17,7 +17,7 @@ use Engine\Controller;
 class IndexController extends Controller {
 
     public function indexAction() {
-        $this->_setTitle('Homepage');
+        $this->setTitle('Homepage');
     }
 }
 

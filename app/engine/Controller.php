@@ -20,7 +20,7 @@ abstract class Controller extends \Phalcon\Mvc\Controller {
      */
     protected function initialize() {
         if(!$this->request->isAjax()) {
-            $this->_setupAssets();
+            $this->setupAssets();
         }
     }
 
@@ -28,7 +28,7 @@ abstract class Controller extends \Phalcon\Mvc\Controller {
      * Set page title
      * @param string $title
      */
-    protected function _setTitle($title) {
+    protected function setTitle($title) {
         switch($this->di->getShared('config')->app->site_name_location) {
             case 0:
                 $this->tag->setTitle($title);
@@ -47,7 +47,7 @@ abstract class Controller extends \Phalcon\Mvc\Controller {
      * Flash error messages
      * @param $model
      */
-    protected function _flashErrors($model) {
+    protected function flashErrors($model) {
         foreach ($model->getMessages() as $message) {
             $this->flash->error((string) $message);
         }
@@ -57,7 +57,7 @@ abstract class Controller extends \Phalcon\Mvc\Controller {
      * Setup assets
      * @return void
      */
-    protected function _setupAssets() {
+    protected function setupAssets() {
         $this->assets
             ->collection('header-js-min')
             ->setTargetPath(PUBLIC_PATH . 'assets/default/js/header.min.js')

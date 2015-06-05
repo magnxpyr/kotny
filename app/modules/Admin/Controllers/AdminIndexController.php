@@ -13,6 +13,6 @@ use Engine\AdminController;
 class AdminIndexController extends AdminController {
 
     public function indexAction() {
-        $this->_setTitle('Admin Homepage');
+        $this->setTitle('Admin Homepage');
     }
 }

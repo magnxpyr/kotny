@@ -16,7 +16,7 @@ use Tools\Helpers\Tools;
 class ControllersController extends ControllerBase {
 
     public function indexAction() {
-        $this->_setTitle("Create Controller");
+        $this->setTitle("Create Controller");
         $selectedModule = null;
         $params = $this->router->getParams();
         if(!empty($params))

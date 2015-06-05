@@ -12,14 +12,15 @@ namespace Engine;
  * Class Utils
  * @package Engine
  */
-class Utils {
-
+class Utils
+{
     /**
      * Return 128 bits random string
      * @param int $bytes
      * @return string
      */
-    public static function generateToken($bytes = 16) {
+    public static function generateToken($bytes = 32)
+    {
         return bin2hex(openssl_random_pseudo_bytes($bytes));
     }
 }
