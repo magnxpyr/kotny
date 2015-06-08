@@ -13,6 +13,7 @@ use Core\Forms\RegisterForm;
 use Core\Models\User;
 use Engine\Controller;
 use Engine\Plugins\Auth;
+use Engine\Utils;
 
 /**
  * Class UserController
@@ -29,10 +30,9 @@ class UserController extends Controller
         $form = new LoginForm();
         if ($this->request->isPost()) {
             try {
-                $auth = new Auth();
-                $auth->login($form);
+                $this->auth->login($form);
             } catch (\Exception $e) {
-                $this->flashErrors($e);
+                $this->flash->error($e->getMessage());
             }
         }
         $this->view->form = $form;
@@ -60,12 +60,13 @@ class UserController extends Controller
                 $user->setEmail($email);
                 $user->setRole(1);
                 $user->setStatus(0);
-                $user->setResetToken($this->security->getRandomBytes());
+                $user->setResetToken(Utils::generateToken());
                 if (!$user->save()) {
                     $this->flashErrors($user);
                 } else {
+                    // send email
                     $form->clear();
-                    $this->flash->success($this->t['Thanks for signing up, please log-in to manage your account']);
+                    $this->flash->success($this->t['Thanks for signing up. An email has been sent to activate your account.']);
                 }
             } else {
                 $this->flashErrors($form);
@@ -81,6 +82,7 @@ class UserController extends Controller
     public function logoutAction()
     {
         $this->session->remove('auth');
+        $this->flash->success($this->t['You have been logged out successfully']);
         return $this->response->send();
     }
 

@@ -94,11 +94,13 @@ class Bootstrap {
 
         // Start the session from file
         $session = new \Phalcon\Session\Adapter\Files();
-        $session->set('auth', array(
-            'name' => 'Guests'
-        ));
         $session->start();
         $di->setShared('session', $session);
+
+        // Set auth in di
+        $di->set('auth', function() {
+            return new \Engine\Plugins\Auth();
+        });
 
 
         // Connect to db

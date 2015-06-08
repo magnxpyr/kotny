@@ -10,8 +10,8 @@ namespace Core\Models;
 
 use Phalcon\Mvc\Model;
 
-class AuthTokens extends Model {
-
+class UserAuthTokens extends Model
+{
     /**
      * @var integer
      */
@@ -43,9 +43,9 @@ class AuthTokens extends Model {
      * @param integer $id
      * @return $this
      */
-    public function setId($id) {
+    public function setId($id)
+    {
         $this->id = $id;
-
         return $this;
     }
 
@@ -55,9 +55,9 @@ class AuthTokens extends Model {
      * @param string $selector
      * @return $this
      */
-    public function setSelector($selector) {
+    public function setSelector($selector)
+    {
         $this->selector = $selector;
-
         return $this;
     }
 
@@ -67,9 +67,9 @@ class AuthTokens extends Model {
      * @param string $token
      * @return $this
      */
-    public function setToken($token) {
+    public function setToken($token)
+    {
         $this->token = $token;
-
         return $this;
     }
 
@@ -79,9 +79,9 @@ class AuthTokens extends Model {
      * @param integer $user_id
      * @return $this
      */
-    public function setUserId($user_id) {
+    public function setUserId($user_id)
+    {
         $this->user_id = $user_id;
-
         return $this;
     }
 
@@ -91,9 +91,9 @@ class AuthTokens extends Model {
      * @param string $expires
      * @return $this
      */
-    public function setExpires($expires) {
+    public function setExpires($expires)
+    {
         $this->expires = $expires;
-
         return $this;
     }
 
@@ -102,7 +102,8 @@ class AuthTokens extends Model {
      *
      * @return integer
      */
-    public function getId() {
+    public function getId()
+    {
         return $this->id;
     }
 
@@ -111,7 +112,8 @@ class AuthTokens extends Model {
      *
      * @return string
      */
-    public function getSelector() {
+    public function getSelector()
+    {
         return $this->selector;
     }
 
@@ -120,7 +122,8 @@ class AuthTokens extends Model {
      *
      * @return string
      */
-    public function getToken() {
+    public function getToken()
+    {
         return $this->token;
     }
 
@@ -129,7 +132,8 @@ class AuthTokens extends Model {
      *
      * @return integer
      */
-    public function getUserId() {
+    public function getUserId()
+    {
         return $this->user_id;
     }
 
@@ -138,19 +142,23 @@ class AuthTokens extends Model {
      *
      * @return string
      */
-    public function getExpires() {
+    public function getExpires()
+    {
         return $this->expires;
     }
 
     /**
      * Initialize method for model.
      */
-    public function initialize() {
-        $this->setSource('auth_tokens');
+    public function initialize()
+    {
+        $this->setSource('user_auth_tokens');
+        $this->belongsTo('user_id', 'User', 'id', ['alias' => 'user', 'reusable' => true]);
     }
 
-    public function getSource() {
-        return 'auth_tokens';
+    public function getSource()
+    {
+        return 'user_auth_tokens';
     }
 
 }

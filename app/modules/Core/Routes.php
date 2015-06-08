@@ -8,9 +8,22 @@
 
 namespace Core;
 
+/**
+ * Class Routes
+ * @package Core
+ */
 class Routes {
 
-    public function init($router) {
-
+    /**
+     * @param \Phalcon\Mvc\Router $router
+     */
+    public function init($router)
+    {
+        $router->add('/:username', [
+            'module' => 'core',
+            'controller' => 'user',
+            'action' => 'index',
+            'username' => 1
+        ])->setName('user-home');
     }
 }

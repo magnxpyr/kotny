@@ -8,10 +8,17 @@
 
 namespace Admin;
 
+/**
+ * Class Routes
+ * @package Admin
+ */
 class Routes {
 
-    public function init($router) {
-
+    /**
+     * @param \Phalcon\Mvc\Router $router
+     */
+    public function init($router)
+    {
         $router->add('/admin', array(
             'module' => 'admin',
             'controller' => 'admin-index',
@@ -39,6 +46,7 @@ class Routes {
         ))->convert('controller', function($controller) {
             return "admin-$controller";
         });
+
         $router->add('/admin/:module/:controller/:action/:params', array(
             'module' => 1,
             'controller' => 2,

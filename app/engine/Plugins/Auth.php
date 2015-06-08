@@ -8,7 +8,7 @@
 
 namespace Engine\Plugins;
 
-use Core\Models\AuthTokens;
+use Core\Models\UserAuthTokens;
 use Core\Models\User;
 use Engine\Utils;
 use Phalcon\Mvc\User\Component;
@@ -32,6 +32,7 @@ class Auth extends Component
      */
     private $cookieExpire;
 
+
     public function __construct()
     {
         $this->cookieExpire = time() + 86400 * 30;
@@ -54,7 +55,7 @@ class Auth extends Component
         //    $this->registerUserThrottling($user->getId());
             throw new \Exception($this->t['Username or password is invalid']);
         }
-    //    $this->checkUserFlags($user);
+        $this->checkUserFlags($user);
     //    $this->saveSuccessLogin($user);
         if (isset($credentials['remember'])) {
             $this->setRememberMe($user);
@@ -90,11 +91,16 @@ class Auth extends Component
         } else {
             if ($form->isValid($this->request->getPost())) {
                 $this->check(array(
-                    'username' => $this->request->getPost('email', 'alphanum'),
+                    'username' => $this->request->getPost('username', 'alphanum'),
                     'password' => $this->request->getPost('password'),
                     'remember' => $this->request->getPost('remember')
                 ));
-                return $this->response->redirect();
+                return $this->response->redirect([
+                    'for' => 'user-home',
+                    'module' => 'core',
+                    'controller' => 'user',
+                    'action' => 'index'
+                ]);
             } else {
                 foreach ($form->getMessages() as $message) {
                     $this->flash->error($message->getMessage());
@@ -106,12 +112,13 @@ class Auth extends Component
 
     /**
      * Logs on using the information in the cookies
+     * @param boolean $redirect
      * @return \Phalcon\Http\Response
      */
     public function loginWithRememberMe($redirect = true)
     {
         $cookie = explode(':', $this->cookies->get($this->cookieName)->getValue());
-        $auth = AuthTokens::findFirstBySelector($cookie[0]);
+        $auth = UserAuthTokens::findFirstBySelector($cookie[0]);
         if ($auth) {
             // fist check cookie valid and then look for user
             if (hash_equals($auth->getToken(), hash('sha256', $cookie[1]))) {
@@ -120,7 +127,7 @@ class Auth extends Component
                     $user = User::findFirstById($auth->getUserId);
                     $this->checkUserFlags($user);
                     $this->setSession($user);
-                    $this->updateRememberMe($user);
+                    $this->setRememberMe($user, $auth);
                     // $this->saveSuccessLogin($user);
                     if (true === $redirect) {
                         return $this->response->redirect();
@@ -156,6 +163,7 @@ class Auth extends Component
             $facebookUser = null;
         }
     }
+
     /**
      * Authenitcate or create a user with a Facebook account
      *
@@ -182,16 +190,16 @@ class Auth extends Component
             $user = $this->newUser()
                 ->setName($facebookUser['name'])
                 ->setEmail($email)
-                ->setPassword($di->get('security')->hash($password))
+                ->setPassword($this->security->hash($password))
                 ->setFacebookId($facebookUser['id'])
                 ->setFacebookName($facebookUser['name'])
                 ->setFacebookData(serialize($facebookUser));
             return $this->createUser($user);
         }
     }
+
     /**
      * Login with LinkedIn account
-     *
      * @return \Phalcon\Http\ResponseInterface
      */
     public function loginWithLinkedIn()
@@ -222,9 +230,10 @@ class Auth extends Component
         ], $state);
         return $this->response->redirect($url, true);
     }
+
     protected function authenticateOrCreateLinkedInUser($email, $info)
     {
-        $pupRedirect = $di->get('config')->pup->redirect;
+    //    $pupRedirect = $di->get('config')->pup->redirect;
         preg_match('#id=\d+#', $info['siteStandardProfileRequest']['url'], $matches);
         $linkedInId  = str_replace("id=", "", $matches[0]);
         $user        = User::findFirst("email='$email' OR linkedin_id='$linkedInId'");
@@ -237,19 +246,20 @@ class Auth extends Component
                 $user->setLinkedinName($info['firstName'].' '.$info['lastName']);
                 $user->update();
             }
-            return $this->response->redirect($pupRedirect->success);
+            return $this->response->redirect();
         } else {
             $password = $this->generatePassword();
             $user = $this->newUser()
                 ->setName($info['firstName'].' '.$info['lastName'])
                 ->setEmail($email)
-                ->setPassword($di->get('security')->hash($password))
+                ->setPassword($this->security->hash($password))
                 ->setLinkedinId($linkedInId)
                 ->setLinkedinName($info['firstName'].' '.$info['lastName'])
                 ->setLinkedinData(json_encode($info));
             return $this->createUser($user);
         }
     }
+
     /**
      * Login with Twitter account
      */
@@ -307,6 +317,7 @@ class Auth extends Component
             $di->get('logger')->commit();
         }
     }
+
     public function loginWithGoogle()
     {
         $di       = $this->getDI();
@@ -348,8 +359,8 @@ class Auth extends Component
 
     /**
      * Creates the remember me environment settings the related cookies and generating tokens
-     *
-     * @param Phalcon\UserPlugin\Models\User\User $user
+     * @throws \Exception
+     * @param \Core\Models\User $user
      */
     public function saveSuccessLogin($user)
     {
@@ -400,12 +411,15 @@ class Auth extends Component
     /**
      * Creates the remember me environment settings the related cookies and generating tokens
      * @param \Core\Models\User $user
+     * @param \Core\Models\UserAuthTokens $remember
      */
-    public function setRememberMe($user)
+    public function setRememberMe($user, $remember = null)
     {
         $selector = Utils::generateToken(8);
         $token = Utils::generateToken();
-        $remember = new AuthTokens();
+        if(!isset($remember)) {
+            $remember = new UserAuthTokens();
+        }
         $remember->setUserId($user->getId());
         $remember->setToken(hash('sha256', $token));
         $remember->setExpires($this->cookieExpire);
@@ -473,8 +487,8 @@ class Auth extends Component
      */
     public function getUserName()
     {
-        $identity = $this->session->get('auth-identity');
-        return isset($identity['name']) ? $identity['name'] : false;
+        $identity = $this->session->get('auth');
+        return isset($identity['username']) ? $identity['username'] : false;
     }
 
     /**
@@ -484,7 +498,7 @@ class Auth extends Component
      */
     public function getUserId()
     {
-        $identity = $this->session->get('auth-identity');
+        $identity = $this->session->get('auth');
         return isset($identity['id']) ? $identity['id'] : false;
     }
 
@@ -507,8 +521,9 @@ class Auth extends Component
     }
     /**
      * Auths the user by his/her id
-     *
      * @param int $id
+     * @throws \Exception
+     * @return boolean
      */
     public function authUserById($id)
     {
@@ -517,13 +532,13 @@ class Auth extends Component
             throw new \Exception('The user does not exist');
         }
         $this->checkUserFlags($user);
-        $this->setIdentity($user);
+        $this->setSession($user);
         return true;
     }
     /**
      * Get the entity related to user in the active identity
-     *
-     * @return Phalcon\UserPlugin\Models\User\User
+     * @throws \Exception
+     * @return \Core\Models\User
      */
     public function getUser()
     {

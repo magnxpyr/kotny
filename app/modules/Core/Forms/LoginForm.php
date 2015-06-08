@@ -22,13 +22,26 @@ use Phalcon\Validation\Validator\Identical;
  * Class LoginForm
  * @package Core\Forms
  */
-class LoginForm extends Form {
+class LoginForm extends Form
+{
+    /**
+     * @var null $lastCsrfValue
+     */
+    private $lastCsrfValue = null;
+
+    /**
+     * Get last Csrf value
+     */
+    public function getCsrf()
+    {
+        return ($this->lastCsrfValue !== null) ? $this->lastCsrfValue : $this->lastCsrfValue = $this->security->getToken();
+    }
 
     /**
      * Initialize the Login Form
      */
-    public function initialize() {
-
+    public function initialize()
+    {
         // Username
         $username = new Text('username');
         $username->setLabel($this->t['Username']);
