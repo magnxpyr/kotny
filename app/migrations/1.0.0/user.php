@@ -61,7 +61,7 @@ class UserMigration_100 extends Migration {
                             'after' => 'email'
                         )
                     ),
-                    new Column('status', array( // 0-Inactive, 1-Active, 2-Blocked
+                    new Column('status', array( // 0-Inactive, 1-Active, 2-Suspended, 3-Blocked
                             'type' => Column::TYPE_INTEGER,
                             'notNull' => true,
                             'size' => 6,

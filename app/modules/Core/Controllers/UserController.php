@@ -28,14 +28,11 @@ class UserController extends Controller
         $this->setTitle('Login');
         $form = new LoginForm();
         if ($this->request->isPost()) {
-            if ($form->isValid($this->request->getPost())) {
-                try {
-                    $auth = new Auth();
-                    $auth->check($this->request->getPost());
-                } catch (\Exception $e) {
-                    $this->flashErrors($e);
-                }
-                $this->response->redirect();
+            try {
+                $auth = new Auth();
+                $auth->login($form);
+            } catch (\Exception $e) {
+                $this->flashErrors($e);
             }
         }
         $this->view->form = $form;

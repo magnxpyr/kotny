@@ -20,7 +20,23 @@ use Phalcon\Mvc\User\Component;
  */
 class Auth extends Component
 {
+    /**
+     * Cookie name
+     * @var string
+     */
     private $cookieName = 'mgRm';
+
+    /**
+     * Cookie expire time
+     * @var string
+     */
+    private $cookieExpire;
+
+    public function __construct()
+    {
+        $this->cookieExpire = time() + 86400 * 30;
+    }
+
 
     /**
      * Checks the user credentials
@@ -45,6 +61,7 @@ class Auth extends Component
         }
         $this->setSession($user);
     }
+
     /**
      * Set user session
      * @param object $user
@@ -53,38 +70,67 @@ class Auth extends Component
     {
         $this->session->set('auth', [
             'id'    => $user->getId(),
-            'email' => $user->getEmail(),
             'username'  => $user->getUsername(),
+            'email' => $user->getEmail(),
         ]);
     }
 
     /**
      * Login user - normal way
      *
-     * @param  \Phalcon\UserPlugin\Forms\User\LoginForm $form
+     * @param  \Core\Forms\LoginForm $form
      * @return \Phalcon\Http\ResponseInterface
      */
-    public function login($form) {
+    public function login($form)
+    {
         if (!$this->request->isPost()) {
             if ($this->hasRememberMe()) {
                 return $this->loginWithRememberMe();
             }
         } else {
-            if ($form->isValid($this->request->getPost()) == false) {
-                foreach ($form->getMessages() as $message) {
-                    $this->flashSession->error($message->getMessage());
-                }
-            } else {
+            if ($form->isValid($this->request->getPost())) {
                 $this->check(array(
-                    'email'    => $this->request->getPost('email'),
+                    'username' => $this->request->getPost('email', 'alphanum'),
                     'password' => $this->request->getPost('password'),
                     'remember' => $this->request->getPost('remember')
                 ));
-                $pupRedirect = $this->getDI()->get('config')->pup->redirect;
-                return $this->response->redirect($pupRedirect->success);
+                return $this->response->redirect();
+            } else {
+                foreach ($form->getMessages() as $message) {
+                    $this->flash->error($message->getMessage());
+                }
             }
         }
         return false;
+    }
+
+    /**
+     * Logs on using the information in the cookies
+     * @return \Phalcon\Http\Response
+     */
+    public function loginWithRememberMe($redirect = true)
+    {
+        $cookie = explode(':', $this->cookies->get($this->cookieName)->getValue());
+        $auth = AuthTokens::findFirstBySelector($cookie[0]);
+        if ($auth) {
+            // fist check cookie valid and then look for user
+            if (hash_equals($auth->getToken(), hash('sha256', $cookie[1]))) {
+                if ($auth->getExpires() > $this->cookieExpire ) {
+                    // Get user details to set a new session
+                    $user = User::findFirstById($auth->getUserId);
+                    $this->checkUserFlags($user);
+                    $this->setSession($user);
+                    $this->updateRememberMe($user);
+                    // $this->saveSuccessLogin($user);
+                    if (true === $redirect) {
+                        return $this->response->redirect();
+                    }
+                    return;
+                }
+            }
+        }
+        $this->cookies->get($this->cookieName)->delete();
+        return $this->response->redirect();
     }
 
     /**
@@ -359,14 +405,12 @@ class Auth extends Component
     {
         $selector = Utils::generateToken(8);
         $token = Utils::generateToken();
-        $expire = time() + 86400 * 30;
-        $userAgent = $this->request->getUserAgent();
         $remember = new AuthTokens();
         $remember->setUserId($user->getId());
-        $remember->setToken(hash('sha256', $token . $user->getUsername(). $userAgent));
-        $remember->setExpires($expire);
-        if ($remember->save() != false) {
-            $this->cookies->set($this->cookieName, "$selector:$token", $expire);
+        $remember->setToken(hash('sha256', $token));
+        $remember->setExpires($this->cookieExpire);
+        if ($remember->save()) {
+            $this->cookies->set($this->cookieName, "$selector:$token", $this->cookieExpire);
         }
     }
 
@@ -378,80 +422,50 @@ class Auth extends Component
     {
         return $this->cookies->has($this->cookieName);
     }
-    /**
-     * Logs on using the information in the coookies
-     *
-     * @return Phalcon\Http\Response
-     */
-    public function loginWithRememberMe($redirect = true)
-    {
-        $cookie = explode(':', $this->cookies->get($this->cookieName)->getValue());
-        $auth = AuthTokens::findFirstBySelector($cookie[0]);
-        if ($auth) {
-            $userAgent = $this->request->getUserAgent();
-            $token = hash('sha256', $token . $user->getUsername(). $userAgent);
-            // fist check cookie valid and then look for user
-            if ($cookieToken == $token) {
-                $remember = UserRememberTokens::findFirst(array(
-                    'user_id = ?0 AND token = ?1',
-                    'bind' => array($user->getId(), $token)
-                ));
-                if ($remember) {
-                    if ((time() - (86400 * 30)) < $remember->getCreatedAt()) {
-                        $this->checkUserFlags($user);
-                        $this->setIdentity($user);
-                        $this->saveSuccessLogin($user);
-                        if (true === $redirect) {
-                            return $this->response->redirect($pupRedirect->success);
-                        }
-                        return;
-                    }
-                }
-            }
-        }
-        $this->cookies->get($this->cookieName)->delete();
-        return $this->response->redirect($pupRedirect->failure);
-    }
+
     /**
      * Check if the user is signed in
      * @return boolean
      */
     public function isUserSignedIn()
     {
-        $identity = $this->getIdentity();
-        if (is_array($identity)) {
-            if (isset($identity['id'])) {
+        $auth = $this->getSession();
+        if (is_array($auth)) {
+            if (isset($auth['id'])) {
                 return true;
             }
         }
         return false;
     }
+
     /**
-     * Checks if the user is banned/inactive/suspended
-     *
-     * @param Phalcon\UserPlugin\Models\User\User $user
+     * Checks if the user is inactive/suspended/banned
+     * @param \Core\Models\User $user
+     * @throws \Exception
      */
     public function checkUserFlags($user)
     {
-        if ($user->getStatus() === User::STATUS_INACTIVE) {
-            throw new Exception('The user is inactive');
+        if ($user->getStatus() === 0) {
+            throw new \Exception($this->t['Your account is inactive']);
         }
-        if ($user->getStatus() === User::STATUS_BANNED) {
-            throw new Exception('The user is banned');
+        if ($user->getStatus() === 2) {
+            throw new \Exception($this->t['Your account is suspended']);
         }
-        if ($user->getStatus() === User::STATUS_SUSPENDED) {
-            throw new Exception('The user is suspended');
+        if ($user->getStatus() === 3) {
+            throw new \Exception($this->t['Your account is banned']);
         }
     }
+
     /**
      * Returns the current identity
      *
      * @return array
      */
-    public function getIdentity()
+    public function getSession()
     {
-        return $this->session->get('auth-identity');
+        return $this->session->get('auth');
     }
+
     /**
      * Returns the name of the user
      *
@@ -462,6 +476,7 @@ class Auth extends Component
         $identity = $this->session->get('auth-identity');
         return isset($identity['name']) ? $identity['name'] : false;
     }
+
     /**
      * Returns the id of the user
      *
@@ -472,18 +487,15 @@ class Auth extends Component
         $identity = $this->session->get('auth-identity');
         return isset($identity['id']) ? $identity['id'] : false;
     }
+
     /**
      * Removes the user identity information from session
      */
     public function remove()
     {
-        $pupConfig = $this->getDI()->get('config')->pup;
-        $fbAppId = $pupConfig->connectors->facebook->appId;
-        if ($this->cookies->has('RMU')) {
-            $this->cookies->get('RMU')->delete();
-        }
-        if ($this->cookies->has('RMT')) {
-            $this->cookies->get('RMT')->delete();
+        $fbAppId = ''; //fb id
+        if ($this->cookies->has($this->cookieName)) {
+            $this->cookies->get($this->cookieName)->delete();
         }
         $this->session->remove('auth-identity');
         $this->session->remove('fb_'.$fbAppId.'_code');
@@ -502,7 +514,7 @@ class Auth extends Component
     {
         $user = User::findFirstById($id);
         if ($user == false) {
-            throw new Exception('The user does not exist');
+            throw new \Exception('The user does not exist');
         }
         $this->checkUserFlags($user);
         $this->setIdentity($user);
@@ -521,19 +533,8 @@ class Auth extends Component
         }
         $user = User::findFirstById($identity['id']);
         if ($user == false) {
-            throw new Exception('The user does not exist');
+            throw new \Exception('The user does not exist');
         }
         return $user;
-    }
-    /**
-     * Generate a random password
-     *
-     * @param  integer $length
-     * @return string
-     */
-    public function generatePassword($length = 8)
-    {
-        $chars = "abcdefghijklmnpqrstuvwxyzABCDEFGHIJKLMNPQRSTUVWXYZ123456789#@%_.";
-        return substr(str_shuffle($chars),0,$length);
     }
 }
