@@ -29,9 +29,19 @@ use Phalcon\Db\Column;
 use Phalcon\Text;
 use Tools\Helpers\Tools;
 
-class Model extends Component {
-
-    public function __construct($options) {
+/**
+ * Class Model
+ * @package Tools\Builder
+ */
+class Model extends Component
+{
+    /**
+     * Model Construct
+     * @param $options
+     * @throws \Exception
+     */
+    public function __construct($options)
+    {
         if (empty($options['name'])) {
             $options['name'] = Text::camelize($options['tableName']);
         }
@@ -90,7 +100,8 @@ class Model extends Component {
     public function build()
     {
         $getSource = "
-    public function getSource() {
+    public function getSource()
+    {
         return '%s';
     }
 ";
@@ -103,7 +114,8 @@ class Model extends Component {
      * @param %s \$%s
      * @return \$this
      */
-    public function set%s(\$%s) {
+    public function set%s(\$%s)
+    {
         \$this->%s = \$%s;
 
         return \$this;
@@ -149,7 +161,8 @@ class Model extends Component {
      *
      * @return %s
      */
-    public function get%s() {
+    public function get%s()
+    {
         if (\$this->%s) {
             return new %s(\$this->%s);
         } else {
@@ -164,7 +177,8 @@ class Model extends Component {
      *
      * @return %s
      */
-    public function get%s() {
+    public function get%s()
+    {
         return \$this->%s;
     }
 ";
@@ -173,7 +187,8 @@ class Model extends Component {
     /**
      * Validations and business logic
      */
-    public function validation() {
+    public function validation()
+    {
 %s
     }
 ";
@@ -182,7 +197,8 @@ class Model extends Component {
     /**
      * Initialize method for model.
      */
-    public function initialize() {
+    public function initialize()
+    {
 %s
     }
 ";
@@ -191,14 +207,16 @@ class Model extends Component {
     /**
      * @return %s[]
      */
-    public static function find(\$parameters = array()) {
+    public static function find(\$parameters = array())
+    {
         return parent::find(\$parameters);
     }
 
     /**
      * @return %s
      */
-    public static function findFirst(\$parameters = array()) {
+    public static function findFirst(\$parameters = array())
+    {
         return parent::findFirst(\$parameters);
     }
 ";
@@ -207,7 +225,8 @@ class Model extends Component {
         $templateUseAs = 'use %s as %s;';
 
         $templateCode = "<?php
-%s%s%sclass %s extends %s {
+%s%s%sclass %s extends %s
+{
 %s
 }
 ";
@@ -628,7 +647,8 @@ class Model extends Component {
     /**
      * Independent Column Mapping.
      */
-    public function columnMap() {
+    public function columnMap()
+    {
         return array(
             %s
         );

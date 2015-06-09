@@ -31,14 +31,16 @@ use Tools\Builder\Component;
  * @copyright   Copyright (c) 2011-2015 Phalcon Team (team@phalconphp.com)
  * @license     New BSD License
  */
-class Migrations {
+class Migrations
+{
     /**
      * Generate migrations
      *
      * @param array $options
      * @throws \Exception
      */
-    public static function generate(array $options) {
+    public static function generate(array $options)
+    {
         $tableName = $options['tableName'];
         $exportData = $options['exportData'];
         $migrationsDir = $options['migrationsDir'];
@@ -113,7 +115,8 @@ class Migrations {
      * @param array $options
      * @throws \Exception
      */
-    public static function run(array $options) {
+    public static function run(array $options)
+    {
         $path = $options['migrationsDir'] . DIRECTORY_SEPARATOR . 'migration-version';
         $migrationsDir = $options['migrationsDir'];
         $config = $options['config'];

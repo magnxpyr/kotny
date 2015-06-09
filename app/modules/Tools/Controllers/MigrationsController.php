@@ -27,7 +27,8 @@ class MigrationsController extends ControllerBase {
      * @throws \Exception
      * @return string
      */
-    protected function _getMigrationsDir() {
+    protected function _getMigrationsDir()
+    {
         $migrationsDir = Tools::getMigrationsPath();
         if (!file_exists($migrationsDir)) {
             if(!@mkdir($migrationsDir)) {
@@ -39,8 +40,8 @@ class MigrationsController extends ControllerBase {
         return $migrationsDir;
     }
 
-    protected function _prepareVersions() {
-
+    protected function _prepareVersions()
+    {
         $migrationsDir = $this->_getMigrationsDir();
 
         $folders = array();
@@ -63,7 +64,8 @@ class MigrationsController extends ControllerBase {
         }
     }
 
-    public function indexAction() {
+    public function indexAction()
+    {
         $this->setTitle("Generate Migration");
         $this->_prepareVersions();
         $this->listTables(true);
@@ -72,8 +74,8 @@ class MigrationsController extends ControllerBase {
     /**
      * Generates migrations
      */
-    public function generateAction() {
-
+    public function generateAction()
+    {
         if ($this->request->isPost()) {
             $exportData = '';
             $tableName = $this->request->getPost('table-name', 'string');
@@ -107,7 +109,8 @@ class MigrationsController extends ControllerBase {
     }
 
 
-    public function runAction() {
+    public function runAction()
+    {
         $this->setTitle("Run Migration");
 
         if ($this->request->isPost()) {

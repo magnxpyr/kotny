@@ -10,15 +10,20 @@ namespace Tools\Builder;
 
 use Tools\Helpers\Tools;
 
-class Module extends Component {
-
+/**
+ * Class Module
+ * @package Tools\Builder
+ */
+class Module extends Component
+{
     /**
      * Controller constructor
      *
      * @param array $options
      * @throws \Exception
      */
-    public function __construct($options) {
+    public function __construct($options)
+    {
         if (empty($options['name'])) {
             throw new \Exception("Please specify the module name");
         }
@@ -45,7 +50,8 @@ class Module extends Component {
      * @return string
      * @throws \Exception
      */
-    public function build() {
+    public function build()
+    {
         if (!is_dir($this->_options['directory']) || $this->_options['force'] == true) {
             if (!is_dir($this->_options['directory'])) {
                 if(!@mkdir($this->_options['directory']))
@@ -104,8 +110,8 @@ class Module extends Component {
         $this->_createModule();
     }
 
-    private function _createRoute() {
-
+    private function _createRoute()
+    {
         $code = "<?php\n".Tools::getCopyright()."\n\nnamespace ".$this->_options['namespace'].';'.PHP_EOL.PHP_EOL;
         $baseRoute = Tools::getBaseRoute();
         if(!empty($baseRoute)) {
@@ -140,7 +146,8 @@ class Module extends Component {
         }
     }
 
-    private function _createModule() {
+    private function _createModule()
+    {
         $code = "<?php\n".Tools::getCopyright().PHP_EOL.PHP_EOL.'namespace ' .$this->_options['namespace'].';'.PHP_EOL.PHP_EOL;
 
         if(Tools::fullVersion()) {
@@ -163,12 +170,12 @@ class Module extends Component {
             $code .= " extends $baseClass";
         }
         if(Tools::fullVersion()) {
-            $code .= " implements ModuleDefinitionInterface {\n\n\t/**
+            $code .= " implements ModuleDefinitionInterface\n{\n\t/**
      * Register a specific autoloader for the module
      * @param \\Phalcon\\DiInterface \$di
      */
-    public function registerAutoloaders(DiInterface \$di = null) {
-
+    public function registerAutoloaders(DiInterface \$di = null)
+    {
         \$loader = new Loader();
         \$loader->registerNamespaces(
             array(" . PHP_EOL . "\t\t\t\t'" .
@@ -184,8 +191,7 @@ class Module extends Component {
      * Register specific services for the module
      * @param \\Phalcon\\DiInterface \$di
      */
-    public function registerServices(DiInterface \$di) {
-
+    public function registerServices(DiInterface \$di)\n{\n
         //Registering a dispatcher
         \$di->set('dispatcher', function() {
             \$dispatcher = new Dispatcher();

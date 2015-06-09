@@ -1,5 +1,4 @@
 <?php
-
 /*
   +------------------------------------------------------------------------+
   | Phalcon Developer Tools                                                |
@@ -298,8 +297,8 @@ use Phalcon\\Db\\Index;
 use Phalcon\\Db\\Reference;
 use Tools\\Builder\\Mvc\\Model\\Migration;
 
-class ".$className." extends Migration {\n\n".
-        "\tpublic function up() {\n".
+class ".$className." extends Migration\n{\n".
+        "\tpublic function up()\n\t{\n".
         "\t\t\$this->morphTable(\n\t\t\t'" . $table . "',\n\t\t\tarray(" .
         "\n\t\t\t\t'columns' => array(\n" . join(",\n", $tableDefinition) . "\n\t\t\t\t),";
         if (count($indexesDefinition)) {
@@ -363,8 +362,8 @@ use Phalcon\\Db\\Index;
 use Phalcon\\Db\\Reference;
 use Tools\\Builder\\Mvc\\Model\\Migration;
 
-class ".$className." extends Migration {\n\n".
-            "\tpublic function up() {\n".
+class ".$className." extends Migration\n{\n\n".
+            "\tpublic function up()\n\t{\n".
             "\t\t\$this->morphTable('" . $options['table'] . "', array(" .
             "\n\t\t\t\t'columns' => array(
                     new Column('id', array(

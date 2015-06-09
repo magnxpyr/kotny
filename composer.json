@@ -31,7 +31,6 @@
     "license": "BSD-3",
     "require": {
         "php": ">=5.4",
-        "ext-intl": "*",
         "ext-phalcon": "~2.0"
     },
     "require-dev": {

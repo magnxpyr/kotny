@@ -10,8 +10,12 @@ namespace Tools\Builder;
 
 use Tools\Helpers\Tools;
 
-class Controller extends Component {
-
+/**
+ * Class Controller
+ * @package Tools\Builder
+ */
+class Controller extends Component
+{
     /**
      * Controller constructor
      *
@@ -49,8 +53,8 @@ class Controller extends Component {
      * @return string
      * @throws \Exception
      */
-    public function build() {
-
+    public function build()
+    {
         if ($this->_options['namespace'] != 'None') {
             $namespace = 'namespace '.$this->_options['namespace'].';'.PHP_EOL.PHP_EOL;
         } else {

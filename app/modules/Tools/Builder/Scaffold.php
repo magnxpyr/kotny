@@ -31,9 +31,19 @@ use Phalcon\DI\FactoryDefault;
 use Phalcon\Db\Column;
 use Tools\Helpers\Tools;
 
-class Scaffold extends Component {
-
-    public function __construct($options) {
+/**
+ * Class Scaffold
+ * @package Tools\Builder
+ */
+class Scaffold extends Component
+{
+    /**
+     * Scaffold Construct
+     * @param $options
+     * @throws \Exception
+     */
+    public function __construct($options)
+    {
         if (empty($options['tableName'])) {
             throw new \Exception("Please, specify the table name");
         }
@@ -80,7 +90,8 @@ class Scaffold extends Component {
      * @return bool
      * @throws \Exception
      */
-    public function build() {
+    public function build()
+    {
         $options = $this->_options;
 
         if(Tools::getDb()) {
@@ -604,7 +615,6 @@ class Scaffold extends Component {
      */
     private function _makeLayouts($path, $options)
     {
-
         //Make Layouts dir
         $dirPathLayouts	= $options['viewsDir'] . '/layouts';
 
@@ -638,12 +648,10 @@ class Scaffold extends Component {
     }
 
     /**
-     * @param $path
      * @param $options
      */
     private function _makeLayoutsVolt($options)
     {
-
         //Make Layouts dir
         $dirPathLayouts	= $options['viewsDir'] . DIRECTORY_SEPARATOR . 'layouts';
 
