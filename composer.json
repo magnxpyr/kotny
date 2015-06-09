@@ -1,6 +1,6 @@
 {
     "name": "magnxpyr/cms",
-    "version": "0.1",
+    "version": "0.1.0",
     "title": "Magnxpyr CMS",
     "description": "Open Source Content Management System (CMS) written with Phalcon PHP Framework 2.0.x.",
     "type": "project",
@@ -33,5 +33,14 @@
         "php": ">=5.4",
         "ext-intl": "*",
         "ext-phalcon": "~2.0"
+    },
+    "require-dev": {
+        "phalcon/incubator": "dev-master",
+        "swiftmailer/swiftmailer": "5.4.*",
+        "facebook/php-sdk-v4" : "4.0.*",
+        "google/apiclient": "1.1.2"
+    },
+    "config": {
+        "vendor-dir": "app/vendor"
     }
 }
