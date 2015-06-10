@@ -317,9 +317,9 @@ class ".$className." extends Migration\n{\n".
         if ($exportData == 'always' || $exportData == 'oncreate') {
 
             if ($exportData == 'oncreate') {
-                $classData .= "\n\n\tpublic function afterCreateTable() {\n";
+                $classData .= "\n\tpublic function afterCreateTable()\n\t{\n";
             } else {
-                $classData .= "\n\n\tpublic function afterUp() {\n";
+                $classData .= "\n\tpublic function afterUp()\n\t{\n";
             }
             $classData .= "\t\t\$this->batchInsert('$table', array(\n\t\t\t" . join(",\n\t\t\t", $allFields) . "\n\t\t));";
 
@@ -362,9 +362,9 @@ use Phalcon\\Db\\Index;
 use Phalcon\\Db\\Reference;
 use Tools\\Builder\\Mvc\\Model\\Migration;
 
-class ".$className." extends Migration\n{\n\n".
+class ".$className." extends Migration\n{\n".
             "\tpublic function up()\n\t{\n".
-            "\t\t\$this->morphTable('" . $options['table'] . "', array(" .
+            "\t\t\$this->morphTable(\n\t\t\t'" . $options['table'] . "',\n\t\t\tarray(" .
             "\n\t\t\t\t'columns' => array(
                     new Column('id', array(
                             'type' => Column::TYPE_INTEGER,

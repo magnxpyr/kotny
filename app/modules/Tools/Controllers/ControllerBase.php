@@ -21,11 +21,19 @@ namespace Tools\Controllers;
 
 use Engine\AdminController;
 use Tools\Helpers\Tools;
-//use Phalcon\Mvc\Controller;
 
-class ControllerBase extends AdminController {
-
-    protected function initialize() {
+/**
+ * Class ControllerBase
+ * @package Tools\Controllers
+ */
+class ControllerBase extends AdminController
+{
+    /**
+     * Initialize controller
+     * @throws \Exception
+     */
+    protected function initialize()
+    {
         parent::initialize();
         $this->_checkAccess();
     }
@@ -36,7 +44,8 @@ class ControllerBase extends AdminController {
      * @return void
      * @throws \Exception if connected remotely
      */
-    protected function _checkAccess() {
+    protected function _checkAccess()
+    {
         $ip = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : false;
 
         if ($ip && ($ip == '127.0.0.1' || $ip == '::1' || $this->checkToolsIp($ip)))
@@ -51,7 +60,8 @@ class ControllerBase extends AdminController {
      * @param  bool $all
      * @return void
      */
-    protected function listTables($all = false) {
+    protected function listTables($all = false)
+    {
         $config = Tools::getConfig();
         $connection = Tools::getConnection();
 
@@ -80,7 +90,8 @@ class ControllerBase extends AdminController {
      * @param  string $ip
      * @return bool
      */
-    private function checkToolsIp($ip) {
+    private function checkToolsIp($ip)
+    {
         return strpos($ip, Tools::getToolsIp()) === 0;
     }
 }

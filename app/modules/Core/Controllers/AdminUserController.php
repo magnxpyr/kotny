@@ -89,15 +89,7 @@ class AdminUserController extends AdminController {
 
             $this->tag->setDefault("id", $user->getId());
             $this->tag->setDefault("username", $user->getUsername());
-            $this->tag->setDefault("auth_key", $user->getAuthKey());
-            $this->tag->setDefault("hash_key", $user->getHashKey());
-            $this->tag->setDefault("password", $user->getPassword());
-            $this->tag->setDefault("reset_token", $user->getResetToken());
-            $this->tag->setDefault("email", $user->getEmail());
-            $this->tag->setDefault("role", $user->getRole());
-            $this->tag->setDefault("status", $user->getStatus());
-            $this->tag->setDefault("register_date", $user->getRegisterDate());
-            $this->tag->setDefault("last_visit_date", $user->getLastVisitDate());
+
             
         }
     }

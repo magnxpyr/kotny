@@ -23,6 +23,7 @@ namespace Tools\Builder;
 use Tools\Builder\Version\Item as VersionItem;
 use Tools\Builder\Mvc\Model\Migration as ModelMigration;
 use Tools\Builder\Component;
+use Tools\Helpers\Tools;
 
 /**
  * Migrations Class
@@ -99,12 +100,12 @@ class Migrations
         if ($tableName == 'all') {
             $migrations = ModelMigration::generateAll($version, $exportData);
             foreach ($migrations as $tableName => $migration) {
-                file_put_contents($migrationsDir.'/'.$version.'/'.$tableName.'.php', '<?php '.PHP_EOL.PHP_EOL.$migration);
+                file_put_contents($migrationsDir.'/'.$version.'/'.$tableName.'.php', '<?php'.PHP_EOL.Tools::getCopyright().PHP_EOL.PHP_EOL.$migration);
                 @chmod($migrationsDir.'/'.$version.'/'.$tableName.'.php', 0777);
             }
         } else {
             $migration = ModelMigration::generate($version, $tableName, $exportData);
-            file_put_contents($migrationsDir.'/'.$version.'/'.$tableName.'.php', '<?php '.PHP_EOL.PHP_EOL.$migration);
+            file_put_contents($migrationsDir.'/'.$version.'/'.$tableName.'.php', '<?php '.PHP_EOL.Tools::getCopyright().PHP_EOL.PHP_EOL.$migration);
             @chmod($migrationsDir.'/'.$version.'/'.$tableName.'.php', 0777);
         }
     }

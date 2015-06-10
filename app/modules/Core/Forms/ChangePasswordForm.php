@@ -19,15 +19,16 @@ use Phalcon\Validation\Validator\Confirmation;
  * Class ChangePasswordForm
  * @package Core\Forms
  */
-class ChangePasswordForm extends Form {
-
+class ChangePasswordForm extends Form
+{
     /**
      * Initialize the Change Password Form
      */
-    public function initialize() {
-
+    public function initialize()
+    {
         // Current Password
         $currentPassword = new Password('currentPassword');
+        $currentPassword->setFilters('string');
         $currentPassword->addValidators(array(
             new PresenceOf(array(
                 'message' => $this->t['Current password is required']
@@ -38,6 +39,7 @@ class ChangePasswordForm extends Form {
         // New password
         $password = new Password('password');
         $password->setLabel($this->t['Password']);
+        $password->setFilters('string');
         $password->addValidators(array(
             new PresenceOf(array(
                 'message' => $this->t['Password is required']
@@ -51,6 +53,7 @@ class ChangePasswordForm extends Form {
 
         // Confirm new password
         $repeatPassword = new Password('repeatPassword');
+        $repeatPassword->setFilters('string');
         $repeatPassword->setLabel($this->t['Repeat Password']);
         $repeatPassword->addValidators(array(
             new PresenceOf(array(

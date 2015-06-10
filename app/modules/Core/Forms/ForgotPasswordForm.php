@@ -18,17 +18,18 @@ use Phalcon\Validation\Validator\Email;
  * Class ForgotPasswordForm
  * @package Core\Forms
  */
-class ForgotPasswordForm extends Form {
-
+class ForgotPasswordForm extends Form
+{
     /**
      * Initialize the Forgot Password Form
      */
-    public function initialize() {
-
+    public function initialize()
+    {
         // Email
         $email = new Text('email', array(
             'placeholder' => $this->t['Email']
         ));
+        $email->setFilters('email');
         $email->addValidators(array(
             new PresenceOf(array(
                 'message' => $this->t['The e-mail is required']

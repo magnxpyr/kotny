@@ -322,8 +322,7 @@ class Model extends Component
                 if ($reference->getReferencedTable() == $this->_options['tableName']) {
                     if (isset($this->_options['namespace'])) {
                         $entityNamespace = "{$this->_options['namespace']}\\";
-                    }
-                    else {
+                    } else {
                         $entityNamespace = '';
                     }
                     $initialize[] = sprintf(
@@ -340,8 +339,7 @@ class Model extends Component
         foreach ($db->describeReferences($this->_options['tableName']) as $reference) {
             if (isset($this->_options['namespace'])) {
                 $entityNamespace = "{$this->_options['namespace']}\\";
-            }
-            else {
+            } else {
                 $entityNamespace = '';
             }
             $initialize[] = sprintf(
@@ -418,10 +416,7 @@ class Model extends Component
                 require_once $modelPath;
 
                 $linesCode = file($modelPath);
-                $fullClassName = $this->_options['className'];
-                if (isset($this->_options['namespace'])) {
-                    $fullClassName = $this->_options['namespace'].'\\'.$fullClassName;
-                }
+                $fullClassName = $this->_options['namespace'];
                 $reflection = new \ReflectionClass($fullClassName);
                 foreach ($reflection->getMethods() as $method) {
                     if ($method->getDeclaringClass()->getName() == $fullClassName) {

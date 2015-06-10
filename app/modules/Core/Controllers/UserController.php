@@ -12,7 +12,6 @@ use Core\Forms\LoginForm;
 use Core\Forms\RegisterForm;
 use Core\Models\User;
 use Engine\Controller;
-use Engine\Plugins\Auth;
 use Engine\Utils;
 
 /**

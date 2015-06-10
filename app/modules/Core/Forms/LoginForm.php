@@ -58,6 +58,7 @@ class LoginForm extends Form
 
         // Password
         $password = new Password('password');
+        $password->setFilters('string');
         $password->setLabel($this->t['Password']);
         $password->addValidators(array(
             new PresenceOf(array(

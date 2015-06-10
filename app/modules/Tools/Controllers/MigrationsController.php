@@ -21,8 +21,12 @@ namespace Tools\Controllers;
 use Tools\Builder\Migrations;
 use Tools\Helpers\Tools;
 
-class MigrationsController extends ControllerBase {
-
+/**
+ * Class MigrationsController
+ * @package Tools\Controllers
+ */
+class MigrationsController extends ControllerBase
+{
     /**
      * @throws \Exception
      * @return string
@@ -40,6 +44,9 @@ class MigrationsController extends ControllerBase {
         return $migrationsDir;
     }
 
+    /**
+     * @throws \Exception
+     */
     protected function _prepareVersions()
     {
         $migrationsDir = $this->_getMigrationsDir();
@@ -108,7 +115,9 @@ class MigrationsController extends ControllerBase {
         ));
     }
 
-
+    /**
+     * Run Migrations
+     */
     public function runAction()
     {
         $this->setTitle("Run Migration");

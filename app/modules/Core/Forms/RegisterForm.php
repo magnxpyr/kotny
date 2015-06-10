@@ -22,13 +22,13 @@ use Phalcon\Validation\Validator\Uniqueness;
  * Class RegisterForm
  * @package Core\Forms
  */
-class RegisterForm extends Form {
-
+class RegisterForm extends Form
+{
     /**
      * Initialize the Register Form
      */
-    public function initialize() {
-
+    public function initialize()
+    {
         // Username
         $username = new Text('username');
         $username->setLabel($this->t['Username']);
@@ -60,6 +60,7 @@ class RegisterForm extends Form {
         // Password
         $password = new Password('password');
         $password->setLabel($this->t['Password']);
+        $password->setFilters('string');
         $password->addValidators(array(
             new PresenceOf(array(
                 'message' => $this->t['Password is required']
@@ -70,6 +71,7 @@ class RegisterForm extends Form {
         // Confirm Password
         $repeatPassword = new Password('repeatPassword');
         $repeatPassword->setLabel($this->t['Repeat Password']);
+        $repeatPassword->setFilters('string');
         $repeatPassword->addValidators(array(
             new PresenceOf(array(
                 'message' => $this->t['Confirmation password is required']

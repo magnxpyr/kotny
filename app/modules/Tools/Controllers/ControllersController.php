@@ -13,9 +13,17 @@ use Phalcon\Tag;
 use Tools\Builder\View;
 use Tools\Helpers\Tools;
 
-class ControllersController extends ControllerBase {
-
-    public function indexAction() {
+/**
+ * Class ControllersController
+ * @package Tools\Controllers
+ */
+class ControllersController extends ControllerBase
+{
+    /**
+     * @throws \Exception
+     */
+    public function indexAction()
+    {
         $this->setTitle("Create Controller");
         $selectedModule = null;
         $params = $this->router->getParams();
@@ -28,8 +36,8 @@ class ControllersController extends ControllerBase {
     /**
      * Generate controller
      */
-    public function createAction() {
-
+    public function createAction()
+    {
         if ($this->request->isPost()) {
 
             $controllerName = $this->request->getPost('name', 'string');
