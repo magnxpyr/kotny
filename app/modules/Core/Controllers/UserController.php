@@ -27,13 +27,13 @@ class UserController extends Controller
     {
         $this->setTitle('Login');
         $form = new LoginForm();
-        if ($this->request->isPost()) {
+
             try {
                 $this->auth->login($form);
             } catch (\Exception $e) {
                 $this->flash->error($e->getMessage());
             }
-        }
+
         $this->view->form = $form;
     }
 

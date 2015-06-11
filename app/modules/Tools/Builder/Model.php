@@ -225,7 +225,8 @@ class Model extends Component
         $templateUseAs = 'use %s as %s;';
 
         $templateCode = "<?php
-%s%s%sclass %s extends %s
+%s%s%s%s
+class %s extends %s
 {
 %s
 }
@@ -584,6 +585,10 @@ class Model extends Component
         }
 
         $str_use = implode(PHP_EOL, $uses) . PHP_EOL . PHP_EOL;
+        $str_doc = '/**
+ * Class ' . $this->_options['name'] . '
+ * @package ' . $this->_options['namespace'] . '
+ */';
 
         $base = explode('\\', $this->_options['baseClass']);
         $baseClass = end($base);
@@ -593,6 +598,7 @@ class Model extends Component
             Tools::getCopyright(),
             $namespace,
             $str_use,
+            $str_doc,
             $this->_options['name'],
             $baseClass,
             $content

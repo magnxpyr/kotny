@@ -110,6 +110,10 @@ class Module extends Component
         $this->_createModule();
     }
 
+    /**
+     * Generate route file
+     * @throws \Exception
+     */
     private function _createRoute()
     {
         $code = "<?php\n".Tools::getCopyright()."\n\nnamespace ".$this->_options['namespace'].';'.PHP_EOL.PHP_EOL;
@@ -122,11 +126,20 @@ class Module extends Component
             $code .= $useClass;
         }
 
-        $code .= "class Routes";
+        $code .= "/**
+ * Class Routes
+ * @package " . $this->_options['namespace'] . "
+ */
+class Routes";
         if(!empty($baseRoute)) {
             $code .= " extends $baseClass";
         }
-        $code .= " {\n\n\tpublic function init(\$router) {
+        $code .= "\n{\n\t/**
+     * Add routes
+     * @param \\Phalcon\\Mvc\\Router() \$router
+     */
+    public function init(\$router)
+    {
         \$router->add('/:module/:controller/:action/:params', array(
             'module' => 1,
             'controller' => 2,
@@ -146,6 +159,10 @@ class Module extends Component
         }
     }
 
+    /**
+     * Generate module file
+     * @throws \Exception
+     */
     private function _createModule()
     {
         $code = "<?php\n".Tools::getCopyright().PHP_EOL.PHP_EOL.'namespace ' .$this->_options['namespace'].';'.PHP_EOL.PHP_EOL;
@@ -165,7 +182,12 @@ class Module extends Component
             $code .= $useClass;
         }
 
-        $code .= PHP_EOL.PHP_EOL."class Module";
+        $code .= PHP_EOL.PHP_EOL.
+'/**
+ * Class Module
+ * @package ' . $this->_options['namespace'] . '
+ */
+class Module';
         if(!empty($baseModule)) {
             $code .= " extends $baseClass";
         }
@@ -191,7 +213,8 @@ class Module extends Component
      * Register specific services for the module
      * @param \\Phalcon\\DiInterface \$di
      */
-    public function registerServices(DiInterface \$di)\n{\n
+    public function registerServices(DiInterface \$di)
+    {
         //Registering a dispatcher
         \$di->set('dispatcher', function() {
             \$dispatcher = new Dispatcher();

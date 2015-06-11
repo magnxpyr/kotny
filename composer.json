@@ -1,6 +1,7 @@
 {
     "name": "magnxpyr/cms",
     "version": "0.1.0",
+    "license": "BSD-3-Clause",
     "title": "Magnxpyr CMS",
     "description": "Open Source Content Management System (CMS) written with Phalcon PHP Framework 2.0.x.",
     "type": "project",
@@ -13,22 +14,26 @@
         "cms"
     ],
     "homepage": "http://www.magnxpyr.com/",
-    "author": {
-        "name": "Magnxpyr Network",
-        "url": "http://www.magnxpyr.com"
-    },
-    "maintainers": [
+    "authors": [
         {
-            "name": "Stefan Chiriac",
+            "name": "Magnxpyr Network",
             "url": "http://www.magnxpyr.com"
+        },
+        {
+          "name": "Stefan Chiriac",
+          "url": "http://www.magnxpyr.com",
+          "email": "stefan@magnxpyr.com"
         }
     ],
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/magnxpyr/cms"
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/magnxpyr/cms"
+        }
+    ],
+    "support": {
+      "issues": "https://github.com/magnxpyr/cms/issues"
     },
-    "bugs": "https://github.com/magnxpyr/cms/issues",
-    "license": "BSD-3",
     "require": {
         "php": ">=5.4",
         "ext-phalcon": "~2.0"

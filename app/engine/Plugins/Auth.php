@@ -15,6 +15,7 @@ use Phalcon\Mvc\User\Component;
 
 /**
  * Manages Authentication/Identity Management
+ *
  * Class Auth
  * @package Engine\Plugins
  */
@@ -86,7 +87,7 @@ class Auth extends Component
     {
         if (!$this->request->isPost()) {
             if ($this->hasRememberMe()) {
-                return $this->loginWithRememberMe();
+                return $this->loginWithRememberMe(false);
             }
         } else {
             if ($form->isValid($this->request->getPost())) {
@@ -95,12 +96,14 @@ class Auth extends Component
                     'password' => $this->request->getPost('password'),
                     'remember' => $this->request->getPost('remember')
                 ));
+                /*
                 return $this->response->redirect([
                     'for' => 'user-home',
                     'module' => 'core',
                     'controller' => 'user',
                     'action' => 'index'
                 ]);
+                */
             } else {
                 foreach ($form->getMessages() as $message) {
                     $this->flash->error($message->getMessage());
@@ -417,7 +420,7 @@ class Auth extends Component
     {
         $selector = Utils::generateToken(8);
         $token = Utils::generateToken();
-        if(!isset($remember)) {
+        if($remember === null) {
             $remember = new UserAuthTokens();
         }
         $remember->setUserId($user->getId());

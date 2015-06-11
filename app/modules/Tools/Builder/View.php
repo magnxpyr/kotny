@@ -49,7 +49,9 @@ class View extends Component
         $action = Text::uncamelize($this->_options['action']);
 
         $viewName = explode('-', str_replace('_', '-', Text::uncamelize($this->_options['name'])));
-        array_pop($viewName);
+        if (count($viewName) > 1) {
+            array_pop($viewName);
+        }
         $viewName = implode('-', $viewName);
         $viewDir = $this->_options['directory'] . DIRECTORY_SEPARATOR . $viewName;
         $viewPath = $viewDir . DIRECTORY_SEPARATOR . $action . '.volt';
