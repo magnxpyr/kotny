@@ -17,6 +17,11 @@ use Phalcon\Mvc\User\Plugin,
  */
 class Security extends Plugin
 {
+    /**
+     * @param \Phalcon\Events\Event $event
+     * @param \Phalcon\Mvc\Dispatcher $dispatcher
+     * @return bool
+     */
     public function beforeExecuteRoute($event, $dispatcher)
     {
         //Obtain the ACL list
@@ -55,6 +60,5 @@ class Security extends Plugin
                 return false;
             }
         }
-
     }
 }

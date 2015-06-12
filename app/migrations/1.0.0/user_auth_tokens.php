@@ -22,7 +22,7 @@ class UserAuthTokensMigration_100 extends Migration {
                 new Column('selector', array(
                         'type' => Column::TYPE_CHAR,
                         'notNull' => true,
-                        'size' => 12,
+                        'size' => 16,
                         'after' => 'id'
                     )
                 ),
@@ -42,9 +42,9 @@ class UserAuthTokensMigration_100 extends Migration {
                     )
                 ),
                 new Column('expires', array(
-                        'type' => 'TIMESTAMP',
-                        //'notNull' => true,
-                        //'default' => 'CURRENT_TIMESTAMP',
+                        'type' => Column::TYPE_INTEGER,
+                        'size' => 11,
+                        'notNull' => true,
                         'after' => 'user_id'
                     )
                 )

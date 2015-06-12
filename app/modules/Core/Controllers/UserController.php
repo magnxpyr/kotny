@@ -27,13 +27,11 @@ class UserController extends Controller
     {
         $this->setTitle('Login');
         $form = new LoginForm();
-
-            try {
-                $this->auth->login($form);
-            } catch (\Exception $e) {
-                $this->flash->error($e->getMessage());
-            }
-
+        try {
+            $this->auth->login($form);
+        } catch (\Exception $e) {
+            $this->flash->error($e->getMessage());
+        }
         $this->view->form = $form;
     }
 
@@ -76,13 +74,13 @@ class UserController extends Controller
 
     /**
      * Remove user session
-     * @return \Phalcon\Http\Response|\Phalcon\Http\ResponseInterface
+     * @return \Phalcon\Http\Response
      */
     public function logoutAction()
     {
-        $this->session->remove('auth');
-        $this->flash->success($this->t['You have been logged out successfully']);
-        return $this->response->send();
+        $this->auth->remove();
+        $this->flashSession->success($this->t['You have been logged out successfully']);
+    //    return $this->response->redirect('user/login');
     }
 
     /**

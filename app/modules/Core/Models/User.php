@@ -91,7 +91,7 @@ class User extends Model
     /**
      * Method to set the value of field auth_key
      *
-     * @param string $auth_key
+     * @param string $auth_token
      * @return $this
      */
     public function setAuthToken($auth_token)
@@ -168,7 +168,7 @@ class User extends Model
     /**
      * Method to set the value of field register_date
      *
-     * @param integer $register_date
+     * @param integer $created_at
      * @return $this
      */
     public function setCreatedAt($created_at)
@@ -181,7 +181,7 @@ class User extends Model
     /**
      * Method to set the value of field last_visit_date
      *
-     * @param integer $last_visit_date
+     * @param integer $visited_at
      * @return $this
      */
     public function setVisitedAt($visited_at)
@@ -290,6 +290,7 @@ class User extends Model
     public function initialize()
     {
         $this->setSource('user');
+        $this->hasMany('id', 'Core\Models\UserAuthTokens', 'user_id', ['alias' => 'UserAuthTokens', 'reusable' => true]);
     }
 
     /**

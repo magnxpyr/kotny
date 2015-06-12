@@ -17,22 +17,16 @@
     "authors": [
         {
             "name": "Magnxpyr Network",
-            "url": "http://www.magnxpyr.com"
+            "homepage": "http://www.magnxpyr.com"
         },
         {
-          "name": "Stefan Chiriac",
-          "url": "http://www.magnxpyr.com",
-          "email": "stefan@magnxpyr.com"
-        }
-    ],
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/magnxpyr/cms"
+            "name": "Stefan Chiriac",
+            "homepage": "http://www.magnxpyr.com",
+            "email": "stefan@magnxpyr.com"
         }
     ],
     "support": {
-      "issues": "https://github.com/magnxpyr/cms/issues"
+        "issues": "https://github.com/magnxpyr/cms/issues"
     },
     "require": {
         "php": ">=5.4",
@@ -42,7 +36,8 @@
         "phalcon/incubator": "dev-master",
         "swiftmailer/swiftmailer": "5.4.*",
         "facebook/php-sdk-v4" : "4.0.*",
-        "google/apiclient": "1.1.2"
+        "google/apiclient": "1.1.2",
+        "stibium/phalcon.eager-loading": "dev-php-5.3"
     },
     "config": {
         "vendor-dir": "app/vendor"

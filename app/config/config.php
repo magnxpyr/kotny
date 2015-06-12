@@ -12,10 +12,17 @@ return [
         'offline' => false,
         'site_name' => 'Magnxpyr Network',
         'site_name_location' => 1,
-        'baseUri'       => '/', // must end with trailing slash /
-        'cryptKey'     => '9C689CBCFBCA3BBFE0EDDF2F33D63298AC4D6FE9D0FF83FFA00D13CEE331F403', // Use your own key!
-        'development'   => true,
-        'cacheDir'      => ROOT_PATH . 'cache/'
+        'baseUri' => '/', // must end with trailing slash /
+        'cryptKey' => '721a79281f408416', // Use your own 8 bits key!
+        'development' => true,
+        'cacheDir' => ROOT_PATH . 'cache/',
+        'cookie' => [
+            'name' => 'mgRm',
+            'path' => '/',
+            'domain' => null,
+            'secure' => false,
+            'expire' => 86400 * 30
+        ]
     ],
     'mail' => [
         'fromName' => '',

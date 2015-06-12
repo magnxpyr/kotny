@@ -9,9 +9,12 @@
 namespace Core\Models;
 
 use Phalcon\Mvc\Model;
+use Sb\Framework\Mvc\Model\EagerLoadingTrait;
 
 class UserAuthTokens extends Model
 {
+    use EagerLoadingTrait;
+
     /**
      * @var integer
      */
@@ -153,7 +156,7 @@ class UserAuthTokens extends Model
     public function initialize()
     {
         $this->setSource('user_auth_tokens');
-        $this->belongsTo('user_id', 'User', 'id', ['alias' => 'user', 'reusable' => true]);
+        $this->belongsTo('user_id', 'Core\Models\User', 'id', ['alias' => 'User', 'reusable' => true]);
     }
 
     public function getSource()

@@ -22,26 +22,24 @@ use Phalcon\Mvc\User\Component;
 class Auth extends Component
 {
     /**
-     * Cookie name
-     * @var string
+     * Cookie settings from config
+     * @var \stdClass
      */
-    private $cookieName = 'mgRm';
+    private $cookie;
+
 
     /**
-     * Cookie expire time
-     * @var string
+     * Initialize Auth
      */
-    private $cookieExpire;
-
-
     public function __construct()
     {
-        $this->cookieExpire = time() + 86400 * 30;
+        $this->cookie = $this->config->app->cookie;
     }
 
 
     /**
      * Checks the user credentials
+     *
      * @param $credentials
      * @throws \Exception
      */
@@ -66,13 +64,14 @@ class Auth extends Component
 
     /**
      * Set user session
+     *
      * @param object $user
      */
     private function setSession($user)
     {
         $this->session->set('auth', [
-            'id'    => $user->getId(),
-            'username'  => $user->getUsername(),
+            'id' => $user->getId(),
+            'username' => $user->getUsername(),
             'email' => $user->getEmail(),
         ]);
     }
@@ -91,11 +90,11 @@ class Auth extends Component
             }
         } else {
             if ($form->isValid($this->request->getPost())) {
-                $this->check(array(
+                $this->check([
                     'username' => $this->request->getPost('username', 'alphanum'),
-                    'password' => $this->request->getPost('password'),
+                    'password' => $this->request->getPost('password', 'string'),
                     'remember' => $this->request->getPost('remember')
-                ));
+                ]);
                 /*
                 return $this->response->redirect([
                     'for' => 'user-home',
@@ -115,32 +114,63 @@ class Auth extends Component
 
     /**
      * Logs on using the information in the cookies
+     *
      * @param boolean $redirect
      * @return \Phalcon\Http\Response
      */
     public function loginWithRememberMe($redirect = true)
     {
-        $cookie = explode(':', $this->cookies->get($this->cookieName)->getValue());
-        $auth = UserAuthTokens::findFirstBySelector($cookie[0]);
+        $cookie = explode(':', $this->cookies->get($this->cookie->name)->getValue());
+    //    $auth = UserAuthTokens::findFirstBySelector($cookie[0]);
+        $auth = UserAuthTokens::findFirstBySelector($cookie[0])->load('User');
         if ($auth) {
             // fist check cookie valid and then look for user
-            if (hash_equals($auth->getToken(), hash('sha256', $cookie[1]))) {
-                if ($auth->getExpires() > $this->cookieExpire ) {
+            if (Utils::hash_equals($auth->getToken(), hash('sha256', trim($cookie[1])))) {
+                if ($auth->getExpires() > time() ) {
                     // Get user details to set a new session
-                    $user = User::findFirstById($auth->getUserId);
-                    $this->checkUserFlags($user);
-                    $this->setSession($user);
-                    $this->setRememberMe($user, $auth);
+                    $this->checkUserFlags($auth->user);
+                    $this->setSession($auth->user);
+                    $this->setRememberMe(null, $auth);
                     // $this->saveSuccessLogin($user);
-                    if (true === $redirect) {
+                    if ($redirect) {
                         return $this->response->redirect();
                     }
                     return;
                 }
             }
+            $auth->delete();
         }
-        $this->cookies->get($this->cookieName)->delete();
+        $this->cookies->get($this->cookie->name)->delete();
         return $this->response->redirect();
+    }
+
+    /**
+     * Creates the remember me environment settings the related cookies and generating tokens
+     *
+     * @param \Core\Models\User $user
+     * @param \Core\Models\UserAuthTokens $remember
+     */
+    public function setRememberMe($user = null, $remember = null)
+    {
+        $selector = Utils::generateToken(8);
+        $token = Utils::generateToken();
+        if($remember === null) {
+            $remember = new UserAuthTokens();
+            $remember->setUserId($user->getId());
+        }
+        $remember->setSelector($selector);
+        $remember->setToken(hash('sha256', $token));
+        $remember->setExpires($this->cookie->expire);
+        if ($remember->save()) {
+            $this->cookies->set(
+                $this->cookie->name,
+                "$selector:$token",
+                $this->cookie->expire,
+                $this->cookie->path,
+                $this->cookie->secure,
+                $this->cookie->domain,
+                true);
+        }
     }
 
     /**
@@ -170,7 +200,9 @@ class Auth extends Component
     /**
      * Authenitcate or create a user with a Facebook account
      *
-     * @param array $facebookUser
+     * @param $facebookUser
+     * @return \Phalcon\Http\Response|\Phalcon\Http\ResponseInterface
+     * @throws \Exception
      */
     protected function authenticateOrCreateFacebookUser($facebookUser)
     {
@@ -202,125 +234,9 @@ class Auth extends Component
     }
 
     /**
-     * Login with LinkedIn account
-     * @return \Phalcon\Http\ResponseInterface
+     * @return \Phalcon\Http\Response|\Phalcon\Http\ResponseInterface
+     * @throws \Exception
      */
-    public function loginWithLinkedIn()
-    {
-        $di = $this->getDI();
-        $config = $di->get('config')->pup->connectors->linkedIn->toArray();
-        $config['callback_url'] = $config['callback_url'].'user/loginWithLinkedIn';
-        $li = new LinkedInConnector($config);
-        $token = $this->session->get('linkedIn_token');
-        $token_expires = $this->session->get('linkedIn_token_expires_on', 0);
-        if ($token && $token_expires > time()) {
-            $li->setAccessToken($this->session->get('linkedIn_token'));
-            $email = $li->get('/people/~/email-address');
-            $info  = $li->get('/people/~');
-            return $this->authenticateOrCreateLinkedInUser($email, $info);
-        } else { // If token is not set
-            if ($this->request->get('code')) {
-                $token = $li->getAccessToken($this->request->get('code'));
-                $token_expires = $li->getAccessTokenExpiration();
-                $this->session->set('linkedIn_token', $token);
-                $this->session->set('linkedIn_token_expires_on', time() + $token_expires);
-            }
-        }
-        $state = uniqid();
-        $url   = $li->getLoginUrl([
-            LinkedInConnector::SCOPE_BASIC_PROFILE,
-            LinkedInConnector::SCOPE_EMAIL_ADDRESS
-        ], $state);
-        return $this->response->redirect($url, true);
-    }
-
-    protected function authenticateOrCreateLinkedInUser($email, $info)
-    {
-    //    $pupRedirect = $di->get('config')->pup->redirect;
-        preg_match('#id=\d+#', $info['siteStandardProfileRequest']['url'], $matches);
-        $linkedInId  = str_replace("id=", "", $matches[0]);
-        $user        = User::findFirst("email='$email' OR linkedin_id='$linkedInId'");
-        if ($user) {
-            $this->checkUserFlags($user);
-            $this->setIdentity($user);
-            $this->saveSuccessLogin($user);
-            if (!$user->getLinkedinId()) {
-                $user->setLinkedinId($linkedInId);
-                $user->setLinkedinName($info['firstName'].' '.$info['lastName']);
-                $user->update();
-            }
-            return $this->response->redirect();
-        } else {
-            $password = $this->generatePassword();
-            $user = $this->newUser()
-                ->setName($info['firstName'].' '.$info['lastName'])
-                ->setEmail($email)
-                ->setPassword($this->security->hash($password))
-                ->setLinkedinId($linkedInId)
-                ->setLinkedinName($info['firstName'].' '.$info['lastName'])
-                ->setLinkedinData(json_encode($info));
-            return $this->createUser($user);
-        }
-    }
-
-    /**
-     * Login with Twitter account
-     */
-    public function loginWithTwitter()
-    {
-        $di          = $this->getDI();
-        $pupRedirect = $di->get('config')->pup->redirect;
-        $oauth       = $this->session->get('twitterOauth');
-        $config      = $di->get('config')->pup->connectors->twitter->toArray();
-        $config      = array_merge($config, array('token' => $oauth['token'], 'secret' => $oauth['secret']));
-        $twitter = new TwitterConnector($config, $di);
-        if (!$this->request->get('oauth_token')) {
-            return $this->response->redirect($twitter->request_token(), true);
-        }
-        $twitter->access_token();
-        $code = $twitter->user_request(array(
-            'url' => $twitter->url('1.1/account/verify_credentials')
-        ));
-        if ($code == 200) {
-            $data = json_decode($twitter->response['response'], true);
-            if ($data['screen_name']) {
-                $code = $twitter->user_request(array(
-                    'url' => $twitter->url('1.1/users/show'),
-                    'params' => array(
-                        'screen_name' => $data['screen_name']
-                    )
-                ));
-                if ($code == 200) {
-                    $response = json_decode($twitter->response['response'], true);
-                    $twitterId = $response['id'];
-                    $user = User::findFirst("twitter_id='$twitterId'");
-                    if ($user) {
-                        $this->checkUserFlags($user);
-                        $this->setIdentity($user);
-                        $this->saveSuccessLogin($user);
-                        return $this->response->redirect($pupRedirect->success);
-                    } else {
-                        $password = $this->generatePassword();
-                        $email    = $response['screen_name'].rand(100000,999999).'@domain.tld'; // Twitter does not prived user's email
-                        $user = $this->newUser()
-                            ->setName($response['name'])
-                            ->setEmail($email)
-                            ->setPassword($di->get('security')->hash($password))
-                            ->setTwitterId($response['id'])
-                            ->setTwitterName($response['name'])
-                            ->setTwitterData(json_encode($response));
-                        $this->flashSession->notice('Because Twitter does not provide an email address, we had randomly generated one: '.$email);
-                        return $this->createUser($user);
-                    }
-                }
-            }
-        } else {
-            $di->get('logger')->begin();
-            $di->get('logger')->error(json_encode($twitter->response));
-            $di->get('logger')->commit();
-        }
-    }
-
     public function loginWithGoogle()
     {
         $di       = $this->getDI();
@@ -376,9 +292,10 @@ class Auth extends Component
             throw new \Exception($messages[0]);
         }
     }
+
     /**
      * Implements login throttling
-     * Reduces the efectiveness of brute force attacks
+     * Reduces the effectiveness of brute force attacks
      *
      * @param int $user_id
      */
@@ -389,13 +306,13 @@ class Auth extends Component
         $failedLogin->setIpAddress($this->request->getClientAddress());
         $failedLogin->setAttempted(time());
         $failedLogin->save();
-        $attempts = UserFailedLogins::count(array(
+        $attempts = UserFailedLogins::count([
             'ip_address = ?0 AND attempted >= ?1',
-            'bind' => array(
+            'bind' => [
                 $this->request->getClientAddress(),
                 time() - 3600 * 6
-            )
-        ));
+            ]
+        ]);
         switch ($attempts) {
             case 1:
             case 2:
@@ -412,36 +329,18 @@ class Auth extends Component
     }
 
     /**
-     * Creates the remember me environment settings the related cookies and generating tokens
-     * @param \Core\Models\User $user
-     * @param \Core\Models\UserAuthTokens $remember
-     */
-    public function setRememberMe($user, $remember = null)
-    {
-        $selector = Utils::generateToken(8);
-        $token = Utils::generateToken();
-        if($remember === null) {
-            $remember = new UserAuthTokens();
-        }
-        $remember->setUserId($user->getId());
-        $remember->setToken(hash('sha256', $token));
-        $remember->setExpires($this->cookieExpire);
-        if ($remember->save()) {
-            $this->cookies->set($this->cookieName, "$selector:$token", $this->cookieExpire);
-        }
-    }
-
-    /**
      * Check if the session has a remember me cookie
+     *
      * @return boolean
      */
     public function hasRememberMe()
     {
-        return $this->cookies->has($this->cookieName);
+        return $this->cookies->has($this->cookie->name);
     }
 
     /**
      * Check if the user is signed in
+     *
      * @return boolean
      */
     public function isUserSignedIn()
@@ -457,18 +356,19 @@ class Auth extends Component
 
     /**
      * Checks if the user is inactive/suspended/banned
+     *
      * @param \Core\Models\User $user
      * @throws \Exception
      */
     public function checkUserFlags($user)
     {
-        if ($user->getStatus() === 0) {
+        if ($user->getStatus() == 0) {
             throw new \Exception($this->t['Your account is inactive']);
         }
-        if ($user->getStatus() === 2) {
+        if ($user->getStatus() == 2) {
             throw new \Exception($this->t['Your account is suspended']);
         }
-        if ($user->getStatus() === 3) {
+        if ($user->getStatus() == 3) {
             throw new \Exception($this->t['Your account is banned']);
         }
     }
@@ -506,15 +406,18 @@ class Auth extends Component
     }
 
     /**
-     * Removes the user identity information from session
+     * Removes the user identity information from session, cookies and db
      */
     public function remove()
     {
         $fbAppId = ''; //fb id
-        if ($this->cookies->has($this->cookieName)) {
-            $this->cookies->get($this->cookieName)->delete();
+        if ($this->cookies->has($this->cookie->name)) {
+            $cookie = explode(':', $this->cookies->get($this->cookie->name));
+            UserAuthTokens::findFirstBySelector($cookie[0])->delete();
+            $this->cookies->delete($this->cookie->name);
         }
-        $this->session->remove('auth-identity');
+
+        $this->session->remove('auth');
         $this->session->remove('fb_'.$fbAppId.'_code');
         $this->session->remove('fb_'.$fbAppId.'_access_token');
         $this->session->remove('fb_'.$fbAppId.'_user_id');
@@ -522,6 +425,7 @@ class Auth extends Component
         $this->session->remove('linkedIn_token');
         $this->session->remove('linkedIn_token_expires_on');
     }
+
     /**
      * Auths the user by his/her id
      * @param int $id
@@ -545,7 +449,7 @@ class Auth extends Component
      */
     public function getUser()
     {
-        $identity = $this->session->get('auth-identity');
+        $identity = $this->session->get('auth');
         if (!isset($identity['id'])) {
             return false;
         }

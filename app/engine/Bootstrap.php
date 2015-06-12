@@ -19,6 +19,8 @@ class Bootstrap {
 
         // Load config file
         $config = require_once APP_PATH . 'config/config.php';
+        $config['app']['cookie']['expire'] = time() + $config['app']['cookie']['expire'];
+
         // Load modules
         $modulesList = require_once APP_PATH . 'config/modules.php';
         // Load loader
@@ -167,6 +169,14 @@ class Bootstrap {
             $crypt = new \Phalcon\Crypt();
             $crypt->setKey($config->app->cryptKey);
             return $crypt;
+        });
+
+        //  Set security options
+        $di->set('security', function() {
+            $security = new Phalcon\Security();
+            $security->setRandomBytes(32);
+            $security->setWorkFactor(12);
+            return $security;
         });
 
 
