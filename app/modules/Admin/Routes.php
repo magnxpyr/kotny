@@ -24,29 +24,6 @@ class Routes {
             'controller' => 'admin-index',
             'action' => 'index'
         ));
-
-        $router->add('/admin/:module', array(
-            'module' => 1,
-            'controller' => 'admin-index',
-            'action' => 'index'
-        ));
-
-        $router->add('/admin/:module/:controller', array(
-            'module' => 1,
-            'controller' => 2,
-            'action' => 'index'
-        ))->convert('controller', function($controller) {
-            return "admin-$controller";
-        });
-
-        $router->add('/admin/:module/:controller/:action', array(
-            'module' => 1,
-            'controller' => 2,
-            'action' => 3
-        ))->convert('controller', function($controller) {
-            return "admin-$controller";
-        });
-
         $router->add('/admin/:module/:controller/:action/:params', array(
             'module' => 1,
             'controller' => 2,

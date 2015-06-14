@@ -36,6 +36,32 @@ class UserController extends Controller
     }
 
     /**
+     * Login with Facebook account
+     */
+    public function loginWithFacebookAction()
+    {
+        try {
+            $this->view->disable();
+            return $this->auth->loginWithFacebook();
+        } catch(\Exception $e) {
+            $this->flash->error($this->t->_('There was an error connecting to %name%', ['name' => 'Facebook']));
+        }
+    }
+
+    /**
+     * Login with Google account
+     */
+    public function loginWithGoogleAction()
+    {
+        try {
+            $this->view->disable();
+            $this->auth->loginWithGoogle();
+        } catch(\Exception $e) {
+            $this->flash->error($this->t->_('There was an error connecting to %name%', ['name' => 'Google']));
+        }
+    }
+
+    /**
      * Register user account
      */
     public function registerAction()
@@ -49,21 +75,22 @@ class UserController extends Controller
                 $password = $this->request->getPost('password');
                 $repeatPassword = $this->request->getPost('repeatPassword');
                 if ($password != $repeatPassword) {
-                    $this->flash->error($this->t['Passwords don\'t match']);
+                    $this->flash->error($this->t->_('Passwords don\'t match'));
                 }
                 $user = new User();
                 $user->setUsername($username);
                 $user->setPassword($this->security->hash($password));
                 $user->setEmail($email);
-                $user->setRole(1);
+                $user->setRoleId(1);
                 $user->setStatus(0);
                 $user->setResetToken(Utils::generateToken());
+                $user->setCreatedAt(time());
                 if (!$user->save()) {
                     $this->flashErrors($user);
                 } else {
                     // send email
                     $form->clear();
-                    $this->flash->success($this->t['Thanks for signing up. An email has been sent to activate your account.']);
+                    $this->flash->success($this->t->_('Thanks for signing up. An email has been sent to activate your account.'));
                 }
             } else {
                 $this->flashErrors($form);
@@ -79,7 +106,7 @@ class UserController extends Controller
     public function logoutAction()
     {
         $this->auth->remove();
-        $this->flashSession->success($this->t['You have been logged out successfully']);
+        $this->flashSession->success($this->t->_('You have been logged out successfully'));
     //    return $this->response->redirect('user/login');
     }
 
@@ -92,16 +119,16 @@ class UserController extends Controller
         $code = $this->dispatcher->getParam('code');
         $confirmation = EmailConfirmations::findFirstByCode($code);
         if (!$confirmation) {
-            return $this->dispatcher->forward(array(
+            return $this->dispatcher->forward([
                 'controller' => 'index',
                 'action' => 'index'
-            ));
+            ]);
         }
         if ($confirmation->confirmed != 'N') {
-            return $this->dispatcher->forward(array(
+            return $this->dispatcher->forward([
                 'controller' => 'session',
                 'action' => 'login'
-            ));
+            ]);
         }
         $confirmation->confirmed = 'Y';
         $confirmation->user->active = 'Y';
@@ -111,10 +138,10 @@ class UserController extends Controller
             foreach ($confirmation->getMessages() as $message) {
                 $this->flash->error($message);
             }
-            return $this->dispatcher->forward(array(
+            return $this->dispatcher->forward([
                 'controller' => 'index',
                 'action' => 'index'
-            ));
+            ]);
         }
 
         // Identify the user in the application
@@ -123,16 +150,16 @@ class UserController extends Controller
         // Check if the user must change his/her password
         if ($confirmation->user->mustChangePassword == 'Y') {
             $this->flash->success('The email was successfully confirmed. Now you must change your password');
-            return $this->dispatcher->forward(array(
+            return $this->dispatcher->forward([
                 'controller' => 'users',
                 'action' => 'changePassword'
-            ));
+            ]);
         }
         $this->flash->success('The email was successfully confirmed');
-        return $this->dispatcher->forward(array(
+        return $this->dispatcher->forward([
             'controller' => 'users',
             'action' => 'index'
-        ));
+        ]);
     }
 
     public function resetPasswordAction()
@@ -140,16 +167,16 @@ class UserController extends Controller
         $code = $this->dispatcher->getParam('code');
         $resetPassword = ResetPasswords::findFirstByCode($code);
         if (!$resetPassword) {
-            return $this->dispatcher->forward(array(
+            return $this->dispatcher->forward([
                 'controller' => 'index',
                 'action' => 'index'
-            ));
+            ]);
         }
         if ($resetPassword->reset != 'N') {
-            return $this->dispatcher->forward(array(
+            return $this->dispatcher->forward([
                 'controller' => 'session',
                 'action' => 'login'
-            ));
+            ]);
         }
         $resetPassword->reset = 'Y';
 
@@ -158,19 +185,19 @@ class UserController extends Controller
             foreach ($resetPassword->getMessages() as $message) {
                 $this->flash->error($message);
             }
-            return $this->dispatcher->forward(array(
+            return $this->dispatcher->forward([
                 'controller' => 'index',
                 'action' => 'index'
-            ));
+            ]);
         }
 
         // Identify the user in the application
         $this->auth->authUserById($resetPassword->usersId);
         $this->flash->success('Please reset your password');
-        return $this->dispatcher->forward(array(
+        return $this->dispatcher->forward([
             'controller' => 'users',
             'action' => 'changePassword'
-        ));
+        ]);
     }
     */
 }

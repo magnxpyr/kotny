@@ -29,42 +29,42 @@ class ChangePasswordForm extends Form
         // Current Password
         $currentPassword = new Password('currentPassword');
         $currentPassword->setFilters('string');
-        $currentPassword->addValidators(array(
-            new PresenceOf(array(
-                'message' => $this->t['Current password is required']
-            ))
-        ));
+        $currentPassword->addValidators([
+            new PresenceOf([
+                'message' => $this->t->_('Current password is required')
+            ])
+        ]);
         $this->add($currentPassword);
 
         // New password
         $password = new Password('password');
-        $password->setLabel($this->t['Password']);
+        $password->setLabel($this->t->_('Password'));
         $password->setFilters('string');
-        $password->addValidators(array(
-            new PresenceOf(array(
-                'message' => $this->t['Password is required']
-            )),
-            new Confirmation(array(
-                'message' => $this->t['Passwords don\'t match'],
+        $password->addValidators([
+            new PresenceOf([
+                'message' => $this->t->_('Password is required')
+            ]),
+            new Confirmation([
+                'message' => $this->t->_('Passwords don\'t match'),
                 'with' => 'confirmPassword'
-            ))
-        ));
+            ])
+        ]);
         $this->add($password);
 
         // Confirm new password
         $repeatPassword = new Password('repeatPassword');
         $repeatPassword->setFilters('string');
-        $repeatPassword->setLabel($this->t['Repeat Password']);
-        $repeatPassword->addValidators(array(
-            new PresenceOf(array(
-                'message' => $this->t['Confirmation password is required']
-            ))
-        ));
+        $repeatPassword->setLabel($this->t->_('Repeat Password'));
+        $repeatPassword->addValidators([
+            new PresenceOf([
+                'message' => $this->t->_('Confirmation password is required')
+            ])
+        ]);
         $this->add($repeatPassword);
 
         // Submit button
-        $this->add(new Submit('Send', array(
+        $this->add(new Submit('Send', [
             'class' => 'btn btn-primary'
-        )));
+        ]));
     }
 }

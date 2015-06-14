@@ -24,6 +24,19 @@ return [
             'expire' => 86400 * 30
         ]
     ],
+    'connectors' => [
+        'facebook' => [
+            'appId' => '',
+            'secret' => ''
+        ],
+        'google' => [
+            'app_name' => 'YOUR_APPLICATION_NAME',
+            'client_id' => 'YOUR_CLIENT_ID',
+            'client_secret' => 'YOUR_CLIENT_SECRET',
+            'developer_key' => 'YOUR_DEVELOPER_KEY',
+            'redirect_uri' => 'YOUR_REDIRECT_URI'
+        ]
+    ],
     'mail' => [
         'fromName' => '',
         'fromEmail' => '',

@@ -28,7 +28,7 @@ class DebugWidget implements InjectionAwareInterface {
 		$serviceNames =
 			array(
 				'db' => array('db'),
-				'dispatch' => array('dispatcher'),
+			//	'dispatch' => array('dispatcher'),
 				'view' => array('view')
 			)
 	) {

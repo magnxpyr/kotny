@@ -31,57 +31,57 @@ class RegisterForm extends Form
     {
         // Username
         $username = new Text('username');
-        $username->setLabel($this->t['Username']);
+        $username->setLabel($this->t->_('Username'));
         $username->setFilters('alphanum');
-        $username->addValidators(array(
-            new PresenceOf(array(
-                'message' => $this->t['Please enter your desired username']
-            )),
-            new Alpha(array(
-                'message' => $this->t['Username is not valid']
-            ))
-        ));
+        $username->addValidators([
+            new PresenceOf([
+                'message' => $this->t->_('Please enter your desired username')
+            ]),
+            new Alpha([
+                'message' => $this->t->_('Username is not valid')
+            ])
+        ]);
         $this->add($username);
 
         // Email
         $email = new Text('email');
-        $email->setLabel($this->t['Email']);
+        $email->setLabel($this->t->_('Email'));
         $email->setFilters('email');
-        $email->addValidators(array(
-            new PresenceOf(array(
-                'message' => $this->t['Email is required']
-            )),
-            new Email(array(
-                'message' => $this->t['Email is not valid']
-            ))
-        ));
+        $email->addValidators([
+            new PresenceOf([
+                'message' => $this->t->_('Email is required')
+            ]),
+            new Email([
+                'message' => $this->t->_('Email is not valid')
+            ])
+        ]);
         $this->add($email);
 
         // Password
         $password = new Password('password');
-        $password->setLabel($this->t['Password']);
+        $password->setLabel($this->t->_('Password'));
         $password->setFilters('string');
-        $password->addValidators(array(
-            new PresenceOf(array(
-                'message' => $this->t['Password is required']
-            ))
-        ));
+        $password->addValidators([
+            new PresenceOf([
+                'message' => $this->t->_('Password is required')
+            ])
+        ]);
         $this->add($password);
 
         // Confirm Password
         $repeatPassword = new Password('repeatPassword');
-        $repeatPassword->setLabel($this->t['Repeat Password']);
+        $repeatPassword->setLabel($this->t->_('Repeat Password'));
         $repeatPassword->setFilters('string');
-        $repeatPassword->addValidators(array(
-            new PresenceOf(array(
-                'message' => $this->t['Confirmation password is required']
-            ))
-        ));
+        $repeatPassword->addValidators([
+            new PresenceOf([
+                'message' => $this->t->_('Confirmation password is required')
+            ])
+        ]);
         $this->add($repeatPassword);
 
         // Submit
-        $this->add(new Submit($this->t['Register'], array(
+        $this->add(new Submit($this->t->_('Register'), [
             'class' => 'btn btn-success'
-        )));
+        ]));
     }
 }

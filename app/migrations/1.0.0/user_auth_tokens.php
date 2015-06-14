@@ -5,9 +5,10 @@ use Phalcon\Db\Index;
 use Phalcon\Db\Reference;
 use Tools\Builder\Mvc\Model\Migration;
 
-class UserAuthTokensMigration_100 extends Migration {
-
-    public function up() {
+class UserAuthTokensMigration_100 extends Migration
+{
+    public function up()
+    {
         $this->morphTable('user_auth_tokens', array(
             'columns' => array(
                 new Column('id', array(
@@ -50,7 +51,7 @@ class UserAuthTokensMigration_100 extends Migration {
                 )
             ),
             'indexes' => array(
-                new Index('PRIMARY', array('id')),
+                new Index('PRIMARY', ['id']),
                 new Index('UNIQUE', ['selector'], 'UNIQUE')
             ),
             'options' => array(

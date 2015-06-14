@@ -1,6 +1,6 @@
 <?php
 
-return array(
+return [
     "Login" => "Login",
     "Register" => "Register",
     "Send" => "Send",
@@ -22,5 +22,6 @@ return array(
     "Password is required" => "Password is required",
     "Your account is inactive" => "Your account is inactive",
     "Your account is suspended" => "Your account is suspended",
-    "Your account is banned" => "Your account is banned"
-);
+    "Your account is banned" => "Your account is banned",
+    "There was an error connecting to %name%" => "There was an error connecting to %name%"
+];

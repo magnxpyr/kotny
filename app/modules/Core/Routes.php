@@ -19,6 +19,12 @@ class Routes {
      */
     public function init($router)
     {
+        $router->add('/:controller/:action/:params', [
+            'controller' => 1,
+            'action' => 2,
+            'params' => 3,
+        ])->setName('core-cap');
+
         $router->add('/:username', [
             'module' => 'core',
             'controller' => 'user',

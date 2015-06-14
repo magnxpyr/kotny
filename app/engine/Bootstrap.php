@@ -6,6 +6,10 @@
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  * @package     Engine
  */
+
+use Phalcon\Events\Event;
+use Phalcon\Dispatcher;
+
 class Bootstrap {
 
     public function run() {
@@ -43,7 +47,7 @@ class Bootstrap {
 
         // Register routers with default behavior
         // Set 'false' to disable default behavior. After that define all routes or you get 404
-        $router = new Phalcon\Mvc\Router();
+        $router = new Phalcon\Mvc\Router(false);
         $router->removeExtraSlashes(true);
         $router->setDefaults(array(
             'module' => 'core',
@@ -139,6 +143,10 @@ class Bootstrap {
         $eventsManager->attach('dispatch', new \Engine\Plugins\Security());
         // Attach the Error handler
         $eventsManager->attach('dispatch', new \Engine\Plugins\ErrorHandler());
+
+        $eventsManager->attach('dispatch:beforeDispatchLoop', function(\Phalcon\Events\Event $event, \Phalcon\Dispatcher $dispatcher) {
+            $dispatcher->setActionName(lcfirst(\Phalcon\Text::camelize($dispatcher->getActionName())));
+        });
 
         //Bind the EventsManager to the Dispatcher
         $dispatcher->setEventsManager($eventsManager);

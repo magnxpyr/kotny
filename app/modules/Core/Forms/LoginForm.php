@@ -44,47 +44,48 @@ class LoginForm extends Form
     {
         // Username
         $username = new Text('username');
-        $username->setLabel($this->t['Username']);
+        $username->setLabel($this->t->_('Username'));
         $username->setFilters('alphanum');
-        $username->addValidators(array(
-            new PresenceOf(array(
-                'message' => $this->t['Please enter your desired username']
-            )),
-            new Alpha(array(
-                'message' => $this->t['Username is not valid']
-            ))
-        ));
+        $username->addValidators([
+            new PresenceOf([
+                'message' => $this->t->_('Please enter your desired username')
+            ]),
+            new Alpha([
+                'message' => $this->t->_('Username is not valid')
+            ])
+        ]);
         $this->add($username);
 
         // Password
         $password = new Password('password');
         $password->setFilters('string');
-        $password->setLabel($this->t['Password']);
-        $password->addValidators(array(
-            new PresenceOf(array(
-                'message' => $this->t['Password is required']
-            ))
-        ));
+        $password->setLabel($this->t->_('Password'));
+        $password->addValidators([
+            new PresenceOf([
+                'message' => $this->t->_('Password is required')
+            ])
+        ]);
         $this->add($password);
 
         // Remember
-        $remember = new Check('remember', array(
+        $remember = new Check('remember', [
             'value' => 1
-        ));
-        $remember->setLabel($this->t['Remember me']);
+        ]);
+        $remember->setFilters('int');
+        $remember->setLabel($this->t->_('Remember me'));
         $this->add($remember);
 
         // CSRF
         $csrf = new Hidden('csrf');
-        $csrf->addValidator(new Identical(array(
+        $csrf->addValidator(new Identical([
             'value' => $this->security->getSessionToken(),
-            'message' => $this->t['CSRF validation failed']
-        )));
+            'message' => $this->t->_('CSRF validation failed')
+        ]));
         $this->add($csrf);
 
         // Submit
-        $this->add(new Submit($this->t['Login'], array(
+        $this->add(new Submit($this->t->_('Login'), [
             'class' => 'btn btn-success'
-        )));
+        ]));
     }
 }

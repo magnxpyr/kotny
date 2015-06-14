@@ -12,6 +12,10 @@ use Phalcon\Mvc\Model;
 use Phalcon\Mvc\Model\Validator\Email;
 use Phalcon\Mvc\Model\Validator\Uniqueness;
 
+/**
+ * Class User
+ * @package Core\Models
+ */
 class User extends Model
 {
     /**
@@ -37,17 +41,47 @@ class User extends Model
     /**
      * @var string
      */
+    protected $gplus_id;
+
+    /**
+     * @var string
+     */
+    protected $facebook_id;
+
+    /**
+     * @var string
+     */
+    protected $gplus_name;
+
+    /**
+     * @var string
+     */
+    protected $facebook_name;
+
+    /**
+     * @var string
+     */
+    protected $gplus_data;
+
+    /**
+     * @var string
+     */
+    protected $facebook_data;
+
+    /**
+     * @var string
+     */
     protected $reset_token;
+
+    /**
+     * @var integer
+     */
+    protected $role_id;
 
     /**
      * @var string
      */
     protected $email;
-
-    /**
-     * @var integer
-     */
-    protected $role;
 
     /**
      * @var integer
@@ -73,6 +107,7 @@ class User extends Model
     public function setId($id)
     {
         $this->id = $id;
+
         return $this;
     }
 
@@ -85,11 +120,12 @@ class User extends Model
     public function setUsername($username)
     {
         $this->username = $username;
+
         return $this;
     }
 
     /**
-     * Method to set the value of field auth_key
+     * Method to set the value of field auth_token
      *
      * @param string $auth_token
      * @return $this
@@ -97,6 +133,7 @@ class User extends Model
     public function setAuthToken($auth_token)
     {
         $this->auth_token = $auth_token;
+
         return $this;
     }
 
@@ -109,6 +146,84 @@ class User extends Model
     public function setPassword($password)
     {
         $this->password = $password;
+
+        return $this;
+    }
+
+    /**
+     * Method to set the value of field gplus_id
+     *
+     * @param string $gplus_id
+     * @return $this
+     */
+    public function setGplusId($gplus_id)
+    {
+        $this->gplus_id = $gplus_id;
+
+        return $this;
+    }
+
+    /**
+     * Method to set the value of field facebook_id
+     *
+     * @param string $facebook_id
+     * @return $this
+     */
+    public function setFacebookId($facebook_id)
+    {
+        $this->facebook_id = $facebook_id;
+
+        return $this;
+    }
+
+    /**
+     * Method to set the value of field gplus_name
+     *
+     * @param string $gplus_name
+     * @return $this
+     */
+    public function setGplusName($gplus_name)
+    {
+        $this->gplus_name = $gplus_name;
+
+        return $this;
+    }
+
+    /**
+     * Method to set the value of field facebook_name
+     *
+     * @param string $facebook_name
+     * @return $this
+     */
+    public function setFacebookName($facebook_name)
+    {
+        $this->facebook_name = $facebook_name;
+
+        return $this;
+    }
+
+    /**
+     * Method to set the value of field gplus_data
+     *
+     * @param string $gplus_data
+     * @return $this
+     */
+    public function setGplusData($gplus_data)
+    {
+        $this->gplus_data = $gplus_data;
+
+        return $this;
+    }
+
+    /**
+     * Method to set the value of field facebook_data
+     *
+     * @param string $facebook_data
+     * @return $this
+     */
+    public function setFacebookData($facebook_data)
+    {
+        $this->facebook_data = $facebook_data;
 
         return $this;
     }
@@ -127,6 +242,19 @@ class User extends Model
     }
 
     /**
+     * Method to set the value of field role_id
+     *
+     * @param integer $role_id
+     * @return $this
+     */
+    public function setRoleId($role_id)
+    {
+        $this->role_id = $role_id;
+
+        return $this;
+    }
+
+    /**
      * Method to set the value of field email
      *
      * @param string $email
@@ -135,19 +263,6 @@ class User extends Model
     public function setEmail($email)
     {
         $this->email = $email;
-
-        return $this;
-    }
-
-    /**
-     * Method to set the value of field role
-     *
-     * @param integer $role
-     * @return $this
-     */
-    public function setRole($role)
-    {
-        $this->role = $role;
 
         return $this;
     }
@@ -166,7 +281,7 @@ class User extends Model
     }
 
     /**
-     * Method to set the value of field register_date
+     * Method to set the value of field created_at
      *
      * @param integer $created_at
      * @return $this
@@ -179,7 +294,7 @@ class User extends Model
     }
 
     /**
-     * Method to set the value of field last_visit_date
+     * Method to set the value of field visited_at
      *
      * @param integer $visited_at
      * @return $this
@@ -212,7 +327,8 @@ class User extends Model
     }
 
     /**
-     * Returns the value of field auth_key
+     * Returns the value of field auth_token
+     *
      * @return string
      */
     public function getAuthToken()
@@ -222,6 +338,7 @@ class User extends Model
 
     /**
      * Returns the value of field password
+     *
      * @return string
      */
     public function getPassword()
@@ -230,12 +347,83 @@ class User extends Model
     }
 
     /**
+     * Returns the value of field gplus_id
+     *
+     * @return string
+     */
+    public function getGplusId()
+    {
+        return $this->gplus_id;
+    }
+
+    /**
+     * Returns the value of field facebook_id
+     *
+     * @return string
+     */
+    public function getFacebookId()
+    {
+        return $this->facebook_id;
+    }
+
+    /**
+     * Returns the value of field gplus_name
+     *
+     * @return string
+     */
+    public function getGplusName()
+    {
+        return $this->gplus_name;
+    }
+
+    /**
+     * Returns the value of field facebook_name
+     *
+     * @return string
+     */
+    public function getFacebookName()
+    {
+        return $this->facebook_name;
+    }
+
+    /**
+     * Returns the value of field gplus_data
+     *
+     * @return string
+     */
+    public function getGplusData()
+    {
+        return $this->gplus_data;
+    }
+
+    /**
+     * Returns the value of field facebook_data
+     *
+     * @return string
+     */
+    public function getFacebookData()
+    {
+        return $this->facebook_data;
+    }
+
+    /**
      * Returns the value of field reset_token
+     *
      * @return string
      */
     public function getResetToken()
     {
         return $this->reset_token;
+    }
+
+    /**
+     * Returns the value of field role_id
+     *
+     * @return integer
+     */
+    public function getRoleId()
+    {
+        return $this->role_id;
     }
 
     /**
@@ -249,16 +437,8 @@ class User extends Model
     }
 
     /**
-     * Returns the value of field role
-     * @return integer
-     */
-    public function getRole()
-    {
-        return $this->role;
-    }
-
-    /**
      * Returns the value of field status
+     *
      * @return integer
      */
     public function getStatus()
@@ -267,7 +447,8 @@ class User extends Model
     }
 
     /**
-     * Returns the value of field register_date
+     * Returns the value of field created_at
+     *
      * @return integer
      */
     public function getCreatedAt()
@@ -276,7 +457,8 @@ class User extends Model
     }
 
     /**
-     * Returns the value of field last_visit_date
+     * Returns the value of field visited_at
+     *
      * @return integer
      */
     public function getVisitedAt()
@@ -308,23 +490,23 @@ class User extends Model
     public function validation()
     {
         $this->validate(
-            new Email(array(
+            new Email([
                 'field' => 'email',
                 'required' => true,
                 'message' => 'Email address is not valid'
-            ))
+            ])
         );
         $this->validate(
-            new Uniqueness(array(
+            new Uniqueness([
                 'field' => 'email',
                 'message' => 'Email already exists'
-            ))
+            ])
         );
         $this->validate(
-            new Uniqueness(array(
+            new Uniqueness([
                 'field' => 'username',
                 'message' => 'Username already exists'
-            ))
+            ])
         );
         if ($this->validationHasFailed() == true) {
             return false;

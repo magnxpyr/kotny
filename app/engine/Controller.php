@@ -21,6 +21,7 @@ abstract class Controller extends \Phalcon\Mvc\Controller {
     protected function initialize() {
         if(!$this->request->isAjax()) {
             $this->setupAssets();
+            $this->setTitle(null);
         }
     }
 
@@ -28,19 +29,25 @@ abstract class Controller extends \Phalcon\Mvc\Controller {
      * Set page title
      * @param string $title
      */
-    protected function setTitle($title) {
-        switch($this->di->getShared('config')->app->site_name_location) {
+    protected function setTitle($title, $headerOnly = false) {
+        if($title === null) {
+            $this->view->title = '';
+            return;
+        }
+        switch($this->config->app->site_name_location) {
             case 0:
                 $this->tag->setTitle($title);
                 break;
             case 1:
-                $this->tag->setTitle($this->di->getShared('config')->app->site_name . ' | ' . $title);
+                $this->tag->setTitle($this->config->app->site_name . ' | ' . $title);
                 break;
             case 2:
-                $this->tag->setTitle($title . '|' . $this->di->getShared('config')->app->site_name);
+                $this->tag->setTitle($title . '|' . $this->config->app->site_name);
                 break;
         }
-        $this->view->title = $title;
+        if(!$headerOnly) {
+            $this->view->title = $title;
+        }
     }
 
     /**

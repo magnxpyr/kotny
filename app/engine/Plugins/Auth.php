@@ -10,6 +10,8 @@ namespace Engine\Plugins;
 
 use Core\Models\UserAuthTokens;
 use Core\Models\User;
+use Engine\Plugins\Connectors\GoogleConnector;
+use Engine\Plugins\Connectors\FacebookConnector;
 use Engine\Utils;
 use Phalcon\Mvc\User\Component;
 
@@ -26,7 +28,6 @@ class Auth extends Component
      * @var \stdClass
      */
     private $cookie;
-
 
     /**
      * Initialize Auth
@@ -48,11 +49,11 @@ class Auth extends Component
         $user = User::findFirstByUsername($credentials['username']);
         if (!$user) {
         //    $this->registerUserThrottling(null);
-            throw new \Exception($this->t['Username or password is invalid']);
+            throw new \Exception($this->t->_('Username or password is invalid'));
         }
         if (!$this->security->checkHash($credentials['password'], $user->getPassword())) {
         //    $this->registerUserThrottling($user->getId());
-            throw new \Exception($this->t['Username or password is invalid']);
+            throw new \Exception($this->t->_('Username or password is invalid'));
         }
         $this->checkUserFlags($user);
     //    $this->saveSuccessLogin($user);
@@ -93,7 +94,7 @@ class Auth extends Component
                 $this->check([
                     'username' => $this->request->getPost('username', 'alphanum'),
                     'password' => $this->request->getPost('password', 'string'),
-                    'remember' => $this->request->getPost('remember')
+                    'remember' => $this->request->getPost('remember', 'int')
                 ]);
                 /*
                 return $this->response->redirect([
@@ -145,7 +146,7 @@ class Auth extends Component
     }
 
     /**
-     * Creates the remember me environment settings the related cookies and generating tokens
+     * Creates the remember me environment settings, the related cookies and generating tokens
      *
      * @param \Core\Models\User $user
      * @param \Core\Models\UserAuthTokens $remember
@@ -174,31 +175,32 @@ class Auth extends Component
     }
 
     /**
-     * Login with facebook account
+     * Login with Facebook account
+     *
+     * @return \Phalcon\Http\Response|\Phalcon\Http\ResponseInterface
      */
     public function loginWithFacebook()
     {
-        $di           = $this->getDI();
-        $facebook     = new FacebookConnector($di);
-        $facebookUser = $facebook->getUser();
-        if (!$facebookUser) {
-            $scope = [
-                'scope' => 'email,user_birthday,user_location'
-            ];
-            return $this->response->redirect($facebook->getLoginUrl($scope), true);
-        }
         try {
+            $facebook = new FacebookConnector();
+            $facebookUser = $facebook->getUser();
+            if (!$facebookUser) {
+                $scope = [
+                //    'scope' => 'email,user_birthday,user_location'
+                    'scope' => 'email'
+                ];
+                return $this->response->redirect($facebook->getLoginUrl($scope), true);
+            }
+
             return $this->authenticateOrCreateFacebookUser($facebookUser);
-        } catch (\FacebookApiException $e) {
-            $di->logger->begin();
-            $di->logger->error($e->getMessage());
-            $di->logger->commit();
+        } catch (\Exception $e) {
             $facebookUser = null;
+            $this->flashSession->error($e->getMessage());
         }
     }
 
     /**
-     * Authenitcate or create a user with a Facebook account
+     * Authenticate or create a user with a Facebook account
      *
      * @param $facebookUser
      * @return \Phalcon\Http\Response|\Phalcon\Http\ResponseInterface
@@ -206,26 +208,22 @@ class Auth extends Component
      */
     protected function authenticateOrCreateFacebookUser($facebookUser)
     {
-        $pupRedirect = $this->di->get('config')->pup->redirect;
-        $email       = isset($facebookUser['email']) ? $facebookUser['email'] : 'a@a.com';
-        $user        = User::findFirst(" email='$email' OR facebook_id='".$facebookUser['id']."' ");
+        $email = isset($facebookUser['email']) ? $facebookUser['email'] : Utils::generateToken(8) . '@mg.com';
+        $user = User::findFirst("email='$email' OR facebook_id='" . $facebookUser['id'] . "'");
         if ($user) {
             $this->checkUserFlags($user);
-            $this->setIdentity($user);
+            $this->setSession($user);
             if (!$user->getFacebookId()) {
                 $user->setFacebookId($facebookUser['id']);
                 $user->setFacebookName($facebookUser['name']);
                 $user->setFacebookData(serialize($facebookUser));
-                $user->update();
+                $user->save();
             }
-            $this->saveSuccessLogin($user);
-            return $this->response->redirect($pupRedirect->success);
+        //    $this->saveSuccessLogin($user);
+        //    return $this->response->redirect();
         } else {
-            $password = $this->generatePassword();
             $user = $this->newUser()
-                ->setName($facebookUser['name'])
                 ->setEmail($email)
-                ->setPassword($this->security->hash($password))
                 ->setFacebookId($facebookUser['id'])
                 ->setFacebookName($facebookUser['name'])
                 ->setFacebookData(serialize($facebookUser));
@@ -234,41 +232,38 @@ class Auth extends Component
     }
 
     /**
+     * Authenticate or create a user with a Google Plus account
+     *
      * @return \Phalcon\Http\Response|\Phalcon\Http\ResponseInterface
      * @throws \Exception
      */
     public function loginWithGoogle()
     {
-        $di       = $this->getDI();
-        $config   = $di->get('config')->pup->connectors->google->toArray();
-        $pupRedirect            = $di->get('config')->pup->redirect;
-        $config['redirect_uri'] = $config['redirect_uri'].'user/loginWithGoogle';
+        $pupRedirect = '';
+        $config['redirect_uri'] = $this->url->get('user/login-with-google');
         $google = new GoogleConnector($config);
-        $response = $google->connect($di);
+        $response = $google->connect();
         if ($response['status'] == 0) {
-            return $this->response->redirect($response['redirect'], true);
+            return $this->response->redirect();
         }
         $gplusId = $response['userinfo']['id'];
-        $email   = $response['userinfo']['email'];
-        $name    = $response['userinfo']['name'];
-        $user    = User::findFirst("gplus_id='$gplusId' OR email = '$email'");
+        $email = $response['userinfo']['email'];
+        $name = $response['userinfo']['name'];
+        $user = User::findFirst("gplus_id='$gplusId' OR email = '$email'");
         if ($user) {
             $this->checkUserFlags($user);
-            $this->setIdentity($user);
+            $this->setSession($user);
             if (!$user->getGplusId()) {
                 $user->setGplusId($gplusId);
                 $user->setGplusName($name);
                 $user->setGplusData(serialize($response['userinfo']));
                 $user->update();
             }
-            $this->saveSuccessLogin($user);
+        //    $this->saveSuccessLogin($user);
             return $this->response->redirect($pupRedirect->success);
         } else {
-            $password = $this->generatePassword();
             $user = $this->newUser()
-                ->setName($name)
                 ->setEmail($email)
-                ->setPassword($di->get('security')->hash($password))
                 ->setGplusId($gplusId)
                 ->setGplusName($name)
                 ->setGplusData(serialize($response['userinfo']));
@@ -277,7 +272,49 @@ class Auth extends Component
     }
 
     /**
+     * New user
+     *
+     * @return \Core\Models\User
+     */
+    protected function newUser()
+    {
+        $user = new User();
+        $user->setUsername(Utils::generateToken(16));
+        $user->setRoleId(1);
+        $user->setStatus(1);
+        $user->setCreatedAt(time());
+        $user->setPassword($this->security->hash(Utils::generateToken(8)));
+        return $user;
+    }
+
+    /**
+     * Create (save) new user to DB
+     *
+     * @param \Core\Models\User $user
+     * @return \Phalcon\Http\Response|\Phalcon\Http\ResponseInterface
+     * @throws \Exception
+     */
+    protected function createUser($user)
+    {
+        if ($user->save()) {
+            echo 'save';
+            // success
+            $this->setSession($user);
+        //    $this->saveSuccessLogin($user);
+        //    return $this->response->redirect();
+        } else {
+            echo 'not save';
+            // failure
+            foreach ($user->getMessages() as $message) {
+                $this->flashSession->error($message->getMessage());
+            }
+            return $this->response->redirect();
+        }
+    }
+
+    /**
      * Creates the remember me environment settings the related cookies and generating tokens
+     *
      * @throws \Exception
      * @param \Core\Models\User $user
      */
@@ -363,13 +400,13 @@ class Auth extends Component
     public function checkUserFlags($user)
     {
         if ($user->getStatus() == 0) {
-            throw new \Exception($this->t['Your account is inactive']);
+            throw new \Exception($this->t->_('Your account is inactive'));
         }
         if ($user->getStatus() == 2) {
-            throw new \Exception($this->t['Your account is suspended']);
+            throw new \Exception($this->t->_('Your account is suspended'));
         }
         if ($user->getStatus() == 3) {
-            throw new \Exception($this->t['Your account is banned']);
+            throw new \Exception($this->t->_('Your account is banned'));
         }
     }
 
@@ -442,6 +479,7 @@ class Auth extends Component
         $this->setSession($user);
         return true;
     }
+
     /**
      * Get the entity related to user in the active identity
      * @throws \Exception
