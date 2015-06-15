@@ -35,46 +35,7 @@ class Auth extends Component
     public function __construct()
     {
         $this->cookie = $this->config->app->cookie;
-    }
-
-
-    /**
-     * Checks the user credentials
-     *
-     * @param $credentials
-     * @throws \Exception
-     */
-    public function check($credentials)
-    {
-        $user = User::findFirstByUsername($credentials['username']);
-        if (!$user) {
-        //    $this->registerUserThrottling(null);
-            throw new \Exception($this->t->_('Username or password is invalid'));
-        }
-        if (!$this->security->checkHash($credentials['password'], $user->getPassword())) {
-        //    $this->registerUserThrottling($user->getId());
-            throw new \Exception($this->t->_('Username or password is invalid'));
-        }
-        $this->checkUserFlags($user);
-    //    $this->saveSuccessLogin($user);
-        if (isset($credentials['remember'])) {
-            $this->setRememberMe($user);
-        }
-        $this->setSession($user);
-    }
-
-    /**
-     * Set user session
-     *
-     * @param object $user
-     */
-    private function setSession($user)
-    {
-        $this->session->set('auth', [
-            'id' => $user->getId(),
-            'username' => $user->getUsername(),
-            'email' => $user->getEmail(),
-        ]);
+        $this->setReturnUrl();
     }
 
     /**
@@ -87,7 +48,7 @@ class Auth extends Component
     {
         if (!$this->request->isPost()) {
             if ($this->hasRememberMe()) {
-                return $this->loginWithRememberMe(false);
+                return $this->loginWithRememberMe();
             }
         } else {
             if ($form->isValid($this->request->getPost())) {
@@ -96,14 +57,7 @@ class Auth extends Component
                     'password' => $this->request->getPost('password', 'string'),
                     'remember' => $this->request->getPost('remember', 'int')
                 ]);
-                /*
-                return $this->response->redirect([
-                    'for' => 'user-home',
-                    'module' => 'core',
-                    'controller' => 'user',
-                    'action' => 'index'
-                ]);
-                */
+                return $this->redirectReturnUrl();
             } else {
                 foreach ($form->getMessages() as $message) {
                     $this->flash->error($message->getMessage());
@@ -116,10 +70,9 @@ class Auth extends Component
     /**
      * Logs on using the information in the cookies
      *
-     * @param boolean $redirect
      * @return \Phalcon\Http\Response
      */
-    public function loginWithRememberMe($redirect = true)
+    public function loginWithRememberMe()
     {
         $cookie = explode(':', $this->cookies->get($this->cookie->name)->getValue());
     //    $auth = UserAuthTokens::findFirstBySelector($cookie[0]);
@@ -133,16 +86,39 @@ class Auth extends Component
                     $this->setSession($auth->user);
                     $this->setRememberMe(null, $auth);
                     // $this->saveSuccessLogin($user);
-                    if ($redirect) {
-                        return $this->response->redirect();
-                    }
-                    return;
+
+                    return $this->redirectReturnUrl();
                 }
             }
             $auth->delete();
         }
         $this->cookies->get($this->cookie->name)->delete();
-        return $this->response->redirect();
+        return $this->redirectReturnUrl();
+    }
+
+    /**
+     * Checks the user credentials
+     *
+     * @param $credentials
+     * @throws \Exception
+     */
+    public function check($credentials)
+    {
+        $user = User::findFirstByUsername($credentials['username']);
+        if (!$user) {
+            //    $this->registerUserThrottling(null);
+            throw new \Exception($this->t->_('Username or password is invalid'));
+        }
+        if (!$this->security->checkHash($credentials['password'], $user->getPassword())) {
+            //    $this->registerUserThrottling($user->getId());
+            throw new \Exception($this->t->_('Username or password is invalid'));
+        }
+        $this->checkUserFlags($user);
+        //    $this->saveSuccessLogin($user);
+        if (isset($credentials['remember'])) {
+            $this->setRememberMe($user);
+        }
+        $this->setSession($user);
     }
 
     /**
@@ -181,17 +157,17 @@ class Auth extends Component
      */
     public function loginWithFacebook()
     {
-        try {
-            $facebook = new FacebookConnector();
-            $facebookUser = $facebook->getUser();
-            if (!$facebookUser) {
-                $scope = [
-                //    'scope' => 'email,user_birthday,user_location'
-                    'scope' => 'email'
-                ];
-                return $this->response->redirect($facebook->getLoginUrl($scope), true);
-            }
+        $facebook = new FacebookConnector();
+        $facebookUser = $facebook->getUser();
+        if (!$facebookUser) {
+            $scope = [
+            //    'scope' => 'email,user_birthday,user_location'
+                'scope' => 'email'
+            ];
+            return $this->response->redirect($facebook->getLoginUrl($scope), true);
+        }
 
+        try {
             return $this->authenticateOrCreateFacebookUser($facebookUser);
         } catch (\Exception $e) {
             $facebookUser = null;
@@ -209,7 +185,7 @@ class Auth extends Component
     protected function authenticateOrCreateFacebookUser($facebookUser)
     {
         $email = isset($facebookUser['email']) ? $facebookUser['email'] : Utils::generateToken(8) . '@mg.com';
-        $user = User::findFirst("email='$email' OR facebook_id='" . $facebookUser['id'] . "'");
+        $user = User::findFirst(['email = ?1 OR facebook_id= ?2',[1 => $email, 2 => $facebookUser['facebook_id']]]);
         if ($user) {
             $this->checkUserFlags($user);
             $this->setSession($user);
@@ -220,7 +196,7 @@ class Auth extends Component
                 $user->save();
             }
         //    $this->saveSuccessLogin($user);
-        //    return $this->response->redirect();
+            return $this->redirectReturnUrl();
         } else {
             $user = $this->newUser()
                 ->setEmail($email)
@@ -239,17 +215,19 @@ class Auth extends Component
      */
     public function loginWithGoogle()
     {
-        $pupRedirect = '';
         $config['redirect_uri'] = $this->url->get('user/login-with-google');
+
         $google = new GoogleConnector($config);
         $response = $google->connect();
+
         if ($response['status'] == 0) {
-            return $this->response->redirect();
+            return $this->response->redirect($config['redirect_uri'], true);
         }
+
         $gplusId = $response['userinfo']['id'];
         $email = $response['userinfo']['email'];
         $name = $response['userinfo']['name'];
-        $user = User::findFirst("gplus_id='$gplusId' OR email = '$email'");
+        $user = User::findFirst(['gplus_id = ?1 OR email = ?2', 'bind' => [1 => $gplusId, 2 => $email]]);
         if ($user) {
             $this->checkUserFlags($user);
             $this->setSession($user);
@@ -257,10 +235,10 @@ class Auth extends Component
                 $user->setGplusId($gplusId);
                 $user->setGplusName($name);
                 $user->setGplusData(serialize($response['userinfo']));
-                $user->update();
+                $user->save();
             }
         //    $this->saveSuccessLogin($user);
-            return $this->response->redirect($pupRedirect->success);
+            return $this->redirectReturnUrl();
         } else {
             $user = $this->newUser()
                 ->setEmail($email)
@@ -297,18 +275,14 @@ class Auth extends Component
     protected function createUser($user)
     {
         if ($user->save()) {
-            echo 'save';
-            // success
             $this->setSession($user);
         //    $this->saveSuccessLogin($user);
-        //    return $this->response->redirect();
+            return $this->redirectReturnUrl();
         } else {
-            echo 'not save';
-            // failure
             foreach ($user->getMessages() as $message) {
                 $this->flashSession->error($message->getMessage());
             }
-            return $this->response->redirect();
+            return $this->response->redirect($this->url->get('user/login'));
         }
     }
 
@@ -373,6 +347,20 @@ class Auth extends Component
     public function hasRememberMe()
     {
         return $this->cookies->has($this->cookie->name);
+    }
+
+    /**
+     * Set user session
+     *
+     * @param object $user
+     */
+    private function setSession($user)
+    {
+        $this->session->set('auth', [
+            'id' => $user->getId(),
+            'username' => $user->getUsername(),
+            'email' => $user->getEmail(),
+        ]);
     }
 
     /**
@@ -496,5 +484,32 @@ class Auth extends Component
             throw new \Exception('The user does not exist');
         }
         return $user;
+    }
+
+    /**
+     * Set the return url
+     */
+    private function setReturnUrl()
+    {
+        if ($this->request->has('returnurl')) {
+            $returnUrl = $this->request->get('returnurl', 'string');
+            if ($returnUrl != $this->url->get('user/login')) {
+                $this->session->set('returnurl', $returnUrl);
+            }
+        }
+    }
+
+    /**
+     * Redirect to return url
+     * @return \Phalcon\Http\Response|\Phalcon\Http\ResponseInterface
+     */
+    private function redirectReturnUrl() {
+        if ($this->session->has('returnurl')) {
+            $returnUrl = $this->session->get('returnurl');
+            $this->session->remove('returnurl');
+        } else {
+            $returnUrl = $this->url->get('/');
+        }
+        return $this->response->redirect($returnUrl);
     }
 }
