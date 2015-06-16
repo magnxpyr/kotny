@@ -19,10 +19,14 @@ class Routes {
      */
     public function init($router)
     {
+        $router->add('/:controller', [
+            'controller' => 1,
+            'action' => 'index'
+        ])->setName('core-ca');
+
         $router->add('/:controller/:action', [
             'controller' => 1,
             'action' => 2,
-            'params' => 3,
         ])->setName('core-ca');
 
         $router->add('/:controller/:action/:params', [
@@ -30,12 +34,13 @@ class Routes {
             'action' => 2,
             'params' => 3,
         ])->setName('core-cap');
-
+/*
         $router->add('/:username', [
             'module' => 'core',
             'controller' => 'user',
             'action' => 'index',
             'username' => 1
         ])->setName('user-home');
+*/
     }
 }

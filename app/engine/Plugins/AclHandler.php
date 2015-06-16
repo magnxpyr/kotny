@@ -15,7 +15,7 @@ use Phalcon\Mvc\User\Plugin,
  * Class Security
  * @package Engine\Plugins
  */
-class Security extends Plugin
+class AclHandler extends Plugin
 {
     /**
      * @param \Phalcon\Events\Event $event

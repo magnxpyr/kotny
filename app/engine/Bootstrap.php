@@ -69,7 +69,7 @@ class Bootstrap {
         $di->set('router', $router);
 
         // Generate urls
-        $url = new \Phalcon\Mvc\Url();
+        $url = new \Engine\Url();
         $url->setBaseUri($config->app->baseUri);
         $url->setBasePath(ROOT_PATH);
         $di->set('url', $url);
@@ -140,7 +140,7 @@ class Bootstrap {
         $dispatcher = new \Phalcon\Mvc\Dispatcher();
 
         // Attach the Security plugin
-        $eventsManager->attach('dispatch', new \Engine\Plugins\Security());
+        $eventsManager->attach('dispatch', new \Engine\Plugins\AclHandler());
         // Attach the Error handler
         $eventsManager->attach('dispatch', new \Engine\Plugins\ErrorHandler());
 
@@ -181,7 +181,7 @@ class Bootstrap {
 
         //  Set security options
         $di->set('security', function() {
-            $security = new Phalcon\Security();
+            $security = new \Engine\Security();
             $security->setRandomBytes(32);
             $security->setWorkFactor(12);
             return $security;

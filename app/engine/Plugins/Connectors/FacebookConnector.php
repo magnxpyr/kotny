@@ -8,6 +8,7 @@
 
 namespace Engine\Plugins\Connectors;
 
+use Engine\Utils;
 use Facebook\FacebookSession;
 use Facebook\FacebookRequest;
 use Facebook\FacebookRequestException;
@@ -29,11 +30,7 @@ class FacebookConnector extends Injectable
      */
     public function __construct()
     {
-        $protocol  = 'http://';
-        if ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443) {
-            $protocol = 'https://';
-        }
-        $this->loginURL = $protocol . $_SERVER['HTTP_HOST'] . $this->url->get('/user/login-with-facebook');
+        $this->loginURL = $this->url->getUri($this->url->get('/user/login-with-facebook'));
         FacebookSession::setDefaultApplication(
             $this->config->connectors->facebook->appId,
             $this->config->connectors->facebook->secret

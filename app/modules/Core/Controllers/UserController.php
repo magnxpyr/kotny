@@ -31,6 +31,7 @@ class UserController extends Controller
             $this->auth->login($form);
         } catch (\Exception $e) {
             $this->flash->error($e->getMessage());
+            $this->auth->redirectReturnUrl();
         }
         $this->view->form = $form;
     }
@@ -42,9 +43,10 @@ class UserController extends Controller
     {
         try {
             $this->view->disable();
-            return $this->auth->loginWithFacebook();
+            $this->auth->loginWithFacebook();
         } catch(\Exception $e) {
             $this->flash->error($this->t->_('There was an error connecting to %name%', ['name' => 'Facebook']));
+            $this->auth->redirectReturnUrl();
         }
     }
 
@@ -58,6 +60,7 @@ class UserController extends Controller
             $this->auth->loginWithGoogle();
         } catch(\Exception $e) {
             $this->flash->error($this->t->_('There was an error connecting to %name%', ['name' => 'Google']));
+            $this->auth->redirectReturnUrl();
         }
     }
 
@@ -83,7 +86,7 @@ class UserController extends Controller
                 $user->setEmail($email);
                 $user->setRoleId(1);
                 $user->setStatus(0);
-                $user->setResetToken(Utils::generateToken());
+                $user->setResetToken($this->security->generateToken());
                 $user->setCreatedAt(time());
                 if (!$user->save()) {
                     $this->flashErrors($user);
@@ -107,7 +110,6 @@ class UserController extends Controller
     {
         $this->auth->remove();
         $this->flashSession->success($this->t->_('You have been logged out successfully'));
-    //    return $this->response->redirect('user/login');
     }
 
     /**

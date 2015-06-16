@@ -1,8 +1,14 @@
 <?php
+/**
+ * @copyright   2006 - 2015 Magnxpyr Network
+ * @license     New BSD License; see LICENSE
+ * @link        http://www.magnxpyr.com
+ * @author      Stefan Chiriac <stefan@magnxpyr.com>
+ */
+
 namespace Engine\Plugins\Connectors;
 
-use Google_Client;
-use Google_Auth_OAuth2 as Oauth2Service;
+use Engine\Utils;
 use Phalcon\Di\Injectable;
 
 /**
@@ -11,48 +17,54 @@ use Phalcon\Di\Injectable;
  */
 class GoogleConnector extends Injectable
 {
+    /**
+     * API for the needed information
+     * @var array
+     */
     private $scopes = [
         'https://www.googleapis.com/auth/userinfo.email',
         'https://www.googleapis.com/auth/userinfo.profile'
     ];
-    
+
+    /**
+     * Connect to Google
+     * @return array
+     */
     public function connect()
     {
         $client = $this->getClient();
-        $oauth2 = new Oauth2Service($client);
         if ($this->request->get('code')) {
             $client->authenticate($this->request->get('code'));
             $this->session->set('googleToken', $client->getAccessToken());
-            $redirect = '';
-            return ['status' => 0, 'redirect' => filter_var($redirect, FILTER_SANITIZE_URL)];
+            return ['status' => 0, 'redirect' => $this->url->get('user/login-with-google')];
         }
         if ($this->session->has('googleToken')) {
             $client->setAccessToken($this->session->get('googleToken'));
         }
         if ($client->getAccessToken()) {
             $service  = new \Google_Service_Oauth2($client);
-            $userinfo = $service->userinfo->get();
             $this->session->set('googleToken', $client->getAccessToken());
-            return ['status' => 1, 'userinfo' => $userinfo];
+            return ['status' => 1, 'userinfo' => $service->userinfo->get()];
         } else {
             $authUrl = $client->createAuthUrl();
-            return ['status' => 0, 'redirect' => $authUrl];
+            return ['status' => 2, 'redirect' => $authUrl];
         }
     }
+
     /**
      * Get client
      *
-     * @return Google_Client
+     * @return \Google_Client
      */
     public function getClient()
     {
-        $client = new Google_Client();
+        $client = new \Google_Client();
         $client->setScopes($this->scopes);
-        $client->setApplicationName($this->config->connectors->google->app_name);
-        $client->setClientId($this->config->connectors->google->client_id);
-        $client->setClientSecret($this->config->connectors->google->client_secret);
-        $client->setRedirectUri($this->config->connectors->google->redirect_uri);
-        $client->setDeveloperKey($this->config->connectors->google->developer_key);
+        $client->setApplicationName($this->config->app->site_name);
+        $client->setClientId($this->config->connectors->google->clientId);
+        $client->setClientSecret($this->config->connectors->google->clientSecret);
+        $client->setRedirectUri($this->url->getUri($this->url->get('user/login-with-google')));
+        $client->setDeveloperKey($this->config->connectors->google->developerKey);
 
         return $client;
     }

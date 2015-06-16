@@ -12,7 +12,6 @@ use Core\Models\UserAuthTokens;
 use Core\Models\User;
 use Engine\Plugins\Connectors\GoogleConnector;
 use Engine\Plugins\Connectors\FacebookConnector;
-use Engine\Utils;
 use Phalcon\Mvc\User\Component;
 
 /**
@@ -46,6 +45,9 @@ class Auth extends Component
      */
     public function login($form)
     {
+        if($this->isUserSignedIn()) {
+            return $this->redirectReturnUrl();
+        }
         if (!$this->request->isPost()) {
             if ($this->hasRememberMe()) {
                 return $this->loginWithRememberMe();
@@ -79,7 +81,7 @@ class Auth extends Component
         $auth = UserAuthTokens::findFirstBySelector($cookie[0])->load('User');
         if ($auth) {
             // fist check cookie valid and then look for user
-            if (Utils::hash_equals($auth->getToken(), hash('sha256', trim($cookie[1])))) {
+            if ($this->security->hash_equals($auth->getToken(), hash('sha256', trim($cookie[1])))) {
                 if ($auth->getExpires() > time() ) {
                     // Get user details to set a new session
                     $this->checkUserFlags($auth->user);
@@ -129,8 +131,8 @@ class Auth extends Component
      */
     public function setRememberMe($user = null, $remember = null)
     {
-        $selector = Utils::generateToken(8);
-        $token = Utils::generateToken();
+        $selector = $this->security->generateToken(8);
+        $token = $this->security->generateToken();
         if($remember === null) {
             $remember = new UserAuthTokens();
             $remember->setUserId($user->getId());
@@ -151,12 +153,15 @@ class Auth extends Component
     }
 
     /**
-     * Login with Facebook account
+     * Authenticate or create a local user with a Facebook account
      *
      * @return \Phalcon\Http\Response|\Phalcon\Http\ResponseInterface
      */
     public function loginWithFacebook()
     {
+        if($this->isUserSignedIn()) {
+            return $this->redirectReturnUrl();
+        }
         $facebook = new FacebookConnector();
         $facebookUser = $facebook->getUser();
         if (!$facebookUser) {
@@ -167,24 +172,7 @@ class Auth extends Component
             return $this->response->redirect($facebook->getLoginUrl($scope), true);
         }
 
-        try {
-            return $this->authenticateOrCreateFacebookUser($facebookUser);
-        } catch (\Exception $e) {
-            $facebookUser = null;
-            $this->flashSession->error($e->getMessage());
-        }
-    }
-
-    /**
-     * Authenticate or create a user with a Facebook account
-     *
-     * @param $facebookUser
-     * @return \Phalcon\Http\Response|\Phalcon\Http\ResponseInterface
-     * @throws \Exception
-     */
-    protected function authenticateOrCreateFacebookUser($facebookUser)
-    {
-        $email = isset($facebookUser['email']) ? $facebookUser['email'] : Utils::generateToken(8) . '@mg.com';
+        $email = isset($facebookUser['email']) ? $facebookUser['email'] : $this->security->generateToken(8) . '@mg.com';
         $user = User::findFirst(['email = ?1 OR facebook_id= ?2',[1 => $email, 2 => $facebookUser['facebook_id']]]);
         if ($user) {
             $this->checkUserFlags($user);
@@ -195,33 +183,41 @@ class Auth extends Component
                 $user->setFacebookData(serialize($facebookUser));
                 $user->save();
             }
-        //    $this->saveSuccessLogin($user);
+            //    $this->saveSuccessLogin($user);
             return $this->redirectReturnUrl();
         } else {
             $user = $this->newUser()
-                ->setEmail($email)
-                ->setFacebookId($facebookUser['id'])
-                ->setFacebookName($facebookUser['name'])
-                ->setFacebookData(serialize($facebookUser));
+            ->setEmail($email)
+            ->setFacebookId($facebookUser['id'])
+            ->setFacebookName($facebookUser['name'])
+            ->setFacebookData(serialize($facebookUser));
             return $this->createUser($user);
         }
     }
 
     /**
-     * Authenticate or create a user with a Google Plus account
+     * Authenticate or create a local user with a Google Plus account
      *
      * @return \Phalcon\Http\Response|\Phalcon\Http\ResponseInterface
      * @throws \Exception
      */
     public function loginWithGoogle()
     {
-        $config['redirect_uri'] = $this->url->get('user/login-with-google');
-
-        $google = new GoogleConnector($config);
+        if($this->isUserSignedIn()) {
+            return $this->redirectReturnUrl();
+        }
+        $google = new GoogleConnector();
         $response = $google->connect();
-
-        if ($response['status'] == 0) {
-            return $this->response->redirect($config['redirect_uri'], true);
+        switch ($response['status']) {
+            case 0:
+                return $this->dispatcher->forward([
+                    'module' => 'core',
+                    'namespace' => 'Core\Controllers',
+                    'controller' => 'user',
+                    'action' => 'login-with-google'
+                ]);
+            case 2:
+                return $this->response->redirect($response['redirect']);
         }
 
         $gplusId = $response['userinfo']['id'];
@@ -257,16 +253,16 @@ class Auth extends Component
     protected function newUser()
     {
         $user = new User();
-        $user->setUsername(Utils::generateToken(16));
+        $user->setUsername($this->security->generateToken(8));
         $user->setRoleId(1);
         $user->setStatus(1);
         $user->setCreatedAt(time());
-        $user->setPassword($this->security->hash(Utils::generateToken(8)));
+        $user->setPassword($this->security->hash($this->security->generateToken(8)));
         return $user;
     }
 
     /**
-     * Create (save) new user to DB
+     * Create new user to DB
      *
      * @param \Core\Models\User $user
      * @return \Phalcon\Http\Response|\Phalcon\Http\ResponseInterface
@@ -282,7 +278,7 @@ class Auth extends Component
             foreach ($user->getMessages() as $message) {
                 $this->flashSession->error($message->getMessage());
             }
-            return $this->response->redirect($this->url->get('user/login'));
+            return $this->redirectReturnUrl();
         }
     }
 
@@ -435,7 +431,7 @@ class Auth extends Component
      */
     public function remove()
     {
-        $fbAppId = ''; //fb id
+        $fbAppId = $this->config->connectors->facebook->appId; //fb id
         if ($this->cookies->has($this->cookie->name)) {
             $cookie = explode(':', $this->cookies->get($this->cookie->name));
             UserAuthTokens::findFirstBySelector($cookie[0])->delete();
@@ -447,8 +443,7 @@ class Auth extends Component
         $this->session->remove('fb_'.$fbAppId.'_access_token');
         $this->session->remove('fb_'.$fbAppId.'_user_id');
         $this->session->remove('googleToken');
-        $this->session->remove('linkedIn_token');
-        $this->session->remove('linkedIn_token_expires_on');
+        return $this->redirectReturnUrl();
     }
 
     /**
@@ -503,7 +498,7 @@ class Auth extends Component
      * Redirect to return url
      * @return \Phalcon\Http\Response|\Phalcon\Http\ResponseInterface
      */
-    private function redirectReturnUrl() {
+    public function redirectReturnUrl() {
         if ($this->session->has('returnurl')) {
             $returnUrl = $this->session->get('returnurl');
             $this->session->remove('returnurl');

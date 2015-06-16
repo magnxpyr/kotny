@@ -30,11 +30,9 @@ return [
             'secret' => ''
         ],
         'google' => [
-            'app_name' => 'YOUR_APPLICATION_NAME',
-            'client_id' => 'YOUR_CLIENT_ID',
-            'client_secret' => 'YOUR_CLIENT_SECRET',
-            'developer_key' => 'YOUR_DEVELOPER_KEY',
-            'redirect_uri' => 'YOUR_REDIRECT_URI'
+            'clientId' => '679315718466-qq2rqli8i3mm84ouhlgosei7n3hvlro6.apps.googleusercontent.com',
+            'clientSecret' => '8NQ8c0WI-Ct9QLhnCpB7iBR0',
+            'developerKey' => 'AIzaSyDCl1dvNu3Cy00w4FijyjzqxOVv2i7LN3Y' //api_key
         ]
     ],
     'mail' => [
