@@ -33,10 +33,11 @@ class GoogleConnector extends Injectable
     public function connect()
     {
         $client = $this->getClient();
+        /*
         if ($this->request->get('code')) {
             $client->authenticate($this->request->get('code'));
             $this->session->set('googleToken', $client->getAccessToken());
-            return ['status' => 0, 'redirect' => $this->url->get('user/login-with-google')];
+            return ['status' => 0];
         }
         if ($this->session->has('googleToken')) {
             $client->setAccessToken($this->session->get('googleToken'));
@@ -49,6 +50,16 @@ class GoogleConnector extends Injectable
             $authUrl = $client->createAuthUrl();
             return ['status' => 2, 'redirect' => $authUrl];
         }
+        */
+        if ($this->request->get('code')) {
+            $client->authenticate($this->request->get('code'));
+            $this->session->set('googleToken', $client->getAccessToken());
+            $service  = new \Google_Service_Oauth2($client);
+            return ['status' => 1, 'userinfo' => $service->userinfo->get()];
+        } else {
+            $authUrl = $client->createAuthUrl();
+            return ['status' => 0, 'redirect' => $authUrl];
+        }
     }
 
     /**
@@ -60,10 +71,10 @@ class GoogleConnector extends Injectable
     {
         $client = new \Google_Client();
         $client->setScopes($this->scopes);
-        $client->setApplicationName($this->config->app->site_name);
+        $client->setApplicationName($this->config->app->siteName);
         $client->setClientId($this->config->connectors->google->clientId);
         $client->setClientSecret($this->config->connectors->google->clientSecret);
-        $client->setRedirectUri($this->url->getUri($this->url->get('user/login-with-google')));
+        $client->setRedirectUri($this->url->getUri('user/login-with-google'));
         $client->setDeveloperKey($this->config->connectors->google->developerKey);
 
         return $client;

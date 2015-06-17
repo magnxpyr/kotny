@@ -172,7 +172,7 @@ class Auth extends Component
             return $this->response->redirect($facebook->getLoginUrl($scope), true);
         }
 
-        $email = isset($facebookUser['email']) ? $facebookUser['email'] : $this->security->generateToken(8) . '@mg.com';
+        $email = isset($facebookUser->email) ? $facebookUser->email : $this->security->generateToken(8) . '@mg.com';
         $user = User::findFirst(['email = ?1 OR facebook_id= ?2',[1 => $email, 2 => $facebookUser['facebook_id']]]);
         if ($user) {
             $this->checkUserFlags($user);
@@ -208,16 +208,8 @@ class Auth extends Component
         }
         $google = new GoogleConnector();
         $response = $google->connect();
-        switch ($response['status']) {
-            case 0:
-                return $this->dispatcher->forward([
-                    'module' => 'core',
-                    'namespace' => 'Core\Controllers',
-                    'controller' => 'user',
-                    'action' => 'login-with-google'
-                ]);
-            case 2:
-                return $this->response->redirect($response['redirect']);
+        if ($response['status'] == 0) {
+            return $this->response->redirect($response['redirect']);
         }
 
         $gplusId = $response['userinfo']['id'];

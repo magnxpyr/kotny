@@ -10,8 +10,8 @@ return [
     ],
     'app' => [
         'offline' => false,
-        'site_name' => 'Magnxpyr Network',
-        'site_name_location' => 1,
+        'siteName' => 'Magnxpyr Network',
+        'siteNameLocation' => 1,
         'baseUri' => '/', // must end with trailing slash /
         'cryptKey' => '721a79281f408416', // Use your own 8 bits key!
         'development' => true,
@@ -30,21 +30,25 @@ return [
             'secret' => ''
         ],
         'google' => [
-            'clientId' => '679315718466-qq2rqli8i3mm84ouhlgosei7n3hvlro6.apps.googleusercontent.com',
-            'clientSecret' => '8NQ8c0WI-Ct9QLhnCpB7iBR0',
-            'developerKey' => 'AIzaSyDCl1dvNu3Cy00w4FijyjzqxOVv2i7LN3Y' //api_key
+            'clientId' => '',
+            'clientSecret' => '',
+            'developerKey' => '' //api_key
         ]
     ],
     'mail' => [
-        'fromName' => '',
-        'fromEmail' => '',
+        'driver' => 'mail', // smtp, mail, sendmail
+        'from' => [
+            'name' => 'Magnxpyr Network',
+            'email' => 'contact@magnxpyr.com',
+        ],
+        'sendmail' => '/usr/sbin/sendmail -bs',
         'smtp' => [
-            'server' => 'smtp.example.com',
-            'port' => 587,
-            'security' => 'tls',
-            'username' => '',
-            'password' => ''
-        ]
+            'host'       => 'smtp.gmail.com',
+            'port'       => 465,
+            'encryption' => 'ssl',
+            'username'   => 'example@gmail.com',
+            'password'   => 'your_password',
+        ],
     ],
     'tools' => APP_PATH . 'config/tools.php'
 ];

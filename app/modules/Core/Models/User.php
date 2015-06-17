@@ -514,18 +514,25 @@ class User extends Model
     }
 
     /**
-     * Send an e-mail to users allowing him/her to reset his/her password
+     * Send an e-mail to users allowing them to activate their account or reset the password
      */
     public function afterCreate()
     {
-        /*
-        $this->getDI()
-            ->getMail()
-            ->send(array(
-                $this->user->email => $this->user->name
-            ), "Reset your password", 'reset', array(
-                'resetUrl' => '/reset-password/' . $this->code . '/' . $this->user->email
-            ));
-        */
+        if($this->getFacebookId() !== null || $this->getGplusId() !== null) {
+            return;
+        }
+
+        $params = [
+            'siteName' => $this->getDI()->getShared('config')->app->siteName,
+            'confirmUrl' => $this->getDI()->getShared('url')->getUri(
+                'user/confirm-email',
+                true,
+                '?code=' . $this->getResetToken()
+            )
+        ];
+        $this->getDI()->getShared('mail')->createMessageFromView('confirmation', $params)
+            ->to($this->getEmail())
+            ->subject('Confirm your email')
+            ->send();
     }
 }

@@ -34,15 +34,15 @@ abstract class Controller extends \Phalcon\Mvc\Controller {
             $this->view->title = '';
             return;
         }
-        switch($this->config->app->site_name_location) {
+        switch($this->config->app->siteNameLocation) {
             case 0:
                 $this->tag->setTitle($title);
                 break;
             case 1:
-                $this->tag->setTitle($this->config->app->site_name . ' | ' . $title);
+                $this->tag->setTitle($this->config->app->siteName . ' | ' . $title);
                 break;
             case 2:
-                $this->tag->setTitle($title . '|' . $this->config->app->site_name);
+                $this->tag->setTitle($title . '|' . $this->config->app->siteName);
                 break;
         }
         if(!$headerOnly) {

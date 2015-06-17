@@ -24,18 +24,15 @@ class AclHandler extends Plugin
      */
     public function beforeExecuteRoute($event, $dispatcher)
     {
-        //Obtain the ACL list
-        $acl = $this->di['acl'];
-
         //By default the action is deny access
-        $acl->setDefaultAction(Acl::ALLOW);
+        $this->acl->setDefaultAction(Acl::ALLOW);
 
         //Check whether the "auth" variable exists in session to define the active role
         $auth = $this->session->get('auth');
         if ($auth) {
             $role = 'Admin';
             // Give Admins full access without checking
-            $acl->setDefaultAction(Acl::ALLOW);
+            $this->acl->setDefaultAction(Acl::ALLOW);
         } else {
             $role = 'Guest';
 
@@ -47,7 +44,7 @@ class AclHandler extends Plugin
 
 
             //Check if the Role have access to the controller (resource)
-            $allowed = $acl->isAllowed($role, $module . '_' . $controller, $action);
+            $allowed = $this->acl->isAllowed($role, $module . '_' . $controller, $action);
             //   echo $allowed .' ' . Acl::ALLOW;
             if ($allowed != Acl::ALLOW) {
 

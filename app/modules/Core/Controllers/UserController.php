@@ -108,6 +108,7 @@ class UserController extends Controller
      */
     public function logoutAction()
     {
+        $this->view->disable();
         $this->auth->remove();
         $this->flashSession->success($this->t->_('You have been logged out successfully'));
     }

@@ -8,7 +8,6 @@
 
 namespace Engine\Plugins\Connectors;
 
-use Engine\Utils;
 use Facebook\FacebookSession;
 use Facebook\FacebookRequest;
 use Facebook\FacebookRequestException;
@@ -30,7 +29,7 @@ class FacebookConnector extends Injectable
      */
     public function __construct()
     {
-        $this->loginURL = $this->url->getUri($this->url->get('/user/login-with-facebook'));
+        $this->loginURL = $this->url->getUri('/user/login-with-facebook');
         FacebookSession::setDefaultApplication(
             $this->config->connectors->facebook->appId,
             $this->config->connectors->facebook->secret
@@ -64,7 +63,7 @@ class FacebookConnector extends Injectable
         if ($this->fbSession) {
             $request  = new FacebookRequest($this->fbSession, 'GET', '/me');
             $response = $request->execute();
-            $fb_user  = $response->getGraphObject()->asArray();
+            $fb_user  = $response->getGraphObject();
             return $fb_user;
         }
         return false;

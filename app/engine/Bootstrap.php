@@ -13,16 +13,18 @@ use Phalcon\Dispatcher;
 class Bootstrap {
 
     public function run() {
+        // Load config file
+        $config = require_once APP_PATH . 'config/config.php';
+
         // Define internal variables
         define('MG_VERSION', '0.1.0');
         define('DEFAULT_THEME', 'default');
-        define('THEMES_PATH', '../../../themes/'.DEFAULT_THEME.'/');
+        define('THEMES_PATH', '../../../themes/' . DEFAULT_THEME . '/');
 
         // The FactoryDefault Dependency Injector automatically register the right services providing a full stack framework
         $di = new \Phalcon\DI\FactoryDefault();
 
-        // Load config file
-        $config = require_once APP_PATH . 'config/config.php';
+        // set cookies time
         $config['app']['cookie']['expire'] = time() + $config['app']['cookie']['expire'];
 
         // Load modules
@@ -75,27 +77,29 @@ class Bootstrap {
         $di->set('url', $url);
 
         // Setting up the view component
-        $view = new \Phalcon\Mvc\View();
-        $view->setLayoutsDir(THEMES_PATH . 'layouts/');
-        $view->setPartialsDir(THEMES_PATH . 'partials/');
-        $view->setMainView(THEMES_PATH . 'index');
-        $view->setLayout('default');
+        $di->setShared('view', function() use ($config, $di) {
+            $view = new \Phalcon\Mvc\View();
+            $view->setLayoutsDir(THEMES_PATH . 'layouts/');
+            $view->setPartialsDir(THEMES_PATH . 'partials/');
+            $view->setMainView(THEMES_PATH . 'index');
+            $view->setLayout('default');
 
-        $volt = new \Phalcon\Mvc\View\Engine\Volt($view, $di);
-        if($config->app->development) {
-            // Prevent caching annoyances
-            $voltOptions['compileAlways'] = true;
-        }
-        $voltOptions['compiledPath'] = $config->app->cacheDir . 'volt/';
-        $voltOptions['compiledSeparator'] = '_';
-        $volt->setOptions($voltOptions);
-        $phtml = new \Phalcon\Mvc\View\Engine\Php($view, $di);
+            $volt = new \Phalcon\Mvc\View\Engine\Volt($view, $di);
+            if($config->app->development) {
+                // Prevent caching annoyances
+                $voltOptions['compileAlways'] = true;
+            }
+            $voltOptions['compiledPath'] = $config->app->cacheDir . 'volt/';
+            $voltOptions['compiledSeparator'] = '_';
+            $volt->setOptions($voltOptions);
+            $phtml = new \Phalcon\Mvc\View\Engine\Php($view, $di);
 
-        $view->registerEngines(array(
-            '.volt' => $volt,
-            '.phtml' => $phtml
-        ));
-        $di->setShared('view', $view);
+            $view->registerEngines(array(
+                '.volt' => $volt,
+                '.phtml' => $phtml
+            ));
+            return $view;
+        });
 
 
         // Start the session from file
@@ -209,6 +213,24 @@ class Bootstrap {
         // Register assets that will be loaded in every page
         $di->setShared('assets', function() {
             return new \Phalcon\Assets\Manager();
+        });
+
+        // Register mail service
+        $di->setShared('mail', function() use ($config) {
+            $settings = [
+                'from' => $config->mail->from->toArray(),
+                'driver' => $config->mail->driver,
+                'viewsDir' => ROOT_PATH . 'themes/' . DEFAULT_THEME . '/emails/'
+            ];
+            switch($config->mail->driver) {
+                case 'sendmail':
+                    $settings['sendmail'] = $config->mail->sendmail;
+                    break;
+                case 'smtp':
+                    $settings = array_merge($settings, $config->mail->smtp->toArray());
+                    break;
+            }
+            return new \Phalcon\Mailer\Manager($settings);
         });
 
         // Register the flash service with custom CSS classes
