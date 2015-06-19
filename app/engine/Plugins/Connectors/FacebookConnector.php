@@ -63,7 +63,7 @@ class FacebookConnector extends Injectable
         if ($this->fbSession) {
             $request  = new FacebookRequest($this->fbSession, 'GET', '/me');
             $response = $request->execute();
-            $fb_user  = $response->getGraphObject();
+            $fb_user  = $response->getGraphObject()->toArray();
             return $fb_user;
         }
         return false;

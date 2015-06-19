@@ -1,9 +1,9 @@
 <?php
 /**
- * Created by IntelliJ IDEA.
- * User: gatz
- * Date: 16.06.2015
- * Time: 16:11
+ * @copyright   2006 - 2015 Magnxpyr Network
+ * @license     New BSD License; see LICENSE
+ * @link        http://www.magnxpyr.com
+ * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
 namespace Engine;
@@ -31,7 +31,7 @@ class Url extends \Phalcon\Mvc\Url
             $path = $this->get($path);
         }
         if($params !== null) {
-            $path .= $path . $params;
+            $path .= $params;
         }
         return $protocol . $_SERVER['HTTP_HOST'] . $path;
     }

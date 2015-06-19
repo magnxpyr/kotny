@@ -108,7 +108,7 @@ class UserMigration_100 extends Migration
             ],
             'options' => [
                 'TABLE_TYPE' => 'BASE TABLE',
-                'AUTO_INCREMENT' => '0',
+                'AUTO_INCREMENT' => '',
                 'ENGINE' => 'InnoDB',
                 'TABLE_COLLATION' => 'utf8_general_ci'
             ]

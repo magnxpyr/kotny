@@ -9,26 +9,18 @@
 namespace Core\Models;
 
 use Phalcon\Mvc\Model;
-use Sb\Framework\Mvc\Model\EagerLoadingTrait;
 
-class UserAuthTokens extends Model
+/**
+ * Class UserResetPasswords
+ * @package Core\Models
+ */
+class UserResetPasswords extends Model
 {
-    use EagerLoadingTrait;
 
     /**
      * @var integer
      */
     protected $id;
-
-    /**
-     * @var string
-     */
-    protected $selector;
-
-    /**
-     * @var string
-     */
-    protected $token;
 
     /**
      * @var integer
@@ -37,6 +29,11 @@ class UserAuthTokens extends Model
 
     /**
      * @var string
+     */
+    protected $token;
+
+    /**
+     * @var integer
      */
     protected $expires;
 
@@ -49,30 +46,7 @@ class UserAuthTokens extends Model
     public function setId($id)
     {
         $this->id = $id;
-        return $this;
-    }
 
-    /**
-     * Method to set the value of field selector
-     *
-     * @param string $selector
-     * @return $this
-     */
-    public function setSelector($selector)
-    {
-        $this->selector = $selector;
-        return $this;
-    }
-
-    /**
-     * Method to set the value of field token
-     *
-     * @param string $token
-     * @return $this
-     */
-    public function setToken($token)
-    {
-        $this->token = $token;
         return $this;
     }
 
@@ -85,18 +59,33 @@ class UserAuthTokens extends Model
     public function setUserId($user_id)
     {
         $this->user_id = $user_id;
+
+        return $this;
+    }
+
+    /**
+     * Method to set the value of field token
+     *
+     * @param string $token
+     * @return $this
+     */
+    public function setToken($token)
+    {
+        $this->token = $token;
+
         return $this;
     }
 
     /**
      * Method to set the value of field expires
      *
-     * @param string $expires
+     * @param integer $expires
      * @return $this
      */
     public function setExpires($expires)
     {
         $this->expires = $expires;
+
         return $this;
     }
 
@@ -111,13 +100,13 @@ class UserAuthTokens extends Model
     }
 
     /**
-     * Returns the value of field selector
+     * Returns the value of field user_id
      *
-     * @return string
+     * @return integer
      */
-    public function getSelector()
+    public function getUserId()
     {
-        return $this->selector;
+        return $this->user_id;
     }
 
     /**
@@ -131,19 +120,9 @@ class UserAuthTokens extends Model
     }
 
     /**
-     * Returns the value of field user_id
-     *
-     * @return integer
-     */
-    public function getUserId()
-    {
-        return $this->user_id;
-    }
-
-    /**
      * Returns the value of field expires
      *
-     * @return string
+     * @return integer
      */
     public function getExpires()
     {
@@ -155,13 +134,13 @@ class UserAuthTokens extends Model
      */
     public function initialize()
     {
-        $this->setSource('user_auth_tokens');
+        $this->setSource('user_reset_passwords');
         $this->belongsTo('user_id', 'Core\Models\User', 'id', ['alias' => 'user', 'reusable' => true]);
     }
 
     public function getSource()
     {
-        return 'user_auth_tokens';
+        return 'user_reset_passwords';
     }
 
 }

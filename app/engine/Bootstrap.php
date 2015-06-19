@@ -216,11 +216,11 @@ class Bootstrap {
         });
 
         // Register mail service
-        $di->setShared('mail', function() use ($config) {
+        $di->set('mail', function() use ($config) {
             $settings = [
                 'from' => $config->mail->from->toArray(),
                 'driver' => $config->mail->driver,
-                'viewsDir' => ROOT_PATH . 'themes/' . DEFAULT_THEME . '/emails/'
+                'viewsDir' => APP_PATH . 'themes/' . DEFAULT_THEME . '/emails/'
             ];
             switch($config->mail->driver) {
                 case 'sendmail':

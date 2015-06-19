@@ -172,7 +172,7 @@ class Auth extends Component
             return $this->response->redirect($facebook->getLoginUrl($scope), true);
         }
 
-        $email = isset($facebookUser->email) ? $facebookUser->email : $this->security->generateToken(8) . '@mg.com';
+        $email = isset($facebookUser['email']) ? $facebookUser['email'] : $this->security->generateToken(8) . '@mg.com';
         $user = User::findFirst(['email = ?1 OR facebook_id= ?2',[1 => $email, 2 => $facebookUser['facebook_id']]]);
         if ($user) {
             $this->checkUserFlags($user);

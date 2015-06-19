@@ -472,7 +472,9 @@ class User extends Model
     public function initialize()
     {
         $this->setSource('user');
-        $this->hasMany('id', 'Core\Models\UserAuthTokens', 'user_id', ['alias' => 'UserAuthTokens', 'reusable' => true]);
+        $this->hasMany('id', 'Core\Models\UserAuthTokens', 'user_id', ['alias' => 'userAuthTokens', 'reusable' => true]);
+        $this->hasOne('id', 'Core\Models\UserEmailConfirmations', 'user_id', ['alias' => 'userEmailConfirmations', 'reusable' => true]);
+        $this->hasOne('id', 'Core\Models\UserResetPasswords', 'user_id', ['alias' => 'userResetPasswords', 'reusable' => true]);
     }
 
     /**
@@ -518,21 +520,11 @@ class User extends Model
      */
     public function afterCreate()
     {
-        if($this->getFacebookId() !== null || $this->getGplusId() !== null) {
+        if($this->getStatus() != 0) {
             return;
         }
-
-        $params = [
-            'siteName' => $this->getDI()->getShared('config')->app->siteName,
-            'confirmUrl' => $this->getDI()->getShared('url')->getUri(
-                'user/confirm-email',
-                true,
-                '?code=' . $this->getResetToken()
-            )
-        ];
-        $this->getDI()->getShared('mail')->createMessageFromView('confirmation', $params)
-            ->to($this->getEmail())
-            ->subject('Confirm your email')
-            ->send();
+        $confirmation = new UserEmailConfirmations();
+        $confirmation->setUserId($this->getId());
+        $confirmation->save();
     }
 }
