@@ -204,7 +204,7 @@ class UserController extends Controller
     }
 
     /**
-     * Reset password
+     * Request reset password
      */
     public function forgotPasswordAction()
     {
@@ -303,5 +303,12 @@ class UserController extends Controller
             $form = new ResetPasswordForm();
             $this->view->form = $form;
         }
+    }
+
+    /**
+     * Reset user password
+     */
+    public function resetPasswordAction() {
+
     }
 }
