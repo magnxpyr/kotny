@@ -15,6 +15,9 @@ class Bootstrap {
     public function run() {
         // Load config file
         $config = require_once APP_PATH . 'config/config.php';
+        if ($config['app']['development']) {
+            $config = require_once APP_PATH . 'config/development/config.php';
+        }
 
         // Define internal variables
         define('MG_VERSION', '0.1.0');

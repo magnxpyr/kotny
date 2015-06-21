@@ -11,6 +11,7 @@ namespace Core\Models;
 use Phalcon\Mvc\Model;
 use Phalcon\Mvc\Model\Validator\Email;
 use Phalcon\Mvc\Model\Validator\Uniqueness;
+use Sb\Framework\Mvc\Model\EagerLoadingTrait;
 
 /**
  * Class User
@@ -18,6 +19,8 @@ use Phalcon\Mvc\Model\Validator\Uniqueness;
  */
 class User extends Model
 {
+    use EagerLoadingTrait;
+
     /**
      * @var integer
      */

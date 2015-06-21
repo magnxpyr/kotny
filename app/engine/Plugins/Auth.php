@@ -78,7 +78,7 @@ class Auth extends Component
     {
         $cookie = explode(':', $this->cookies->get($this->cookie->name)->getValue());
     //    $auth = UserAuthTokens::findFirstBySelector($cookie[0]);
-        $auth = UserAuthTokens::findFirstBySelector($cookie[0])->load('User');
+        $auth = UserAuthTokens::findFirstBySelector($cookie[0])->load('user');
         if ($auth) {
             // fist check cookie valid and then look for user
             if ($this->security->hash_equals($auth->getToken(), hash('sha256', trim($cookie[1])))) {
@@ -439,16 +439,20 @@ class Auth extends Component
     }
 
     /**
-     * Auths the user by his/her id
-     * @param int $id
+     * Authenticate a user by his id
+     *
+     * @param int $id|null
+     * @param \Core\Models\User|null $user
      * @throws \Exception
      * @return boolean
      */
-    public function authUserById($id)
+    public function authUserById($id = null, $user = null)
     {
-        $user = User::findFirstById($id);
-        if ($user == false) {
-            throw new \Exception('The user does not exist');
+        if($user !== null) {
+            $user = User::findFirstById($id);
+            if ($user == false) {
+                throw new \Exception('The user does not exist');
+            }
         }
         $this->checkUserFlags($user);
         $this->setSession($user);

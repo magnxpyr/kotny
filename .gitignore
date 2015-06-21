@@ -1,4 +1,4 @@
 cache
-/config/development/
+/app/config/development/
 .idea
 phalcon.iml

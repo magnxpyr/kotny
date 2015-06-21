@@ -23,5 +23,6 @@ return [
     "Your account is inactive" => "Your account is inactive",
     "Your account is suspended" => "Your account is suspended",
     "Your account is banned" => "Your account is banned",
-    "There was an error connecting to %name%" => "There was an error connecting to %name%"
+    "There was an error connecting to %name%" => "There was an error connecting to %name%",
+    "Password changed successfully" => "Password changed successfully"
 ];

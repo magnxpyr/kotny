@@ -58,6 +58,10 @@ div.scaffold h2 {
     cursor: help;
 }
 
+.form-max-size {
+    max-width: 300px;
+}
+
 .hint-block {
     display: none;
 }

@@ -9,6 +9,7 @@
 namespace Core\Models;
 
 use Phalcon\Mvc\Model;
+use Sb\Framework\Mvc\Model\EagerLoadingTrait;
 
 /**
  * Class UserResetPasswords
@@ -16,6 +17,13 @@ use Phalcon\Mvc\Model;
  */
 class UserResetPasswords extends Model
 {
+    use EagerLoadingTrait;
+
+    /**
+     * Temporary variable to store raw token
+     * @var string
+     */
+    private $rawToken;
 
     /**
      * @var integer
@@ -143,4 +151,33 @@ class UserResetPasswords extends Model
         return 'user_reset_passwords';
     }
 
+    /**
+     * After create the user create a confirmation token
+     */
+    public function beforeValidation()
+    {
+        $this->rawToken = $this->getDI()->getShared('security')->generateToken();
+        $this->setExpires(time() + 24 * 60);
+        $this->setToken(hash('sha256', $this->rawToken));
+    }
+
+    /**
+     * Send an e-mail to users allowing them to activate their account or reset the password
+     */
+    public function afterSave()
+    {
+        $params = [
+            'siteName' => $this->getDI()->getShared('config')->app->siteName,
+            'name' => $this->user->getUsername(),
+            'resetUrl' => $this->getDI()->getShared('url')->getUri(
+                'user/forgot-password',
+                true,
+                '?code=' . $this->rawToken
+            )
+        ];
+        $this->getDI()->get('mail')->createMessageFromView('resetPassword', $params)
+        ->to($this->user->getEmail())
+        ->subject('Password Change Request')
+        ->send();
+    }
 }

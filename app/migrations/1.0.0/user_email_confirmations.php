@@ -11,7 +11,7 @@ use Phalcon\Db\Index;
 use Phalcon\Db\Reference;
 use Tools\Builder\Mvc\Model\Migration;
 
-class UserEmailConfirmationsMigration_101 extends Migration
+class UserEmailConfirmationsMigration_100 extends Migration
 {
     public function up()
     {

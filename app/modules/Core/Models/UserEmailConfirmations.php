@@ -10,6 +10,7 @@ namespace Core\Models;
 
 use Phalcon\Mailer\Manager;
 use Phalcon\Mvc\Model;
+use Sb\Framework\Mvc\Model\EagerLoadingTrait;
 
 /**
  * Class UserEmailConfirmations
@@ -17,6 +18,8 @@ use Phalcon\Mvc\Model;
  */
 class UserEmailConfirmations extends Model
 {
+    use EagerLoadingTrait;
+
     /**
      * Temporary variable to store raw token
      * @var string
@@ -154,9 +157,9 @@ class UserEmailConfirmations extends Model
     }
 
     /**
-     * Before create the user assign a password
+     * After create the user create a confirmation token
      */
-    public function beforeValidationOnCreate()
+    public function beforeValidation()
     {
         $this->rawToken = $this->getDI()->getShared('security')->generateToken();
         $this->setExpires(time() + 24 * 60);
@@ -166,7 +169,7 @@ class UserEmailConfirmations extends Model
     /**
      * Send an e-mail to users allowing them to activate their account or reset the password
      */
-    public function afterCreate()
+    public function afterSave()
     {
         if($this->user->getFacebookId() !== null || $this->user->getGplusId() !== null) {
             return;
@@ -180,7 +183,6 @@ class UserEmailConfirmations extends Model
                 '?code=' . $this->rawToken
             )
         ];
-    //    print_r($this->getDI()->get('mail')->createMessageFromView('confirmation', $params)); die;
         $this->getDI()->get('mail')->createMessageFromView('confirmation', $params)
             ->to($this->user->getEmail())
             ->subject('Confirm your email')
