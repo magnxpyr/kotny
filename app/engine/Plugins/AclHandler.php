@@ -8,6 +8,7 @@
 
 namespace Engine\Plugins;
 
+use Core\Models\User;
 use Phalcon\Mvc\User\Plugin,
     Phalcon\Acl;
 
@@ -18,6 +19,8 @@ use Phalcon\Mvc\User\Plugin,
 class AclHandler extends Plugin
 {
     /**
+     * Check if user has access
+     *
      * @param \Phalcon\Events\Event $event
      * @param \Phalcon\Mvc\Dispatcher $dispatcher
      * @return bool
@@ -25,37 +28,31 @@ class AclHandler extends Plugin
     public function beforeExecuteRoute($event, $dispatcher)
     {
         //By default the action is deny access
-        $this->acl->setDefaultAction(Acl::ALLOW);
+        $this->acl->setDefaultAction(Acl::DENY);
 
         //Check whether the "auth" variable exists in session to define the active role
         $auth = $this->session->get('auth');
         if ($auth) {
-            $role = 'Admin';
+            $role = User::getRoleById($auth['id']);
             // Give Admins full access without checking
             $this->acl->setDefaultAction(Acl::ALLOW);
         } else {
-            $role = 'Guest';
+            $role = 1;
+        }
 
-            //Take the active controller/action from the dispatcher
-            $module = $dispatcher->getModuleName();
-            $controller = $dispatcher->getControllerName();
-            $action = $dispatcher->getActionName();
-            //     echo $role . ' ' . $module .' '.$controller .' ' .$action;
+        //Take the active resources from the dispatcher
+        $module = $dispatcher->getModuleName();
+        $controller = $dispatcher->getControllerName();
+        $action = $dispatcher->getActionName();
 
+        //Check if the Role have access to the controller (resource)
+        $allowed = $this->acl->isAllowed($role, $module . '/' . $controller, $action);
+        if ($allowed != Acl::ALLOW) {
+            $this->flash->error("You don't have access to this page");
+            $this->response->setStatusCode(404, 'Page Not Found');
 
-            //Check if the Role have access to the controller (resource)
-            $allowed = $this->acl->isAllowed($role, $module . '_' . $controller, $action);
-            //   echo $allowed .' ' . Acl::ALLOW;
-            if ($allowed != Acl::ALLOW) {
-
-                //If he doesn't have access forward him to the index controller
-                $this->flash->error("You don't have access to this module");
-
-                $this->response->setStatusCode(404, 'Page Not Found');
-
-                //Returning "false" we tell to the dispatcher to stop the current operation
-                return false;
-            }
+            //Returning "false" we tell to the dispatcher to stop the current operation
+            return false;
         }
     }
 }

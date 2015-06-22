@@ -519,6 +519,13 @@ class User extends Model
     }
 
     /**
+     * Set visited at before any update
+     */
+    public function beforeUpdate() {
+        $this->setVisitedAt(time());
+    }
+
+    /**
      * Send an e-mail to users allowing them to activate their account or reset the password
      */
     public function afterCreate()
@@ -529,5 +536,28 @@ class User extends Model
         $confirmation = new UserEmailConfirmations();
         $confirmation->setUserId($this->getId());
         $confirmation->save();
+    }
+
+    /**
+     * Get role id and cache it for future use
+     *
+     * @param $id
+     * @return Model|Model\Resultset|int
+     */
+    public static function getRoleById($id)
+    {
+        $role = self::findFirst([
+            'conditions' => 'id = ?1',
+            'bind'       => [1 => $id],
+            'columns'    => ['role_id'],
+            'cache'      => [
+                'key'      => self::getDI()->getShared('config')->app->cryptKey . sha1("roleId-$id")
+            ]
+        ]);
+        if ($role) {
+            return $role->getRoleId();
+        } else {
+            return 1;
+        }
     }
 }

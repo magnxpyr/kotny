@@ -10,21 +10,16 @@
  */
 
 echo $this->getContent();
-if($status == 0) {
-?>
-    <p>An unexpected error occurred during your email confirmation.<br />
-    Please try again later or request a
-        <a href="<?php $this->url->get('user/confirm-email') ?>">new email confirmation </a></p>
-<?php } ?>
-<?php echo $this->tag->form(['user/confirm-email']); ?>
-<fieldset>
-    <div class="form-group form-max-size">
-        <div class="input-group">
-            <span class="input-group-addon" id="email-addon">@</span>
-            <?php echo $form->render('email', ['class' => 'form-control', 'aria-describedby' => "email-addon"]); ?>
+echo $this->tag->form(['user/confirm-email']); ?>
+    <fieldset>
+        <div class="form-group form-max-size">
+            <div class="input-group">
+                <span class="input-group-addon" id="email-addon">@</span>
+                <?php echo $form->render('email', ['class' => 'form-control', 'aria-describedby' => "email-addon"]); ?>
+            </div>
         </div>
-    </div>
-    <div class="form-group">
-        <?php echo $form->render('Send'); ?>
-    </div>
-</fieldset>
+        <div class="form-group">
+            <?php echo $form->render('Send'); ?>
+        </div>
+    </fieldset>
+</form>

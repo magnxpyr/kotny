@@ -441,14 +441,14 @@ class Auth extends Component
     /**
      * Authenticate a user by his id
      *
-     * @param int $id|null
+     * @param int $id
      * @param \Core\Models\User|null $user
      * @throws \Exception
      * @return boolean
      */
-    public function authUserById($id = null, $user = null)
+    public function authUserById($id, $user = null)
     {
-        if($user !== null) {
+        if($user === null) {
             $user = User::findFirstById($id);
             if ($user == false) {
                 throw new \Exception('The user does not exist');

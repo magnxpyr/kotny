@@ -15,6 +15,7 @@ return [
         'baseUri' => '/', // must end with trailing slash /
         'cryptKey' => '721a79281f408416', // Use your own 8 bits key!
         'development' => true,
+        'aclAdapter' => 'memory', // database, memory
         'cacheDir' => ROOT_PATH . 'cache/',
         'cookie' => [
             'name' => 'mgRm',

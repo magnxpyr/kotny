@@ -123,8 +123,6 @@ class UserController extends Controller
      */
     public function confirmEmailAction()
     {
-        $this->view->status = 1;
-
         $form = new ConfirmEmailForm();
         $this->view->form = $form;
 
@@ -155,21 +153,26 @@ class UserController extends Controller
                     'controller' => 'index',
                     'action' => 'index'
                 ]);
+            } else {
+                $this->flashErrors($form);
             }
             return;
         }
+
+        $error = 'An unexpected error occurred during your email confirmation. Please try again later or request a new email confirmation';
 
         // if no code on url, we show the form
         $code = $this->request->get('code', 'alphanum');
         if(!$code) {
             $this->setTitle('Request email confirmation');
+            $this->flash->error($error);
             return;
         }
 
         $confirmation = UserEmailConfirmations::findFirstByToken(hash('sha256', $code));
         if (!$confirmation) {
             $this->setTitle('Email confirmation failed');
-            $this->view->status = 0;
+            $this->flash->error($error);
             return;
         }
 
@@ -177,7 +180,7 @@ class UserController extends Controller
         if($confirmation->getExpires() < time()) {
             $confirmation->delete();
             $this->setTitle('Email confirmation failed');
-            $this->view->status = 0;
+            $this->flash->error($error);
             return;
         }
 
@@ -185,9 +188,7 @@ class UserController extends Controller
         $confirmation->user->status = 1;
 
         if (!$confirmation->user->save()) {
-            foreach ($confirmation->getMessages() as $message) {
-                $this->flash->error($message);
-            }
+            $this->flashErrors($confirmation->user);
             $this->setTitle('Email confirmation failed');
             $this->view->status = 0;
             return;
@@ -211,104 +212,110 @@ class UserController extends Controller
         $this->view->status = 1;
         $this->setTitle('Forgot password');
 
-        $code = $this->request->get('code');
+        $form = new ForgotPasswordForm();
+        $this->view->form = $form;
 
+        // Request password reset
         if ($this->request->isPost()) {
-            if (!$code) {
-                $form = new ForgotPasswordForm();
-                if ($form->isValid($_POST)) {
-                    $user = User::findFirstByEmail($this->request->get('email', 'email'))->load('userResetPasswords');
-                    $form->clear();
-                    if ($user) {
-                        if (!$user->userResetPasswords) {
-                            $reset = new UserResetPasswords();
-                            $reset->setUserId($user->getId());
-                            $reset->save();
-                        } else {
-                            $user->userResetPasswords->setExpires(1);
-                            $user->userResetPasswords->save();
-                        }
+            if ($form->isValid($_POST)) {
+                $user = User::findFirstByEmail($this->request->get('email', 'email'))->load('userResetPasswords');
+                $form->clear();
+                if ($user) {
+                    if (!$user->userResetPasswords) {
+                        $reset = new UserResetPasswords();
+                        $reset->setUserId($user->getId());
+                        $reset->save();
+                    } else {
+                        $user->userResetPasswords->setExpires(1);
+                        $user->userResetPasswords->save();
                     }
-                    $this->flash->success('Email sent. Please follow the instructions to change your password');
-                    $this->dispatcher->forward([
-                        'controller' => 'index',
-                        'action' => 'index'
-                    ]);
                 }
+                $this->flash->success('Email sent. Please follow the instructions to change your password');
+                $this->dispatcher->forward([
+                    'controller' => 'index',
+                    'action' => 'index'
+                ]);
             } else {
-                $form = new ResetPasswordForm();
-                if ($form->isValid($_POST)) {
-                    $resetPassword = UserResetPasswords::findFirstByToken(hash('sha256', $code))->load('user');
-                    if (!$resetPassword) {
-                        $this->view->status = 0;
-                        return;
-                    }
-                    if ($resetPassword->getExpires() < time()) {
-                        $this->view->status = 0;
-                        $resetPassword->delete();
-                        return;
-                    }
-
-                    $password = $this->request->getPost('password', 'string');
-                    $repeatPassword = $this->request->getPost('repeatPassword', 'string');
-                    if ($password != $repeatPassword) {
-                        $this->flash->error($this->t->_('Passwords don\'t match'));
-                        return;
-                    }
-                    $resetPassword->user->setPassword($this->security->hash($password));
-
-                    // Set a new password
-                    if (!$resetPassword->user->save()) {
-                        foreach ($resetPassword->getMessages() as $message) {
-                            $this->flash->error($message);
-                        }
-                        $this->dispatcher->forward([
-                            'controller' => 'index',
-                            'action' => 'index'
-                        ]);
-                    }
-
-                    // Identify the user in the application
-                    $this->auth->authUserById(null, $resetPassword->user);
-                    $this->flash->success($this->t->_('Password changed successfully'));
-
-                    $this->dispatcher->forward([
-                        'controller' => 'index',
-                        'action' => 'index'
-                    ]);
-                }
+                $this->flashErrors($form);
             }
             return;
         }
 
-        $form = new ForgotPasswordForm();
-        $this->view->form = $form;
+        $code = $this->request->get('code', 'alphanum');
 
-        if(!$code) {
-            return;
-        } else {
+        $error = 'An unexpected error occurred. Please try again later or request a new password change';
+
+        // Validate token and
+        if($code) {
             $resetPassword = UserResetPasswords::findFirstByToken(hash('sha256', $code));
             if (!$resetPassword) {
-                $this->view->status = 0;
+                $this->flash->error($error);
                 return;
             }
             if ($resetPassword->getExpires() < time()) {
-                $this->view->status = 0;
                 $resetPassword->delete();
+                $this->flash->error($error);
                 return;
             }
 
-            $this->view->status = 5;
-            $this->setTitle('Reset password');
-            $form = new ResetPasswordForm();
-            $this->view->form = $form;
+            try {
+                $this->auth->authUserById($resetPassword->getUserId());
+            } catch (\Exception $e) {
+                $this->flash->error($e->getMessage());
+            }
+
+            $resetPassword->delete();
+
+            $this->dispatcher->forward([
+                'controller' => 'user',
+                'action' => 'resetPassword'
+            ]);
         }
     }
 
     /**
      * Reset user password
      */
-    public function resetPasswordAction() {
+    public function resetPasswordAction()
+    {
+        if (!$this->auth->isUserSignedIn()) {
+            $this->dispatcher->forward([
+                'controller' => 'user',
+                'action' => 'login'
+            ]);
+        }
 
+        $form = new ResetPasswordForm();
+        $this->view->form = $form;
+
+        if ($this->request->isPost()) {
+            if ($form->isValid($_POST)) {
+                $password = $this->request->getPost('password', 'string');
+                $repeatPassword = $this->request->getPost('repeatPassword', 'string');
+                if ($password != $repeatPassword) {
+                    $this->flash->error($this->t->_('Passwords don\'t match'));
+                    return;
+                }
+                $user = User::findFirstById($this->auth->getUserId());
+                $user->setPassword($this->security->hash($password));
+
+                // Set a new password
+                if (!$user->save()) {
+                    $this->flashErrors($user);
+                    $this->dispatcher->forward([
+                        'controller' => 'index',
+                        'action' => 'index'
+                    ]);
+                }
+
+                $this->flashSession->success($this->t->_('Password changed successfully'));
+                $this->dispatcher->forward([
+                    'controller' => 'index',
+                    'action' => 'index'
+                ]);
+            } else {
+                $this->flashErrors($form);
+            }
+        }
     }
 }

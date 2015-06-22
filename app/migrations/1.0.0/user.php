@@ -76,7 +76,7 @@ class UserMigration_100 extends Migration
                     'size' => 255,
                     'after' => 'gplus_data'
                 ]),
-                new Column('role_id', [ // Guest, User, Admin
+                new Column('role_id', [ // 1-Guest, 2-User, 3-Admin
                     'type' => 'TINYINT',
                     'notNull' => true,
                     'size' => 2,

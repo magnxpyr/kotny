@@ -24,5 +24,6 @@ return [
     "Your account is suspended" => "Your account is suspended",
     "Your account is banned" => "Your account is banned",
     "There was an error connecting to %name%" => "There was an error connecting to %name%",
-    "Password changed successfully" => "Password changed successfully"
+    "Password changed successfully" => "Password changed successfully",
+    "You need to be logged in to change your password" => "You need to be logged in to change your password"
 ];

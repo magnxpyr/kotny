@@ -15,7 +15,7 @@ class Bootstrap {
     public function run() {
         // Load config file
         $config = require_once APP_PATH . 'config/config.php';
-        if ($config['app']['development']) {
+        if ($config['app']['development'] && is_file(APP_PATH . 'config/development/config.php')) {
             $config = require_once APP_PATH . 'config/development/config.php';
         }
 
@@ -54,17 +54,17 @@ class Bootstrap {
         // Set 'false' to disable default behavior. After that define all routes or you get 404
         $router = new Phalcon\Mvc\Router(false);
         $router->removeExtraSlashes(true);
-        $router->setDefaults(array(
+        $router->setDefaults([
             'module' => 'core',
             'controller' => 'index',
             'action' => 'index'
-        ));
+        ]);
 /*
-        $router->notFound(array(
+        $router->notFound([
             'module' => 'core',
             'controller' => 'error',
             'action' => 'show404'
-        ));
+        ]);
 */
 
         foreach($modulesRoutes as $routeClass) {
@@ -97,10 +97,10 @@ class Bootstrap {
             $volt->setOptions($voltOptions);
             $phtml = new \Phalcon\Mvc\View\Engine\Php($view, $di);
 
-            $view->registerEngines(array(
+            $view->registerEngines([
                 '.volt' => $volt,
                 '.phtml' => $phtml
-            ));
+            ]);
             return $view;
         });
 
@@ -117,24 +117,32 @@ class Bootstrap {
 
 
         // Connect to db
-        $db = new \Phalcon\Db\Adapter\Pdo\Mysql(array(
+        $db = new \Phalcon\Db\Adapter\Pdo\Mysql([
             'host' => $config->database->host,
             'username' => $config->database->username,
             'password' => $config->database->password,
             'dbname' => $config->database->dbname
-        ));
+        ]);
         $di->setShared('db', $db);
 
         // Register ACL to DI
-        $acl = new \Phalcon\Acl\Adapter\Database(array(
-            'db' => $db,
-            'roles' => 'roles',
-            'rolesInherits' => 'roles_inherits',
-            'resources' => 'resources',
-            'resourcesAccesses' => 'resources_accesses',
-            'accessList' => 'access_list',
-        ));
-        $di->set('acl', $acl);
+        $di->set('acl', function () use ($config, $db) {
+            switch($config->app->aclAdapter) {
+                case 'memory':
+                    $aclConfig = new \Phalcon\Config(include APP_PATH . 'config/acl.php');
+                    $factory = new \Phalcon\Acl\Factory\Memory();
+                    return $factory->create($aclConfig);
+                case 'database':
+                    return new \Phalcon\Acl\Adapter\Database([
+                        'db' => $db,
+                        'roles' => 'roles',
+                        'rolesInherits' => 'roles_inherits',
+                        'resources' => 'resources',
+                        'resourcesAccesses' => 'resources_accesses',
+                        'accessList' => 'access_list',
+                    ]);
+            }
+        });
 
         $response = new \Phalcon\Http\Response();
         $di->set('response', $response);
@@ -175,7 +183,7 @@ class Bootstrap {
             $langFile = APP_PATH . "messages/en-US.php";
         }
 
-        $translator = new \Phalcon\Translate\Adapter\NativeArray(array('content' => require $langFile));
+        $translator = new \Phalcon\Translate\Adapter\NativeArray(['content' => require $langFile]);
 
         $di->setShared('t', $translator);
 
@@ -196,14 +204,14 @@ class Bootstrap {
 
 
         // Set cache
-        $cacheFrontend = new \Phalcon\Cache\Frontend\Data(array(
+        $cacheFrontend = new \Phalcon\Cache\Frontend\Data([
             "lifetime" => 172800,
             "prefix" => '_',
-        ));
+        ]);
 
-        $cache = new \Phalcon\Cache\Backend\File($cacheFrontend, array(
+        $cache = new \Phalcon\Cache\Backend\File($cacheFrontend, [
             "cacheDir" => ROOT_PATH . "/cache/backend/"
-        ));
+        ]);
 
         $di->set('cache', $cache);
         $di->set('modelsCache', $cache);
