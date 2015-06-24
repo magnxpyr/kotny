@@ -34,8 +34,6 @@ class AclHandler extends Plugin
         $auth = $this->session->get('auth');
         if ($auth) {
             $role = User::getRoleById($auth['id']);
-            // Give Admins full access without checking
-            $this->acl->setDefaultAction(Acl::ALLOW);
         } else {
             $role = 1;
         }
@@ -48,11 +46,12 @@ class AclHandler extends Plugin
         //Check if the Role have access to the controller (resource)
         $allowed = $this->acl->isAllowed($role, $module . '/' . $controller, $action);
         if ($allowed != Acl::ALLOW) {
-            $this->flash->error("You don't have access to this page");
-            $this->response->setStatusCode(404, 'Page Not Found');
-
-            //Returning "false" we tell to the dispatcher to stop the current operation
-            return false;
+            $this->dispatcher->forward([
+                'namespace' => 'Core\Controllers',
+                'module' => 'core',
+                'controller' => 'error',
+                'action' => 'show404'
+            ]);
         }
     }
 }

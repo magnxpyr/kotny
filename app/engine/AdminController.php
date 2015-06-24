@@ -34,8 +34,7 @@ abstract class AdminController extends Controller {
      * @return void
      */
     protected function setupAssets() {
-        $this->assets
-            ->collection('header-js-min')
+        $this->assets->collection('header-js-min')
             ->setTargetPath(PUBLIC_PATH . 'assets/mg_admin/js/header.min.js')
             ->setTargetUri('assets/mg_admin/js/header.min.js')
             ->addJs('vendor/jquery/jquery-1.11.3.min.js')
@@ -46,10 +45,8 @@ abstract class AdminController extends Controller {
             ->addJs('assets/mg_admin/js/app.js')
             ->join(true)
             ->addFilter(new \Phalcon\Assets\Filters\Jsmin());
-        $this->assets
-            ->collection('header-js');
-        $this->assets
-            ->collection('header-css-min')
+        $this->assets->collection('header-js');
+        $this->assets->collection('header-css-min')
             ->setTargetPath(PUBLIC_PATH . 'assets/mg_admin/css/header.min.css')
             ->setTargetUri('assets/mg_admin/css/header.min.css')
             ->addCss('vendor/jquery/jquery-ui.min.css')
@@ -58,8 +55,7 @@ abstract class AdminController extends Controller {
             ->addCss('assets/mg_admin/css/style.css')
             ->join(true)
             ->addFilter(new \Phalcon\Assets\Filters\Cssmin());
-        $this->assets
-            ->collection('header-css')
+        $this->assets->collection('header-css')
             ->addCss('vendor/bootstrap/css/bootstrap.min.css')
             ->addCss('vendor/font-awesome/css/font-awesome.min.css');
     }

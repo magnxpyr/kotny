@@ -65,8 +65,7 @@ abstract class Controller extends \Phalcon\Mvc\Controller {
      * @return void
      */
     protected function setupAssets() {
-        $this->assets
-            ->collection('header-js-min')
+        $this->assets->collection('header-js-min')
             ->setTargetPath(PUBLIC_PATH . 'assets/default/js/header.min.js')
             ->setTargetUri('assets/default/js/header.min.js')
             ->addJs('vendor/jquery/jquery-1.11.3.min.js')
@@ -75,18 +74,15 @@ abstract class Controller extends \Phalcon\Mvc\Controller {
             ->addJs('assets/default/js/mg.js')
             ->join(true)
             ->addFilter(new \Phalcon\Assets\Filters\Jsmin());
-        $this->assets
-            ->collection('header-js');
-        $this->assets
-            ->collection('header-css-min')
+        $this->assets->collection('header-js');
+        $this->assets->collection('header-css-min')
             ->setTargetPath(PUBLIC_PATH . 'assets/default/css/header.min.css')
             ->setTargetUri('assets/default/css/header.min.css')
             ->addCss('vendor/jquery/jquery-ui.min.css')
             ->addCss('assets/default/css/style.css')
             ->join(true)
             ->addFilter(new \Phalcon\Assets\Filters\Cssmin());
-        $this->assets
-            ->collection('header-css')
+        $this->assets->collection('header-css')
             ->addCss('vendor/bootstrap/css/bootstrap.min.css');
     }
 }

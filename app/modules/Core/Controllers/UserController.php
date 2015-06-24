@@ -17,7 +17,6 @@ use Core\Models\User;
 use Core\Models\UserEmailConfirmations;
 use Core\Models\UserResetPasswords;
 use Engine\Controller;
-use Engine\Utils;
 
 /**
  * Class UserController
@@ -25,6 +24,10 @@ use Engine\Utils;
  */
 class UserController extends Controller
 {
+    public function indexAction()
+    {
+
+    }
     /**
      * Login user
      */

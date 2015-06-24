@@ -14,10 +14,11 @@ use Engine\Controller;
  * Class IndexController
  * @package Core\Controllers
  */
-class IndexController extends Controller {
+class IndexController extends Controller
+{
+    public function indexAction()
+    {
 
-    public function indexAction() {
-        $this->setTitle('Homepage');
     }
 }
 

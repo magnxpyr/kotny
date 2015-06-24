@@ -6,12 +6,14 @@ return [
         'core/index' => [
             'description' => '',
             'actions' => [
+                '*',
                 'index'
             ]
         ],
         'core/error' => [
             'description' => '',
             'actions' => [
+                '*',
                 'show404',
                 'show503'
             ]
@@ -19,13 +21,15 @@ return [
         'core/user' => [
             'description' => '',
             'actions' => [
+                '*',
+                'index',
                 'login',
                 'loginWithFacebook',
                 'loginWithGoogle',
                 'register',
                 'logout',
                 'confirmEmail',
-                'forgot-password',
+                'forgotPassword',
                 'resetPassword'
             ]
         ]
@@ -33,17 +37,66 @@ return [
     'role' => [
         1 => [
             'allow' => [
-                'core/index'    => '*',
-                'core/error'    => '*',
-                'core/user'     => '*'
+                'core/index'    => [
+                    'actions' => [
+                        '*'
+                    ]
+                ],
+                'core/error'    => [
+                    'actions' => [
+                        '*'
+                    ]
+                ],
+                'core/user'     => [
+                    'actions' => [
+                        'login',
+                        'loginWithFacebook',
+                        'loginWithGoogle',
+                        'register',
+                        'logout',
+                        'confirmEmail',
+                        'forgotPassword',
+                    ]
+                ]
             ]
         ],
         2 => [
-            'allow' => []
+            'allow' => [
+                'core/index'    => [
+                    'actions' => [
+                        '*'
+                    ]
+                ],
+                'core/error'    => [
+                    'actions' => [
+                        '*'
+                    ]
+                ],
+                'core/user'     => [
+                    'actions' => [
+                        '*',
+                    ]
+                ]
+            ]
         ],
         3 => [
-            'allow' => '*'
+            'allow' => [
+                'core/index'    => [
+                    'actions' => [
+                        '*'
+                    ]
+                ],
+                'core/error'    => [
+                    'actions' => [
+                        '*'
+                    ]
+                ],
+                'core/user'     => [
+                    'actions' => [
+                        '*',
+                    ]
+                ]
+            ]
         ]
     ]
-
 ];

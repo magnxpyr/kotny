@@ -13,12 +13,13 @@ use Phalcon\Mvc\Model\Criteria;
 use Phalcon\Paginator\Adapter\Model as Paginator;
 use Core\Models\User;
 
-class AdminUserController extends AdminController {
-
+class AdminUserController extends AdminController
+{
     /**
      * Index action
      */
-    public function indexAction() {
+    public function indexAction()
+    {
         $this->setTitle("Users");
         $this->persistent->parameters = null;
     }
@@ -26,7 +27,8 @@ class AdminUserController extends AdminController {
     /**
      * Searches for user
      */
-    public function searchAction() {
+    public function searchAction()
+    {
 
         $numberPage = 1;
         if ($this->request->isPost()) {
@@ -63,7 +65,8 @@ class AdminUserController extends AdminController {
     /**
      * Displays the creation form
      */
-    public function newAction() {
+    public function newAction()
+    {
 
     }
 
@@ -72,7 +75,8 @@ class AdminUserController extends AdminController {
      *
      * @param string $id
      */
-    public function editAction($id) {
+    public function editAction($id)
+    {
 
         if (!$this->request->isPost()) {
 
@@ -97,8 +101,8 @@ class AdminUserController extends AdminController {
     /**
      * Creates a new user
      */
-    public function createAction() {
-
+    public function createAction()
+    {
         if (!$this->request->isPost()) {
             return $this->dispatcher->forward(array(
                 "action" => "index"
@@ -140,8 +144,8 @@ class AdminUserController extends AdminController {
      * Saves a user edited
      *
      */
-    public function saveAction() {
-
+    public function saveAction()
+    {
         if (!$this->request->isPost()) {
             return $this->dispatcher->forward(array(
                 "action" => "index"
@@ -194,8 +198,8 @@ class AdminUserController extends AdminController {
      *
      * @param string $id
      */
-    public function deleteAction($id) {
-
+    public function deleteAction($id)
+    {
         $user = User::findFirst($id);
         if (!$user) {
             $this->flash->error("user was not found");
