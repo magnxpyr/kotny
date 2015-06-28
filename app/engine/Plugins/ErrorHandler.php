@@ -15,8 +15,8 @@ use Phalcon\Mvc\User\Plugin;
  * Class ErrorHandler
  * @package Engine\Plugins
  */
-class ErrorHandler extends Plugin {
-
+class ErrorHandler extends Plugin
+{
     /**
      * This action is executed before execute any action in the application
      * If a page is not found throws an error
@@ -27,8 +27,8 @@ class ErrorHandler extends Plugin {
      * @throws \Phalcon\Mvc\Dispatcher\Exception
      * @return \Phalcon\Mvc\View
      */
-    public function beforeException($event, $dispatcher, $exception) {
-
+    public function beforeException($event, $dispatcher, $exception)
+    {
         if ($exception instanceof Exception) {
             $dispatcher->forward(
                 [

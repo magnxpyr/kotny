@@ -15,8 +15,8 @@ use Phalcon\Debug;
  * Class Development
  * @package Engine
  */
-class Development {
-
+class Development
+{
     /**
      * Initialize the development tools.
      * Set pretty exceptions, debug widget and disable error handler

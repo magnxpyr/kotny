@@ -10,15 +10,10 @@
 use Phalcon\Events\Event;
 use Phalcon\Dispatcher;
 
-class Bootstrap {
-
-    public function run() {
-        // Load config file
-        $config = require_once APP_PATH . 'config/config.php';
-        if ($config['app']['development'] && is_file(APP_PATH . 'config/development/config.php')) {
-            $config = require_once APP_PATH . 'config/development/config.php';
-        }
-
+class Bootstrap
+{
+    public function run()
+    {
         // Define internal variables
         define('MG_VERSION', '0.1.0');
         define('DEFAULT_THEME', 'default');
@@ -26,6 +21,18 @@ class Bootstrap {
 
         // The FactoryDefault Dependency Injector automatically register the right services providing a full stack framework
         $di = new \Phalcon\DI\FactoryDefault();
+
+        // Load config file
+        $config = require_once APP_PATH . 'config/config.php';
+        if ($config['app']['development']) {
+            if (is_file(APP_PATH . 'config/development/config.php')) {
+                $config = require_once APP_PATH . 'config/development/config.php';
+            }
+
+            // Load development options
+        //    new \Engine\Development($di);
+
+        }
 
         // set cookies time
         $config['app']['cookie']['expire'] = time() + $config['app']['cookie']['expire'];
@@ -40,15 +47,15 @@ class Bootstrap {
         unset($modulesConfig['routes']);
         $config = new \Phalcon\Config(array_merge_recursive($config, $modulesConfig));
         $loader->init($config->loader->namespaces);
-        $di->set('config', $config);
+        $di->setShared('config', $config);
 
         // Registering the registry
         $registry = new \Phalcon\Registry();
-        $di->set('registry', $registry);
+        $di->setShared('registry', $registry);
 
         // Getting a request instance
         $request = new Phalcon\Http\Request();
-        $di->set('request', $request);
+        $di->setShared('request', $request);
 
         // Register routers with default behavior
         // Set 'false' to disable default behavior. After that define all routes or you get 404
@@ -71,7 +78,7 @@ class Bootstrap {
             $route = new $routeClass;
             $route->init($router);
         }
-        $di->set('router', $router);
+        $di->setShared('router', $router);
 
         // Generate urls
         $url = new \Engine\Url();
@@ -111,7 +118,7 @@ class Bootstrap {
         $di->setShared('session', $session);
 
         // Set auth in di
-        $di->set('auth', function() {
+        $di->setShared('auth', function() {
             return new \Engine\Plugins\Auth();
         });
 
@@ -126,7 +133,7 @@ class Bootstrap {
         $di->setShared('db', $db);
 
         // Register ACL to DI
-        $di->set('acl', function () use ($config, $db) {
+        $di->setShared('acl', function () use ($config, $db) {
             switch($config->app->aclAdapter) {
                 case 'memory':
                     $aclConfig = new \Phalcon\Config(include APP_PATH . 'config/acl.php');
@@ -145,7 +152,7 @@ class Bootstrap {
         });
 
         $response = new \Phalcon\Http\Response();
-        $di->set('response', $response);
+        $di->setShared('response', $response);
 
 
         //Obtain the standard eventsManager from the DI
@@ -188,14 +195,14 @@ class Bootstrap {
         $di->setShared('t', $translator);
 
         // Set up crypt service
-        $di->set('crypt', function() use ($config) {
+        $di->setShared('crypt', function() use ($config) {
             $crypt = new \Phalcon\Crypt();
             $crypt->setKey($config->app->cryptKey);
             return $crypt;
         });
 
         //  Set security options
-        $di->set('security', function() {
+        $di->setShared('security', function() {
             $security = new \Engine\Security();
             $security->setRandomBytes(32);
             $security->setWorkFactor(12);
@@ -213,11 +220,11 @@ class Bootstrap {
             "cacheDir" => ROOT_PATH . "/cache/backend/"
         ]);
 
-        $di->set('cache', $cache);
-        $di->set('modelsCache', $cache);
+        $di->setShared('cache', $cache);
+        $di->setShared('modelsCache', $cache);
 
         // If the configuration specify the use of metadata adapter use it or use memory otherwise
-        $di->set('modelsMetadata', function () {
+        $di->setShared('modelsMetadata', function () {
             return new \Phalcon\Mvc\Model\MetaData\Memory();
         });
 
@@ -260,10 +267,6 @@ class Bootstrap {
             return new \Phalcon\Flash\Session($flash);
         });
 
-        if($config->app->development) {
-            // Load development options
-            new \Engine\Development($di);
-        }
 
         // Handle the request
         $application = new \Phalcon\Mvc\Application($di);

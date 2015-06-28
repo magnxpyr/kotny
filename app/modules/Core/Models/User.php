@@ -551,11 +551,12 @@ class User extends Model
             'bind'       => [1 => $id],
             'columns'    => ['role_id'],
             'cache'      => [
-                'key'      => self::getDI()->getShared('config')->app->cryptKey . sha1("roleId-$id")
+                'key'      => sha1("roleId-$id"),
+                'lifetime' => 3600
             ]
         ]);
         if ($role) {
-            return $role->getRoleId();
+            return $role->role_id;
         } else {
             return 1;
         }

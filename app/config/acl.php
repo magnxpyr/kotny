@@ -32,6 +32,36 @@ return [
                 'forgotPassword',
                 'resetPassword'
             ]
+        ],
+        'tools/controllers' => [
+            'description' => '',
+            'actions' => [
+                '*'
+            ]
+        ],
+        'tools/migrations' => [
+            'description' => '',
+            'actions' => [
+                '*'
+            ]
+        ],
+        'tools/models' => [
+            'description' => '',
+            'actions' => [
+                '*'
+            ]
+        ],
+        'tools/modules' => [
+            'description' => '',
+            'actions' => [
+                '*'
+            ]
+        ],
+        'tools/scaffold' => [
+            'description' => '',
+            'actions' => [
+                '*'
+            ]
         ]
     ],
     'role' => [
@@ -93,7 +123,32 @@ return [
                 ],
                 'core/user'     => [
                     'actions' => [
-                        '*',
+                        '*'
+                    ]
+                ],
+                'tools/controllers' => [
+                    'actions' => [
+                        '*'
+                    ]
+                ],
+                'tools/migrations' => [
+                    'actions' => [
+                        '*'
+                    ]
+                ],
+                'tools/models' => [
+                    'actions' => [
+                        '*'
+                    ]
+                ],
+                'tools/modules' => [
+                    'actions' => [
+                        '*'
+                    ]
+                ],
+                'tools/scaffold' => [
+                    'actions' => [
+                        '*'
                     ]
                 ]
             ]

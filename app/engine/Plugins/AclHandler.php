@@ -45,13 +45,16 @@ class AclHandler extends Plugin
 
         //Check if the Role have access to the controller (resource)
         $allowed = $this->acl->isAllowed($role, $module . '/' . $controller, $action);
+
         if ($allowed != Acl::ALLOW) {
+            $this->dispatcher->setModuleName('core');
             $this->dispatcher->forward([
                 'namespace' => 'Core\Controllers',
                 'module' => 'core',
                 'controller' => 'error',
                 'action' => 'show404'
             ]);
+            return $event->isStopped();
         }
     }
 }
