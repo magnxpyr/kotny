@@ -17,35 +17,38 @@ class MenuTypeMigration_100 extends Migration
     {
         $this->morphTable(
             'menu_type',
-            array(
-                'columns' => array(
-                    new Column('id', array(
+            [
+                'columns' => [
+                    new Column('id', [
                             'type' => Column::TYPE_INTEGER,
                             'size' => 11,
                             'unsigned' => true,
                             'notNull' => true,
                             'autoIncrement' => true,
                             'first' => true
-                        )
-                    ),
-                    new Column('name', array(
+                    ]),
+                    new Column('title', [
                             'type' => Column::TYPE_VARCHAR,
                             'notNull' => true,
                             'size' => 255,
                             'after' => 'id'
-                        )
-                    ),
-                ),
-                'indexes' => array(
-                    new Index('PRIMARY', array('id'))
-                ),
-                'options' => array(
+                    ]),
+                    new Column('description', [
+                        'type' => Column::TYPE_VARCHAR,
+                        'size' => 255,
+                        'after' => 'title'
+                    ]),
+                ],
+                'indexes' => [
+                    new Index('PRIMARY', ['id'])
+                ],
+                'options' => [
                     'TABLE_TYPE' => 'BASE TABLE',
                     'AUTO_INCREMENT' => '',
                     'ENGINE' => 'InnoDB',
                     'TABLE_COLLATION' => 'utf8_general_ci'
-                )
-            )
+                ]
+            ]
         );
     }
 }
