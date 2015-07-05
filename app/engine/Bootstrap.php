@@ -84,7 +84,7 @@ class Bootstrap
         $url = new \Engine\Url();
         $url->setBaseUri($config->app->baseUri);
         $url->setBasePath(ROOT_PATH);
-        $di->set('url', $url);
+        $di->setShared('url', $url);
 
         // Setting up the view component
         $di->setShared('view', function() use ($config, $di) {
@@ -101,6 +101,33 @@ class Bootstrap
             }
             $voltOptions['compiledPath'] = $config->app->cacheDir . 'volt/';
             $voltOptions['compiledSeparator'] = '_';
+            $volt->setOptions($voltOptions);
+            $phtml = new \Phalcon\Mvc\View\Engine\Php($view, $di);
+
+            $view->registerEngines([
+                '.volt' => $volt,
+                '.phtml' => $phtml
+            ]);
+            return $view;
+        });
+
+        // Setting up the widget view component
+        $di->set('viewWidget', function() use ($config, $di) {
+            $view = new \Phalcon\Mvc\View();
+            $view->setLayoutsDir(THEMES_PATH . 'layouts/');
+            $view->setLayout('widget');
+            $view->disableLevel([
+                \Phalcon\Mvc\View::LEVEL_AFTER_TEMPLATE => true,
+                \Phalcon\Mvc\View::LEVEL_MAIN_LAYOUT => true
+            ]);
+
+            $volt = new \Phalcon\Mvc\View\Engine\Volt($view, $di);
+            if($config->app->development) {
+                // Prevent caching annoyances
+                $voltOptions['compileAlways'] = true;
+            }
+            $voltOptions['compiledPath'] = $config->app->cacheDir . 'volt/';
+            $voltOptions['compiledSeparator'] = 'widget_';
             $volt->setOptions($voltOptions);
             $phtml = new \Phalcon\Mvc\View\Engine\Php($view, $di);
 

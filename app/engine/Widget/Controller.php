@@ -6,20 +6,16 @@
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
-namespace Core\Controllers;
-
-use Engine\Controller;
-use Phalcon\Mvc\View;
+namespace Engine\Widget;
 
 /**
- * Class IndexController
- * @package Core\Controllers
+ * Class Controller
+ * @package Engine\Widget
  */
-class IndexController extends Controller
+class Controller extends \Phalcon\Mvc\Controller
 {
-    public function indexAction()
+    protected function initialize()
     {
 
     }
 }
-

@@ -551,7 +551,7 @@ class User extends Model
             'bind'       => [1 => $id],
             'columns'    => ['role_id'],
             'cache'      => [
-                'key'      => sha1("roleId-$id"),
+                'key'      => md5("model_user.role_id.$id"),
                 'lifetime' => 3600
             ]
         ]);
