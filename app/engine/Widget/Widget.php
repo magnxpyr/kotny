@@ -15,12 +15,25 @@ use Phalcon\Di\Injectable;
  */
 class Widget extends Injectable
 {
-    public function render($widget, $params)
+    /**
+     * Render widget
+     * $widget = widgetName
+     * $widget = [widgetName, action]
+     *
+     * @param string|array $widget
+     * @param null|array $params
+     */
+    public function render($widget, $params = null)
     {
+        if (is_array($widget)) {
+            $widgetName = $widget[0];
+            $action = $widget[1];
+        } else {
+            $widgetName = $widget;
+            $action = 'index';
+        }
         $view = $this->di->get('viewWidget');
-        $view->setViewsDir(APP_PATH . 'modules/Core/Views/');
-        $elements = explode('/', $widget);
-        $action = isset($elements[1]) ? $elements[1] : 'index';
-        $view->getRender($elements[0], $action, $params);
+        $view->setViewsDir(APP_PATH . "widgets/$widgetName/");
+        $view->render($widgetName, $action, $params);
     }
 }
