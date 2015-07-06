@@ -8,6 +8,7 @@
 
 namespace Engine\Widget;
 use Phalcon\Di\Injectable;
+use Widgets\Menu\Controller;
 
 /**
  * Class Widget
@@ -32,8 +33,13 @@ class Widget extends Injectable
             $widgetName = $widget;
             $action = 'index';
         }
-        $view = $this->di->get('viewWidget');
+        $controllerClass = "\\Widget\\$widgetName\\Controller";
+        $controller = new $controllerClass();
+        $view = $controller->di->get('viewWidget');
         $view->setViewsDir(APP_PATH . "widgets/$widgetName/");
-        $view->render($widgetName, $action, $params);
+        $view->pick($action);
+        $view->render('controller', $action, $params);
+        print_r($view); die;
+        $controller->{"{$action}Action"}();
     }
 }

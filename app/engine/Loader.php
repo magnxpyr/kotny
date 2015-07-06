@@ -21,7 +21,7 @@ class Loader extends \Phalcon\Loader {
         $this->registerNamespaces(array_merge($namespaces->toArray(), array(
             'Phalcon' => APP_PATH . 'vendor/phalcon/incubator/Library/Phalcon/',
             'Engine' => APP_PATH . 'engine/',
-            'Widget' => APP_PATH . 'widget/'
+            'Widget' => APP_PATH . 'widgets/'
         )));
         $this->register();
 

@@ -6,7 +6,7 @@
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
-namespace Widgets\Menu;
+namespace Widget\Menu;
 
 /**
  * Class Controller
@@ -18,5 +18,4 @@ class Controller extends \Engine\Widget\Controller
     {
 
     }
-
 }
