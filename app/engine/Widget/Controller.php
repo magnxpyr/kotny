@@ -14,8 +14,13 @@ namespace Engine\Widget;
  */
 class Controller extends \Phalcon\Mvc\Controller
 {
+    /**
+     * @var \Phalcon\Mvc\View() $viewWidget
+     */
+    protected $viewWidget;
+
     public function initialize()
     {
-
+        $this->viewWidget = $this->di->get('viewWidget');
     }
 }

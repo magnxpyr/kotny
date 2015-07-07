@@ -14,7 +14,11 @@ namespace Widget\Menu;
  */
 class Controller extends \Engine\Widget\Controller
 {
-    public function indexAction()
+    /**
+     * Generate Menu based on menuId
+     * @param $params
+     */
+    public function indexAction($params)
     {
 
     }

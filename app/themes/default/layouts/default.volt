@@ -9,14 +9,15 @@
             </button>
             <a class="navbar-brand" href="#">magnxpyr</a>
         </div>
-        <?php echo $this->partial('menu'); ?>
+        {{ widget.render('Menu', ['id': 1]) }}
+        {{ partial('menu') }}
     </div>
 </nav>
 
 <div class="container">
     <h1><?php echo $title ?></h1>
-    <?php echo $this->flashSession->output(); ?>
-    <?php echo $this->getContent(); ?>
+    {{ flashSession.output }}
+    {{ content() }}
     <hr>
     <footer>
         <p>Powered by <a href="http://www.magnxpyr.com">Magnxpyr Network</a> &copy; <?php echo date('Y'); ?></p>

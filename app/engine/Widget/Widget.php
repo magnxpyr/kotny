@@ -22,8 +22,9 @@ class Widget
      *
      * @param string|array $widget
      * @param null|array $params
+     * @param null|array $options
      */
-    public function render($widget, $params = null)
+    public function render($widget, $params = null, $options = null)
     {
         if (is_array($widget)) {
             $widgetName = $widget[0];
@@ -32,12 +33,13 @@ class Widget
             $widgetName = $widget;
             $action = 'index';
         }
+
         $controllerClass = "\\Widget\\$widgetName\\Controller";
         $controller = new $controllerClass();
         $controller->initialize();
-        $view = $controller->di->get('viewWidget');
-        $view->setViewsDir(APP_PATH . "widgets/$widgetName/");
-        $view->render('controller', $action, $params);
-    //    $controller->{"{$action}Action"}();
+        $controller->viewWidget->setViewsDir(APP_PATH . "widgets/$widgetName/");
+        $controller->{"{$action}Action"}($params);
+        $controller->viewWidget->render('controller', $action);
+
     }
 }
