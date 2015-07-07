@@ -114,13 +114,8 @@ class Bootstrap
         // Setting up the widget view component
         $di->set('viewWidget', function() use ($config, $di) {
             $view = new \Phalcon\Mvc\View();
-            $view->setLayoutsDir(THEMES_PATH . 'layouts/');
+            $view->setLayoutsDir('../../themes/' . DEFAULT_THEME . '/layouts/');
             $view->setLayout('widget');
-            $view->disableLevel([
-                \Phalcon\Mvc\View::LEVEL_AFTER_TEMPLATE => true,
-                \Phalcon\Mvc\View::LEVEL_MAIN_LAYOUT => true
-            ]);
-
             $volt = new \Phalcon\Mvc\View\Engine\Volt($view, $di);
             if($config->app->development) {
                 // Prevent caching annoyances

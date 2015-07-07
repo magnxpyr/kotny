@@ -18,4 +18,4 @@
         <p>Invite users and share your workload as invoice supports multiple users with different permissions. It helps your business to be more productive and efficient. </p>
     </div>
 </div>
-{{ widget.render('Menu') }}
+{{ widget.render('Menu', ['id': 'dfds']) }}

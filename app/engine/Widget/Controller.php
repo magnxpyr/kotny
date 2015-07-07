@@ -14,7 +14,7 @@ namespace Engine\Widget;
  */
 class Controller extends \Phalcon\Mvc\Controller
 {
-    protected function initialize()
+    public function initialize()
     {
 
     }
