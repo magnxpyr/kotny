@@ -16,9 +16,8 @@ class Controller extends \Engine\Widget\Controller
 {
     /**
      * Generate Menu based on menuId
-     * @param $params
      */
-    public function indexAction($params)
+    public function indexAction()
     {
 
     }

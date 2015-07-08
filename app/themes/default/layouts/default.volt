@@ -16,7 +16,7 @@
 
 <div class="container">
     <h1><?php echo $title ?></h1>
-    {{ flashSession.output }}
+    {{ flashSession.output() }}
     {{ content() }}
     <hr>
     <footer>
