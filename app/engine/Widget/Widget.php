@@ -7,7 +7,6 @@
  */
 
 namespace Engine\Widget;
-use Phalcon\Di\Injectable;
 
 /**
  * Class Widget
@@ -35,11 +34,17 @@ class Widget
         }
 
         $controllerClass = "\\Widget\\$widgetName\\Controller";
+
+        /**
+         * @var \Engine\Widget\Controller $controller
+         */
         $controller = new $controllerClass();
+        if ($params !== null) {
+            $controller->setParams($params);
+        }
         $controller->initialize();
         $controller->viewWidget->setViewsDir(APP_PATH . "widgets/$widgetName/");
-        $controller->{"{$action}Action"}($params);
+        $controller->{"{$action}Action"}();
         $controller->viewWidget->render('controller', $action);
-
     }
 }
