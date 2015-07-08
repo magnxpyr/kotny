@@ -63,7 +63,7 @@ abstract class AdminController extends Controller {
     protected function setupNavigation() {
         $navigation = [
             'admin' => [
-                'href' => '/admin',
+                'href' => 'admin',
                 'title' => 'Dashboard',
                 'prepend' => '<i class="fa fa-dashboard"></i>'
             ],
@@ -73,27 +73,27 @@ abstract class AdminController extends Controller {
                 'items' => [ // type - dropdown
                     'modules' => [
                         'title' => 'Modules',
-                        'href' => '/admin/tools/modules/index',
+                        'href' => 'admin/tools/modules/index',
                         'prepend' => '<i class="fa fa-circle-o"></i>'
                     ],
                     'controllers' => [
                         'title' => 'Controllers',
-                        'href' => '/admin/tools/controllers/index',
+                        'href' => 'admin/tools/controllers/index',
                         'prepend' => '<i class="fa fa-circle-o"></i>'
                     ],
                     'models' => [
                         'title' => 'Models',
-                        'href' => '/admin/tools/models/index',
+                        'href' => 'admin/tools/models/index',
                         'prepend' => '<i class="fa fa-circle-o"></i>'
                     ],
                     'migrations' => [
                         'title' => 'Migrations',
-                        'href' => '/admin/tools/migrations/index',
+                        'href' => 'admin/tools/migrations/index',
                         'prepend' => '<i class="fa fa-circle-o"></i>'
                     ],
                     'scaffold' => [
                         'title' => 'Scaffold',
-                        'href' => '/admin/tools/scaffold/index',
+                        'href' => 'admin/tools/scaffold/index',
                         'prepend' => '<i class="fa fa-circle-o"></i>'
                     ]
                 ]
@@ -104,7 +104,7 @@ abstract class AdminController extends Controller {
                 'items' => [
                     'user' => [
                         'title' => 'Users',
-                        'href' => '/admin/core/user/index',
+                        'href' => 'admin/core/user/index',
                         'prepend' => '<i class="fa fa-user"></i>'
                     ]
                 ]

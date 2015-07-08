@@ -64,7 +64,7 @@ class MenuMigration_100 extends Migration
                         'type' => Column::TYPE_INTEGER,
                         'size' => 5,
                         'notNull' => true,
-                        'after' => 'published'
+                        'after' => 'status'
                     ]),
                     new Column('level', [
                         'type' => Column::TYPE_INTEGER,
@@ -93,7 +93,7 @@ class MenuMigration_100 extends Migration
                 ],
                 'indexes' => [
                     new Index('PRIMARY', ['id']),
-                    new Index('INDEX', ['menu_type_id', 'role_id', 'lft', 'rgt', 'level', 'parent_id'], 'INDEX')
+                    new Index('INDEX', ['menu_type_id', 'role_id', 'lft', 'rgt', 'level', 'parent_id'])
                 ],
                 'options' => [
                     'TABLE_TYPE' => 'BASE TABLE',

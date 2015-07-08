@@ -246,6 +246,7 @@ class Bootstrap
         ]);
 
         $di->setShared('cache', $cache);
+        $di->setShared('modelsCache', $cache);
 
         // If the configuration specify the use of metadata adapter use it or use memory otherwise
         $di->setShared('modelsMetadata', function () {

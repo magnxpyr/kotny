@@ -104,7 +104,7 @@ class UserMigration_100 extends Migration
             ],
             'indexes' => [
                 new Index('PRIMARY', ['id']),
-                new Index('UNIQUE', [ 'username', 'email', 'facebook_id', 'gplus_id'], 'UNIQUE')
+                new Index('UNIQUE', ['username', 'email', 'facebook_id', 'gplus_id'], 'UNIQUE')
             ],
             'options' => [
                 'TABLE_TYPE' => 'BASE TABLE',
