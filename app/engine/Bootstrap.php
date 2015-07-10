@@ -144,7 +144,7 @@ class Bootstrap
 
         // Set auth in di
         $di->setShared('auth', function() {
-            return new \Engine\Plugins\Auth();
+            return new \Engine\Auth\Auth();
         });
 
 

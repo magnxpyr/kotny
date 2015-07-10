@@ -6,7 +6,7 @@
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
-namespace Engine\Plugins\Connectors;
+namespace Engine\Auth\Connectors;
 
 use Engine\Utils;
 use Phalcon\Di\Injectable;

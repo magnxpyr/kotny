@@ -14,8 +14,6 @@ echo $this->getContent();
     <div class="col-md-6 col-sm-6">
         <div class="col-sm-9 col-md-9">
             <?php echo $this->tag->form(array('user/login')); ?>
-            <?php echo $form->render('csrf'); ?>
-
             <fieldset>
                 <div class="form-group">
                     <?php echo $form->label('username', array('class' => 'control-label')); ?>
@@ -49,6 +47,8 @@ echo $this->getContent();
                     <?php echo $form->render('Login'); ?>
                 </div>
             </fieldset>
+            <?php echo $form->render('csrf', ['value' => $this->security->getToken()]); ?>
+            <?php echo $this->tag->endForm(); ?>
         </div>
     </div>
     <div class="col-sm-6 col-md-6">
