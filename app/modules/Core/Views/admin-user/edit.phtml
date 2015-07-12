@@ -1,0 +1,105 @@
+
+<?php echo $this->getContent(); ?>
+
+<?php echo $this->tag->form("user/save") ?>
+
+<table width="100%">
+    <tr>
+        <td align="left"><?php echo $this->tag->linkTo(array("user", "Back")) ?></td>
+        <td align="right"><?php echo $this->tag->submitButton("Save") ?></td>
+    </tr>
+</table>
+
+<div align="center">
+    <h1>Edit user</h1>
+</div>
+
+<table>
+    <tr>
+        <td align="right">
+            <label for="username">Username</label>
+        </td>
+        <td align="left">
+            <?php echo $this->tag->textField(array("username", "size" => 30)) ?>
+        </td>
+    </tr>
+    <tr>
+        <td align="right">
+            <label for="auth_key">Auth Of Key</label>
+        </td>
+        <td align="left">
+            <?php echo $this->tag->textField(array("auth_key", "size" => 30)) ?>
+        </td>
+    </tr>
+    <tr>
+        <td align="right">
+            <label for="hash_key">Hash Of Key</label>
+        </td>
+        <td align="left">
+            <?php echo $this->tag->textField(array("hash_key", "size" => 30)) ?>
+        </td>
+    </tr>
+    <tr>
+        <td align="right">
+            <label for="password">Password</label>
+        </td>
+        <td align="left">
+            <?php echo $this->tag->textField(array("password", "size" => 30)) ?>
+        </td>
+    </tr>
+    <tr>
+        <td align="right">
+            <label for="reset_token">Reset Of Token</label>
+        </td>
+        <td align="left">
+            <?php echo $this->tag->textField(array("reset_token", "size" => 30)) ?>
+        </td>
+    </tr>
+    <tr>
+        <td align="right">
+            <label for="email">Email</label>
+        </td>
+        <td align="left">
+            <?php echo $this->tag->textField(array("email", "size" => 30)) ?>
+        </td>
+    </tr>
+    <tr>
+        <td align="right">
+            <label for="role">Role</label>
+        </td>
+        <td align="left">
+            <?php echo $this->tag->textField(array("role", "type" => "number")) ?>
+        </td>
+    </tr>
+    <tr>
+        <td align="right">
+            <label for="status">Status</label>
+        </td>
+        <td align="left">
+            <?php echo $this->tag->textField(array("status", "type" => "number")) ?>
+        </td>
+    </tr>
+    <tr>
+        <td align="right">
+            <label for="register_date">Register Of Date</label>
+        </td>
+        <td align="left">
+            <?php echo $this->tag->textField(array("register_date", "type" => "number")) ?>
+        </td>
+    </tr>
+    <tr>
+        <td align="right">
+            <label for="last_visit_date">Last Of Visit Of Date</label>
+        </td>
+        <td align="left">
+            <?php echo $this->tag->textField(array("last_visit_date", "type" => "number")) ?>
+        </td>
+    </tr>
+
+    <tr>
+        <td><?php echo $this->tag->hiddenField("id") ?></td>
+        <td><?php echo $this->tag->submitButton("Save") ?></td>
+    </tr>
+</table>
+
+</form>

@@ -12,7 +12,7 @@ namespace Engine\Widget;
  * Class Controller
  * @package Engine\Widget
  */
-class Controller extends \Phalcon\Mvc\Controller
+abstract class Controller extends \Phalcon\Mvc\Controller
 {
     /**
      * @var \Phalcon\Mvc\View() $viewWidget

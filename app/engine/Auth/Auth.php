@@ -34,7 +34,6 @@ class Auth extends Component
     public function __construct()
     {
         $this->cookie = $this->config->app->cookie;
-        $this->setReturnUrl();
     }
 
     /**
@@ -45,6 +44,7 @@ class Auth extends Component
      */
     public function login($form)
     {
+        $this->setReturnUrl();
         if($this->isUserSignedIn()) {
             return $this->redirectReturnUrl();
         }
@@ -59,7 +59,7 @@ class Auth extends Component
                     'password' => $this->request->getPost('password', 'string'),
                     'remember' => $this->request->getPost('remember', 'int')
                 ]);
-                return $this->redirectReturnUrl();
+                $this->redirectReturnUrl();
             } else {
                 foreach ($form->getMessages() as $message) {
                     $this->flash->error($message->getMessage());
@@ -71,10 +71,10 @@ class Auth extends Component
 
     /**
      * Logs on using the information in the cookies
-     *
+     * @param bool $redirect
      * @return \Phalcon\Http\Response
      */
-    public function loginWithRememberMe()
+    public function loginWithRememberMe($redirect = true)
     {
         $cookie = explode(':', $this->cookies->get($this->cookie->name)->getValue());
     //    $auth = UserAuthTokens::findFirstBySelector($cookie[0]);
@@ -89,13 +89,17 @@ class Auth extends Component
                     $this->setRememberMe(null, $auth);
                     // $this->saveSuccessLogin($user);
 
-                    return $this->redirectReturnUrl();
+                    if($redirect) {
+                        return $this->redirectReturnUrl();
+                    }
                 }
             }
             $auth->delete();
         }
         $this->cookies->get($this->cookie->name)->delete();
-        return $this->redirectReturnUrl();
+        if($redirect) {
+            return $this->redirectReturnUrl();
+        }
     }
 
     /**
@@ -159,6 +163,7 @@ class Auth extends Component
      */
     public function loginWithFacebook()
     {
+        $this->setReturnUrl();
         if($this->isUserSignedIn()) {
             return $this->redirectReturnUrl();
         }
@@ -203,6 +208,7 @@ class Auth extends Component
      */
     public function loginWithGoogle()
     {
+        $this->setReturnUrl();
         if($this->isUserSignedIn()) {
             return $this->redirectReturnUrl();
         }
@@ -423,6 +429,7 @@ class Auth extends Component
      */
     public function remove()
     {
+        $this->setReturnUrl();
         $fbAppId = $this->config->connectors->facebook->appId; //fb id
         if ($this->cookies->has($this->cookie->name)) {
             $cookie = explode(':', $this->cookies->get($this->cookie->name));
@@ -482,10 +489,10 @@ class Auth extends Component
      */
     private function setReturnUrl()
     {
-        if ($this->request->has('returnurl')) {
-            $returnUrl = $this->request->get('returnurl', 'string');
-            if ($returnUrl != $this->url->get('user/login')) {
-                $this->session->set('returnurl', $returnUrl);
+        if ($this->request->has('returnUrl')) {
+            $returnUrl = $this->request->get('returnUrl', 'string');
+            if ($returnUrl != $this->url->get('user/login') || $returnUrl != $this->url->get('user/register')) {
+                $this->session->set('returnUrl', $returnUrl);
             }
         }
     }
@@ -495,12 +502,12 @@ class Auth extends Component
      * @return \Phalcon\Http\Response|\Phalcon\Http\ResponseInterface
      */
     public function redirectReturnUrl() {
-        if ($this->session->has('returnurl')) {
-            $returnUrl = $this->session->get('returnurl');
-            $this->session->remove('returnurl');
+        if ($this->session->has('returnUrl')) {
+            $returnUrl = $this->session->get('returnUrl');
+            $this->session->remove('returnUrl');
         } else {
-            $returnUrl = $this->url->get('/');
+            $returnUrl = $this->url->get();
         }
-        return $this->response->redirect($returnUrl);
+        return $this->response->redirect($returnUrl != '/' ? $returnUrl : '');
     }
 }

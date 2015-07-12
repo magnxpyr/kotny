@@ -39,9 +39,8 @@ class UserController extends Controller
             $this->auth->login($form);
         } catch (\Exception $e) {
             $this->flash->error($e->getMessage());
-            $this->auth->redirectReturnUrl();
         }
-        $this->view->form = $form;
+        $this->view->setVar('form', $form);
     }
 
     /**
@@ -53,7 +52,7 @@ class UserController extends Controller
             $this->view->disable();
             $this->auth->loginWithFacebook();
         } catch(\Exception $e) {
-            $this->flash->error($this->t->_('There was an error connecting to %name%', ['name' => 'Facebook']));
+            $this->flashSession->error($this->t->_('There was an error connecting to %name%', ['name' => 'Facebook']));
             $this->auth->redirectReturnUrl();
         }
     }
@@ -67,7 +66,7 @@ class UserController extends Controller
             $this->view->disable();
             $this->auth->loginWithGoogle();
         } catch(\Exception $e) {
-            $this->flash->error($this->t->_('There was an error connecting to %name%', ['name' => 'Google']));
+            $this->flashSession->error($this->t->_('There was an error connecting to %name%', ['name' => 'Google']));
             $this->auth->redirectReturnUrl();
         }
     }
@@ -77,6 +76,9 @@ class UserController extends Controller
      */
     public function registerAction()
     {
+        if($this->auth->isUserSignedIn()) {
+            return $this->auth->redirectReturnUrl();
+        }
         $this->setTitle('Register');
         $form = new RegisterForm();
         if ($this->request->isPost()) {
@@ -107,7 +109,7 @@ class UserController extends Controller
                 $this->flashErrors($form);
             }
         }
-        $this->view->form = $form;
+        $this->view->setVar('form', $form);
     }
 
     /**
@@ -216,7 +218,7 @@ class UserController extends Controller
         $this->setTitle('Forgot password');
 
         $form = new ForgotPasswordForm();
-        $this->view->form = $form;
+        $this->view->setVar('form', $form);
 
         // Request password reset
         if ($this->request->isPost()) {

@@ -15,7 +15,7 @@
 </nav>
 
 <div class="container">
-    <h1><?php echo $title ?></h1>
+    {{ title }}
     {{ flashSession.output() }}
     {{ content() }}
     <hr>

@@ -19,6 +19,7 @@ abstract class Controller extends \Phalcon\Mvc\Controller {
      * @return void
      */
     protected function initialize() {
+        $this->view->setVar('title', '');
         if(!$this->request->isAjax()) {
             $this->setupAssets();
             $this->setTitle(null);
@@ -31,7 +32,7 @@ abstract class Controller extends \Phalcon\Mvc\Controller {
      */
     protected function setTitle($title, $headerOnly = false) {
         if($title === null) {
-            $this->view->title = '';
+            $this->view->setVar('title', '');
             return;
         }
         switch($this->config->app->siteNameLocation) {
@@ -46,7 +47,7 @@ abstract class Controller extends \Phalcon\Mvc\Controller {
                 break;
         }
         if(!$headerOnly) {
-            $this->view->title = $title;
+            $this->view->setVar('title', "<h1>$title</h1>");
         }
     }
 

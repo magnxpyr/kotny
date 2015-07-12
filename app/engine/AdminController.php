@@ -19,6 +19,7 @@ abstract class AdminController extends Controller {
      * @return void
      */
     protected function initialize() {
+        $this->view->setVar('title', '');
         if ($this->request->isAjax()) {
             return;
         }

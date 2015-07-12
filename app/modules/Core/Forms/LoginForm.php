@@ -34,7 +34,7 @@ class LoginForm extends Form
      */
     public function getCsrf()
     {
-        return ($this->lastCsrfValue !== null) ? $this->lastCsrfValue : $this->lastCsrfValue = $this->security->getToken();
+        return ($this->lastCsrfValue !== null) ? $this->lastCsrfValue : $this->lastCsrfValue = $this->security->getSessionToken();
     }
 
     /**
@@ -78,7 +78,7 @@ class LoginForm extends Form
         // CSRF
         $csrf = new Hidden('csrf');
         $csrf->addValidator(new Identical([
-            'value' => $this->security->getSessionToken(),
+            'accepted' => $this->security->getSessionToken(),
             'message' => $this->t->_('CSRF validation failed')
         ]));
         $this->add($csrf);
