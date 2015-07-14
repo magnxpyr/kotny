@@ -8,6 +8,6 @@
 
 namespace Admin;
 
-class Module extends \Engine\Module {
+class Module extends \Engine\Mvc\Module {
 
 }

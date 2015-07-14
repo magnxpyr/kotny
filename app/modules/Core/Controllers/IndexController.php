@@ -8,7 +8,7 @@
 
 namespace Core\Controllers;
 
-use Engine\Controller;
+use Engine\Mvc\Controller;
 use Phalcon\Mvc\View;
 
 /**

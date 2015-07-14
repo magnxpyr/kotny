@@ -6,7 +6,7 @@
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
-namespace Engine\Auth\Connectors;
+namespace Engine\Mvc\Connectors;
 
 use Engine\Utils;
 use Phalcon\Di\Injectable;

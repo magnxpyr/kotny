@@ -6,7 +6,7 @@
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
-namespace Engine;
+namespace Engine\Mvc;
 
 use Phalcon\DiInterface;
 use Phalcon\Mvc\ModuleDefinitionInterface;

@@ -6,7 +6,7 @@
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
-namespace Engine\Auth\Connectors;
+namespace Engine\Mvc\Connectors;
 
 use Facebook\FacebookSession;
 use Facebook\FacebookRequest;

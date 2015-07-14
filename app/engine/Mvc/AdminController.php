@@ -6,7 +6,7 @@
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
-namespace Engine;
+namespace Engine\Mvc;
 
 /**
  * Base Admin Controller

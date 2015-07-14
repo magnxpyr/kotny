@@ -16,7 +16,7 @@ use Core\Forms\ResetPasswordForm;
 use Core\Models\User;
 use Core\Models\UserEmailConfirmations;
 use Core\Models\UserResetPasswords;
-use Engine\Controller;
+use Engine\Mvc\Controller;
 
 /**
  * Class UserController

@@ -7,7 +7,7 @@ return [
         " * @author      Stefan Chiriac <stefan@magnxpyr.com>\n */",
     'modulesPath' => APP_PATH . 'modules/',
     'migrationsPath' => APP_PATH . 'migrations/',
-    'baseController' => ['Engine\Controller', 'Engine\AdminController'],
-    'baseModule' => 'Engine\Module',
+    'baseController' => ['Engine\Mvc\Controller', 'Engine\Mvc\AdminController'],
+    'baseModule' => 'Engine\Mvc\Module',
     'full' => false
 ];

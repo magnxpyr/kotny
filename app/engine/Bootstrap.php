@@ -81,7 +81,7 @@ class Bootstrap
         $di->setShared('router', $router);
 
         // Generate urls
-        $url = new \Engine\Url();
+        $url = new \Engine\Mvc\Url();
         $url->setBaseUri($config->app->baseUri);
         $url->setBasePath(ROOT_PATH);
         $di->setShared('url', $url);
@@ -144,7 +144,7 @@ class Bootstrap
 
         // Set auth in di
         $di->setShared('auth', function() {
-            return new \Engine\Auth\Auth();
+            return new Engine\Mvc\Auth();
         });
 
 

@@ -8,9 +8,9 @@
 
 namespace Core\Controllers;
 
-use Engine\AdminController;
 use Phalcon\Mvc\Model\Criteria;
 use Phalcon\Paginator\Adapter\Model as Paginator;
+use Engine\Mvc\AdminController;
 use Core\Models\User;
 
 class AdminUserController extends AdminController

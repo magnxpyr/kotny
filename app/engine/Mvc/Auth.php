@@ -6,12 +6,12 @@
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
-namespace Engine\Auth;
+namespace Engine\Mvc;
 
 use Core\Models\UserAuthTokens;
 use Core\Models\User;
-use Engine\Auth\Connectors\GoogleConnector;
-use Engine\Auth\Connectors\FacebookConnector;
+use Engine\Mvc\Connectors\GoogleConnector;
+use Engine\Mvc\Connectors\FacebookConnector;
 use Phalcon\Mvc\User\Component;
 
 /**

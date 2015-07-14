@@ -19,7 +19,7 @@
 
 namespace Tools\Controllers;
 
-use Engine\AdminController;
+use Engine\Mvc\AdminController;
 use Tools\Helpers\Tools;
 
 /**

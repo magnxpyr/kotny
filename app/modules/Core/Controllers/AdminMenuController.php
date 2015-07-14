@@ -8,9 +8,9 @@
 
 namespace Core\Controllers;
 
-use Engine\AdminController;
 use Phalcon\Mvc\Model\Criteria;
 use Phalcon\Paginator\Adapter\Model as Paginator;
+use Engine\Mvc\AdminController;
 use Core\Models\Menu;
 
 /**
@@ -42,7 +42,7 @@ class AdminMenuController extends AdminController
 
         $parameters = $this->persistent->parameters;
         if (!is_array($parameters)) {
-            $parameters = array();
+            $parameters = [];
         }
         $parameters["order"] = "id";
 
@@ -50,16 +50,16 @@ class AdminMenuController extends AdminController
         if (count($menu) == 0) {
             $this->flash->notice("The search did not find any menu");
 
-            $this->dispatcher->forward(array(
+            $this->dispatcher->forward([
                 "action" => "index"
-            ));
+            ]);
         }
 
-        $paginator = new Paginator(array(
+        $paginator = new Paginator([
             "data" => $menu,
             "limit"=> 10,
             "page" => $numberPage
-        ));
+        ]);
 
         $this->view->page = $paginator->getPaginate();
     }
@@ -84,9 +84,9 @@ class AdminMenuController extends AdminController
             if (!$menu) {
                 $this->flash->error("menu was not found");
 
-                $this->dispatcher->forward(array(
+                $this->dispatcher->forward([
                     "action" => "index"
-                ));
+                ]);
             }
             $this->view->id = $menu->id;
 
@@ -112,9 +112,9 @@ class AdminMenuController extends AdminController
     public function createAction()
     {
         if (!$this->request->isPost()) {
-            $this->dispatcher->forward(array(
+            $this->dispatcher->forward([
                 "action" => "index"
-            ));
+            ]);
         }
 
         $menu = new Menu();
@@ -137,16 +137,16 @@ class AdminMenuController extends AdminController
                 $this->flash->error($message);
             }
 
-            $this->dispatcher->forward(array(
+            $this->dispatcher->forward([
                 "action" => "new"
-            ));
+            ]);
         }
 
         $this->flash->success("menu was created successfully");
 
-        $this->dispatcher->forward(array(
+        $this->dispatcher->forward([
             "action" => "index"
-        ));
+        ]);
     }
 
     /**
@@ -155,9 +155,9 @@ class AdminMenuController extends AdminController
     public function saveAction()
     {
         if (!$this->request->isPost()) {
-            $this->dispatcher->forward(array(
+            $this->dispatcher->forward([
                 "action" => "index"
-            ));
+            ]);
         }
 
         $id = $this->request->getPost("id");
@@ -166,9 +166,9 @@ class AdminMenuController extends AdminController
         if (!$menu) {
             $this->flash->error("menu does not exist " . $id);
 
-            $this->dispatcher->forward(array(
+            $this->dispatcher->forward([
                 "action" => "index"
-            ));
+            ]);
         }
 
         $menu->setMenuTypeId($this->request->getPost("menu_type_id", "string"));
@@ -189,17 +189,17 @@ class AdminMenuController extends AdminController
                 $this->flash->error($message);
             }
 
-            $this->dispatcher->forward(array(
+            $this->dispatcher->forward([
                 "action" => "edit",
-                "params" => array($menu->id)
-            ));
+                "params" => [$menu->id]
+            ]);
         }
 
         $this->flash->success("menu was updated successfully");
 
-        $this->dispatcher->forward(array(
+        $this->dispatcher->forward([
             "action" => "index"
-        ));
+        ]);
     }
 
     /**
@@ -213,9 +213,9 @@ class AdminMenuController extends AdminController
         if (!$menu) {
             $this->flash->error("menu was not found");
 
-            $this->dispatcher->forward(array(
+            $this->dispatcher->forward([
                 "action" => "index"
-            ));
+            ]);
         }
 
         if (!$menu->delete()) {
@@ -223,15 +223,15 @@ class AdminMenuController extends AdminController
                 $this->flash->error($message);
             }
 
-            $this->dispatcher->forward(array(
+            $this->dispatcher->forward([
                 "action" => "search"
-            ));
+            ]);
         }
 
         $this->flash->success("menu was deleted successfully");
 
-        $this->dispatcher->forward(array(
-            "action" => "index"
-        ));
+        $this->dispatcher->forward([
+                "action" => "index"
+        ]);
     }
 }

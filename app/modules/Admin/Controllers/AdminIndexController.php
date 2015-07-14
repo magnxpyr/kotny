@@ -8,7 +8,7 @@
 
 namespace Admin\Controllers;
 
-use Engine\AdminController;
+use Engine\Mvc\AdminController;
 
 class AdminIndexController extends AdminController {
 

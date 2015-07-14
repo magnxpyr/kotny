@@ -2,6 +2,9 @@ Magnxpyr CMS
 ==============
 Content management system based on Phalcon Framework
 
+![CS PSR2 badge](https://img.shields.io/badge/CS-PSR%202-orange.svg)
+![Phalcon badge](https://img.shields.io/badge/Phalcon-v2.0.4-brightgreen.svg)
+
 Requirements
 ------------
 To run this application, you need at least:
