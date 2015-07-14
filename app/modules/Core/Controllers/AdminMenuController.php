@@ -24,7 +24,7 @@ class AdminMenuController extends AdminController
      */
     public function indexAction()
     {
-        $this->persistent->parameters = null;
+
     }
 
     /**
@@ -61,7 +61,7 @@ class AdminMenuController extends AdminController
             "page" => $numberPage
         ]);
 
-        $this->view->page = $paginator->getPaginate();
+        $this->view->setVar('page', $paginator->getPaginate());
     }
 
     /**
