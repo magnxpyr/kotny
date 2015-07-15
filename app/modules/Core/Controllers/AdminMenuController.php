@@ -24,7 +24,7 @@ class AdminMenuController extends AdminController
      */
     public function indexAction()
     {
-
+        $this->setTitle('Menu');
     }
 
     /**
@@ -34,13 +34,13 @@ class AdminMenuController extends AdminController
     {
         $numberPage = 1;
         if ($this->request->isPost()) {
-            $query = Criteria::fromInput($this->di, "Menu", $_POST);
-            $this->persistent->parameters = $query->getParams();
+            $query = Criteria::fromInput($this->di, "Core\\Models\\Menu", $_POST);
+            $this->persistent->set('parameters', $query->getParams());
         } else {
             $numberPage = $this->request->getQuery("page", "int");
         }
 
-        $parameters = $this->persistent->parameters;
+        $parameters = $this->persistent->get('parameters');
         if (!is_array($parameters)) {
             $parameters = [];
         }
@@ -69,7 +69,7 @@ class AdminMenuController extends AdminController
      */
     public function newAction()
     {
-
+        $this->setTitle('Create Menu');
     }
 
     /**
@@ -118,7 +118,6 @@ class AdminMenuController extends AdminController
         }
 
         $menu = new Menu();
-
         $menu->setMenuTypeId($this->request->getPost("menu_type_id", "string"));
         $menu->setType($this->request->getPost("type", "string"));
         $menu->setTitle($this->request->getPost("title", "string"));
@@ -131,18 +130,15 @@ class AdminMenuController extends AdminController
         $menu->setRgt($this->request->getPost("rgt", "string"));
         $menu->setRoleId($this->request->getPost("role_id", "string"));
 
-
         if (!$menu->save()) {
-            foreach ($menu->getMessages() as $message) {
-                $this->flash->error($message);
-            }
+           $this->flashErrors($menu);
 
             $this->dispatcher->forward([
                 "action" => "new"
             ]);
         }
 
-        $this->flash->success("menu was created successfully");
+        $this->flash->success("Menu item was created successfully");
 
         $this->dispatcher->forward([
             "action" => "index"
@@ -164,7 +160,7 @@ class AdminMenuController extends AdminController
 
         $menu = Menu::findFirstById($id);
         if (!$menu) {
-            $this->flash->error("menu does not exist " . $id);
+            $this->flash->error("Menu item does not exist " . $id);
 
             $this->dispatcher->forward([
                 "action" => "index"

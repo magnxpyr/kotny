@@ -1,13 +1,10 @@
 {{ content() }}
-<h1>Create menu</h1>
-
 <div class="col-md-6 col-sm-6">
-    {{ form("menu/create", "method":"post", "class": "form-horizontal") }}
-        {{ link_to("menu", "Go Back") }}
+    {{ form("admin/core/menu/create", "method":"post", "class": "form-horizontal") }}
         <fieldset>
             
             <div class="form-group">
-                <label for="menu_type_id" class="control-label col-sm-4">Menu Of Type</label>
+                <label for="menu_type_id" class="control-label col-sm-4">Menu Type</label>
                 <div class="input-group">
                     {{ text_field("menu_type_id", "size" : 30, "type": "numeric", "class": "form-control") }}
                 </div>
@@ -56,27 +53,6 @@
             </div>
 
             <div class="form-group">
-                <label for="level" class="control-label col-sm-4">Level</label>
-                <div class="input-group">
-                    {{ text_field("level", "size" : 30, "type": "numeric", "class": "form-control") }}
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="lft" class="control-label col-sm-4">Lft</label>
-                <div class="input-group">
-                    {{ text_field("lft", "size" : 30, "type": "numeric", "class": "form-control") }}
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="rgt" class="control-label col-sm-4">Rgt</label>
-                <div class="input-group">
-                    {{ text_field("rgt", "size" : 30, "type": "numeric", "class": "form-control") }}
-                </div>
-            </div>
-
-            <div class="form-group">
                 <label for="role_id" class="control-label col-sm-4">Role</label>
                 <div class="input-group">
                     {{ text_field("role_id", "size" : 30, "type": "numeric", "class": "form-control") }}
@@ -87,5 +63,8 @@
                 {{ submit_button("Save", "class": "btn btn-success col-sm-offset-4") }}
             </div>
         </fieldset>
-    </form>
+    {{ end_form() }}
+</div>
+<div class="col-md-6 col-sm-6">
+zzzz
 </div>

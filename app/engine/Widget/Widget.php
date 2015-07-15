@@ -42,6 +42,11 @@ class Widget
         if ($params !== null) {
             $controller->setParams($params);
         }
+        if ($options !== null) {
+            if (isset($options['noRender'])) {
+                $controller->setNoRender($options['noRender']);
+            }
+        }
         $controller->initialize();
         $controller->viewWidget->setViewsDir(APP_PATH . "widgets/$widgetName/");
         $controller->{"{$action}Action"}();

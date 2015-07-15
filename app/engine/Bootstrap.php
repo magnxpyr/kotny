@@ -278,10 +278,10 @@ class Bootstrap
 
         // Register the flash service with custom CSS classes
         $flash = [
-            'success' => 'alert alert-success',
-            'notice'  => 'alert alert-info',
-            'warning' => 'alert alert-warning',
-            'error'   => 'alert alert-danger'
+            'success' => 'alert alert-success alert-dismissible',
+            'notice'  => 'alert alert-info alert-dismissible',
+            'warning' => 'alert alert-warning alert-dismissible',
+            'error'   => 'alert alert-danger alert-dismissible'
         ];
 
         $di->setShared('flash', function() use ($flash) {

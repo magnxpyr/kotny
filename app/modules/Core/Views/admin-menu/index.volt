@@ -1,34 +1,32 @@
+<ul class="nav nav-pills">
+    <li>{{ link_to("admin/core/menu/new", '<i class="glyphicon glyphicon-plus"></i>New') }}</li>
+    <li><a href="#"><i class="glyphicon glyphicon-ok"></i>Publish</a></li>
+    <li><a href="#"><i class="glyphicon glyphicon-remove"></i>Unpublish</a></li>
+    <li><a href="#"><i class="glyphicon glyphicon-trash"></i>Trash</a></li>
+</ul>
 {{ content() }}
-<div class="col-md-6 col-sm-6">
-    {{ form("menu/search", "method":"post", "autocomplete" : "off", "class": "form-horizontal") }}
-        <fieldset>
-            <div class="form-group">
-                <label for="menu_type_id" class="control-label col-sm-4">Menu Type</label>
-                <div class="input-group">
-                    {{ text_field("menu_type_id", "size" : 30, "type": "numeric", "class": "form-control") }}
-                </div>
 
-                <label for="type" class="control-label col-sm-4">Type</label>
-                <div class="input-group">
-                    {{ text_field("type", "size" : 30, "class": "form-control") }}
-                </div>
-
-                <label for="title" class="control-label col-sm-4">Title</label>
-                <div class="input-group">
-                    {{ text_field("title", "size" : 30, "class": "form-control") }}
-                </div>
-
-                <label for="status" class="control-label col-sm-4">Status</label>
-                <div class="input-group">
-                    {{ text_field("status", "size" : 30, "type": "numeric", "class": "form-control") }}
-                </div>
+{{ form("menu/search", "method":"post", "autocomplete" : "off") }}
+    <fieldset>
+        <div class="form-group">
+            <div class="input-group">
+                {{ text_field("menu_type_id", "size" : 30, "type": "numeric", "class": "form-control") }}
             </div>
-        </fieldset>
-    </form>
-</div>
+            <div class="input-group">
+                {{ text_field("type", "size" : 30, "class": "form-control") }}
+            </div>
+            <div class="input-group">
+                {{ text_field("title", "size" : 30, "class": "form-control") }}
+            </div>
+            <div class="input-group">
+                {{ text_field("status", "size" : 30, "type": "numeric", "class": "form-control") }}
+            </div>
+        </div>
+    </fieldset>
+{{ end_form() }}
 
 
-<div class="panel panel-default">
+
     <!-- Table -->
     <table class="table">
         <thead>
@@ -54,7 +52,7 @@
         {% endif %}
         </tbody>
     </table>
-</div>
+
 <nav>
     <ul class="pagination">
         <li>{{ link_to("menu/search", "First") }}</li>

@@ -29,7 +29,7 @@ class AclHandler extends Plugin
     {
         // login user, if remember me exist and user is not logged in
         if ($this->auth->hasRememberMe() && !$this->auth->isUserSignedIn()) {
-            $this->auth->loginWithRememberMe();
+            $this->auth->loginWithRememberMe(false);
         }
 
         //By default the action is deny access

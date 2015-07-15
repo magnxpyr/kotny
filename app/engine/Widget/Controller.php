@@ -25,6 +25,11 @@ abstract class Controller extends \Phalcon\Mvc\Controller
     private $params = [];
 
     /**
+     * @var bool $noRender
+     */
+    private $noRender = true;
+
+    /**
      * Get widget parameter.
      *
      * @param string $key     Param name.
@@ -70,10 +75,28 @@ abstract class Controller extends \Phalcon\Mvc\Controller
     }
 
     /**
+     * @return bool
+     */
+    public function getNoRender()
+    {
+        return $this->noRender;
+    }
+
+    /**
+     * @param bool $value
+     */
+    public function setNoRender($value)
+    {
+        $this->noRender = $value;
+    }
+
+    /**
      * Initialize the widget
      */
     public function initialize()
     {
-        $this->viewWidget = $this->di->get('viewWidget');
+        if ($this->getNoRender()) {
+            $this->viewWidget = $this->di->get('viewWidget');
+        }
     }
 }
