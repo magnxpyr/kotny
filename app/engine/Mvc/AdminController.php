@@ -26,8 +26,8 @@ abstract class AdminController extends Controller {
         $this->view->setMainView(THEMES_PATH . 'admin');
         $this->view->setLayout('admin');
         $this->setupAssets();
-        $this->view->navigation = $this->setupNavigation();
-        $this->view->sidebar_collapse = isset($_COOKIE['mg-sdbrClp']) && $_COOKIE['mg-sdbrClp'] == 1 ? 'sidebar-collapse' : '';
+        $this->view->setVar('navigation', $this->setupNavigation());
+        $this->view->setVar('sidebar_collapse', isset($_COOKIE['mg-sdbrClp']) && $_COOKIE['mg-sdbrClp'] == 1 ? 'sidebar-collapse' : '');
     }
 
     /**
@@ -43,15 +43,15 @@ abstract class AdminController extends Controller {
             ->addJs('vendor/jquery-ui/extra/jquery.mjs.nestedSortable.js')
             ->addJs('vendor/js/js.cookie.js')
             ->addJs('vendor/bootstrap/js/bootstrap.min.js')
-            ->addJs('assets/default/js/mg.js')
             ->addJs('assets/mg_admin/js/app.js')
+            ->addJs('assets/default/js/mg.js')
             ->join(true)
             ->addFilter(new \Phalcon\Assets\Filters\Jsmin());
         $this->assets->collection('header-js');
         $this->assets->collection('header-css-min')
             ->setTargetPath(PUBLIC_PATH . 'assets/mg_admin/css/header.min.css')
             ->setTargetUri('assets/mg_admin/css/header.min.css')
-        //    ->addCss('vendor/jquery-ui/jquery-ui.min.css')
+            ->addCss('vendor/jquery-ui/jquery-ui.min.css')
             ->addCss('assets/mg_admin/css/AdminLTE.min.css')
             ->addCss('assets/mg_admin/css/skins/skin-blue.min.css')
             ->addCss('assets/mg_admin/css/style.css')

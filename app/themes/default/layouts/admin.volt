@@ -12,11 +12,16 @@
         </a>
 
         <!-- Header Navbar -->
-        <nav  role="navigation">
+        <nav class="navbar navbar-static-top"  role="navigation">
             <!-- Sidebar toggle button-->
             <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
-
+                <span class="sr-only">Toggle navigation</span>
             </a>
+
+            <!-- Navbar Right Menu -->
+            <div class="navbar-custom-menu">
+                <ul class="nav navbar-nav">
+                    <li class="sidebar-toggle">Logout</li>
         </nav>
     </header>
     <!-- Left side column. contains the logo and sidebar -->
@@ -27,7 +32,7 @@
             <!-- Sidebar Menu -->
             <ul class="sidebar-menu">
                 <!-- Optionally, you can add icons to the links -->
-                <?php echo $navigation['html'] ?>
+                {{ navigation['html'] }}
             </ul><!-- /.sidebar-menu -->
         </section>
         <!-- /.sidebar -->

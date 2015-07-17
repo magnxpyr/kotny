@@ -7,7 +7,7 @@
  * @Author  Almsaeed Studio
  * @Support <http://www.almsaeedstudio.com>
  * @Email   <support@almsaeedstudio.com>
- * @version 2.1.0
+ * @version 2.1.2
  * @license MIT <http://opensource.org/licenses/MIT>
  */
 
@@ -41,6 +41,10 @@ $.AdminLTE.options = {
   navbarMenuSlimscroll: true,
   navbarMenuSlimscrollWidth: "3px", //The width of the scroll bar
   navbarMenuHeight: "200px", //The height of the inner menu
+  //General animation speed for JS animated elements such as box collapse/expand and 
+  //sidebar treeview slide up/down. This options accepts an integer as milliseconds,
+  //'fast', 'normal', or 'slow'
+  animationSpeed: 500,
   //Sidebar push menu toggle button selector
   sidebarToggleSelector: "[data-toggle='offcanvas']",
   //Activate sidebar push menu
@@ -312,20 +316,18 @@ function _init() {
 
         //Enable sidebar push menu
         if ($(window).width() > (screenSizes.sm - 1)) {
-          $("body").toggleClass('sidebar-collapse');
-          if($("body").hasClass('sidebar-collapse')) {
-            Cookies.set('mg-sdbrClp', 1);
+          if ($("body").hasClass('sidebar-collapse')) {
+              $("body").removeClass('sidebar-collapse').trigger('expanded.pushMenu');
           } else {
-            Cookies.set('mg-sdbrClp', 0);
+              $("body").addClass('sidebar-collapse').trigger('collapsed.pushMenu');
           }
         }
         //Handle sidebar push menu for small screens
         else {
           if ($("body").hasClass('sidebar-open')) {
-            $("body").removeClass('sidebar-open');
-            $("body").removeClass('sidebar-collapse')
+            $("body").removeClass('sidebar-open').removeClass('sidebar-collapse').trigger('collapsed.pushMenu');
           } else {
-            $("body").addClass('sidebar-open');
+            $("body").addClass('sidebar-open').trigger('expanded.pushMenu');
           }
         }
       });
@@ -339,11 +341,9 @@ function _init() {
 
       //Enable expand on hover for sidebar mini
       if ($.AdminLTE.options.sidebarExpandOnHover
-              || ($('body').hasClass('fixed')
-                      && $('body').hasClass('sidebar-mini'))) {
+              ) {
         this.expandOnHover();
       }
-
     },
     expandOnHover: function () {
       var _this = this;
@@ -383,7 +383,7 @@ function _init() {
    */
   $.AdminLTE.tree = function (menu) {
     var _this = this;
-
+    var animationSpeed = $.AdminLTE.options.animationSpeed;
     $("li a", $(menu)).on('click', function (e) {
       //Get the clicked link and the next element
       var $this = $(this);
@@ -392,7 +392,7 @@ function _init() {
       //Check if the next element is a menu and is visible
       if ((checkElement.is('.treeview-menu')) && (checkElement.is(':visible'))) {
         //Close the menu
-        checkElement.slideUp('normal', function () {
+        checkElement.slideUp(animationSpeed, function () {
           checkElement.removeClass('menu-open');
           //Fix the layout in case the sidebar stretches over the height of the window
           //_this.layout.fix();
@@ -404,14 +404,14 @@ function _init() {
         //Get the parent menu
         var parent = $this.parents('ul').first();
         //Close all open menus within the parent
-        var ul = parent.find('ul:visible').slideUp('normal');
+        var ul = parent.find('ul:visible').slideUp(animationSpeed);
         //Remove the menu-open class from the parent
         ul.removeClass('menu-open');
         //Get the parent li
         var parent_li = $this.parent("li");
 
         //Open the target menu and add the menu-open class
-        checkElement.slideDown('normal', function () {
+        checkElement.slideDown(animationSpeed, function () {
           //Add the class active to the parent li
           checkElement.addClass('menu-open');
           parent.find('li.active').removeClass('active');
@@ -533,16 +533,20 @@ function _init() {
   $.AdminLTE.boxWidget = {
     selectors: $.AdminLTE.options.boxWidgetOptions.boxWidgetSelectors,
     icons: $.AdminLTE.options.boxWidgetOptions.boxWidgetIcons,
-    activate: function () {
+    animationSpeed: $.AdminLTE.options.animationSpeed,    
+    activate: function (_box) {
       var _this = this;
+      if (! _box) {
+        _box = document; // activate all boxes per default
+      }
       //Listen for collapse event triggers
-      $(_this.selectors.collapse).on('click', function (e) {
+      $(_box).find(_this.selectors.collapse).on('click', function (e) {
         e.preventDefault();
         _this.collapse($(this));
       });
 
       //Listen for remove event triggers
-      $(_this.selectors.remove).on('click', function (e) {
+      $(_box).find(_this.selectors.remove).on('click', function (e) {
         e.preventDefault();
         _this.remove($(this));
       });
@@ -552,14 +556,14 @@ function _init() {
       //Find the box parent
       var box = element.parents(".box").first();
       //Find the body and the footer
-      var box_content = box.find("> .box-body, > .box-footer");
+      var box_content = box.find("> .box-body, > .box-footer, > form  >.box-body, > form > .box-footer");
       if (!box.hasClass("collapsed-box")) {
         //Convert minus into plus
         element.children(":first")
                 .removeClass(_this.icons.collapse)
                 .addClass(_this.icons.open);
         //Hide the content
-        box_content.slideUp(300, function () {
+        box_content.slideUp(_this.animationSpeed, function () {
           box.addClass("collapsed-box");
         });
       } else {
@@ -568,15 +572,15 @@ function _init() {
                 .removeClass(_this.icons.open)
                 .addClass(_this.icons.collapse);
         //Show the content
-        box_content.slideDown(300, function () {
+        box_content.slideDown(_this.animationSpeed, function () {
           box.removeClass("collapsed-box");
         });
       }
     },
-    remove: function (element) {
+    remove: function (element) {     
       //Find the box parent
       var box = element.parents(".box").first();
-      box.slideUp();
+      box.slideUp(this.animationSpeed);
     }
   };
 }
@@ -657,6 +661,23 @@ function _init() {
       settings.onLoadDone.call(box);
     }
 
+  };
+
+})(jQuery);
+
+/*
+ * EXPLICIT BOX ACTIVATION
+ * -----------------------
+ * This is a custom plugin to use with the component BOX. It allows you to activate
+ * a box inserted in the DOM after the app.js was loaded.
+ *
+ * @type plugin
+ * @usage $("#box-widget").activateBox();
+ */
+(function ($) {
+
+  $.fn.activateBox = function () {
+    $.AdminLTE.boxWidget.activate(this);
   };
 
 })(jQuery);
