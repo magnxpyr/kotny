@@ -110,7 +110,7 @@ class MigrationsController extends ControllerBase
             }
         }
 
-        $this->dispatcher->forward(array(
+        return $this->dispatcher->forward(array(
          'action' => 'index'
         ));
     }

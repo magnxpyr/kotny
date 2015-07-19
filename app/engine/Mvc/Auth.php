@@ -174,7 +174,7 @@ class Auth extends Component
             //    'scope' => 'email,user_birthday,user_location'
                 'scope' => 'email'
             ];
-            return $this->response->redirect($facebook->getLoginUrl($scope), true);
+            return $this->response->redirect($facebook->getLoginUrl($scope), true)->send();
         }
 
         $email = isset($facebookUser['email']) ? $facebookUser['email'] : $this->security->generateToken(8) . '@mg.com';
@@ -215,7 +215,7 @@ class Auth extends Component
         $google = new GoogleConnector();
         $response = $google->connect();
         if ($response['status'] == 0) {
-            return $this->response->redirect($response['redirect']);
+            return $this->response->redirect($response['redirect'])->send();
         }
 
         $gplusId = $response['userinfo']['id'];
@@ -508,6 +508,6 @@ class Auth extends Component
         } else {
             $returnUrl = $this->url->get();
         }
-        return $this->response->redirect($returnUrl != '/' ? $returnUrl : '');
+        return $this->response->redirect($returnUrl != '/' ? $returnUrl : '')->send();
     }
 }

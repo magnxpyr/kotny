@@ -276,6 +276,11 @@ class Bootstrap
             return new \Phalcon\Mailer\Manager($settings);
         });
 
+        // Register helper
+        $di->setShared('helper', function() {
+            return new \Engine\Mvc\Helper();
+        });
+
         // Register the flash service with custom CSS classes
         $flash = [
             'success' => 'alert alert-success alert-dismissible',

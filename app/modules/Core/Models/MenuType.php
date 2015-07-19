@@ -23,6 +23,11 @@ class MenuType extends Model
     protected $id;
 
     /**
+     * @var integer
+     */
+    protected $role_id;
+
+    /**
      * @var string
      */
     protected $title;
@@ -41,6 +46,19 @@ class MenuType extends Model
     public function setId($id)
     {
         $this->id = $id;
+
+        return $this;
+    }
+
+    /**
+     * Method to set the value of field role_id
+     *
+     * @param integer $id
+     * @return $this
+     */
+    public function setRoleId($id)
+    {
+        $this->role_id = $id;
 
         return $this;
     }
@@ -79,6 +97,16 @@ class MenuType extends Model
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Returns the value of field role_id
+     *
+     * @return integer
+     */
+    public function getRoleId()
+    {
+        return $this->role_id;
     }
 
     /**

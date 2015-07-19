@@ -33,6 +33,17 @@ return [
                 'resetPassword'
             ]
         ],
+        'core/admin-menu-type' => [
+            'description' => '',
+            'actions' => [
+                '*',
+                'index',
+                'new',
+                'edit',
+                'save',
+                'delete'
+            ]
+        ],
         'core/admin-menu' => [
             'description' => '',
             'actions' => [
@@ -40,6 +51,7 @@ return [
                 'index',
                 'new',
                 'edit',
+                'update',
                 'delete'
             ]
         ],
@@ -122,6 +134,11 @@ return [
         3 => [
             'allow' => [
                 'core/index'    => [
+                    'actions' => [
+                        '*'
+                    ]
+                ],
+                'core/admin-menu-type' => [
                     'actions' => [
                         '*'
                     ]

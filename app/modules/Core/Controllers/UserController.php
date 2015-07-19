@@ -139,7 +139,7 @@ class UserController extends Controller
                 if($user) {
                     if($user->getStatus() > 0) {
                         $this->flash->notice('Your account is already active');
-                        $this->dispatcher->forward([
+                        return $this->dispatcher->forward([
                             'controller' => 'user',
                             'action' => 'login'
                         ]);
@@ -154,7 +154,7 @@ class UserController extends Controller
                     }
                 }
                 $this->flash->success('Email sent. Please follow the instructions to activate your account');
-                $this->dispatcher->forward([
+                return $this->dispatcher->forward([
                     'controller' => 'index',
                     'action' => 'index'
                 ]);
@@ -203,7 +203,7 @@ class UserController extends Controller
         $confirmation->delete();
 
         $this->flash->success('Your email was successfully confirmed. Please login to manage your account');
-        $this->dispatcher->forward([
+        return $this->dispatcher->forward([
             'controller' => 'user',
             'action' => 'login'
         ]);
@@ -236,7 +236,7 @@ class UserController extends Controller
                     }
                 }
                 $this->flash->success('Email sent. Please follow the instructions to change your password');
-                $this->dispatcher->forward([
+                return $this->dispatcher->forward([
                     'controller' => 'index',
                     'action' => 'index'
                 ]);
@@ -271,7 +271,7 @@ class UserController extends Controller
 
             $resetPassword->delete();
 
-            $this->dispatcher->forward([
+            return $this->dispatcher->forward([
                 'controller' => 'user',
                 'action' => 'resetPassword'
             ]);
@@ -284,7 +284,7 @@ class UserController extends Controller
     public function resetPasswordAction()
     {
         if (!$this->auth->isUserSignedIn()) {
-            $this->dispatcher->forward([
+            return $this->dispatcher->forward([
                 'controller' => 'user',
                 'action' => 'login'
             ]);
@@ -307,14 +307,14 @@ class UserController extends Controller
                 // Set a new password
                 if (!$user->save()) {
                     $this->flashErrors($user);
-                    $this->dispatcher->forward([
+                    return $this->dispatcher->forward([
                         'controller' => 'index',
                         'action' => 'index'
                     ]);
                 }
 
                 $this->flashSession->success($this->t->_('Password changed successfully'));
-                $this->dispatcher->forward([
+                return $this->dispatcher->forward([
                     'controller' => 'index',
                     'action' => 'index'
                 ]);

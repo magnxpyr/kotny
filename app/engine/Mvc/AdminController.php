@@ -53,7 +53,7 @@ abstract class AdminController extends Controller {
             ->setTargetUri('assets/mg_admin/css/header.min.css')
             ->addCss('vendor/jquery-ui/jquery-ui.min.css')
             ->addCss('assets/mg_admin/css/AdminLTE.min.css')
-            ->addCss('assets/mg_admin/css/skins/skin-blue.min.css')
+            ->addCss('assets/mg_admin/css/skins/skin-purple.min.css')
             ->addCss('assets/mg_admin/css/style.css')
             ->join(true)
             ->addFilter(new \Phalcon\Assets\Filters\Cssmin());

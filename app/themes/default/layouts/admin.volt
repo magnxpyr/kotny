@@ -21,7 +21,9 @@
             <!-- Navbar Right Menu -->
             <div class="navbar-custom-menu">
                 <ul class="nav navbar-nav">
-                    <li class="sidebar-toggle">Logout</li>
+                    <li>{{ link_to("user/logout", '<i class="glyphicon glyphicon-off"></i>') }}</li>
+                </ul>
+            </div>
         </nav>
     </header>
     <!-- Left side column. contains the logo and sidebar -->
@@ -43,6 +45,10 @@
         <!-- Content Header (Page header) -->
         <section class="content-header">
             {{ title }}
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-dashboard"></i> Level</a></li>
+                <li class="active">Here</li>
+            </ol>
         </section>
 
         <!-- Main content -->
@@ -56,9 +62,9 @@
     <footer class="main-footer">
         <!-- To the right -->
         <div class="pull-right hidden-xs">
-            Version <?php echo MG_VERSION ?>
+            Version {{ constant('MG_VERSION') }}
         </div>
         <!-- Default to the left -->
-        Powered by <a href="http://www.magnxpyr.com">Magnxpyr Network</a> &copy; <?php echo date('Y') ?>
+        Powered by {{ link_to('http://www.magnxpyr.com', 'Magnxpyr Network', false) }} &copy; {{ date('Y') }}
     </footer>
 </div><!-- ./wrapper -->

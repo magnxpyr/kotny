@@ -27,11 +27,18 @@ class MenuTypeMigration_100 extends Migration
                             'autoIncrement' => true,
                             'first' => true
                     ]),
+                    new Column('role_id', [
+                        'type' => Column::TYPE_INTEGER,
+                        'size' => 11,
+                        'unsigned' => true,
+                        'notNull' => true,
+                        'after' => 'id'
+                    ]),
                     new Column('title', [
                             'type' => Column::TYPE_VARCHAR,
                             'notNull' => true,
                             'size' => 255,
-                            'after' => 'id'
+                            'after' => 'role_id'
                     ]),
                     new Column('description', [
                         'type' => Column::TYPE_VARCHAR,
