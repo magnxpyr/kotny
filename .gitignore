@@ -2,3 +2,7 @@ cache
 /app/config/development/
 .idea
 phalcon.iml
+public/assets/mg_admin/js/header.min.js
+public/assets/default/js/header.min.js
+public/assets/default/css/header.min.css
+public/assets/mg_admin/css/header.min.css
