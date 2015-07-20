@@ -7,12 +7,12 @@
  * @var \Core\Forms\LoginForm $form
  * @var \Phalcon\Mvc\View\Engine $this
  */
-
 echo $this->getContent();
 ?>
-<div class="row">
-    <div class="col-md-6 col-sm-6">
-        <div class="col-sm-9 col-md-9">
+<div class="login-page">
+    <div class="login-box">
+        <div class="login-box-body">
+            <p class="login-box-msg">Sign in to start your session</p>
             <?php echo $this->tag->form(array('user/login')); ?>
             <fieldset>
                 <div class="form-group">
@@ -31,35 +31,45 @@ echo $this->getContent();
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <div class="input-group">
+                <div class="row">
+                    <div class="col-xs-8">
                         <?php echo $form->render('remember') . ' ' . $form->label('remember'); ?>
                     </div>
-                </div>
-
-                <div class="form-group">
-                    <div class="input-group">
-                        <?php echo $this->tag->linkTo('user/forgotPassword', 'Forgot my password'); ?>
+                    <div class="col-xs-4">
+                        <?php echo $form->render('Login'); ?>
                     </div>
                 </div>
 
+
+                        <!--social media links-->
+
+
+                    <div class="social-auth-links text-center">
+                        <p> or </p>
+                        <a href="#" class="btn btn-block btn-social btn-facebook btn-flat"><i class="fa fa-facebook"></i> Sign in using Facebook</a>
+                        <a href="#" class="btn btn-block btn-social btn-google-plus btn-flat"><i class="fa fa-google-plus"></i> Sign in using Google+</a>
+                    </div>
+
+
                 <div class="form-group">
-                    <?php echo $form->render('Login'); ?>
+                    <div class="input-group">
+                        <?php echo $this->tag->linkTo(array('user/register', 'Sign Up', 'class' => 'btn btn-success')); ?>
+                    </div>
                 </div>
+
+
             </fieldset>
             <?php echo $form->render('csrf', ['value' => $this->security->getToken()]); ?>
             <?php echo $this->tag->endForm(); ?>
         </div>
     </div>
-    <div class="col-sm-6 col-md-6">
-        <div class="col-sm-9 col-md-9">
-            <div class="page-header">
+</div>
+
+
+       <!-- <div class="page-header">
                 <h2>Don't have an account yet?</h2>
             </div>
-            <p>Create an account to take full advantage of our website
+            <p>Create an account to take full advantage of our website.</p>  -->
 
-                <?php echo $this->tag->linkTo(array('user/register', 'Sign Up', 'class' => 'btn btn-success')); ?>
-            </p>
-        </div>
-    </div>
-</div>
+
+
