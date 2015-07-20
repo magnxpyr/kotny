@@ -33,7 +33,6 @@ class UserController extends Controller
      */
     public function loginAction()
     {
-        $this->setTitle('Login');
         $form = new LoginForm();
         try {
             $this->auth->login($form);
@@ -79,7 +78,6 @@ class UserController extends Controller
         if($this->auth->isUserSignedIn()) {
             return $this->auth->redirectReturnUrl();
         }
-        $this->setTitle('Register');
         $form = new RegisterForm();
         if ($this->request->isPost()) {
             if($form->isValid($this->request->getPost())) {

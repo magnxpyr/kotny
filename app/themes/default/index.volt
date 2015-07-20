@@ -11,7 +11,7 @@
     <meta name="description" content="CMS">
     <meta name="author" content="Magnxpyr Network">
 </head>
-<body>
+<body class="skin-purple">
 {{ content() }}
 </body>
 </html>

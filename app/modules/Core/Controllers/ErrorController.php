@@ -28,7 +28,6 @@ class ErrorController extends Controller
      */
     public function show404Action()
     {
-        $this->setTitle('Page Not Found');
         $this->response->setStatusCode(404, 'Page Not Found');
     }
 
@@ -37,7 +36,6 @@ class ErrorController extends Controller
      */
     public function show503Action()
     {
-        $this->setTitle('Service unavailable');
         $this->response->setStatusCode(503, 'Service unavailable');
     }
 }
