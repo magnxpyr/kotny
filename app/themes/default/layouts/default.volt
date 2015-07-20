@@ -15,7 +15,9 @@
 </nav>
 
 <div class="container">
-    {{ title }}
+    <section class="content-header">
+        {{ title }}
+    </section>
     {{ flashSession.output() }}
     {{ content() }}
     <hr>

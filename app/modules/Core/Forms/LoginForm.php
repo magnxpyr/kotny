@@ -43,8 +43,10 @@ class LoginForm extends Form
     public function initialize()
     {
         // Username
-        $username = new Text('username');
-        $username->setLabel($this->t->_('Username'));
+        $username = new Text('username', [
+            'placeholder' => $this->t->_('Username'),
+            'class' => 'form-control'
+        ]);
         $username->setFilters('alphanum');
         $username->addValidators([
             new PresenceOf([
@@ -57,9 +59,11 @@ class LoginForm extends Form
         $this->add($username);
 
         // Password
-        $password = new Password('password');
+        $password = new Password('password', [
+            'placeholder' => $this->t->_('Password'),
+            'class' => 'form-control'
+        ]);
         $password->setFilters('string');
-        $password->setLabel($this->t->_('Password'));
         $password->addValidators([
             new PresenceOf([
                 'message' => $this->t->_('Password is required')
@@ -69,7 +73,8 @@ class LoginForm extends Form
 
         // Remember
         $remember = new Check('remember', [
-            'value' => 1
+            'value' => 1,
+            'class' => 'styled'
         ]);
         $remember->setFilters('int');
         $remember->setLabel($this->t->_('Remember me'));
@@ -84,8 +89,9 @@ class LoginForm extends Form
         $this->add($csrf);
 
         // Submit
-        $this->add(new Submit($this->t->_('Login'), [
-            'class' => 'btn btn-success'
+        $this->add(new Submit('login', [
+            'value' => $this->t->_('Login'),
+            'class' => 'btn btn-primary btn-block btn-flat'
         ]));
     }
 }

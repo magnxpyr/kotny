@@ -26,6 +26,9 @@ return [
     "There was an error connecting to %name%" => "There was an error connecting to %name%",
     "Password changed successfully" => "Password changed successfully",
     "You need to be logged in to change your password" => "You need to be logged in to change your password",
+    "I already have a membership" => "I already have a membership",
+    "Register a new membership" => "Register a new membership",
+    "I forgot my password" => "I forgot my password",
 
     //Admin
     "Title is required" => "Title is required",

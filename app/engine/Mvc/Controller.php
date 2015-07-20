@@ -81,12 +81,14 @@ abstract class Controller extends \Phalcon\Mvc\Controller {
             ->setTargetPath(PUBLIC_PATH . 'assets/default/css/header.min.css')
             ->setTargetUri('assets/default/css/header.min.css')
             ->addCss('vendor/jquery-ui/jquery-ui.min.css')
+            ->addCss('vendor/css/awesome-bootstrap-checkbox.css')
             ->addCss('assets/default/css/AdminLTE.min.css')
             ->addCss('assets/default/css/skins/skin-purple.min.css')
             ->addCss('assets/default/css/style.css')
             ->join(true)
             ->addFilter(new \Phalcon\Assets\Filters\Cssmin());
         $this->assets->collection('header-css')
-            ->addCss('vendor/bootstrap/css/bootstrap.min.css');
+            ->addCss('vendor/bootstrap/css/bootstrap.min.css')
+            ->addCss('vendor/font-awesome/css/font-awesome.min.css');
     }
 }

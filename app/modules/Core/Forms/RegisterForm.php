@@ -9,6 +9,7 @@
 namespace Core\Forms;
 
 use Core\Models\User;
+use Phalcon\Forms\Element\Check;
 use Phalcon\Forms\Element\Submit;
 use Phalcon\Forms\Form;
 use Phalcon\Forms\Element\Text;
@@ -30,8 +31,10 @@ class RegisterForm extends Form
     public function initialize()
     {
         // Username
-        $username = new Text('username');
-        $username->setLabel($this->t->_('Username'));
+        $username = new Text('username', [
+            'placeholder' => $this->t->_('Username'),
+            'class' => 'form-control'
+        ]);
         $username->setFilters('alphanum');
         $username->addValidators([
             new PresenceOf([
@@ -44,8 +47,10 @@ class RegisterForm extends Form
         $this->add($username);
 
         // Email
-        $email = new Text('email');
-        $email->setLabel($this->t->_('Email'));
+        $email = new Text('email', [
+            'placeholder' => $this->t->_('Email'),
+            'class' => 'form-control'
+        ]);
         $email->setFilters('email');
         $email->addValidators([
             new PresenceOf([
@@ -58,8 +63,10 @@ class RegisterForm extends Form
         $this->add($email);
 
         // Password
-        $password = new Password('password');
-        $password->setLabel($this->t->_('Password'));
+        $password = new Password('password', [
+            'placeholder' => $this->t->_('Password'),
+            'class' => 'form-control'
+        ]);
         $password->setFilters('string');
         $password->addValidators([
             new PresenceOf([
@@ -69,8 +76,10 @@ class RegisterForm extends Form
         $this->add($password);
 
         // Confirm Password
-        $repeatPassword = new Password('repeatPassword');
-        $repeatPassword->setLabel($this->t->_('Repeat Password'));
+        $repeatPassword = new Password('repeatPassword', [
+            'placeholder' => $this->t->_('Repeat Password'),
+            'class' => 'form-control'
+        ]);
         $repeatPassword->setFilters('string');
         $repeatPassword->addValidators([
             new PresenceOf([
@@ -80,8 +89,9 @@ class RegisterForm extends Form
         $this->add($repeatPassword);
 
         // Submit
-        $this->add(new Submit($this->t->_('Register'), [
-            'class' => 'btn btn-success'
+        $this->add(new Submit('submit', [
+            'value' => $this->t->_('Register'),
+            'class' => 'btn btn-primary btn-block btn-flat'
         ]));
     }
 }
