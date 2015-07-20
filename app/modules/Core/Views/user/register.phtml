@@ -9,11 +9,13 @@
 
 echo $this->getContent();
 ?>
-<div class="row">
-    <div class="col-md-6 col-sm-6">
-        <div class="col-sm-9 col-md-9">
-            <?php echo $this->tag->form(array('user/register')); ?>
+                    <!--Remove the Title page-->
 
+<div class="register-page">
+    <div class="register-box">
+        <div class="register-box-body">
+            <p class="register-box-msg">Register a new membership</p>
+            <?php echo $this->tag->form(array('user/register')); ?>
             <fieldset>
                 <div class="form-group">
                     <?php echo $form->label('username', array('class' => 'control-label')); ?>
@@ -48,13 +50,27 @@ echo $this->getContent();
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <p class="help-block">By signing up, you accept the terms of use and privacy policy.</p>
+                        <!--Make a terms and privacy policy-->
+
+                    <label>
+                        <p class="help-block">By signing up, you accept the <a href="#">terms</a> of use and <a href="#">privacy policy</a>.</p>
+                    </label>
+
+                        <!--change the button of "Register" to "Sign Up"-->
+
                     <?php echo $form->render('Register'); ?>
+
+                <div class="social-auth-links text-center">
+                    <p>or</p>
+                    <a href="#" class="btn btn-block btn-social btn-facebook btn-flat"><i class="fa fa-facebook"></i> Sign up using Facebook</a>
+                    <a href="#" class="btn btn-block btn-social btn-google-plus btn-flat"><i class="fa fa-google-plus"></i> Sign up using Google+</a>
                 </div>
+
+                        <!--link this to login-->
+
+                <a href="login.phtml" class="text-center">I already have a membership</a>
+
             </fieldset>
         </div>
-    </div>
-    <div class="col-md-6 col-sm-6">
     </div>
 </div>
