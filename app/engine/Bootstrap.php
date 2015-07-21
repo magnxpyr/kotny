@@ -17,7 +17,7 @@ class Bootstrap
         // Define internal variables
         define('MG_VERSION', '0.1.0');
         define('DEFAULT_THEME', 'default');
-        define('THEMES_PATH', '../../../themes/' . DEFAULT_THEME . '/');
+        define('THEMES_PATH', '../../../themes/');
 
         // The FactoryDefault Dependency Injector automatically register the right services providing a full stack framework
         $di = new \Phalcon\DI\FactoryDefault();
@@ -33,6 +33,8 @@ class Bootstrap
         //    new \Engine\Development($di);
 
         }
+
+        define('CACHE_PATH', $config['app']['cacheDir']);
 
         // set cookies time
         $config['app']['cookie']['expire'] = time() + $config['app']['cookie']['expire'];
@@ -89,9 +91,9 @@ class Bootstrap
         // Setting up the view component
         $di->setShared('view', function() use ($config, $di) {
             $view = new \Phalcon\Mvc\View();
-            $view->setLayoutsDir(THEMES_PATH . 'layouts/');
-            $view->setPartialsDir(THEMES_PATH . 'partials/');
-            $view->setMainView(THEMES_PATH . 'index');
+            $view->setLayoutsDir(THEMES_PATH . DEFAULT_THEME . 'layouts/');
+            $view->setPartialsDir(THEMES_PATH . DEFAULT_THEME . 'partials/');
+            $view->setMainView(THEMES_PATH . DEFAULT_THEME . 'index');
             $view->setLayout('default');
 
             $volt = new \Phalcon\Mvc\View\Engine\Volt($view, $di);
@@ -242,7 +244,7 @@ class Bootstrap
         ]);
 
         $cache = new \Phalcon\Cache\Backend\File($cacheFrontend, [
-            "cacheDir" => ROOT_PATH . "/cache/backend/"
+            "cacheDir" => $config->app->cacheDir . "backend/"
         ]);
 
         $di->setShared('cache', $cache);

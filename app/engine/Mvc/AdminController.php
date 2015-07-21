@@ -23,7 +23,7 @@ abstract class AdminController extends Controller {
         if ($this->request->isAjax()) {
             return;
         }
-        $this->view->setMainView(THEMES_PATH . 'admin');
+        $this->view->setMainView(THEMES_PATH . DEFAULT_THEME . 'admin');
         $this->view->setLayout('admin');
         $this->setupAssets();
         $this->view->setVar('navigation', $this->setupNavigation());
@@ -35,21 +35,8 @@ abstract class AdminController extends Controller {
      * @return void
      */
     protected function setupAssets() {
-        $this->assets->collection('header-js-min')
-            ->setTargetPath(PUBLIC_PATH . 'assets/mg_admin/js/header.min.js')
-            ->setTargetUri('assets/mg_admin/js/header.min.js')
-            ->addJs('vendor/jquery/jquery-1.11.3.min.js')
-            ->addJs('vendor/jquery-ui/jquery-ui.min.js')
-            ->addJs('vendor/jquery-ui/extra/jquery.mjs.nestedSortable.js')
-            ->addJs('vendor/js/js.cookie.js')
-            ->addJs('vendor/bootstrap/js/bootstrap.min.js')
-            ->addJs('assets/mg_admin/js/app.js')
-            ->addJs('assets/default/js/mg.js')
-            ->join(true)
-            ->addFilter(new \Phalcon\Assets\Filters\Jsmin());
-        $this->assets->collection('header-js');
         $this->assets->collection('header-css-min')
-            ->setTargetPath(PUBLIC_PATH . 'assets/mg_admin/css/header.min.css')
+            ->setTargetPath('assets/mg_admin/css/header.min.css')
             ->setTargetUri('assets/mg_admin/css/header.min.css')
             ->addCss('vendor/jquery-ui/jquery-ui.min.css')
             ->addCss('assets/mg_admin/css/AdminLTE.min.css')
@@ -60,6 +47,21 @@ abstract class AdminController extends Controller {
         $this->assets->collection('header-css')
             ->addCss('vendor/bootstrap/css/bootstrap.min.css')
             ->addCss('vendor/font-awesome/css/font-awesome.min.css');
+
+        $this->assets->collection('footer-js-min')
+            ->setTargetPath(PUBLIC_PATH . 'assets/mg_admin/js/header.min.js')
+            ->setTargetUri('assets/mg_admin/js/header.min.js')
+            ->addJs('vendor/jquery/jquery-1.11.3.min.js')
+            ->addJs('vendor/jquery-ui/jquery-ui.min.js')
+            ->addJs('vendor/jquery-ui/extra/jquery.mjs.nestedSortable.js')
+            ->addJs('vendor/js/js.cookie.js')
+            ->addJs('vendor/bootstrap/js/bootstrap.min.js')
+            ->addJs('vendor/jquery/extra/jquery.slimscroll.min.js')
+            ->addJs('assets/mg_admin/js/app.js')
+            ->addJs('assets/default/js/mg.js')
+            ->join(true)
+            ->addFilter(new \Phalcon\Assets\Filters\Jsmin());
+        $this->assets->collection('footer-js');
     }
 
     protected function setupNavigation() {
