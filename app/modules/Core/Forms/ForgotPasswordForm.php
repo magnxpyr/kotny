@@ -27,7 +27,8 @@ class ForgotPasswordForm extends Form
     {
         // Email
         $email = new Text('email', [
-            'placeholder' => $this->t->_('Email')
+            'placeholder' => $this->t->_('Email'),
+            'class' => 'form-control'
         ]);
         $email->setFilters('email');
         $email->addValidators([
@@ -42,7 +43,7 @@ class ForgotPasswordForm extends Form
 
         // Submit button
         $this->add(new Submit($this->t->_('Send'), [
-            'class' => 'btn btn-primary'
+            'class' => 'btn btn-primary btn-block btn-flat'
         ]));
     }
 }

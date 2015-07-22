@@ -1,5 +1,5 @@
 {{ content() }}
-<div class="register-box">
+<div class="register-box" style="margin-top: 25px">
     <div class="register-box-body">
         <p class="register-box-msg">Register a new membership</p>
         {{ form('user/register', 'method': 'post') }}
@@ -25,7 +25,7 @@
             </div>
             <div class="row">
                 <div class="col-xs-8">
-                    By signing up you accept the terms and privacy policy
+                    By signing up you accept the terms and privacy policy.
                 </div>
                 <div class="col-xs-4">
                     {{ form.render('submit') }}

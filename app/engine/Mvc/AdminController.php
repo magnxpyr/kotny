@@ -23,7 +23,7 @@ abstract class AdminController extends Controller {
         if ($this->request->isAjax()) {
             return;
         }
-        $this->view->setMainView(THEMES_PATH . DEFAULT_THEME . 'admin');
+        $this->view->setMainView(THEMES_PATH . DEFAULT_THEME . '/admin');
         $this->view->setLayout('admin');
         $this->setupAssets();
         $this->view->setVar('navigation', $this->setupNavigation());

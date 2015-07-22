@@ -11,51 +11,44 @@
     {{ form("admin/core/menu/save", "method":"post", "id":"menuForm") }}
     <div class="box-body">
         <div class="form-group">
-            <label for="type" class="control-label col-sm-4">Type</label>
+            {{ form.label('title', ['class': 'control-label col-sm-2']) }}
             <div class="input-group">
-                {{ text_field("type", "class": "form-control input-sm") }}
+                {{ form.render("title") }}
             </div>
         </div>
 
         <div class="form-group">
-            <label for="title" class="control-label col-sm-4">Title</label>
+            {{ form.label('type', ['class': 'control-label col-sm-2']) }}
             <div class="input-group">
-                {{ text_field("title", "class": "form-control input-sm") }}
+                {{ form.render("type") }}
             </div>
         </div>
 
         <div class="form-group">
-            <label for="path" class="control-label col-sm-4">Path</label>
+            {{ form.label('path', ['class': 'control-label col-sm-2']) }}
             <div class="input-group">
-                {{ text_field("path", "class": "form-control input-sm") }}
+                {{ form.render("path") }}
             </div>
         </div>
 
         <div class="form-group">
-            <label for="link" class="control-label col-sm-4">Link</label>
+            {{ form.label('link', ['class': 'control-label col-sm-2']) }}
             <div class="input-group">
-                {{ text_field("link", "class": "form-control input-sm") }}
+                {{ form.render("link") }}
             </div>
         </div>
 
         <div class="form-group">
-            <label for="status" class="control-label col-sm-4">Status</label>
+            {{ form.label('status', ['class': 'control-label col-sm-2']) }}
             <div class="input-group">
-                {{ text_field("status", "type": "numeric", "class": "form-control input-sm") }}
+                {{ form.render("status") }}
             </div>
         </div>
 
         <div class="form-group">
-            <label for="parent_id" class="control-label col-sm-4">Parent</label>
+            {{ form.label('role_id', ['class': 'control-label col-sm-2']) }}
             <div class="input-group">
-                {{ text_field("parent_id",  "type": "numeric", "class": "form-control input-sm") }}
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label for="role_id" class="control-label col-sm-4">Role</label>
-            <div class="input-group">
-                {{ text_field("role_id", "type": "numeric", "class": "form-control input-sm") }}
+                {{ form.render("role_id") }}
             </div>
         </div>
     </div>

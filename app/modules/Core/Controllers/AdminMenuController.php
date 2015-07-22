@@ -91,7 +91,7 @@ class AdminMenuController extends AdminController
         $this->setTitle('New Menu Item');
         $form = new AdminMenuEditForm();
         $this->view->setVar('form', $form);
-        $this->view->render('admin-type', 'edit');
+        $this->view->render('admin-menu', 'edit');
         $this->view->setRenderLevel(View::LEVEL_ACTION_VIEW);
     }
 

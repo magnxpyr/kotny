@@ -44,6 +44,60 @@ class AdminMenuEditForm extends Form
         ]);
         $this->add($title);
 
+        // Type
+        $type = new Select('type',
+            ['Path', 'Link'],
+            ['using' => ['id', 'name'], 'class' => 'form-control']
+        );
+        $type->setLabel('Type');
+        $type->setFilters('int');
+        $type->addValidators([
+            new PresenceOf([
+                'type' => $this->t->_('Type is required')
+            ])
+        ]);
+        $this->add($type);
+
+        // Path
+        $path = new Text('path', [
+            'class' => 'form-control'
+        ]);
+        $path->setLabel('Path');
+        $path->setFilters('string');
+        $path->addValidators([
+            new PresenceOf([
+                'path' => $this->t->_('Path is required')
+            ])
+        ]);
+        $this->add($path);
+
+        // Link
+        $link = new Text('link', [
+            'class' => 'form-control'
+        ]);
+        $link->setLabel('Link');
+        $link->setFilters('string');
+        $link->addValidators([
+            new PresenceOf([
+                'link' => $this->t->_('Link is required')
+            ])
+        ]);
+        $this->add($link);
+
+        // Status
+        $status = new Select('status',
+            $this->helper->getUserRoles(),
+            ['using' => ['id', 'name'], 'class' => 'form-control']
+        );
+        $status->setLabel('Status');
+        $status->setFilters('int');
+        $status->addValidators([
+            new PresenceOf([
+                'status' => $this->t->_('Status is required')
+            ])
+        ]);
+        $this->add($status);
+
         // User role
         $role = new Select('role_id',
             $this->helper->getUserRoles(),

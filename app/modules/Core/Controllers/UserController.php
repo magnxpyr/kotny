@@ -213,7 +213,6 @@ class UserController extends Controller
     public function forgotPasswordAction()
     {
         $this->view->status = 1;
-        $this->setTitle('Forgot password');
 
         $form = new ForgotPasswordForm();
         $this->view->setVar('form', $form);

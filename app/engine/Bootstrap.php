@@ -91,9 +91,9 @@ class Bootstrap
         // Setting up the view component
         $di->setShared('view', function() use ($config, $di) {
             $view = new \Phalcon\Mvc\View();
-            $view->setLayoutsDir(THEMES_PATH . DEFAULT_THEME . 'layouts/');
-            $view->setPartialsDir(THEMES_PATH . DEFAULT_THEME . 'partials/');
-            $view->setMainView(THEMES_PATH . DEFAULT_THEME . 'index');
+            $view->setLayoutsDir(THEMES_PATH . DEFAULT_THEME . '/layouts/');
+            $view->setPartialsDir(THEMES_PATH . DEFAULT_THEME . '/partials/');
+            $view->setMainView(THEMES_PATH . DEFAULT_THEME . '/index');
             $view->setLayout('default');
 
             $volt = new \Phalcon\Mvc\View\Engine\Volt($view, $di);

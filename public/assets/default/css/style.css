@@ -6,6 +6,7 @@ body {
     line-height: 20px;
     padding-bottom: 40px;
     padding-top: 60px;
+    height: 100%;
     background-color: #ecf0f5;
 }
 
@@ -43,7 +44,7 @@ div.scaffold h2 {
 .topbar .header {
     background-color: #F8F8F8;
     border-bottom: 1px solid #E0E0E0;
-    padding: 9px 0 0;
+    padding: 50px 0 0;
 }
 
 .alert {
@@ -80,3 +81,39 @@ div.popover {
     text-align:left;
 }
 
+nav > .container {
+    padding: 0px;
+
+}
+
+.nav-header {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 50px;
+}
+
+footer {
+    position: absolute;
+    bottom: 0;
+
+}
+
+.title_text {
+    font-size: 20px;
+    line-height: 20px;
+    text-align: center;
+    padding: 20px;
+}
+
+.title_subtext {
+    font-size: 13px;
+    line-height: 20px;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    text-align: center;
+}
+
+.container-footer {
+    text-align: center;
+    padding: 30px;
+
+}

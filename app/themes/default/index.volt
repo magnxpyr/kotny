@@ -5,7 +5,6 @@
     {{ get_title() }}
     {{ assets.outputCss("header-css") }}
     {{ assets.outputCss("header-css-min") }}
-
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <meta name="description" content="CMS">
     <meta name="author" content="Magnxpyr Network">
