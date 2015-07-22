@@ -17,6 +17,10 @@ use Phalcon\Mvc\User\Component;
  */
 class Helper extends Component
 {
+    /**
+     * Get possible permission roles for users
+     * @return array
+     */
     public function getUserRoles()
     {
         return [
@@ -25,4 +29,23 @@ class Helper extends Component
             3 => 'Admin'
         ];
     }
+
+    /**
+     * Get possible statuses for users
+     * @return array
+     */
+    public function getUserStatuses()
+    {
+        return ['Inactive', 'Active', 'Blocked'];
+    }
+
+    /**
+     * Get possible statuses for articles
+     * @return array
+     */
+    public function getArticleStatuses()
+    {
+        return ['Published', 'Unpublished', 'Trashed'];
+    }
+
 }

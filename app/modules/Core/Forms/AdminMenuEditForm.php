@@ -77,25 +77,29 @@ class AdminMenuEditForm extends Form
         ]);
         $link->setLabel('Link');
         $link->setFilters('string');
+        /*
         $link->addValidators([
             new PresenceOf([
                 'link' => $this->t->_('Link is required')
             ])
         ]);
+        */
         $this->add($link);
 
         // Status
         $status = new Select('status',
-            $this->helper->getUserRoles(),
+            $this->helper->getArticleStatuses(),
             ['using' => ['id', 'name'], 'class' => 'form-control']
         );
         $status->setLabel('Status');
         $status->setFilters('int');
+        /*
         $status->addValidators([
             new PresenceOf([
                 'status' => $this->t->_('Status is required')
             ])
         ]);
+        */
         $this->add($status);
 
         // User role
