@@ -14,6 +14,7 @@ use Phalcon\Forms\Element\Text;
 use Phalcon\Forms\Element\TextArea;
 use Phalcon\Forms\Form;
 use Phalcon\Validation\Validator\PresenceOf;
+use Phalcon\Validation\Validator\Url;
 
 /**
  * Class AdminMenuEditForm
@@ -35,55 +36,60 @@ class AdminMenuEditForm extends Form
         $title = new Text('title', [
             'class' => 'form-control'
         ]);
-        $title->setLabel('Title');
+        $title->setLabel($this->t->_('Title'));
         $title->setFilters('string');
-        $title->addValidators([
+        $title->addValidator(
             new PresenceOf([
-                'title' => $this->t->_('Title is required')
+                'title' => $this->t->_('%field% is required', ['field' => $this->t->_('Title')])
             ])
-        ]);
+        );
         $this->add($title);
 
         // Type
         $type = new Select('type',
-            ['Path', 'Link'],
+            [$this->t->_('Path'), $this->t->_('Link')],
             ['using' => ['id', 'name'], 'class' => 'form-control']
         );
-        $type->setLabel('Type');
+        $type->setLabel($this->t->_('Type'));
         $type->setFilters('int');
-        $type->addValidators([
+        $type->addValidator(
             new PresenceOf([
-                'type' => $this->t->_('Type is required')
+                'type' => $this->t->_('%field% is required', ['field' => $this->t->_('Type')])
             ])
-        ]);
+        );
         $this->add($type);
 
         // Path
         $path = new Text('path', [
             'class' => 'form-control'
         ]);
-        $path->setLabel('Path');
+        $path->setLabel($this->t->_('Path'));
         $path->setFilters('string');
-        $path->addValidators([
-            new PresenceOf([
-                'path' => $this->t->_('Path is required')
-            ])
-        ]);
+        if ($this->request->getPost('path') == 0) {
+            $path->addValidator(
+                new PresenceOf([
+                    'path' => $this->t->_('%field% is required', ['field' => $this->t->_('Path')])
+                ])
+            );
+        }
         $this->add($path);
 
         // Link
         $link = new Text('link', [
             'class' => 'form-control'
         ]);
-        $link->setLabel('Link');
+        $link->setLabel($this->t->_('Link'));
         $link->setFilters('string');
-        /*
-        $link->addValidators([
-            new PresenceOf([
-                'link' => $this->t->_('Link is required')
-            ])
-        ]);
-        */
+        if ($this->request->getPost('path') == 1) {
+            $link->addValidators([
+                new Url([
+                    'link' => $this->t->_('%field% has to be and URL', ['field' => $this->t->_('Link')])
+                ]),
+                new PresenceOf([
+                    'link' => $this->t->_('%field% is required', ['field' => $this->t->_('Link')])
+                ])
+            ]);
+        }
         $this->add($link);
 
         // Status
@@ -91,15 +97,13 @@ class AdminMenuEditForm extends Form
             $this->helper->getArticleStatuses(),
             ['using' => ['id', 'name'], 'class' => 'form-control']
         );
-        $status->setLabel('Status');
+        $status->setLabel($this->t->_('Status'));
         $status->setFilters('int');
-        /*
-        $status->addValidators([
+        $status->addValidator(
             new PresenceOf([
-                'status' => $this->t->_('Status is required')
+                'status' => $this->t->_('%field% is required', ['field' => $this->t->_('Status')])
             ])
-        ]);
-        */
+        );
         $this->add($status);
 
         // User role
@@ -107,13 +111,13 @@ class AdminMenuEditForm extends Form
             $this->helper->getUserRoles(),
             ['using' => ['id', 'name'], 'class' => 'form-control']
         );
-        $role->setLabel('Role');
+        $role->setLabel($this->t->_('Role'));
         $role->setFilters('int');
-        $role->addValidators([
+        $role->addValidator(
             new PresenceOf([
-                'role_id' => $this->t->_('Role is required')
+                'role_id' => $this->t->_('%field% is required', ['field' => $this->t->_('Role')])
             ])
-        ]);
+        );
         $this->add($role);
 
         // Description
@@ -122,7 +126,7 @@ class AdminMenuEditForm extends Form
             'cols' => 30,
             'class' => 'form-control'
         ]);
-        $description->setLabel('Description');
+        $description->setLabel($this->t->_('Description'));
         $description->setFilters('string');
         $this->add($description);
     }

@@ -32,10 +32,10 @@ class ConfirmEmailForm extends Form
         $email->setFilters('email');
         $email->addValidators([
             new PresenceOf([
-                'message' => $this->t->_('The e-mail is required')
+                'message' => $this->t->_('%field% is required', ['field' => $this->t->_('Email')])
             ]),
             new Email([
-                'message' => $this->t->_('The e-mail is not valid')
+                'message' => $this->t->_('Email is not valid')
             ])
         ]);
         $this->add($email);

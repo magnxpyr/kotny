@@ -24,14 +24,14 @@
             </div>
         </div>
 
-        <div class="form-group">
+        <div class="form-group" id="path-group">
             {{ form.label('path', ['class': 'control-label col-sm-2']) }}
             <div class="input-group">
                 {{ form.render("path") }}
             </div>
         </div>
 
-        <div class="form-group">
+        <div class="form-group" id="link-group" style="display: none">
             {{ form.label('link', ['class': 'control-label col-sm-2']) }}
             <div class="input-group">
                 {{ form.render("link") }}

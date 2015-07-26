@@ -105,7 +105,7 @@ class AdminMenuController extends AdminController
         if (!$this->request->isPost()) {
             $menu = Menu::findFirstById($id);
             if (!$menu) {
-                $this->flash->error("menu was not found");
+                $this->flash->error("Menu was not found");
 
                 return $this->dispatcher->forward([
                     "action" => "index"
@@ -120,10 +120,6 @@ class AdminMenuController extends AdminController
             $this->tag->setDefault("path", $menu->getPath());
             $this->tag->setDefault("link", $menu->getLink());
             $this->tag->setDefault("status", $menu->getStatus());
-            $this->tag->setDefault("parent_id", $menu->getParentId());
-            $this->tag->setDefault("level", $menu->getLevel());
-            $this->tag->setDefault("lft", $menu->getLft());
-            $this->tag->setDefault("rgt", $menu->getRgt());
             $this->tag->setDefault("role_id", $menu->getRoleId());
 
         }
@@ -140,42 +136,26 @@ class AdminMenuController extends AdminController
             ]);
         }
 
-        $id = $this->request->getPost("id");
-
-        $menu = Menu::findFirstById($id);
-        if (!$menu) {
-            $this->flash->error("Menu item does not exist " . $id);
+        $form = new AdminMenuEditForm();
+        $menu = new Menu();
+        $form->bind($this->request->getPost(), $menu);
+        if (!$form->isValid()) {
+            $this->flashErrors($form);
 
             return $this->dispatcher->forward([
-                "action" => "index"
+                "action" => "new"
             ]);
         }
-
-        $menu->setMenuTypeId($this->request->getPost("menu_type_id", "string"));
-        $menu->setType($this->request->getPost("type", "string"));
-        $menu->setTitle($this->request->getPost("title", "string"));
-        $menu->setPath($this->request->getPost("path", "string"));
-        $menu->setLink($this->request->getPost("link", "string"));
-        $menu->setStatus($this->request->getPost("status", "string"));
-        $menu->setParentId($this->request->getPost("parent_id", "string"));
-        $menu->setLevel($this->request->getPost("level", "string"));
-        $menu->setLft($this->request->getPost("lft", "string"));
-        $menu->setRgt($this->request->getPost("rgt", "string"));
-        $menu->setRoleId($this->request->getPost("role_id", "string"));
-
 
         if (!$menu->save()) {
-            foreach ($menu->getMessages() as $message) {
-                $this->flash->error($message);
-            }
+            $this->flashErrors($menu);
 
             return $this->dispatcher->forward([
-                "action" => "edit",
-                "params" => [$menu->id]
+                "action" => "new"
             ]);
         }
 
-        $this->flash->success("menu was updated successfully");
+        $this->flash->success("Menu was updated successfully");
 
         return $this->dispatcher->forward([
             "action" => "index"
@@ -189,29 +169,27 @@ class AdminMenuController extends AdminController
      */
     public function deleteAction($id)
     {
-        $menu = Menu::findFirstById($id);
-        if (!$menu) {
-            $this->flash->error("menu was not found");
+        $menuType = Menu::findFirstById($id);
+        if (!$menuType) {
+            $this->flash->error("Menu was not found");
 
             return $this->dispatcher->forward([
                 "action" => "index"
             ]);
         }
 
-        if (!$menu->delete()) {
-            foreach ($menu->getMessages() as $message) {
-                $this->flash->error($message);
-            }
+        if (!$menuType->delete()) {
+            $this->flashErrors($menuType);
 
             return $this->dispatcher->forward([
-                "action" => "search"
+                "action" => "index"
             ]);
         }
 
-        $this->flash->success("menu was deleted successfully");
+        $this->flash->success("Menu was deleted successfully");
 
         return $this->dispatcher->forward([
-                "action" => "index"
+            "action" => "index"
         ]);
     }
 }

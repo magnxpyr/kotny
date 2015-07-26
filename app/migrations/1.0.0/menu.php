@@ -64,6 +64,7 @@ class MenuMigration_100 extends Migration
                         'type' => Column::TYPE_INTEGER,
                         'size' => 5,
                         'notNull' => true,
+                        'default' => 0,
                         'after' => 'status'
                     ]),
                     new Column('level', [

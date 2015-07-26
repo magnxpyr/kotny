@@ -35,11 +35,11 @@ class AdminMenuTypeEditForm extends Form
         $title = new Text('title', [
             'class' => 'form-control'
         ]);
-        $title->setLabel('Title');
+        $title->setLabel($this->t->_('Title'));
         $title->setFilters('string');
         $title->addValidators([
             new PresenceOf([
-                'title' => $this->t->_('Title is required')
+                'title' => $this->t->_('%field% is required', ['field' => $this->t->_('Title')])
             ])
         ]);
         $this->add($title);
@@ -49,11 +49,11 @@ class AdminMenuTypeEditForm extends Form
             $this->helper->getUserRoles(),
             ['using' => ['id', 'name'], 'class' => 'form-control']
         );
-        $role->setLabel('Role');
+        $role->setLabel($this->t->_('Role'));
         $role->setFilters('int');
         $role->addValidators([
             new PresenceOf([
-                'role_id' => $this->t->_('Role is required')
+                'role_id' => $this->t->_('%field% is required', ['field' => $this->t->_('Role')])
             ])
         ]);
         $this->add($role);
@@ -64,7 +64,7 @@ class AdminMenuTypeEditForm extends Form
             'cols' => 30,
             'class' => 'form-control'
         ]);
-        $description->setLabel('Description');
+        $description->setLabel($this->t->_('Description'));
         $description->setFilters('string');
         $this->add($description);
     }

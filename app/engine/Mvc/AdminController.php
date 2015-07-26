@@ -58,7 +58,7 @@ abstract class AdminController extends Controller {
             ->addJs('vendor/bootstrap/js/bootstrap.min.js')
             ->addJs('vendor/jquery/extra/jquery.slimscroll.min.js')
             ->addJs('assets/mg_admin/js/app.js')
-            ->addJs('assets/default/js/mg.js')
+            ->addJs('assets/mg_admin/js/mg.js')
             ->join(true)
             ->addFilter(new \Phalcon\Assets\Filters\Jsmin());
         $this->assets->collection('footer-js');

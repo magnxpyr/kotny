@@ -41,7 +41,7 @@ class RegisterForm extends Form
                 'message' => $this->t->_('Please enter your desired username')
             ]),
             new Alpha([
-                'message' => $this->t->_('Username is not valid')
+                'message' => $this->t->_('%field% is not valid', ['field' => $this->t->_('Username')])
             ])
         ]);
         $this->add($username);
@@ -54,10 +54,10 @@ class RegisterForm extends Form
         $email->setFilters('email');
         $email->addValidators([
             new PresenceOf([
-                'message' => $this->t->_('Email is required')
+                'message' => $this->t->_('%field% is required', ['field' => $this->t->_('Email')])
             ]),
             new Email([
-                'message' => $this->t->_('Email is not valid')
+                'message' => $this->t->_('%field% is not valid', ['field' => $this->t->_('Email')])
             ])
         ]);
         $this->add($email);
@@ -70,7 +70,7 @@ class RegisterForm extends Form
         $password->setFilters('string');
         $password->addValidators([
             new PresenceOf([
-                'message' => $this->t->_('Password is required')
+                'message' => $this->t->_('%field% is required', ['field' => $this->t->_('Password')])
             ])
         ]);
         $this->add($password);
@@ -83,7 +83,7 @@ class RegisterForm extends Form
         $repeatPassword->setFilters('string');
         $repeatPassword->addValidators([
             new PresenceOf([
-                'message' => $this->t->_('Confirmation password is required')
+                'message' => $this->t->_('%field% is required', ['field' => $this->t->_('Confirmation password')])
             ])
         ]);
         $this->add($repeatPassword);

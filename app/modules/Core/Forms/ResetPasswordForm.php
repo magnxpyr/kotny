@@ -35,7 +35,7 @@ class ResetPasswordForm extends Form
         $password->setFilters('string');
         $password->addValidators([
             new PresenceOf([
-                'message' => $this->t->_('Password is required')
+                'message' => $this->t->_('%field% is required', ['field' => $this->t->_('Password')])
             ])
         ]);
         $this->add($password);
@@ -46,7 +46,7 @@ class ResetPasswordForm extends Form
         $repeatPassword->setFilters('string');
         $repeatPassword->addValidators([
             new PresenceOf([
-                'message' => $this->t->_('Confirmation password is required')
+                'message' => $this->t->_('%field% is required', ['field' => $this->t->_('Confirmation password')])
             ])
         ]);
         $this->add($repeatPassword);

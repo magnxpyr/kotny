@@ -53,7 +53,7 @@ class LoginForm extends Form
                 'message' => $this->t->_('Please enter your desired username')
             ]),
             new Alpha([
-                'message' => $this->t->_('Username is not valid')
+                'message' => $this->t->_('%field% is not valid', ['field' => $this->t->_('Username')])
             ])
         ]);
         $this->add($username);
@@ -66,7 +66,7 @@ class LoginForm extends Form
         $password->setFilters('string');
         $password->addValidators([
             new PresenceOf([
-                'message' => $this->t->_('Password is required')
+                'message' => $this->t->_('%field% is required', ['field' => $this->t->_('Password')])
             ])
         ]);
         $this->add($password);

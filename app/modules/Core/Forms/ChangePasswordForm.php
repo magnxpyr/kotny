@@ -31,7 +31,7 @@ class ChangePasswordForm extends Form
         $currentPassword->setFilters('string');
         $currentPassword->addValidators([
             new PresenceOf([
-                'message' => $this->t->_('Current password is required')
+                'message' => $this->t->_('%field% is required', ['field' => $this->t->_('Current password')])
             ])
         ]);
         $this->add($currentPassword);
@@ -42,7 +42,7 @@ class ChangePasswordForm extends Form
         $password->setFilters('string');
         $password->addValidators([
             new PresenceOf([
-                'message' => $this->t->_('Password is required')
+                'message' => $this->t->_('%field% is required', ['field' => $this->t->_('Password')])
             ]),
             new Confirmation([
                 'message' => $this->t->_('Passwords don\'t match'),
@@ -57,7 +57,7 @@ class ChangePasswordForm extends Form
         $repeatPassword->setLabel($this->t->_('Repeat Password'));
         $repeatPassword->addValidators([
             new PresenceOf([
-                'message' => $this->t->_('Confirmation password is required')
+                'message' => $this->t->_('%field% is required', ['field' => $this->t->_('Confirmation password')])
             ])
         ]);
         $this->add($repeatPassword);

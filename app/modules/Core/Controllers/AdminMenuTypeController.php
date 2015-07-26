@@ -130,7 +130,7 @@ class AdminMenuTypeController extends AdminController
     {
         $menuType = MenuType::findFirstById($id);
         if (!$menuType) {
-            $this->flash->error("menu was not found");
+            $this->flash->error("Menu was not found");
 
             return $this->dispatcher->forward([
                 "action" => "index"
@@ -145,7 +145,7 @@ class AdminMenuTypeController extends AdminController
             ]);
         }
 
-        $this->flash->success("menu was deleted successfully");
+        $this->flash->success("Menu was deleted successfully");
 
         return $this->dispatcher->forward([
             "action" => "index"
