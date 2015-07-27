@@ -11,7 +11,7 @@ namespace Core\Forms;
 use Core\Models\User;
 use Phalcon\Forms\Element\Check;
 use Phalcon\Forms\Element\Submit;
-use Phalcon\Forms\Form;
+use Engine\Forms\Form;
 use Phalcon\Forms\Element\Text;
 use Phalcon\Forms\Element\Password;
 use Phalcon\Validation\Validator\Alpha;

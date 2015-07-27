@@ -8,7 +8,7 @@
 
 namespace Core\Forms;
 
-use Phalcon\Forms\Form;
+use Engine\Forms\Form;
 use Phalcon\Forms\Element\Text;
 use Phalcon\Forms\Element\Submit;
 use Phalcon\Validation\Validator\PresenceOf;
@@ -27,7 +27,8 @@ class ConfirmEmailForm extends Form
     {
         // Email
         $email = new Text('email', [
-            'placeholder' => $this->t->_('Email')
+            'placeholder' => $this->t->_('Email'),
+            'class' => 'form-control'
         ]);
         $email->setFilters('email');
         $email->addValidators([
@@ -41,8 +42,9 @@ class ConfirmEmailForm extends Form
         $this->add($email);
 
         // Submit button
-        $this->add(new Submit($this->t->_('Send'), [
-            'class' => 'btn btn-primary'
+        $this->add(new Submit('submit', [
+            'class' => 'btn btn-primary',
+            'value' => $this->t->_('Send')
         ]));
     }
 }

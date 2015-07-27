@@ -11,7 +11,7 @@
                     <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
                 </div>
                 <div class="form-group" align="center">
-                    {{ form.render('Send') }}
+                    {{ form.render('submit') }}
                 </div>
             </fieldset>
         {{ end_form() }}

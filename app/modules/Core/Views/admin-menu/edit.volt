@@ -3,54 +3,22 @@
     <div class="box-header with-border">
         <div class="col-sm-6">
             <ul class="nav nav-pills">
-                <li><button type="submit" form="menuForm" class="btn btn-sm btn-block btn-success"><i class="glyphicon glyphicon-edit"></i> Save</button></li>
-                <li><button onclick="location.href='{{ url("admin/core/menu/index") }}'" class="btn btn-sm btn-block btn-danger"><i class='glyphicon glyphicon-remove-circle'></i> Cancel</button></li>
+                <li><button type="submit" form="menuForm" class="btn btn-sm btn-block btn-success"><i class="fa fa-edit"></i> Save</button></li>
+                <li><button onclick="location.href='{{ url("admin/core/menu/index") }}'" class="btn btn-sm btn-block btn-danger"><i class='fa fa-remove'></i> Cancel</button></li>
             </ul>
         </div>
     </div>
     {{ form("admin/core/menu/save", "method":"post", "id":"menuForm") }}
     <div class="box-body">
-        <div class="form-group">
-            {{ form.label('title', ['class': 'control-label col-sm-2']) }}
-            <div class="input-group">
-                {{ form.render("title") }}
-            </div>
-        </div>
-
-        <div class="form-group">
-            {{ form.label('type', ['class': 'control-label col-sm-2']) }}
-            <div class="input-group">
-                {{ form.render("type") }}
-            </div>
-        </div>
-
-        <div class="form-group" id="path-group">
-            {{ form.label('path', ['class': 'control-label col-sm-2']) }}
-            <div class="input-group">
-                {{ form.render("path") }}
-            </div>
-        </div>
-
-        <div class="form-group" id="link-group" style="display: none">
-            {{ form.label('link', ['class': 'control-label col-sm-2']) }}
-            <div class="input-group">
-                {{ form.render("link") }}
-            </div>
-        </div>
-
-        <div class="form-group">
-            {{ form.label('status', ['class': 'control-label col-sm-2']) }}
-            <div class="input-group">
-                {{ form.render("status") }}
-            </div>
-        </div>
-
-        <div class="form-group">
-            {{ form.label('role_id', ['class': 'control-label col-sm-2']) }}
-            <div class="input-group">
-                {{ form.render("role_id") }}
-            </div>
-        </div>
+        {{ form.renderDecorated('title', ['labelClass': 'control-label col-sm-2']) }}
+        {{ form.renderDecorated('type', ['labelClass': 'control-label col-sm-2']) }}
+        {{ form.renderDecorated('path', ['group': ['id':'path-group'], 'labelClass': 'control-label col-sm-2']) }}
+        {{ form.renderDecorated('link', [
+            'group': ['id':'link-group', 'style': 'display: none'],
+            'label': ['class': 'control-label col-sm-2']
+        ]) }}
+        {{ form.renderDecorated('status', ['labelClass': 'control-label col-sm-2']) }}
+        {{ form.renderDecorated('role_id', ['labelClass': 'control-label col-sm-2']) }}
     </div>
     {{ end_form() }}
 </div>

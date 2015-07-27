@@ -8,7 +8,7 @@
 
 namespace Core\Forms;
 
-use Phalcon\Forms\Form;
+use Engine\Forms\Form;
 use Phalcon\Forms\Element\Password;
 use Phalcon\Forms\Element\Submit;
 use Phalcon\Validation\Validator\PresenceOf;

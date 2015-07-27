@@ -8,7 +8,7 @@
 
 namespace Core\Forms;
 
-use Phalcon\Forms\Form;
+use Engine\Forms\Form;
 use Phalcon\Forms\Element\Text;
 use Phalcon\Forms\Element\Submit;
 use Phalcon\Validation\Validator\PresenceOf;
@@ -42,8 +42,9 @@ class ForgotPasswordForm extends Form
         $this->add($email);
 
         // Submit button
-        $this->add(new Submit($this->t->_('Send'), [
-            'class' => 'btn btn-primary btn-block btn-flat'
+        $this->add(new Submit('submit', [
+            'class' => 'btn btn-primary btn-block btn-flat',
+            'value' => $this->t->_('Send')
         ]));
     }
 }

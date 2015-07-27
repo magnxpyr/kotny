@@ -13,7 +13,7 @@ use Phalcon\Forms\Element\Hidden;
 use Phalcon\Forms\Element\Password;
 use Phalcon\Forms\Element\Submit;
 use Phalcon\Forms\Element\Text;
-use Phalcon\Forms\Form;
+use Engine\Forms\Form;
 use Phalcon\Validation\Validator\PresenceOf;
 use Phalcon\Validation\Validator\Alpha;
 use Phalcon\Validation\Validator\Identical;
@@ -30,7 +30,9 @@ class ResetPasswordForm extends Form
     public function initialize()
     {
         // Password
-        $password = new Password('password');
+        $password = new Password('password', [
+            'class' => 'form-control'
+        ]);
         $password->setLabel($this->t->_('Password'));
         $password->setFilters('string');
         $password->addValidators([
@@ -41,7 +43,9 @@ class ResetPasswordForm extends Form
         $this->add($password);
 
         // Confirm Password
-        $repeatPassword = new Password('repeatPassword');
+        $repeatPassword = new Password('repeatPassword', [
+            'class' => 'form-control'
+        ]);
         $repeatPassword->setLabel($this->t->_('Repeat Password'));
         $repeatPassword->setFilters('string');
         $repeatPassword->addValidators([
@@ -52,8 +56,9 @@ class ResetPasswordForm extends Form
         $this->add($repeatPassword);
 
         // Submit
-        $this->add(new Submit($this->t->_('Send'), [
-            'class' => 'btn btn-success'
+        $this->add(new Submit('submit', [
+            'class' => 'btn btn-success',
+            'value' => $this->t->_('Send')
         ]));
     }
 }

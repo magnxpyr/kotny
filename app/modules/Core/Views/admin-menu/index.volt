@@ -3,10 +3,10 @@
     <div class="box-header with-border">
         <div class="col-sm-6">
             <ul class="nav nav-pills">
-                <li><button onclick="location.href='{{ url("admin/core/menu/new") }}'" class="btn btn-sm btn-block btn-primary"><i class='glyphicon glyphicon-plus'></i> New</button></li>
-                <li><button onclick="location.href=''" class="btn btn-sm btn-block btn-success"><i class="glyphicon glyphicon-ok"></i> Publish</button></li>
-                <li><button onclick="location.href=''" class="btn btn-sm btn-block btn-danger"><i class="glyphicon glyphicon-remove"></i> Unpublish</button></li>
-                <li><button onclick="location.href=''" class="btn btn-sm btn-block btn-warning"><i class="glyphicon glyphicon-trash"></i> Trash</button></li>
+                <li><button onclick="location.href='{{ url("admin/core/menu/new") }}'" class="btn btn-sm btn-block btn-primary"><i class='fa fa-plus'></i> New</button></li>
+                <li><button onclick="location.href=''" class="btn btn-sm btn-block btn-success"><i class="fa fa-check"></i> Publish</button></li>
+                <li><button onclick="location.href=''" class="btn btn-sm btn-block btn-danger"><i class="fa fa-remove"></i> Unpublish</button></li>
+                <li><button onclick="location.href=''" class="btn btn-sm btn-block btn-warning"><i class="fa fa-trash"></i> Trash</button></li>
             </ul>
         </div>
         <div class="col-sm-6">
