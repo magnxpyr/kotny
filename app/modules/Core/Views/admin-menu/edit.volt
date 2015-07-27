@@ -8,17 +8,17 @@
             </ul>
         </div>
     </div>
-    {{ form("admin/core/menu/save", "method":"post", "id":"menuForm") }}
     <div class="box-body">
-        {{ form.renderDecorated('title', ['labelClass': 'control-label col-sm-2']) }}
-        {{ form.renderDecorated('type', ['labelClass': 'control-label col-sm-2']) }}
-        {{ form.renderDecorated('path', ['group': ['id':'path-group'], 'labelClass': 'control-label col-sm-2']) }}
-        {{ form.renderDecorated('link', [
-            'group': ['id':'link-group', 'style': 'display: none'],
-            'label': ['class': 'control-label col-sm-2']
-        ]) }}
-        {{ form.renderDecorated('status', ['labelClass': 'control-label col-sm-2']) }}
-        {{ form.renderDecorated('role_id', ['labelClass': 'control-label col-sm-2']) }}
+        {{ form.renderForm(
+            url("admin/core/menu/save"),
+            [
+                'form': ['id': 'menuForm'],
+                'label': ['class': 'control-label col-sm-2'],
+                'field': [
+                    'path': ['group': ['id':'path-group']],
+                    'link': ['group': ['id':'link-group', 'style': 'display: none']]
+                ]
+            ]
+        ) }}
     </div>
-    {{ end_form() }}
 </div>

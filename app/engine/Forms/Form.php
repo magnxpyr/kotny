@@ -40,17 +40,40 @@ class Form extends \Phalcon\Forms\Form
         if (isset($attributes['group'])) {
             if (isset($attributes['group']['class'])) {
                 $attributes['group']['class'] .= ' form-group';
+            } else {
+                $group .= 'class="form-group"';
             }
             foreach ($attributes['group'] as $key => $value) {
                 $group .= "$key=\"$value\"";
             }
+        } else {
+            $group .= 'class="form-group"';
         }
-        $label = isset($attributes['label']) ? $attributes['label'] : '';
-        $input = isset($attributes['input']) ? $attributes['input'] .'"' : '';
 
-        echo '<div class="form-group"', $group, '>';
+        $label ='';
+        if (isset($attributes['label'])) {
+            foreach ($attributes['label'] as $key => $value) {
+                $label .= "$key=\"$value\"";
+            }
+        }
+
+        $input = '';
+        if (isset($attributes['input'])) {
+            if (isset($attributes['input']['class'])) {
+                $attributes['input']['class'] .= ' input-group';
+            } else {
+                $input .= 'class="input-group"';
+            }
+            foreach ($attributes['input'] as $key => $value) {
+                $input .= "$key=\"$value\"";
+            }
+        } else {
+            $input .= 'class="input-group"';
+        }
+
+        echo '<div ', $group, '>';
         echo '<label for="', $element->getName(), '" ', $label, '>', $element->getLabel(), '</label>';
-        echo '<div class="input-group" ', $input, '>', $element, '</div>';
+        echo '<div ', $input, '>', $element, '</div>';
         echo '</div>';
     }
 
@@ -60,15 +83,33 @@ class Form extends \Phalcon\Forms\Form
      */
     public function renderForm($action, $attributes = [])
     {
-        $formId = isset($attributes['formId']) ? 'id="' . $attributes['formId'] .'"' : '';
-        $formClass = isset($attributes['formClass']) ? 'class="' . $attributes['formClass'] .'"' : '';
+        $form = '';
+        if (isset($attributes['form'])) {
+            if (!isset($attributes['form']['method'])) {
+                $form .= 'method="post"';
+            }
+            foreach ($attributes['form'] as $key => $value) {
+                $form .= "$key=\"$value";
+            }
+        }
 
-        echo '<form action="', $action, '" method="post" ', $formId, $formClass, '>';
+
+        if (isset($attributes['field'])) {
+
+        }
+
+        echo '<form action="', $action, '" ', $form, '>';
 
         // Traverse the form
         foreach ($this->getElements() as $element) {
+            $elemName = $element->getName();
+            $fieldAttribute = $attributes;
+            if (isset($attributes['field'][$elemName])) {
+                $fieldAttribute = array_merge($fieldAttribute, $attributes['field'][$elemName]);
+            }
+
             // render the element
-            $this->renderDecorated($element, $attributes);
+            $this->renderDecorated($elemName, $fieldAttribute);
         }
 
         echo '</form>';

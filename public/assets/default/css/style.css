@@ -28,7 +28,7 @@ div.right {
 }
 
 div.login-or-signup {
-    padding-left: 50px;
+    padding-left: 40px;
     padding-top: 20px;
 }
 
@@ -39,12 +39,6 @@ select {
 
 div.scaffold h2 {
     margin: 10px;
-}
-
-.topbar .header {
-    background-color: #F8F8F8;
-    border-bottom: 1px solid #E0E0E0;
-    padding: 50px 0 0;
 }
 
 .alert {
@@ -82,13 +76,26 @@ div.popover {
 }
 
 nav > .container {
-    padding: 0px;
-
+    padding-bottom: 15px;
+    height: 40px;
 }
 
-.nav-header {
+
+.topbar .header {
+    background-color: #F8F8F8;
+    border-bottom: 1px solid #E0E0E0;
+    padding: 40px 0 0;
+}
+
+.navbar-brand {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    font-size: 50px;
+    height: 40px;
+    padding: 10px 10px;
+}
+
+.navbar-nav>li>a {
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
 
 footer {
