@@ -22,3 +22,10 @@
         ) }}
     </div>
 </div>
+{%
+do assets.addInlineJs('
+    $("#type").change(function() {
+        $("#path-group").toggle();
+        $("#link-group").toggle();
+    });')
+%}

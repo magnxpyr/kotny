@@ -28,10 +28,6 @@ class Bootstrap
             if (is_file(APP_PATH . 'config/development/config.php')) {
                 $config = require_once APP_PATH . 'config/development/config.php';
             }
-
-            // Load development options
-        //    new \Engine\Development($di);
-
         }
 
         define('CACHE_PATH', $config['app']['cacheDir']);
@@ -298,6 +294,11 @@ class Bootstrap
         $di->setShared('flashSession', function() use ($flash) {
             return new \Phalcon\Flash\Session($flash);
         });
+
+        if ($config->app->development) {
+            // Load development options
+            new \Engine\Development($di);
+        }
 
 
         // Handle the request

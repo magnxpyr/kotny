@@ -38,9 +38,4 @@ $(function ($) {
             content: $hint.html()
         });
     });
-
-    $("#type").change(function() {
-        $("#path-group").toggle();
-        $("#link-group").toggle();
-    });
 });

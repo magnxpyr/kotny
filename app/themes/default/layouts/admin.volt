@@ -30,10 +30,10 @@
     <aside class="main-sidebar">
 
         <!-- sidebar: style can be found in sidebar.less -->
-        <section class="sidebar">
+        <section class="sidebar" style="height: auto">
             <!-- Sidebar Menu -->
             <ul class="sidebar-menu">
-                <!-- Optionally, you can add icons to the links -->
+                <li class="header">MAIN NAVIGATION</li>
                 {{ navigation['html'] }}
             </ul><!-- /.sidebar-menu -->
         </section>

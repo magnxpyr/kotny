@@ -41,6 +41,7 @@ abstract class AdminController extends Controller {
             ->addCss('vendor/jquery-ui/jquery-ui.min.css')
             ->addCss('assets/mg_admin/css/AdminLTE.min.css')
             ->addCss('assets/mg_admin/css/skins/skin-purple.min.css')
+            ->addCss('assets/default/css/pdw.css')
             ->addCss('assets/mg_admin/css/style.css')
             ->join(true)
             ->addFilter(new \Phalcon\Assets\Filters\Cssmin());
@@ -58,6 +59,7 @@ abstract class AdminController extends Controller {
             ->addJs('vendor/bootstrap/js/bootstrap.min.js')
             ->addJs('vendor/jquery/extra/jquery.slimscroll.min.js')
             ->addJs('assets/mg_admin/js/app.js')
+            ->addJs('assets/default/js/pdw.js')
             ->addJs('assets/mg_admin/js/mg.js')
             ->join(true)
             ->addFilter(new \Phalcon\Assets\Filters\Jsmin());

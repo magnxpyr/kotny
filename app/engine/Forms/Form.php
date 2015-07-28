@@ -17,8 +17,10 @@ class Form extends \Phalcon\Forms\Form
 {
     /**
      * Render label and input
+     *
      * @param \Phalcon\Forms\ElementInterface $name
      * @param array $attributes
+     * @return string
      */
     public function renderDecorated($name, $attributes = [])
     {
@@ -26,28 +28,28 @@ class Form extends \Phalcon\Forms\Form
 
         // Get any generated messages for the current element
         $messages = $this->getMessagesFor($element->getName());
-
+        $html = '';
         if (count($messages)) {
             // Print each element
-            echo '<div class="messages">';
+            $html .= '<div class="messages">';
             foreach ($messages as $message) {
-                echo $this->flash->error($message);
+                $html .= $this->flash->error($message);
             }
-            echo '</div>';
+            $html .= '</div>';
         }
 
         $group = '';
         if (isset($attributes['group'])) {
             if (isset($attributes['group']['class'])) {
-                $attributes['group']['class'] .= ' form-group';
+                $attributes['group']['class'] .= ' form-group ';
             } else {
-                $group .= 'class="form-group"';
+                $group .= 'class="form-group" ';
             }
             foreach ($attributes['group'] as $key => $value) {
                 $group .= "$key=\"$value\"";
             }
         } else {
-            $group .= 'class="form-group"';
+            $group .= 'class="form-group" ';
         }
 
         $label ='';
@@ -62,43 +64,40 @@ class Form extends \Phalcon\Forms\Form
             if (isset($attributes['input']['class'])) {
                 $attributes['input']['class'] .= ' input-group';
             } else {
-                $input .= 'class="input-group"';
+                $input .= 'class="input-group" ';
             }
             foreach ($attributes['input'] as $key => $value) {
-                $input .= "$key=\"$value\"";
+                $input .= "$key=\"$value\" ";
             }
         } else {
-            $input .= 'class="input-group"';
+            $input .= 'class="input-group" ';
         }
 
-        echo '<div ', $group, '>';
-        echo '<label for="', $element->getName(), '" ', $label, '>', $element->getLabel(), '</label>';
-        echo '<div ', $input, '>', $element, '</div>';
-        echo '</div>';
+        $html .= '<div '. $group. '>';
+        $html .= '<label for="'. $element->getName(). '" '. $label. '>'. $element->getLabel(). '</label>';
+        $html .= '<div '. $input. '>'. $element. '</div>';
+        $html .= '</div>';
+        return $html;
     }
 
     /**
      * @param string $action
      * @param array $attributes
+     * @return string
      */
     public function renderForm($action, $attributes = [])
     {
         $form = '';
         if (isset($attributes['form'])) {
             if (!isset($attributes['form']['method'])) {
-                $form .= 'method="post"';
+                $form .= 'method="post" ';
             }
             foreach ($attributes['form'] as $key => $value) {
-                $form .= "$key=\"$value";
+                $form .= "$key=\"$value\" ";
             }
         }
 
-
-        if (isset($attributes['field'])) {
-
-        }
-
-        echo '<form action="', $action, '" ', $form, '>';
+        $html = '<form action="'. $action. '" '. $form. '>';
 
         // Traverse the form
         foreach ($this->getElements() as $element) {
@@ -109,9 +108,10 @@ class Form extends \Phalcon\Forms\Form
             }
 
             // render the element
-            $this->renderDecorated($elemName, $fieldAttribute);
+            $html .= $this->renderDecorated($elemName, $fieldAttribute);
         }
 
-        echo '</form>';
+        $html .= '</form>';
+        return $html;
     }
 }

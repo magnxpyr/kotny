@@ -73,6 +73,7 @@ abstract class Controller extends \Phalcon\Mvc\Controller {
             ->addCss('vendor/css/awesome-bootstrap-checkbox.css')
             ->addCss('assets/default/css/AdminLTE.min.css')
             ->addCss('assets/default/css/skins/skin-purple.min.css')
+            ->addCss('assets/default/css/pdw.css')
             ->addCss('assets/default/css/style.css')
             ->join(true)
             ->addFilter(new \Phalcon\Assets\Filters\Cssmin());
@@ -88,6 +89,7 @@ abstract class Controller extends \Phalcon\Mvc\Controller {
             ->addJs('vendor/bootstrap/js/bootstrap.min.js')
             ->addJs('vendor/jquery/extra/jquery.slimscroll.min.js')
             ->addJs('assets/default/js/app.js')
+            ->addJs('assets/default/js/pdw.js')
             ->addJs('assets/default/js/mg.js')
             ->join(true)
             ->addFilter(new \Phalcon\Assets\Filters\Jsmin());

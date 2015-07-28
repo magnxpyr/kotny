@@ -8,27 +8,13 @@
             </ul>
         </div>
     </div>
-    {{ form("admin/core/menu-type/save", "method":"post", "id":"menuTypeForm") }}
     <div class="box-body">
-        {{ form.render("id") }}
-        <div class="form-group">
-            {{ form.label("title", ["class": "control-label col-sm-2"]) }}
-            <div class="input-group">
-                {{ form.render("title") }}
-            </div>
-        </div>
-        <div class="form-group">
-            {{ form.label("role_id", ["class": "control-label col-sm-2"]) }}
-            <div class="input-group">
-                {{ form.render("role_id") }}
-            </div>
-        </div>
-        <div class="form-group">
-            {{ form.label("description", ["class": "control-label col-sm-2"]) }}
-            <div class="input-group">
-                {{ form.render("description") }}
-            </div>
-        </div>
+        {{ form.renderForm(
+            url("admin/core/menu-type/save"),
+            [
+                'form': ['id': 'menuTypeForm'],
+                'label': ['class': 'control-label col-sm-2']
+            ]
+        ) }}
     </div>
-    {{ end_form() }}
 </div>

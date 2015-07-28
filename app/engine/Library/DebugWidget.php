@@ -165,41 +165,11 @@ class DebugWidget implements InjectionAwareInterface {
 	{
 		$this->endTime = microtime(true);
 		$content = $view->getContent();
-		$scripts = $this->getInsertScripts();
-		$scripts .= "</head>";
-		$content = str_replace("</head>", $scripts, $content);
 		$rendered = $this->renderToolbar();
 		$rendered .= "</body>";
 		$content = str_replace("</body>", $rendered, $content);
 
 		$view->setContent($content);
-	}
-
-	/**
-	 * Returns scripts to be inserted before <head>
-	 *
-	 * @return string
-	 */
-	public function getInsertScripts() {
-		$escaper = new Escaper();
-		$url = $this->getDI()->get('url');
-		$scripts = "";
-
-		$css = array('/assets/default/css/pdw.css');
-		foreach ($css as $src) {
-			$link = $url->get($src);
-			$scripts .= "<link rel='stylesheet' type='text/css' href='" . $escaper->escapeHtmlAttr($link) . "' />";
-		}
-
-		$js = array(
-				'/assets/default/js/pdw.js'
-		);
-		foreach ($js as $src) {
-			$link = $url->get($src);
-			$scripts .= "<script tyle='text/javascript' src='" . $escaper->escapeHtmlAttr($link) . "'></script>";
-		}
-
-		return $scripts;
 	}
 
     public function renderToolbar() {
