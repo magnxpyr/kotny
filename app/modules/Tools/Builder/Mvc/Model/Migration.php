@@ -36,7 +36,8 @@ use Phalcon\Events\Manager as EventsManager;
  * @copyright   Copyright (c) 2011-2015 Phalcon Team (team@phalconphp.com)
  * @license     New BSD License
  */
-class Migration {
+class Migration
+{
     /**
      * Migration database connection
      * @var \Phalcon\Db
@@ -70,7 +71,6 @@ class Migration {
      */
     public static function setup($database)
     {
-
         if (!isset($database->adapter)) {
             throw new \Phalcon\Exception('Unspecified database Adapter in your configuration!');
         }
@@ -86,7 +86,7 @@ class Migration {
         self::$_connection = new $adapter($configArray);
         self::$_databaseConfig = $database;
 
-        if($database->adapter == 'Mysql') {
+        if ($database->adapter == 'Mysql') {
             self::$_connection->query('SET FOREIGN_KEY_CHECKS=0');
         }
     }
@@ -118,17 +118,17 @@ class Migration {
      * @param  string $exportData
      * @return array
      */
-    public static function generateAll($version, $exportData=null)
+    public static function generateAll($version, $exportData = null)
     {
         $classDefinition = array();
-    	if (self::$_databaseConfig->adapter == 'Postgresql') {
-        	foreach (self::$_connection->listTables(isset(self::$_databaseConfig->schema) ? self::$_databaseConfig->schema : 'public') as $table) {
-        		$classDefinition[$table] = self::generate($version, $table, $exportData);
-        	}
+        if (self::$_databaseConfig->adapter == 'Postgresql') {
+            $tables = self::$_connection->listTables(isset(self::$_databaseConfig->schema) ? self::$_databaseConfig->schema : 'public');
         } else {
-        	foreach (self::$_connection->listTables() as $table) {
-        		$classDefinition[$table] = self::generate($version, $table, $exportData);
-        	}
+            $tables = self::$_connection->listTables();
+        }
+
+        foreach ($tables as $table) {
+            $classDefinition[$table] = self::generate($version, $table, $exportData);
         }
 
         return $classDefinition;
@@ -144,20 +144,21 @@ class Migration {
      * @return string
      * @throws Exception
      */
-    public static function generate($version, $table, $exportData=null) {
+    public static function generate($version, $table, $exportData=null)
+    {
         $oldColumn = null;
         $allFields = array();
         $numericFields = array();
         $tableDefinition = array();
 
         if (isset(self::$_databaseConfig->schema)) {
-                $defaultSchema = self::$_databaseConfig->schema;
+            $defaultSchema = self::$_databaseConfig->schema;
         } elseif (isset(self::$_databaseConfig->adapter) && self::$_databaseConfig->adapter == 'Postgresql') {
-                $defaultSchema =  'public';
+            $defaultSchema =  'public';
         } elseif (isset(self::$_databaseConfig->dbname)) {
-                $defaultSchema = self::$_databaseConfig->dbname;
+            $defaultSchema = self::$_databaseConfig->dbname;
         } else {
-                $defaultSchema = null;
+            $defaultSchema = null;
         }
 
         if(!@self::$_connection->tableExists($table, $defaultSchema)) {
@@ -172,42 +173,60 @@ class Migration {
         $description = self::$_connection->describeColumns($table, $defaultSchema);
         foreach ($description as $field) {
             $fieldDefinition = array();
-            switch ($field->getType()) {
-                case Column::TYPE_INTEGER:
-                    $fieldDefinition[] = "'type' => Column::TYPE_INTEGER";
-                    $numericFields[$field->getName()] = true;
-                    break;
-                case Column::TYPE_VARCHAR:
-                    $fieldDefinition[] = "'type' => Column::TYPE_VARCHAR";
-                    break;
-                case Column::TYPE_CHAR:
-                    $fieldDefinition[] = "'type' => Column::TYPE_CHAR";
-                    break;
-                case Column::TYPE_DATE:
-                    $fieldDefinition[] = "'type' => Column::TYPE_DATE";
-                    break;
-                case Column::TYPE_DATETIME:
-                    $fieldDefinition[] = "'type' => Column::TYPE_DATETIME";
-                    break;
-                case Column::TYPE_DECIMAL:
-                        $fieldDefinition[] = "'type' => Column::TYPE_DECIMAL";
-                    $numericFields[$field->getName()] = true;
-                    break;
-                case Column::TYPE_TEXT:
-                    $fieldDefinition[] = "'type' => Column::TYPE_TEXT";
-                    break;
-                case Column::TYPE_BOOLEAN:
-                                        $fieldDefinition[] = "'type' => Column::TYPE_BOOLEAN";
-                                        break;
-                                case Column::TYPE_FLOAT:
-                                        $fieldDefinition[] = "'type' => Column::TYPE_FLOAT";
-                                        break;
-                case Column::TYPE_DOUBLE:
-                    $fieldDefinition[] = "'type' => Column::TYPE_DOUBLE";
-                    break;
-                default:
-                    throw new Exception('Unrecognized data type ' . $field->getType() . ' at column ' . $field->getName());
-            }
+	        switch ($field->getType()) {
+		        case Column::TYPE_INTEGER:
+			        $fieldDefinition[] = "'type' => Column::TYPE_INTEGER";
+			        $numericFields[ $field->getName() ] = true;
+			        break;
+		        case Column::TYPE_VARCHAR:
+			        $fieldDefinition[] = "'type' => Column::TYPE_VARCHAR";
+			        break;
+		        case Column::TYPE_CHAR:
+			        $fieldDefinition[] = "'type' => Column::TYPE_CHAR";
+			        break;
+		        case Column::TYPE_DATE:
+			        $fieldDefinition[] = "'type' => Column::TYPE_DATE";
+			        break;
+		        case Column::TYPE_DATETIME:
+			        $fieldDefinition[] = "'type' => Column::TYPE_DATETIME";
+			        break;
+		        case Column::TYPE_DECIMAL:
+			        $fieldDefinition[] = "'type' => Column::TYPE_DECIMAL";
+			        $numericFields[ $field->getName() ] = true;
+			        break;
+		        case Column::TYPE_TEXT:
+			        $fieldDefinition[] = "'type' => Column::TYPE_TEXT";
+			        break;
+		        case Column::TYPE_BOOLEAN:
+			        $fieldDefinition[] = "'type' => Column::TYPE_BOOLEAN";
+			        break;
+		        case Column::TYPE_FLOAT:
+			        $fieldDefinition[] = "'type' => Column::TYPE_FLOAT";
+			        break;
+		        case Column::TYPE_DOUBLE:
+			        $fieldDefinition[] = "'type' => Column::TYPE_DOUBLE";
+			        break;
+		        case Column::TYPE_TINYBLOB:
+			        $fieldDefinition[] = "'type' => Column::TYPE_TINYBLOB";
+			        break;
+		        case Column::TYPE_BLOB:
+			        $fieldDefinition[] = "'type' => Column::TYPE_BLOB";
+			        break;
+		        case Column::TYPE_MEDIUMBLOB:
+			        $fieldDefinition[] = "'type' => Column::TYPE_MEDIUMBLOB";
+			        break;
+		        case Column::TYPE_LONGBLOB:
+			        $fieldDefinition[] = "'type' => Column::TYPE_LONGBLOB";
+			        break;
+		        case Column::TYPE_JSON:
+			        $fieldDefinition[] = "'type' => Column::TYPE_JSON";
+			        break;
+		        case Column::TYPE_JSONB:
+			        $fieldDefinition[] = "'type' => Column::TYPE_JSONB";
+			        break;
+		        default:
+			        throw new Exception('Unrecognized data type ' . $field->getType() . ' at column ' . $field->getName());
+	        }
 
             /*
             if ($field->isPrimary()) {
@@ -228,14 +247,14 @@ class Migration {
             }
 
             if ($field->getSize()) {
-                        $fieldDefinition[] = "'size' => " . $field->getSize();
-                } else {
-                    $fieldDefinition[] = "'size' => 1";
-                }
+                $fieldDefinition[] = "'size' => " . $field->getSize();
+            } else {
+                $fieldDefinition[] = "'size' => 1";
+            }
 
-                        if ($field->getScale()) {
-                                $fieldDefinition[] = "'scale' => " . $field->getScale();
-                        }
+            if ($field->getScale()) {
+                $fieldDefinition[] = "'scale' => " . $field->getScale();
+            }
 
             if ($oldColumn != null) {
                 $fieldDefinition[] = "'after' => '" . $oldColumn . "'";
@@ -261,7 +280,6 @@ class Migration {
         $referencesDefinition = array();
         $references = self::$_connection->describeReferences($table, $defaultSchema);
         foreach ($references as $constraintName => $dbReference) {
-
             $columns = array();
             foreach ($dbReference->getColumns() as $column) {
                 $columns[] = "'" . $column . "'";
@@ -315,7 +333,6 @@ class ".$className." extends Migration\n{\n".
 
         $classData .= "\t\t\t)\n\t\t);\n\t}";
         if ($exportData == 'always' || $exportData == 'oncreate') {
-
             if ($exportData == 'oncreate') {
                 $classData .= "\n\tpublic function afterCreateTable()\n\t{\n";
             } else {
@@ -413,16 +430,17 @@ class ".$className." extends Migration\n{\n".
             $classVersion = preg_replace('/[^0-9A-Za-z]/', '', $version);
             $className = Text::camelize(str_replace('.php', '', $fileName)).'Migration_'.$classVersion;
             require_once $filePath;
-            if (class_exists($className)) {
-                $migration = new $className();
-                if (method_exists($migration, 'up')) {
-                    $migration->up();
-                    if (method_exists($migration, 'afterUp')) {
-                        $migration->afterUp();
-                    }
-                }
-            } else {
+
+            if (!class_exists($className)) {
                 throw new Exception('Migration class cannot be found ' . $className . ' at ' . $filePath);
+            }
+
+            $migration = new $className();
+            if (method_exists($migration, 'up')) {
+                $migration->up();
+                if (method_exists($migration, 'afterUp')) {
+                    $migration->afterUp();
+                }
             }
         }
     }
@@ -445,7 +463,6 @@ class ".$className." extends Migration\n{\n".
 
         $tableExists = self::$_connection->tableExists($tableName, $defaultSchema);
         if (isset($definition['columns'])) {
-
             if (count($definition['columns']) == 0) {
                 throw new Exception('Table must have at least one column');
             }
@@ -459,7 +476,6 @@ class ".$className." extends Migration\n{\n".
             }
 
             if ($tableExists == true) {
-
                 $localFields = array();
                 $description = self::$_connection->describeColumns($tableName, $defaultSchema);
                 foreach ($description as $field) {
@@ -470,7 +486,6 @@ class ".$className." extends Migration\n{\n".
                     if (!isset($localFields[$fieldName])) {
                         self::$_connection->addColumn($tableName, $tableColumn->getSchemaName(), $tableColumn);
                     } else {
-
                         $changed = false;
 
                         if ($localFields[$fieldName]->getType() != $tableColumn->getType()) {
@@ -506,7 +521,6 @@ class ".$className." extends Migration\n{\n".
 
         if (isset($definition['references'])) {
             if ($tableExists == true) {
-
                 $references = array();
                 foreach ($definition['references'] as $tableReference) {
                     $references[$tableReference->getName()] = $tableReference;
@@ -526,7 +540,6 @@ class ".$className." extends Migration\n{\n".
                     if (!isset($localReferences[$tableReference->getName()])) {
                         self::$_connection->addForeignKey($tableName, $tableReference->getSchemaName(), $tableReference);
                     } else {
-
                         $changed = false;
                         if ($tableReference->getReferencedTable()!=$localReferences[$tableReference->getName()]['referencedTable']) {
                             $changed = true;
@@ -572,13 +585,11 @@ class ".$className." extends Migration\n{\n".
                         self::$_connection->dropForeignKey($tableName, null, $referenceName);
                     }
                 }
-
             }
         }
 
         if (isset($definition['indexes'])) {
             if ($tableExists == true) {
-
                 $indexes = array();
                 foreach ($definition['indexes'] as $tableIndex) {
                     $indexes[$tableIndex->getName()] = $tableIndex;
@@ -627,7 +638,6 @@ class ".$className." extends Migration\n{\n".
                 }
             }
         }
-
     }
 
     /**

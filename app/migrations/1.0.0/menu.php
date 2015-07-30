@@ -20,28 +20,30 @@ class MenuMigration_100 extends Migration
             [
                 'columns' => [
                     new Column('id', [
-                            'type' => Column::TYPE_INTEGER,
-                            'size' => 11,
-                            'unsigned' => true,
-                            'notNull' => true,
-                            'autoIncrement' => true,
-                            'first' => true
+                        'type' => Column::TYPE_INTEGER,
+                        'size' => 11,
+                        'unsigned' => true,
+                        'notNull' => true,
+                        'autoIncrement' => true,
+                        'first' => true
                     ]),
                     new Column('menu_type_id', [
-                            'type' => Column::TYPE_INTEGER,
-                            'size' => 11,
-                            'unsigned' => true,
-                            'notNull' => true,
-                            'after' => 'id'
+                        'type' => Column::TYPE_INTEGER,
+                        'size' => 11,
+                        'unsigned' => true,
+                        'notNull' => true,
+                        'after' => 'id'
                     ]),
                     new Column('type', [ //module,link
                         'type' => Column::TYPE_VARCHAR,
                         'size' => 24,
+                        'notNull' => true,
                         'after' => 'menu_type_id'
                     ]),
                     new Column('title', [
                         'type' => Column::TYPE_VARCHAR,
                         'size' => 255,
+                        'notNull' => true,
                         'after' => 'type'
                     ]),
                     new Column('path', [ //module/controller/action
@@ -57,31 +59,36 @@ class MenuMigration_100 extends Migration
                     new Column('status', [ //0-inactive,1-active,2-trashed
                         'type' => Column::TYPE_INTEGER,
                         'size' => 1,
+                        'default' => 1,
                         'notNull' => true,
                         'after' => 'link'
                     ]),
                     new Column('parent_id', [
                         'type' => Column::TYPE_INTEGER,
                         'size' => 5,
-                        'notNull' => true,
                         'default' => 0,
+                        'unsigned' => true,
+                        'notNull' => true,
                         'after' => 'status'
                     ]),
                     new Column('level', [
                         'type' => Column::TYPE_INTEGER,
                         'size' => 2,
+                        'default' => 0,
                         'notNull' => true,
                         'after' => 'parent_id'
                     ]),
                     new Column('lft', [
                         'type' => Column::TYPE_INTEGER,
                         'size' => 5,
+                        'default' => 0,
                         'notNull' => true,
                         'after' => 'level'
                     ]),
                     new Column('rgt', [
                         'type' => Column::TYPE_INTEGER,
                         'size' => 5,
+                        'default' => 0,
                         'notNull' => true,
                         'after' => 'lft'
                     ]),

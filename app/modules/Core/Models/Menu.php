@@ -368,4 +368,17 @@ class Menu extends Model
         return 'menu';
     }
 
+    /**
+     * Set default values before create
+     */
+    public function beforeValidation()
+    {
+        if(empty($this->getId())) {
+            $this
+                ->setLevel(0)
+                ->setLft(0)
+                ->setRgt(0)
+                ->setParentId(0);
+        }
+    }
 }
