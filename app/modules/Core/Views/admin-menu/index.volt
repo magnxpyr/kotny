@@ -49,12 +49,12 @@
                     {% if page.items is defined %}
                         {% for menu in page.items %}
                             <tr>
-                                <td>{{ menu.getStatus() }}</td>
                                 <td>{{ menu.getTitle() }}</td>
+                                <td>{{ menu.getStatus() }}</td>
                                 <td>{{ menu.getRoleId() }}</td>
                                 <td>{{ menu.getId() }}</td>
-                                <td>{{ link_to("menu/edit/"~menu.getId(), "Edit") }}</td>
-                                <td>{{ link_to("menu/delete/"~menu.getId(), "Delete") }}</td>
+                                <td>{{ link_to("admin/core/menu/edit/"~menu.getId(), "Edit") }}</td>
+                                <td>{{ link_to("admin/core/menu/delete/"~menu.getId(), "Delete") }}</td>
                             </tr>
                         {% endfor %}
                     {% endif %}

@@ -7,6 +7,7 @@
  */
 
 namespace Widget\Menu;
+
 use Core\Models\Menu;
 use Phalcon\Db\Column;
 
@@ -17,16 +18,17 @@ use Phalcon\Db\Column;
 class Controller extends \Engine\Widget\Controller
 {
     /**
-     * Generate Menu based on menuId
+     * Generate Menu based on menu Id
      */
     public function indexAction()
     {
         $menuElements = Menu::find([
             'conditions' => 'menu_type_id = ?1',
-            'bind' => [1 => $this->getParam('menuId')],
+            'bind' => [1 => $this->getParam('id')],
             'bindTypes' => [Column::BIND_PARAM_INT],
             'order' => 'lft'
         ]);
+
         $this->viewWidget->setVar('menuElements', $menuElements);
     }
 }

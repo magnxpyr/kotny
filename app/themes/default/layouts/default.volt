@@ -9,8 +9,10 @@
             </button>
             <a class="navbar-brand" href="#">magnxpyr</a>
         </div>
-        {{ widget.render('Menu', ['id': 1]) }}
-        {{ partial('menu') }}
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-9">
+            {{ widget.render('Menu', ['id': 1]) }}
+        </div>
+
     </div>
 </nav>
 
@@ -22,6 +24,6 @@
     {{ content() }}
     <hr>
     <footer>
-        <p>Powered by <a href="http://www.magnxpyr.com">Magnxpyr Network</a> &copy; <?php echo date('Y'); ?></p>
+        <p>Powered by <a href="http://www.magnxpyr.com">Magnxpyr Network</a> &copy; {{ date('Y') }}</p>
     </footer>
 </div>

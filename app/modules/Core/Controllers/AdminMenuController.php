@@ -9,6 +9,7 @@
 namespace Core\Controllers;
 
 use Core\Forms\AdminMenuEditForm;
+use Core\Models\MenuType;
 use Phalcon\Mvc\Model\Criteria;
 use Phalcon\Mvc\View;
 use Phalcon\Paginator\Adapter\Model as Paginator;
@@ -90,6 +91,9 @@ class AdminMenuController extends AdminController
     {
         $this->setTitle('New Menu Item');
         $form = new AdminMenuEditForm();
+        if ($this->request->has('menu_type')) {
+            $this->tag->setDefault("menu_type_id", $this->request->get('menu_type_id'));
+        }
         $this->view->setVar('form', $form);
         $this->view->render('admin-menu', 'edit');
         $this->view->setRenderLevel(View::LEVEL_ACTION_VIEW);
@@ -104,6 +108,7 @@ class AdminMenuController extends AdminController
     {
         if (!$this->request->isPost()) {
             $menu = Menu::findFirstById($id);
+
             if (!$menu) {
                 $this->flash->error("Menu was not found");
 
@@ -111,7 +116,9 @@ class AdminMenuController extends AdminController
                     "action" => "index"
                 ]);
             }
-            $this->view->id = $menu->id;
+
+            $form = new AdminMenuEditForm();
+            $this->view->setVar('form', $form);
 
             $this->tag->setDefault("id", $menu->getId());
             $this->tag->setDefault("menu_type_id", $menu->getMenuTypeId());
@@ -121,7 +128,6 @@ class AdminMenuController extends AdminController
             $this->tag->setDefault("link", $menu->getLink());
             $this->tag->setDefault("status", $menu->getStatus());
             $this->tag->setDefault("role_id", $menu->getRoleId());
-
         }
     }
 
@@ -137,7 +143,12 @@ class AdminMenuController extends AdminController
         }
 
         $form = new AdminMenuEditForm();
-        $menu = new Menu();
+        if (!empty($this->request->getPost('id'))) {
+            $menu = Menu::findFirstById($this->request->getPost('id'));
+        } else {
+            $menu = new Menu();
+        }
+
         $form->bind($this->request->getPost(), $menu);
         if (!$form->isValid()) {
             $this->flashErrors($form);
@@ -147,7 +158,7 @@ class AdminMenuController extends AdminController
             ]);
         }
 
-        if (!$menu->save()) {
+        if (!$menu->saveNode()) {
             $this->flashErrors($menu);
 
             return $this->dispatcher->forward([

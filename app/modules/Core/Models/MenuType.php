@@ -143,4 +143,20 @@ class MenuType extends Model
         return 'menu_type';
     }
 
+    public function beforeSave()
+    {
+        
+    }
+
+    public static function findSelect()
+    {
+        return MenuType::find([
+            'columns' => ['id', 'title'],
+            'cache'      => [
+                'key'      => md5("model_menuType.select"),
+                'lifetime' => 300
+            ]
+        ]);
+    }
+
 }

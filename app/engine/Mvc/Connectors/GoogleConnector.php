@@ -74,7 +74,7 @@ class GoogleConnector extends Injectable
         $client->setApplicationName($this->config->app->siteName);
         $client->setClientId($this->config->connectors->google->clientId);
         $client->setClientSecret($this->config->connectors->google->clientSecret);
-        $client->setRedirectUri($this->url->getUri('user/login-with-google'));
+        $client->setRedirectUri($this->helper->getUri('user/login-with-google'));
         $client->setDeveloperKey($this->config->connectors->google->developerKey);
 
         return $client;

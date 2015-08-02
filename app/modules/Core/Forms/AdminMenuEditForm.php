@@ -8,6 +8,7 @@
 
 namespace Core\Forms;
 
+use Core\Models\MenuType;
 use Phalcon\Forms\Element\Hidden;
 use Phalcon\Forms\Element\Select;
 use Phalcon\Forms\Element\Text;
@@ -31,6 +32,20 @@ class AdminMenuEditForm extends Form
         $id = new Hidden('id');
         $id->setFilters('int');
         $this->add($id);
+
+        // Type
+        $menu_type = new Select('menu_type_id',
+            MenuType::findSelect(),
+            ['using' => ['id', 'title'], 'class' => 'form-control']
+        );
+        $menu_type->setLabel($this->t->_('Menu Type'));
+        $menu_type->setFilters('int');
+        $menu_type->addValidator(
+            new PresenceOf([
+                'menu_type' => $this->t->_('%field% is required', ['field' => $this->t->_('Type')])
+            ])
+        );
+        $this->add($menu_type);
 
         // Title
         $title = new Text('title', [

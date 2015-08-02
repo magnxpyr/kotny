@@ -34,6 +34,13 @@ class Routes {
             'action' => 2,
             'params' => 3,
         ])->setName('core-cap');
+
+        $router->add('/:module/:controller/:action/:params', [
+            'module' => 1,
+            'controller' => 2,
+            'action' => 3,
+            'params' => 4,
+        ])->setName('default-mcap');
 /*
         $router->add('/:username', [
             'module' => 'core',

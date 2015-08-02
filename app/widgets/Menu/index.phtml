@@ -1,0 +1,37 @@
+<?php
+/**
+ * @var array|\Core\Models\Menu $menuElements
+ */
+$this->getContent();
+$level = 0;
+
+echo '<ul class="nav navbar-nav pull-right">';
+
+foreach($menuElements as $n => $elements) {
+    if ($elements->path == 0) {
+        $link = $this->helper->getRoutePath($elements->path);
+    } else {
+        $link = $elements->link;
+    }
+    if($elements->level==$level)
+        echo "<li><a href='$link'>$elements->title</a>\n";
+    else if($elements->level>$level)
+        echo "<ul>\n";
+    else {
+        echo "</li>\n";
+
+        for ($i = $level - $elements->level; $i; $i--) {
+            echo "</ul>\n";
+            echo "</li>\n";
+        }
+    }
+
+    $level = $elements->level;
+}
+
+for ($i = $level; $i; $i--) {
+    echo "</li>\n";
+    echo "</ul>\n";
+}
+
+echo '</ul>';

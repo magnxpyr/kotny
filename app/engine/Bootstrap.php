@@ -79,7 +79,7 @@ class Bootstrap
         $di->setShared('router', $router);
 
         // Generate urls
-        $url = new \Engine\Mvc\Url();
+        $url = new Phalcon\Mvc\Url();
         $url->setBaseUri($config->app->baseUri);
         $url->setBasePath(ROOT_PATH);
         $di->setShared('url', $url);
@@ -90,7 +90,7 @@ class Bootstrap
             $view->setLayoutsDir(THEMES_PATH . DEFAULT_THEME . '/layouts/');
             $view->setPartialsDir(THEMES_PATH . DEFAULT_THEME . '/partials/');
             $view->setMainView(THEMES_PATH . DEFAULT_THEME . '/index');
-            $view->setLayout('default');
+            $view->setLayout(DEFAULT_THEME);
 
             $volt = new \Phalcon\Mvc\View\Engine\Volt($view, $di);
             if($config->app->development) {
@@ -112,8 +112,16 @@ class Bootstrap
         // Setting up the widget view component
         $di->set('viewWidget', function() use ($config, $di) {
             $view = new \Phalcon\Mvc\View();
-            $view->setLayoutsDir('../../themes/' . DEFAULT_THEME . '/layouts/');
+            $view->setLayoutsDir(THEMES_PATH . DEFAULT_THEME . '/layouts/');
             $view->setLayout('widget');
+/*
+            // Disable several levels
+            $view->disableLevel(array(
+                \Phalcon\Mvc\View::LEVEL_MAIN_LAYOUT => true,
+                \Phalcon\Mvc\View::LEVEL_BEFORE_TEMPLATE => true,
+                \Phalcon\Mvc\View::LEVEL_AFTER_TEMPLATE  => true
+            ));
+*/
             $volt = new \Phalcon\Mvc\View\Engine\Volt($view, $di);
             if($config->app->development) {
                 // Prevent caching annoyances
@@ -299,7 +307,6 @@ class Bootstrap
             // Load development options
             new \Engine\Development($di);
         }
-
 
         // Handle the request
         $application = new \Phalcon\Mvc\Application($di);

@@ -24,9 +24,9 @@ class Helper extends Component
     public function getUserRoles()
     {
         return [
-            1 => 'Guest',
-            2 => 'User',
-            3 => 'Admin'
+            0 => 'Guest',
+            1 => 'User',
+            2 => 'Admin'
         ];
     }
 
@@ -36,7 +36,11 @@ class Helper extends Component
      */
     public function getUserStatuses()
     {
-        return ['Inactive', 'Active', 'Blocked'];
+        return [
+            1 => 'Active',
+            0 => 'Inactive',
+            2 => 'Blocked'
+        ];
     }
 
     /**
@@ -45,7 +49,60 @@ class Helper extends Component
      */
     public function getArticleStatuses()
     {
-        return ['Published', 'Unpublished', 'Trashed'];
+        return [
+            1 => 'Published',
+            0 => 'Unpublished',
+            2 => 'Trashed'
+        ];
+    }
+
+    /**
+     * Return full url
+     *
+     * @param string $path
+     * @param bool|true $get
+     * @param string|null $params
+     * @return string
+     */
+    public function getUri($path, $get = true, $params = null) {
+        $protocol  = 'http://';
+        if ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443) {
+            $protocol = 'https://';
+        }
+        if($get) {
+            $path = $this->get($path);
+        }
+        if($params !== null) {
+            $path .= $params;
+        }
+        return $protocol . $_SERVER['HTTP_HOST'] . $path;
+    }
+
+    /**
+     * Get url based on route name
+     *
+     * @param string $path
+     * @param string $routeName
+     * @return string
+     */
+    public function getRoutePath($path, $routeName = 'default-mcap')
+    {
+        $path = explode('/', $path);
+
+        $params = '';
+        if (isset($path[3])) {
+            $params = $path[3];
+        }
+
+        return $this->url->get(
+            [
+                'for' => $routeName,
+                'module' => $path[0],
+                'controller' => $path[1],
+                'action' => $path[2],
+                'params' => $params
+            ]
+        );
     }
 
 }

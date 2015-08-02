@@ -7,6 +7,7 @@
  */
 
 namespace Engine\Widget;
+use Phalcon\Mvc\View;
 
 /**
  * Class Widget
@@ -48,8 +49,17 @@ class Widget
             }
         }
         $controller->initialize();
-        $controller->viewWidget->setViewsDir(APP_PATH . "widgets/$widgetName/");
         $controller->{"{$action}Action"}();
+        $controller->viewWidget->start();
+        $controller->viewWidget->setViewsDir(APP_PATH . "widgets/$widgetName/");
+        $controller->viewWidget->pick($action);
         $controller->viewWidget->render('controller', $action);
+        $controller->viewWidget->finish();
+
+        echo $controller->viewWidget->getContent();
+
+    //    $controller->viewWidget->pick($action);
+    //    $controller->viewWidget->render('', $action);
+    //    print_r($controller->viewWidget); die;
     }
 }

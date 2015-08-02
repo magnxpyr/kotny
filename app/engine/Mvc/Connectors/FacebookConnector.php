@@ -29,7 +29,7 @@ class FacebookConnector extends Injectable
      */
     public function __construct()
     {
-        $this->loginURL = $this->url->getUri('/user/login-with-facebook');
+        $this->loginURL = $this->helper->getUri('/user/login-with-facebook');
         FacebookSession::setDefaultApplication(
             $this->config->connectors->facebook->appId,
             $this->config->connectors->facebook->secret

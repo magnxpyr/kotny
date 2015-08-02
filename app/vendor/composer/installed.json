@@ -150,59 +150,6 @@
         ]
     },
     {
-        "name": "phalcon/incubator",
-        "version": "dev-master",
-        "version_normalized": "9999999-dev",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/phalcon/incubator.git",
-            "reference": "8e8c3830b73a84ba28a8b551f687f0975869e312"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/phalcon/incubator/zipball/8e8c3830b73a84ba28a8b551f687f0975869e312",
-            "reference": "8e8c3830b73a84ba28a8b551f687f0975869e312",
-            "shasum": ""
-        },
-        "require": {
-            "ext-phalcon": "~2.0",
-            "php": ">=5.3.21",
-            "swiftmailer/swiftmailer": ">=5.2"
-        },
-        "require-dev": {
-            "codeception/codeception": "*",
-            "mockery/mockery": "*",
-            "php-mock/php-mock": "<0.6",
-            "phpunit/phpunit": "4.6.*",
-            "squizlabs/php_codesniffer": "2.*"
-        },
-        "time": "2015-06-10 13:47:44",
-        "type": "library",
-        "installation-source": "source",
-        "autoload": {
-            "psr-0": {
-                "Phalcon": "Library/"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "BSD-3"
-        ],
-        "authors": [
-            {
-                "name": "Phalcon Team",
-                "email": "team@phalconphp.com"
-            }
-        ],
-        "description": "Adapters, prototypes or functionality that can be potentially incorporated to the C-framework.",
-        "homepage": "http://phalconphp.com",
-        "keywords": [
-            "framework",
-            "incubator",
-            "phalcon"
-        ]
-    },
-    {
         "name": "stibium/phalcon.eager-loading",
         "version": "dev-php-5.3",
         "version_normalized": "dev-php-5.3",
@@ -241,6 +188,59 @@
         ],
         "description": "Solves N+1 query problem in Phalcon Model",
         "keywords": [
+            "phalcon"
+        ]
+    },
+    {
+        "name": "phalcon/incubator",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/phalcon/incubator.git",
+            "reference": "43bf209772e02d41753fb8882280e49f2da07eb5"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/phalcon/incubator/zipball/43bf209772e02d41753fb8882280e49f2da07eb5",
+            "reference": "43bf209772e02d41753fb8882280e49f2da07eb5",
+            "shasum": ""
+        },
+        "require": {
+            "ext-phalcon": ">=2.0.4",
+            "php": ">=5.3.21",
+            "swiftmailer/swiftmailer": "~5.2"
+        },
+        "require-dev": {
+            "codeception/codeception": "2.0.14",
+            "mockery/mockery": "*",
+            "php-mock/php-mock": "<0.6",
+            "phpunit/phpunit": "4.6.*",
+            "squizlabs/php_codesniffer": "2.*"
+        },
+        "time": "2015-07-27 10:39:48",
+        "type": "library",
+        "installation-source": "source",
+        "autoload": {
+            "psr-0": {
+                "Phalcon": "Library/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "BSD-3-Clause"
+        ],
+        "authors": [
+            {
+                "name": "Phalcon Team",
+                "email": "team@phalconphp.com"
+            }
+        ],
+        "description": "Adapters, prototypes or functionality that can be potentially incorporated to the C-framework.",
+        "homepage": "http://phalconphp.com",
+        "keywords": [
+            "framework",
+            "incubator",
             "phalcon"
         ]
     }
