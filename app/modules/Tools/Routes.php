@@ -16,7 +16,7 @@ class Routes {
             'controller' => 1,
             'action' => 2,
             'params' => 3
-        ));
+        ))->setName('admin-tools');
     }
 
 }

@@ -24,9 +24,10 @@ class Helper extends Component
     public function getUserRoles()
     {
         return [
-            0 => 'Guest',
-            1 => 'User',
-            2 => 'Admin'
+            0 => 'All',
+            1 => 'Guest',
+            2 => 'User',
+            3 => 'Admin'
         ];
     }
 

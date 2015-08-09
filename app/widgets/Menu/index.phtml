@@ -8,6 +8,11 @@ $level = 0;
 echo '<ul class="nav navbar-nav pull-right">';
 
 foreach($menuElements as $n => $elements) {
+    if ($elements->role_id != 0
+        && ($this->auth->isUserSignedIn() && $elements->role_id == 1
+            || !$this->auth->isUserSignedIn() && $elements->role_id > 1)) {
+        continue;
+    }
     if ($elements->path == 0) {
         $link = $this->helper->getRoutePath($elements->path);
     } else {

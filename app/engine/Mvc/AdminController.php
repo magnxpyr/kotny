@@ -114,6 +114,22 @@ abstract class AdminController extends Controller {
                         'prepend' => '<i class="fa fa-user"></i>'
                     ]
                 ]
+            ],
+            'menus' => [
+                'title' => 'Menu Types',
+                'prepend' => '<i class="fa fa-th-list"></i>',
+                'items' => [
+                    'menu-type' => [
+                        'title' => 'Menus',
+                        'href' => 'admin/core/menu-type/index',
+                        'prepend' => '<i class="fa fa-circle-o"></i>'
+                    ],
+                    'menu-items' => [
+                        'title' => 'Menu Items',
+                        'href' => 'admin/core/menu/index',
+                        'prepend' => '<i class="fa fa-circle-o"></i>'
+                    ]
+                ]
             ]
         ];
 
@@ -123,7 +139,12 @@ abstract class AdminController extends Controller {
 
     protected function renderItems($items, $isActive = 0) {
         $content = ['html' => '', 'breadcrumb' => '', 'active' => $isActive];
-        $route = '/admin/'.$this->router->getModuleName().'/'.$this->router->getControllerName();
+        if ($this->router->getMatchedRoute()->getName() == 'admin-tools') {
+            $controller = $this->router->getControllerName();
+        } else {
+            $controller = str_replace('admin-', '', $this->router->getControllerName());
+        }
+        $route = 'admin/'.$this->router->getModuleName().'/'.$controller;
         foreach ($items as $item) {
             if (!empty($item['items'])) {
                 $result = $this->renderItems($item['items'], $content['active']);

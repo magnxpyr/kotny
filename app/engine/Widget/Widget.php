@@ -16,6 +16,14 @@ use Phalcon\Mvc\View;
 class Widget
 {
     /**
+     * Create cache key
+     */
+    public function createCacheKey($widget, $params)
+    {
+        return md5(serialize($widget).serialize($params));
+    }
+
+    /**
      * Render widget
      * $widget = widgetName
      * $widget = [widgetName, action]
@@ -34,12 +42,20 @@ class Widget
             $action = 'index';
         }
 
+        if (!isset($params['cache_key'])) {
+            $params['cache_key'] = $this->createCacheKey($widget, $params);
+        }
+
         $controllerClass = "\\Widget\\$widgetName\\Controller";
 
         /**
          * @var \Engine\Widget\Controller $controller
          */
         $controller = new $controllerClass();
+        if ($controller->cache->exists($params['cache_key'], 300)) {
+            echo $controller->cache->get($params['cache_key']);;
+            return;
+        }
         if ($params !== null) {
             $controller->setParams($params);
         }
@@ -56,7 +72,10 @@ class Widget
         $controller->viewWidget->render('controller', $action);
         $controller->viewWidget->finish();
 
-        echo $controller->viewWidget->getContent();
+        $html = $controller->viewWidget->getContent();
+        $controller->cache->save($params['cache_key'], $html, 300);
+        echo $html;
+        return;
 
     //    $controller->viewWidget->pick($action);
     //    $controller->viewWidget->render('', $action);
