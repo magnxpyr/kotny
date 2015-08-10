@@ -467,6 +467,22 @@ class Auth extends Component
     }
 
     /**
+     * Get User Role
+     * @return int|\Phalcon\Mvc\Model|\Phalcon\Mvc\Model\Resultset
+     */
+    public function getUserRole()
+    {
+        $auth = $this->session->get('auth');
+        if ($auth) {
+            $role = User::getRoleById($auth['id']);
+        } else {
+            $role = 1;
+        }
+
+        return $role;
+    }
+
+    /**
      * Get the entity related to user in the active identity
      * @throws \Exception
      * @return \Core\Models\User

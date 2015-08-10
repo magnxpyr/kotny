@@ -41,6 +41,22 @@ class Routes {
             'action' => 3,
             'params' => 4,
         ])->setName('default-mcap');
+
+        // Admin
+        $router->add('/admin', array(
+            'module' => 'core',
+            'controller' => 'admin-index',
+            'action' => 'index'
+        ))->setName('admin-home');
+
+        $router->add('/admin/:module/:controller/:action/:params', array(
+            'module' => 1,
+            'controller' => 2,
+            'action' => 3,
+            'params' => 4
+        ))->convert('controller', function($controller) {
+            return "admin-$controller";
+        })->setName('admin-mcap');
 /*
         $router->add('/:username', [
             'module' => 'core',

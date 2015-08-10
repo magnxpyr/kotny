@@ -71,7 +71,7 @@ class Helper extends Component
             $protocol = 'https://';
         }
         if($get) {
-            $path = $this->get($path);
+            $path = $this->url->get($path);
         }
         if($params !== null) {
             $path .= $params;
@@ -88,19 +88,23 @@ class Helper extends Component
      */
     public function getRoutePath($path, $routeName = 'default-mcap')
     {
-        $path = explode('/', $path);
+        $pathArray = explode('/', $path);
 
         $params = '';
-        if (isset($path[3])) {
-            $params = $path[3];
+        if (isset($pathArray[3])) {
+            $params = $pathArray[3];
+        }
+
+        if (strpos('admin', $pathArray[1]) !== false) {
+            return $this->url->get('admin/' . $path);
         }
 
         return $this->url->get(
             [
                 'for' => $routeName,
-                'module' => $path[0],
-                'controller' => $path[1],
-                'action' => $path[2],
+                'module' => $pathArray[0],
+                'controller' => $pathArray[1],
+                'action' => $pathArray[2],
                 'params' => $params
             ]
         );

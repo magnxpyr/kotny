@@ -141,6 +141,18 @@ abstract class Controller extends \Phalcon\Mvc\Controller
     }
 
     /**
+     * Create cache key
+     *
+     * @param $widget
+     * @param $params
+     * @return string
+     */
+    public function createCacheKey($widget, $params)
+    {
+        return md5(serialize($widget).serialize($params).$this->auth->getUserRole());
+    }
+
+    /**
      * Initialize the widget
      */
     public function initialize()

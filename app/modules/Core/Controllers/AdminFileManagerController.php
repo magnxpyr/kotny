@@ -6,14 +6,21 @@
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
-namespace Admin\Controllers;
+namespace Core\Controllers;
 
 use Engine\Mvc\AdminController;
 
-class AdminFileManagerController extends AdminController {
-
-    public function initialize() {
-
+/**
+ * Class AdminFileManagerController
+ * @package Admin\Controllers
+ */
+class AdminFileManagerController extends AdminController
+{
+    /**
+     * Add File manager dependencies
+     */
+    public function initialize()
+    {
         $this->assets->collection('header-css')->addCss("vendor/elFinder/css/theme.css");
         $this->assets->collection('header-css')->addCss("vendor/elFinder/css/common.css");
         $this->assets->collection('header-css')->addCss("vendor/elFinder/css/dialog.css");
@@ -120,8 +127,12 @@ class AdminFileManagerController extends AdminController {
         parent::initialize();
     }
 
-    public function indexAction() {
+    /**
+     * Display File Manager
+     */
+    public function indexAction()
+    {
         $this->setTitle('File Manager');
-        $this->view->setVar("connector", 'vendor/elFinder/php/connector.minimal.php');
+        $this->view->setVar("connector", $this->url->get('vendor/elFinder/php/connector.minimal.php'));
     }
 }

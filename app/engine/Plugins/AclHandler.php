@@ -36,12 +36,7 @@ class AclHandler extends Plugin
         $this->acl->setDefaultAction(Acl::DENY);
 
         //Check whether the "auth" variable exists in session to define the active role
-        $auth = $this->session->get('auth');
-        if ($auth) {
-            $role = User::getRoleById($auth['id']);
-        } else {
-            $role = 1;
-        }
+        $role = $this->auth->getUserRole();
 
         //Take the active resources from the dispatcher
         $module = $dispatcher->getModuleName();

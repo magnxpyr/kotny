@@ -33,6 +33,14 @@ return [
                 'resetPassword'
             ]
         ],
+        'core/admin-index' => [
+            'description' => '',
+            'actions' => ['*']
+        ],
+        'core/admin-file-manager' => [
+            'description' => '',
+            'actions' => ['*']
+        ],
         'core/admin-menu-type' => [
             'description' => '',
             'actions' => [
@@ -133,55 +141,41 @@ return [
         ],
         3 => [
             'allow' => [
-                'core/index'    => [
-                    'actions' => [
-                        '*'
-                    ]
+                'core/admin-index' => [
+                    'actions' => ['*']
+                ],
+                'core/admin-file-manager' => [
+                    'actions' => ['*']
                 ],
                 'core/admin-menu-type' => [
-                    'actions' => [
-                        '*'
-                    ]
+                    'actions' => ['*']
                 ],
                 'core/admin-menu' => [
-                    'actions' => [
-                        '*'
-                    ]
+                    'actions' => ['*']
                 ],
-                'core/error'    => [
-                    'actions' => [
-                        '*'
-                    ]
+                'core/index' => [
+                    'actions' => ['*']
                 ],
-                'core/user'     => [
-                    'actions' => [
-                        '*'
-                    ]
+                'core/error' => [
+                    'actions' => ['*']
+                ],
+                'core/user' => [
+                    'actions' => ['*']
                 ],
                 'tools/controllers' => [
-                    'actions' => [
-                        '*'
-                    ]
+                    'actions' => ['*']
                 ],
                 'tools/migrations' => [
-                    'actions' => [
-                        '*'
-                    ]
+                    'actions' => ['*']
                 ],
                 'tools/models' => [
-                    'actions' => [
-                        '*'
-                    ]
+                    'actions' => ['*']
                 ],
                 'tools/modules' => [
-                    'actions' => [
-                        '*'
-                    ]
+                    'actions' => ['*']
                 ],
                 'tools/scaffold' => [
-                    'actions' => [
-                        '*'
-                    ]
+                    'actions' => ['*']
                 ]
             ]
         ]

@@ -1,7 +1,6 @@
 <?php
 
-return array(
+return [
     'Core',
-    'Admin',
     'Tools'
-);
+];
