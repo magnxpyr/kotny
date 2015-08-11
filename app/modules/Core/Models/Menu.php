@@ -360,7 +360,7 @@ class Menu extends Model
     {
         $this->setSource('menu');
         $this->hasOne('menu_type_id', 'Core\Models\MenuType', 'id', ['alias' => 'menuType', 'reusable' => true]);
-        $this->addBehavior(new Model\Behavior\NestedSet());
+    //    $this->addBehavior(new Model\Behavior\NestedSet(['rootAttribute' => 'parent_id']));
     }
 
     public function getSource()

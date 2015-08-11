@@ -47,19 +47,54 @@
                 </thead>
                 <tbody>
                     {% if page.items is defined %}
-                        {% for menu in page.items %}
+                        {% for item in page.items %}
                             <tr>
-                                <td>{{ menu.getTitle() }}</td>
-                                <td>{{ menu.getStatus() }}</td>
-                                <td>{{ menu.getRoleId() }}</td>
-                                <td>{{ menu.getId() }}</td>
-                                <td>{{ link_to("admin/core/menu/edit/"~menu.getId(), "Edit") }}</td>
-                                <td>{{ link_to("admin/core/menu/delete/"~menu.getId(), "Delete") }}</td>
+                                <td>{{ item.getTitle() }}</td>
+                                <td>{{ item.getStatus() }}</td>
+                                <td>{{ item.getRoleId() }}</td>
+                                <td>{{ item.getId() }}</td>
+                                <td>{{ link_to("admin/core/menu/edit/"~item.getId(), "Edit") }}</td>
+                                <td>{{ link_to("admin/core/menu/delete/"~item.getId(), "Delete") }}</td>
                             </tr>
                         {% endfor %}
                     {% endif %}
                 </tbody>
             </table>
+
+            <?php
+            echo '<ol class="sortable">';
+            $level=0;
+
+            foreach($menu as $n=>$category)
+            {
+                if($category->level==$level)
+                echo "</li>\n";
+                else if($category->level>$level)
+                echo "<ol>\n";
+                    else
+                    {
+                        echo "</li>\n";
+
+                        for($i=$level-$category->level;$i;$i--)
+                        {
+                        echo "</ol>\n";
+                    echo "</li>\n";
+                    }
+                }
+
+                echo "<li>\n";
+                echo $category->title;
+                $level=$category->level;
+            }
+
+            for($i=$level;$i;$i--)
+            {
+                echo "</li>\n";
+                echo "</ol>\n";
+            }
+
+            echo '</ol>';
+            ?>
 
             <div class="row">
                 <div class="col-sm-5">
@@ -92,3 +127,23 @@
         </div>
     </div>
 </div>
+
+{%
+do assets.addInlineJs('
+    $(document).ready(function(){
+        $("ol.sortable").nestedSortable({
+       //     handle: "div",
+            items: "li",
+            isTree: true,
+            tabSize: 5
+        //    toleranceElement: "> div"
+        });
+
+        $("#toArray").click(function(e) {
+            arraied = $("ol.sortable").nestedSortable("toArray", {startDepthCount: 0});
+            arraied = dump(arraied);
+            (typeof($("#toArrayOutput")[0].textContent) != "undefined") ?
+                $("#toArrayOutput")[0].textContent = arraied : $("#toArrayOutput")[0].innerText = arraied;
+        });
+    });')
+%}

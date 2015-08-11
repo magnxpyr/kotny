@@ -27,6 +27,7 @@ class AdminMenuController extends AdminController
      */
     public function indexAction()
     {
+        $this->assets->collection('footer-js')->addJs('vendor/jquery-ui/extra/jquery.mjs.nestedSortable.js');
         $this->setTitle('Menu');
 
         $numberPage = 1;
@@ -44,7 +45,7 @@ class AdminMenuController extends AdminController
         ]);
 
         $this->view->setVar('page', $paginator->getPaginate());
-
+        $this->view->setVar('menu', $menu);
     }
 
     /**
@@ -158,7 +159,7 @@ class AdminMenuController extends AdminController
             ]);
         }
 
-        if (!$menu->saveNode()) {
+        if (!$menu->save()) {
             $this->flashErrors($menu);
 
             return $this->dispatcher->forward([

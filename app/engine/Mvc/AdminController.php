@@ -54,7 +54,6 @@ abstract class AdminController extends Controller {
             ->setTargetUri('assets/mg_admin/js/header.min.js')
             ->addJs('vendor/jquery/jquery-1.11.3.min.js')
             ->addJs('vendor/jquery-ui/jquery-ui.min.js')
-            ->addJs('vendor/jquery-ui/extra/jquery.mjs.nestedSortable.js')
             ->addJs('vendor/js/js.cookie.js')
             ->addJs('vendor/bootstrap/js/bootstrap.min.js')
             ->addJs('vendor/jquery/extra/jquery.slimscroll.min.js')
