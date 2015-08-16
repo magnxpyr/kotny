@@ -39,8 +39,8 @@
             <table class="table table-bordered table-striped">
                 <thead>
                     <tr>
-                        <th>Status</th>
                         <th>Title</th>
+                        <th>Status</th>
                         <th>Role</th>
                         <th>Id</th>
                     </tr>
@@ -83,7 +83,12 @@
                 }
 
                 echo "<li>\n";
-                echo $category->title;
+                echo $category->getTitle();
+                echo $category->getStatus();
+                echo $category->getRoleId();
+                echo $category->getId();
+                echo $this->tag->linkTo("admin/core/menu/edit/" . $category->getId(), '<i class="fa fa-edit"></i>');
+                echo $this->tag->linkTo("admin/core/menu/delete/" . $category->getId(), '<i class="fa fa-trash-o"></i>');
                 $level=$category->level;
             }
 
@@ -95,35 +100,6 @@
 
             echo '</ol>';
             ?>
-
-            <div class="row">
-                <div class="col-sm-5">
-                    <div class="dataTables_info" role="status" aria-live="polite">Showing 1 to 10 of 57 entries</div>
-                </div>
-                <div class="col-sm-7">
-                    <nav>
-                        <ul class="pagination">
-                            <li class="paginate_button previous disabled" id="example2_previous">
-                                <a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">Previous</a></li>
-                            <li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">1</a></li>
-                            <li class="paginate_button "><a href="#" aria-controls="example2" data-dt-idx="2" tabindex="0">2</a></li>
-                            <li class="paginate_button "><a href="#" aria-controls="example2" data-dt-idx="3" tabindex="0">3</a></li>
-                            <li class="paginate_button "><a href="#" aria-controls="example2" data-dt-idx="4" tabindex="0">4</a></li>
-                            <li class="paginate_button "><a href="#" aria-controls="example2" data-dt-idx="5" tabindex="0">5</a></li>
-                            <li class="paginate_button "><a href="#" aria-controls="example2" data-dt-idx="6" tabindex="0">6</a></li>
-                            <li class="paginate_button next" id="example2_next"><a href="#" aria-controls="example2" data-dt-idx="7" tabindex="0">Next</a></li>
-                        </ul>
-                    </nav>
-                </div>
-            </div>
-            <nav>
-                <ul class="pagination">
-                    <li>{# link_to("menu/search", "First") #}</li>
-                    <li>{# link_to("menu/search?page="~page.before, "Previous") #}</li>
-                    <li>{# link_to("menu/search?page="~page.next, "Next") #}</li>
-                    <li>{# link_to("menu/search?page="~page.last, "Last") #}</li>
-                </ul>
-            </nav>
         </div>
     </div>
 </div>
