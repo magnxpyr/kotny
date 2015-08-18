@@ -1,36 +1,9 @@
 {{ content() }}
 <div class="box box-default">
     <div class="box-header with-border">
-        <div class="col-sm-6">
-            <ul class="nav nav-pills">
-                <li><button onclick="location.href='{{ url("admin/core/menu/new") }}'" class="btn btn-sm btn-block btn-primary"><i class='fa fa-plus'></i> New</button></li>
-                <li><button onclick="location.href=''" class="btn btn-sm btn-block btn-success"><i class="fa fa-check"></i> Publish</button></li>
-                <li><button onclick="location.href=''" class="btn btn-sm btn-block btn-danger"><i class="fa fa-remove"></i> Unpublish</button></li>
-                <li><button onclick="location.href=''" class="btn btn-sm btn-block btn-warning"><i class="fa fa-trash"></i> Trash</button></li>
-            </ul>
-        </div>
-        <div class="col-sm-6">
-            <div class="dataTables_filter">
-                {{ form("menu/search", "method":"post", "autocomplete": "off", "class": "form-inline") }}
-                <fieldset>
-                    <div class="form-group">
-                        <div class="input-group">
-                            {{ text_field("menu_type_id", "type": "numeric", "class": "form-control input-sm") }}
-                        </div>
-                        <div class="input-group">
-                            {{ text_field("type", "class": "form-control input-sm") }}
-                        </div>
-                        <div class="input-group">
-                            {{ text_field("title", "class": "form-control input-sm") }}
-                        </div>
-                        <div class="input-group">
-                            {{ text_field("status", "type": "numeric", "class": "form-control input-sm") }}
-                        </div>
-                    </div>
-                </fieldset>
-                {{ end_form() }}
-            </div>
-        </div>
+        <ul class="nav nav-pills">
+            <li><button onclick="location.href='{{ url("admin/core/menu/new") }}'" class="btn btn-sm btn-block btn-primary"><i class='fa fa-plus'></i> New</button></li>
+        </ul>
     </div>
 
     <div class="box-body">
@@ -62,7 +35,7 @@
             </table>
 
             <?php
-            echo '<ol class="sortable">';
+            echo '<ol class="sortable sortable-list">';
             $level=0;
 
             foreach($menu as $n=>$category)
@@ -83,12 +56,12 @@
                 }
 
                 echo "<li>\n";
-                echo $category->getTitle();
-                echo $category->getStatus();
-                echo $category->getRoleId();
-                echo $category->getId();
-                echo $this->tag->linkTo("admin/core/menu/edit/" . $category->getId(), '<i class="fa fa-edit"></i>');
-                echo $this->tag->linkTo("admin/core/menu/delete/" . $category->getId(), '<i class="fa fa-trash-o"></i>');
+                echo '<div class="list-item col-xs-4">' . $category->getTitle() . '</div>';
+                echo '<div class="list-item col-xs-2">' . $category->getStatus() . '</div>';
+                echo '<div class="list-item col-xs-2">' . $category->getRoleId() . '</div>';
+                echo '<div class="list-item col-xs-2">' . $category->getId() . '</div>';
+                echo '<div class="list-item col-xs-2">' . $this->tag->linkTo("admin/core/menu/edit/" . $category->getId(), '<i class="fa fa-edit"></i>');
+                echo $this->tag->linkTo("admin/core/menu/delete/" . $category->getId(), '<i class="fa fa-trash-o"></i>') . '</div>';
                 $level=$category->level;
             }
 

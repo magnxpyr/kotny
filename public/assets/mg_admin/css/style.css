@@ -8,7 +8,14 @@ ol.sortable {
 ol .mjs-nestedSortable-expanded ol {
     -webkit-padding-start: 10px;
 }
-ol.sortable li {
+ol.sortable li div.list-item {
+    cursor: default;
+    display: block;
+    float: left;
+    border-bottom: 1px solid #ccc;
+    padding: 3px 5px;
+}
+ol.sortable li div.list-item {
     padding: 0 30px;
 }
 .main-footer {
