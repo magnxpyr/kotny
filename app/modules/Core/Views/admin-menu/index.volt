@@ -7,73 +7,52 @@
     </div>
 
     <div class="box-body">
-        <div class="dataTables_wrapper form-inline dt-bootstrap">
-            <!-- Table -->
-            <table class="table table-bordered table-striped">
-                <thead>
-                    <tr>
-                        <th>Title</th>
-                        <th>Status</th>
-                        <th>Role</th>
-                        <th>Id</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% if page.items is defined %}
-                        {% for item in page.items %}
-                            <tr>
-                                <td>{{ item.getTitle() }}</td>
-                                <td>{{ item.getStatus() }}</td>
-                                <td>{{ item.getRoleId() }}</td>
-                                <td>{{ item.getId() }}</td>
-                                <td>{{ link_to("admin/core/menu/edit/"~item.getId(), "Edit") }}</td>
-                                <td>{{ link_to("admin/core/menu/delete/"~item.getId(), "Delete") }}</td>
-                            </tr>
-                        {% endfor %}
-                    {% endif %}
-                </tbody>
-            </table>
-
-            <?php
-            echo '<ol class="sortable sortable-list">';
-            $level=0;
-
-            foreach($menu as $n=>$category)
-            {
-                if($category->level==$level)
-                echo "</li>\n";
-                else if($category->level>$level)
-                echo "<ol>\n";
-                    else
-                    {
-                        echo "</li>\n";
-
-                        for($i=$level-$category->level;$i;$i--)
-                        {
-                        echo "</ol>\n";
-                    echo "</li>\n";
-                    }
-                }
-
-                echo "<li>\n";
-                echo '<div class="list-item col-xs-4">' . $category->getTitle() . '</div>';
-                echo '<div class="list-item col-xs-2">' . $category->getStatus() . '</div>';
-                echo '<div class="list-item col-xs-2">' . $category->getRoleId() . '</div>';
-                echo '<div class="list-item col-xs-2">' . $category->getId() . '</div>';
-                echo '<div class="list-item col-xs-2">' . $this->tag->linkTo("admin/core/menu/edit/" . $category->getId(), '<i class="fa fa-edit"></i>');
-                echo $this->tag->linkTo("admin/core/menu/delete/" . $category->getId(), '<i class="fa fa-trash-o"></i>') . '</div>';
-                $level=$category->level;
-            }
-
-            for($i=$level;$i;$i--)
-            {
-                echo "</li>\n";
-                echo "</ol>\n";
-            }
-
-            echo '</ol>';
-            ?>
+        <div class="row list-item">
+            <div class="col-xs-4">Title</div>
+            <div class="col-xs-2">Status</div>
+            <div class="col-xs-2">Role</div>
+            <div class="col-xs-2">Id</div>
         </div>
+
+        <?php
+        echo '<ol class="sortable ui-sortable sortable-list">';
+        $level=0;
+
+        foreach($menu as $n=>$category)
+        {
+            if($category->level==$level)
+            echo "</li>\n";
+            else if($category->level>$level)
+            echo "<ol>\n";
+                else
+                {
+                    echo "</li>\n";
+
+                    for($i=$level-$category->level;$i;$i--)
+                    {
+                    echo "</ol>\n";
+                echo "</li>\n";
+                }
+            }
+
+            echo "<li><div class='list-item'>\n";
+            echo '<div class="col-xs-4"><i class="fa fa-reorder"></i>' . $category->getTitle() . '</div>';
+            echo '<div class="col-xs-2">' . $this->helper->getArticleStatus($category->getStatus()) . '</div>';
+            echo '<div class="col-xs-2">' . $this->helper->getUserRole($category->getRoleId()) . '</div>';
+            echo '<div class="col-xs-2">' . $category->getId() . '</div>';
+            echo '<div class="col-xs-2">' . $this->tag->linkTo("admin/core/menu/edit/" . $category->getId(), '<i class="fa fa-edit"></i>');
+            echo $this->tag->linkTo("admin/core/menu/delete/" . $category->getId(), '<i class="fa fa-trash-o"></i>') . '</div></div>';
+            $level=$category->level;
+        }
+
+        for($i=$level;$i;$i--)
+        {
+            echo "</li>\n";
+            echo "</ol>\n";
+        }
+
+        echo '</ol>';
+        ?>
     </div>
 </div>
 
@@ -81,11 +60,20 @@
 do assets.addInlineJs('
     $(document).ready(function(){
         $("ol.sortable").nestedSortable({
-       //     handle: "div",
+            handle: "i.fa-reorder",
             items: "li",
             isTree: true,
-            tabSize: 5
-        //    toleranceElement: "> div"
+            forcePlaceholderSize: true,
+			helper:	"clone",
+			opacity: .6,
+			placeholder: "placeholder",
+			revert: 250,
+			tabSize: 25,
+			tolerance: "pointer",
+			toleranceElement: "> div",
+			isTree: true,
+			expandOnHover: 700,
+			startCollapsed: true
         });
 
         $("#toArray").click(function(e) {

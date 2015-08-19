@@ -17,18 +17,52 @@ use Phalcon\Mvc\User\Component;
  */
 class Helper extends Component
 {
+    private $userRoles = [
+        0 => 'All',
+        1 => 'Guest',
+        2 => 'User',
+        3 => 'Admin'
+    ];
+
+    private $userStatuses = [
+        1 => 'Active',
+        0 => 'Inactive',
+        2 => 'Blocked'
+    ];
+
+    private $articleStatuses = [
+        1 => 'Published',
+        0 => 'Unpublished',
+        2 => 'Trashed'
+    ];
+
+    /**
+     * Get user role by id
+     * @param $id
+     * @return mixed
+     */
+    public function getUserRole($id)
+    {
+        return $this->userRoles[$id];
+    }
+
     /**
      * Get possible permission roles for users
      * @return array
      */
     public function getUserRoles()
     {
-        return [
-            0 => 'All',
-            1 => 'Guest',
-            2 => 'User',
-            3 => 'Admin'
-        ];
+        return $this->userRoles;
+    }
+
+    /**
+     * Get user status by id
+     * @param $id
+     * @return mixed
+     */
+    public function getUserStatus($id)
+    {
+        return $this->userStatuses[$id];
     }
 
     /**
@@ -37,11 +71,17 @@ class Helper extends Component
      */
     public function getUserStatuses()
     {
-        return [
-            1 => 'Active',
-            0 => 'Inactive',
-            2 => 'Blocked'
-        ];
+        return $this->userStatuses;
+    }
+
+    /**
+     * Get article status by id
+     * @param $id
+     * @return mixed
+     */
+    public function getArticleStatus($id)
+    {
+        return $this->articleStatuses[$id];
     }
 
     /**
@@ -50,11 +90,7 @@ class Helper extends Component
      */
     public function getArticleStatuses()
     {
-        return [
-            1 => 'Published',
-            0 => 'Unpublished',
-            2 => 'Trashed'
-        ];
+        return $this->articleStatuses;
     }
 
     /**
