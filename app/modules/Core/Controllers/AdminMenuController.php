@@ -30,11 +30,13 @@ class AdminMenuController extends AdminController
         $this->assets->collection('footer-js')->addJs('vendor/jquery-ui/extra/jquery.mjs.nestedSortable.js');
         $this->setTitle('Menu');
 
-        $menu_id =  $this->request->isPost() ? $this->request->getPost('menu_id') : $id;
+        $menuId =  $this->request->isPost() ? $this->request->getPost('menu_id') : $id;
+
+        $menuType = MenuType::find(['columns' => ['id', 'title']]);
 
         $menu = Menu::find([
             'conditions' => 'menu_type_id = ?1',
-            'bind' => [1 => $menu_id],
+            'bind' => [1 => $menuId],
             'order' => 'lft'
         ]);
 
@@ -42,7 +44,12 @@ class AdminMenuController extends AdminController
             $this->flash->notice("The search did not find any menu");
         }
 
-        $this->view->setVar('menu', $menu);
+        $this->tag->setDefault('menuType', $menuId);
+
+        $this->view->setVars([
+            'menu' => $menu,
+            'menuType' => $menuType
+        ]);
     }
 
     /**
