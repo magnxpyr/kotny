@@ -10,8 +10,14 @@
 use Phalcon\Events\Event;
 use Phalcon\Dispatcher;
 
+/**
+ * Class Bootstrap
+ */
 class Bootstrap
 {
+    /**
+     * Initialize and run application
+     */
     public function run()
     {
         // Define internal variables
@@ -315,9 +321,13 @@ class Bootstrap
         if ($request->isAjax()) {
             $return = new \stdClass();
             $return->html = $application->view->getContent();
+            if ($application->view->bodyClass) {
+                $return->bodyClass = $application->view->bodyClass;
+            }
             $return->success = true;
 
-            if ($request->getHeader(404) || $request->getHeader(503)) {
+            $headers = $response->getHeaders()->toArray();
+            if (isset($headers[404]) || isset($headers[503])) {
                 $return->success = false;
             }
             $application->response->setContentType('application/json', 'UTF-8');

@@ -21,11 +21,8 @@ namespace Tools\Builder\Mvc\Model;
 
 use Phalcon\Db;
 use Phalcon\Text;
-use Phalcon\Migrations;
 use Phalcon\Db\Column;
-use Phalcon\Mvc\Model\Migration\Profiler;
 use Phalcon\Mvc\Model\Exception;
-use Phalcon\Events\Manager as EventsManager;
 
 /**
  * Tools\Builder\Mvc\Model\Migration
@@ -224,6 +221,9 @@ class Migration
 		        case Column::TYPE_JSONB:
 			        $fieldDefinition[] = "'type' => Column::TYPE_JSONB";
 			        break;
+		        case Column::TYPE_BIGINTEGER:
+                    $fieldDefinition[] = "'type' => Column::TYPE_BIGINTEGER";
+                    break;
 		        default:
 			        throw new Exception('Unrecognized data type ' . $field->getType() . ' at column ' . $field->getName());
 	        }

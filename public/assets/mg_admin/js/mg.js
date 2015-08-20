@@ -38,4 +38,30 @@ $(function ($) {
             content: $hint.html()
         });
     });
+
+    $("ol.sortable").nestedSortable({
+        handle: "i.fa-reorder",
+        items: "li",
+        isTree: true,
+        forcePlaceholderSize: true,
+        placeholder: "placeholder",
+        tolerance: "pointer",
+        toleranceElement: "> div"
+    });
+
+    $('.sortableSave').click(function() {
+        var root = $(this).data('root');
+        var url = $(this).data('url');
+        var data = $('ol.sortable#root_'+root).nestedSortable('toArray', { startDepthCount:0 });
+        if (data) {
+            $.post(url, {root: root, data: data }, function(response) {
+                if(response.success == true){
+                    console.log('save successfully');
+                 //   noty({layout:'center',type:'success',text:'Root "'+root+'" saved',timeout:2000});
+                } else {
+                    console.log('save failed');
+                }
+            }, 'json');
+        }
+    });
 });

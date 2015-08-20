@@ -12,13 +12,14 @@ namespace Engine\Mvc;
  * Base Controller
  * @package   Engine
  */
-abstract class Controller extends \Phalcon\Mvc\Controller {
-
+abstract class Controller extends \Phalcon\Mvc\Controller
+{
     /**
      * Initializes the controller
      * @return void
      */
-    protected function initialize() {
+    protected function initialize()
+    {
         $this->view->setVar('title', '');
         if(!$this->request->isAjax()) {
             $this->setupAssets();
@@ -30,7 +31,8 @@ abstract class Controller extends \Phalcon\Mvc\Controller {
      * Set page title
      * @param string $title
      */
-    protected function setTitle($title, $headerOnly = false) {
+    protected function setTitle($title, $headerOnly = false)
+    {
         if($title === null) {
             $this->view->setVar('title', '');
             return;
@@ -55,7 +57,8 @@ abstract class Controller extends \Phalcon\Mvc\Controller {
      * Flash error messages
      * @param $model
      */
-    protected function flashErrors($model) {
+    protected function flashErrors($model)
+    {
         foreach ($model->getMessages() as $message) {
             $this->flash->error((string) $message);
         }
@@ -65,7 +68,8 @@ abstract class Controller extends \Phalcon\Mvc\Controller {
      * Setup assets
      * @return void
      */
-    protected function setupAssets() {
+    protected function setupAssets()
+    {
         $this->assets->collection('header-css-min')
             ->setTargetPath(PUBLIC_PATH . 'assets/default/css/header.min.css')
             ->setTargetUri('assets/default/css/header.min.css')
@@ -94,5 +98,17 @@ abstract class Controller extends \Phalcon\Mvc\Controller {
             ->join(true)
             ->addFilter(new \Phalcon\Assets\Filters\Jsmin());
         $this->assets->collection('footer-js');
+    }
+
+    /**
+     * Json encode ajax request
+     * @param $response
+     */
+    public function returnJSON($response)
+    {
+        $this->view->disable();
+        $this->response->setContentType('application/json', 'UTF-8');
+        $this->response->setContent(json_encode($response));
+        $this->response->send();
     }
 }

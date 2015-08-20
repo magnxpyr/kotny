@@ -25,26 +25,23 @@ class AdminMenuController extends AdminController
     /**
      * Index action
      */
-    public function indexAction()
+    public function indexAction($id = null)
     {
         $this->assets->collection('footer-js')->addJs('vendor/jquery-ui/extra/jquery.mjs.nestedSortable.js');
         $this->setTitle('Menu');
 
-        $numberPage = 1;
+        $menu_id =  $this->request->isPost() ? $this->request->getPost('menu_id') : $id;
 
-        $menu = Menu::find();
+        $menu = Menu::find([
+            'conditions' => 'menu_type_id = ?1',
+            'bind' => [1 => $menu_id],
+            'order' => 'lft'
+        ]);
 
         if (count($menu) == 0) {
             $this->flash->notice("The search did not find any menu");
         }
 
-        $paginator = new Paginator([
-            "data" => $menu,
-            "limit"=> 10,
-            "page" => $numberPage
-        ]);
-
-        $this->view->setVar('page', $paginator->getPaginate());
         $this->view->setVar('menu', $menu);
     }
 
@@ -203,5 +200,33 @@ class AdminMenuController extends AdminController
         return $this->dispatcher->forward([
             "action" => "index"
         ]);
+    }
+
+    public function saveTreeAction()
+    {
+        if (!$this->request->getPost() || !$this->request->isAjax()) {
+            return;
+        }
+
+        $data = $this->request->getPost('data');
+
+        foreach ($data as $el) {
+            if ($el['item_id']) {
+                $model = Menu::findFirstById($el['item_id']);
+                if ($model) {
+                    if ($el['parent_id']) {
+                        $model->setParentId($el['parent_id']);
+                    } else {
+                        $model->setParentId(0);
+                    }
+                    $model->setLevel($el['depth']);
+                    $model->setLft($el['left']);
+                    $model->setRgt($el['right']);
+                    $model->update();
+                }
+            }
+        }
+
+        return $this->returnJSON(['success' => true]);
     }
 }

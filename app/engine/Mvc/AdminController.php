@@ -12,13 +12,14 @@ namespace Engine\Mvc;
  * Base Admin Controller
  * @package   Engine
  */
-abstract class AdminController extends Controller {
-
+abstract class AdminController extends Controller
+{
     /**
      * Initializes the controller
      * @return void
      */
-    protected function initialize() {
+    protected function initialize()
+    {
         $this->view->setVar('title', '');
         if ($this->request->isAjax()) {
             return;
@@ -34,7 +35,8 @@ abstract class AdminController extends Controller {
      * Setup assets
      * @return void
      */
-    protected function setupAssets() {
+    protected function setupAssets()
+    {
         $this->assets->collection('header-css-min')
             ->setTargetPath('assets/mg_admin/css/header.min.css')
             ->setTargetUri('assets/mg_admin/css/header.min.css')
@@ -65,7 +67,12 @@ abstract class AdminController extends Controller {
         $this->assets->collection('footer-js');
     }
 
-    protected function setupNavigation() {
+    /**
+     * Build Navigation Menu
+     * @return array
+     */
+    protected function setupNavigation()
+    {
         $navigation = [
             'admin' => [
                 'href' => 'admin',
@@ -136,7 +143,14 @@ abstract class AdminController extends Controller {
         return $html;
     }
 
-    protected function renderItems($items, $isActive = 0) {
+    /**
+     * Render Navigation Items
+     * @param array $items
+     * @param int $isActive
+     * @return array
+     */
+    protected function renderItems($items, $isActive = 0)
+    {
         $content = ['html' => '', 'breadcrumb' => '', 'active' => $isActive];
         if ($this->router->getMatchedRoute()->getName() == 'admin-tools') {
             $controller = $this->router->getControllerName();
