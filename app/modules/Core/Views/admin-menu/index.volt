@@ -15,9 +15,12 @@
                 </ul>
             </div>
             <div class="col-sm-offset-3 col-md-offset-3  col-sm-3 col-md-3">
+                {{ form("", "method": "post", "id": "menuForm") }}
                 <div class="form-group">
-                    {{ select("menuType", menuType, "using": ["id", "title"], "class": "form-control") }}
+                    {{ select("menuType", menuType, "using": ["id", "title"], "class": "form-control",
+                        "onchange": "javascript: menuForm.submit()") }}
                 </div>
+                {{ end_form() }}
             </div>
         </div>
     </div>
@@ -32,22 +35,19 @@
 
         <?php
         echo '<ol class="sortable" id="root_menu">';
-        $level=1;
+        $level = 1;
 
-        foreach($menu as $n=>$category)
-        {
-            if($category->level==$level)
-            echo "</li>\n";
-            else if($category->level>$level)
-            echo "<ol>\n";
-                else
-                {
-                    echo "</li>\n";
-
-                    for($i=$level-$category->level;$i;$i--)
-                    {
-                    echo "</ol>\n";
+        foreach ($menu as $n => $category) {
+            if ($category->level == $level) {
                 echo "</li>\n";
+            } else if($category->level>$level) {
+                echo "<ol>\n";
+            } else {
+                echo "</li>\n";
+
+                for ($i=$level-$category->level;$i;$i--) {
+                    echo "</ol>\n";
+                    echo "</li>\n";
                 }
             }
 
@@ -57,12 +57,12 @@
             echo '<div class="col-xs-2">' . $this->helper->getUserRole($category->getRoleId()) . '</div>';
             echo '<div class="col-xs-2">' . $category->getId() . '</div>';
             echo '<div class="col-xs-2">' . $this->tag->linkTo("admin/core/menu/edit/" . $category->getId(), '<i class="fa fa-edit"></i>');
-            echo $this->tag->linkTo("admin/core/menu/delete/" . $category->getId(), '<i class="fa fa-trash-o"></i>') . '</div></div>';
-            $level=$category->level;
+            $url = $this->url->get("admin/core/menu/edit/" . $category->getId());
+            echo '<a href="#" class="ajaxDelete" data-url="'.$url.'"><i class="fa fa-trash-o"></i></a></div></div>';
+            $level = $category->level;
         }
 
-        for($i=$level;$i;$i--)
-        {
+        for ($i = $level; $i; $i--) {
             echo "</li>\n";
             echo "</ol>\n";
         }

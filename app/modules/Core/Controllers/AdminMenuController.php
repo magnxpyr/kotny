@@ -30,7 +30,8 @@ class AdminMenuController extends AdminController
         $this->assets->collection('footer-js')->addJs('vendor/jquery-ui/extra/jquery.mjs.nestedSortable.js');
         $this->setTitle('Menu');
 
-        $menuId =  $this->request->isPost() ? $this->request->getPost('menu_id') : $id;
+        $menuId = $this->request->isPost() ? $this->request->getPost('menuType') : $id;
+        if ($menuId == null) { $menuId = 1; }
 
         $menuType = MenuType::find(['columns' => ['id', 'title']]);
 

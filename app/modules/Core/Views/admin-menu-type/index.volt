@@ -4,7 +4,6 @@
         <div class="col-sm-6">
             <ul class="nav nav-pills">
                 <li><button onclick="location.href='{{ url("admin/core/menu-type/new") }}'" class="btn btn-sm btn-block btn-primary"><i class='fa fa-plus'></i> New</button></li>
-                <li><button onclick="location.href=''" class="btn btn-sm btn-block btn-warning"><i class="fa fa-trash"></i> Trash</button></li>
             </ul>
         </div>
     </div>
@@ -23,13 +22,15 @@
             <tbody>
                 {% if page.items is defined %}
                     {% for menu in page.items %}
-                        <tr>
-                            <td>{{ menu.getTitle() }}</td>
+                        <tr data-item="item_{{ menu.getId() }}">
+                            <td>{{ link_to("admin/core/menu/index/"~menu.getId(), menu.getTitle()) }}</td>
                             <td>{{ menu.getDescription() }}</td>
                             <td>{{ menu.getRoleId() }}</td>
                             <td>{{ menu.getId() }}</td>
-                            <td>{{ link_to("admin/core/menu-type/edit/"~menu.getId(), "Edit") }}</td>
-                            <td>{{ link_to("admin/core/menu-type/delete/"~menu.getId(), "Delete") }}</td>
+                            <td>
+                                {{ link_to("admin/core/menu-type/edit/"~menu.getId(), '<i class="fa fa-edit"></i>') }}
+                                {{ link_to("admin/core/menu-type/delete/"~menu.getId(), '<i class="fa fa-trash-o"></i>') }}
+                            </td>
                         </tr>
                     {% endfor %}
                 {% endif %}
