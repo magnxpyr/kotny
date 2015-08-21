@@ -2,7 +2,7 @@
 <div class="box box-default">
     <div class="box-header with-border">
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-xs-6 col-md-6">
                 <ul class="nav nav-pills">
                     <li>
                         <button onclick="location.href='{{ url("admin/core/menu/new") }}'" class="btn btn-sm btn-block btn-primary">
@@ -14,8 +14,10 @@
                     </li>
                 </ul>
             </div>
-            <div class="col-md-6">
-
+            <div class="col-sm-offset-3 col-md-offset-3  col-sm-3 col-md-3">
+                <div class="form-group">
+                    {{ select("menuType", menuType, "using": ["id", "title"], "class": "form-control") }}
+                </div>
             </div>
         </div>
     </div>

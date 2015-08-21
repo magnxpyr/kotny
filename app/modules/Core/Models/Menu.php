@@ -375,10 +375,9 @@ class Menu extends Model
     {
         if(empty($this->getId())) {
             $this
-                ->setLevel(0)
+                ->setLevel(1)
                 ->setLft(0)
-                ->setRgt(0)
-                ->setParentId(0);
+                ->setRgt(0);
         }
     }
 }
