@@ -49,19 +49,36 @@ $(function ($) {
         toleranceElement: "> div"
     });
 
-    $('.sortableSave').click(function() {
-        var root = $(this).data('root');
-        var url = $(this).data('url');
-        var data = $('ol.sortable#root_'+root).nestedSortable('toArray', { startDepthCount:0 });
+    $(".sortableSave").click(function() {
+        var root = $(this).data("root");
+        var url = $(this).data("url");
+        var data = $("ol.sortable#root_"+root).nestedSortable("toArray", { startDepthCount:0 });
         if (data) {
             $.post(url, {root: root, data: data }, function(response) {
                 if(response.success == true){
-                    console.log('save successfully');
+                    console.log("save successfully");
                  //   noty({layout:'center',type:'success',text:'Root "'+root+'" saved',timeout:2000});
                 } else {
-                    console.log('save failed');
+                    console.log("save failed");
                 }
-            }, 'json');
+            }, "json");
         }
     });
+
+    $(".ajaxDelete").click(function(e) {
+        e.preventDefault();
+        var item = $(this.data("item"));
+        var url = $(this).data("url");
+        var data = $(this).data("data");
+        if (confirm('Do you really want to delete this item?')) {
+            item.remove();
+            /*
+            $.post(url, data, function(response) {
+                if(response.success){
+                    item.remove();
+                }
+            });
+            */
+        }
+    })
 });
