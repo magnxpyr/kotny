@@ -27,6 +27,7 @@ class AdminMenuController extends AdminController
      */
     public function indexAction($id = null)
     {
+        print_r($this->request->getURI()); die;
         $this->assets->collection('footer-js')->addJs('vendor/jquery-ui/extra/jquery.mjs.nestedSortable.js');
         $this->setTitle('Menu');
 
@@ -113,6 +114,7 @@ class AdminMenuController extends AdminController
     public function editAction($id)
     {
         if (!$this->request->isPost()) {
+            $this->setTitle('Edit Menu Item');
             $menu = Menu::findFirstById($id);
 
             if (!$menu) {
@@ -175,7 +177,8 @@ class AdminMenuController extends AdminController
         $this->flash->success("Menu was updated successfully");
 
         return $this->dispatcher->forward([
-            "action" => "index"
+            "action" => "index",
+            "params" => $menu->getMenuTypeId()
         ]);
     }
 
@@ -186,28 +189,19 @@ class AdminMenuController extends AdminController
      */
     public function deleteAction($id)
     {
+        if (!$this->request->isAjax() || !$this->request->isPost()) {
+            return;
+        }
         $menuType = Menu::findFirstById($id);
         if (!$menuType) {
-            $this->flash->error("Menu was not found");
-
-            return $this->dispatcher->forward([
-                "action" => "index"
-            ]);
+            return;
         }
 
         if (!$menuType->delete()) {
-            $this->flashErrors($menuType);
-
-            return $this->dispatcher->forward([
-                "action" => "index"
-            ]);
+            return;
         }
 
-        $this->flash->success("Menu was deleted successfully");
-
-        return $this->dispatcher->forward([
-            "action" => "index"
-        ]);
+        return $this->returnJSON(['success' => true]);
     }
 
     public function saveTreeAction()
@@ -224,8 +218,6 @@ class AdminMenuController extends AdminController
                 if ($model) {
                     if ($el['parent_id']) {
                         $model->setParentId($el['parent_id']);
-                    } else {
-                        $model->setParentId(0);
                     }
                     $model->setLevel($el['depth']);
                     $model->setLft($el['left']);

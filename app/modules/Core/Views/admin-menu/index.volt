@@ -57,8 +57,8 @@
             echo '<div class="col-xs-2">' . $this->helper->getUserRole($category->getRoleId()) . '</div>';
             echo '<div class="col-xs-2">' . $category->getId() . '</div>';
             echo '<div class="col-xs-2">' . $this->tag->linkTo("admin/core/menu/edit/" . $category->getId(), '<i class="fa fa-edit"></i>');
-            $url = $this->url->get("admin/core/menu/edit/" . $category->getId());
-            echo '<a href="#" class="ajaxDelete" data-url="'.$url.'"><i class="fa fa-trash-o"></i></a></div></div>';
+            $url = $this->url->get("admin/core/menu/delete/" . $category->getId());
+            echo '<a href="#" class="ajaxDelete" data-url="'.$url.'" data-parent="'.$category->id.'"><i class="fa fa-trash-o"></i></a></div></div>';
             $level = $category->level;
         }
 

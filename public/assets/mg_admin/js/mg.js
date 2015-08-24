@@ -67,18 +67,15 @@ $(function ($) {
 
     $(".ajaxDelete").click(function(e) {
         e.preventDefault();
-        var item = $(this.data("item"));
+        var parent = $(this).data("parent");
         var url = $(this).data("url");
         var data = $(this).data("data");
         if (confirm('Do you really want to delete this item?')) {
-            item.remove();
-            /*
             $.post(url, data, function(response) {
-                if(response.success){
-                    item.remove();
+                if(response.success) {
+                    $("#item_"+parent).remove();
                 }
             });
-            */
         }
     })
 });
