@@ -14,7 +14,7 @@ foreach($menuElements as $n => $elements) {
         continue;
     }
     if ($elements->path == 0) {
-        $link = $this->helper->getRoutePath($elements->path);
+        $link = $this->url->get($elements->path);
     } else {
         $link = $elements->link;
     }

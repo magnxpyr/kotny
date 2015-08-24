@@ -114,36 +114,4 @@ class Helper extends Component
         }
         return $protocol . $_SERVER['HTTP_HOST'] . $path;
     }
-
-    /**
-     * Get url based on route name
-     *
-     * @param string $path
-     * @param string $routeName
-     * @return string
-     */
-    public function getRoutePath($path, $routeName = 'default-mcap')
-    {
-        $pathArray = explode('/', $path);
-
-        $params = '';
-        if (isset($pathArray[3])) {
-            $params = $pathArray[3];
-        }
-
-        if (strpos('admin', $pathArray[1]) !== false) {
-            return $this->url->get('admin/' . $path);
-        }
-
-        return $this->url->get(
-            [
-                'for' => $routeName,
-                'module' => $pathArray[0],
-                'controller' => $pathArray[1],
-                'action' => $pathArray[2],
-                'params' => $params
-            ]
-        );
-    }
-
 }

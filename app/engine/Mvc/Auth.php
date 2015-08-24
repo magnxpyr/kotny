@@ -106,18 +106,18 @@ class Auth extends Component
      * Checks the user credentials
      *
      * @param $credentials
-     * @throws \Exception
+     * @throws \Engine\Mvc\Exception
      */
     public function check($credentials)
     {
         $user = User::findFirstByUsername($credentials['username']);
         if (!$user) {
             //    $this->registerUserThrottling(null);
-            throw new \Exception($this->t->_('Username or password is invalid'));
+            throw new Exception($this->t->_('Username or password is invalid'));
         }
         if (!$this->security->checkHash($credentials['password'], $user->getPassword())) {
             //    $this->registerUserThrottling($user->getId());
-            throw new \Exception($this->t->_('Username or password is invalid'));
+            throw new Exception($this->t->_('Username or password is invalid'));
         }
         $this->checkUserFlags($user);
         //    $this->saveSuccessLogin($user);
@@ -204,7 +204,7 @@ class Auth extends Component
      * Authenticate or create a local user with a Google Plus account
      *
      * @return \Phalcon\Http\Response|\Phalcon\Http\ResponseInterface
-     * @throws \Exception
+     * @throws \Engine\Mvc\Exception
      */
     public function loginWithGoogle()
     {
@@ -264,7 +264,7 @@ class Auth extends Component
      *
      * @param \Core\Models\User $user
      * @return \Phalcon\Http\Response|\Phalcon\Http\ResponseInterface
-     * @throws \Exception
+     * @throws \Engine\Mvc\Exception
      */
     protected function createUser($user)
     {
@@ -283,7 +283,7 @@ class Auth extends Component
     /**
      * Creates the remember me environment settings the related cookies and generating tokens
      *
-     * @throws \Exception
+     * @throws \Engine\Mvc\Exception
      * @param \Core\Models\User $user
      */
     public function saveSuccessLogin($user)
@@ -294,7 +294,7 @@ class Auth extends Component
         $successLogin->setUserAgent($this->request->getUserAgent());
         if (!$successLogin->save()) {
             $messages = $successLogin->getMessages();
-            throw new \Exception($messages[0]);
+            throw new Exception($messages[0]);
         }
     }
 
@@ -377,18 +377,18 @@ class Auth extends Component
      * Checks if the user is inactive/suspended/banned
      *
      * @param \Core\Models\User $user
-     * @throws \Exception
+     * @throws \Engine\Mvc\Exception
      */
     public function checkUserFlags($user)
     {
         if ($user->getStatus() == 0) {
-            throw new \Exception($this->t->_('Your account is inactive'));
+            throw new Exception($this->t->_('Your account is inactive'));
         }
         if ($user->getStatus() == 2) {
-            throw new \Exception($this->t->_('Your account is suspended'));
+            throw new Exception($this->t->_('Your account is suspended'));
         }
         if ($user->getStatus() == 3) {
-            throw new \Exception($this->t->_('Your account is banned'));
+            throw new Exception($this->t->_('Your account is banned'));
         }
     }
 
@@ -450,7 +450,7 @@ class Auth extends Component
      *
      * @param int $id
      * @param \Core\Models\User|null $user
-     * @throws \Exception
+     * @throws \Engine\Mvc\Exception
      * @return boolean
      */
     public function authUserById($id, $user = null)
@@ -458,7 +458,7 @@ class Auth extends Component
         if($user === null) {
             $user = User::findFirstById($id);
             if ($user == false) {
-                throw new \Exception('The user does not exist');
+                throw new Exception('The user does not exist');
             }
         }
         $this->checkUserFlags($user);
@@ -484,7 +484,7 @@ class Auth extends Component
 
     /**
      * Get the entity related to user in the active identity
-     * @throws \Exception
+     * @throws \Engine\Mvc\Exception
      * @return \Core\Models\User
      */
     public function getUser()
@@ -495,7 +495,7 @@ class Auth extends Component
         }
         $user = User::findFirstById($identity['id']);
         if ($user == false) {
-            throw new \Exception('The user does not exist');
+            throw new Exception('The user does not exist');
         }
         return $user;
     }

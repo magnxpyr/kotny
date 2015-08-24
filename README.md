@@ -3,13 +3,13 @@ Magnxpyr CMS
 Content management system based on Phalcon Framework
 
 ![CS PSR2 badge](https://img.shields.io/badge/CS-PSR%202-orange.svg)
-![Phalcon badge](https://img.shields.io/badge/Phalcon-v2.0.4-brightgreen.svg)
+![Phalcon badge](https://img.shields.io/badge/Phalcon-v2.0.7-brightgreen.svg)
 
 Requirements
 ------------
 To run this application, you need at least:
 - >= PHP 5.4
-- Phalcon 2.0.x
+- Phalcon 2.0.7
 - Mod rewrite enabled
 
 Set your environment setting in 'app/config/config.php'

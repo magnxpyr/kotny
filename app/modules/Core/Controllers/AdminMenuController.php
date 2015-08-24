@@ -27,7 +27,6 @@ class AdminMenuController extends AdminController
      */
     public function indexAction($id = null)
     {
-        print_r($this->request->getURI()); die;
         $this->assets->collection('footer-js')->addJs('vendor/jquery-ui/extra/jquery.mjs.nestedSortable.js');
         $this->setTitle('Menu');
 
@@ -176,10 +175,7 @@ class AdminMenuController extends AdminController
 
         $this->flash->success("Menu was updated successfully");
 
-        return $this->dispatcher->forward([
-            "action" => "index",
-            "params" => $menu->getMenuTypeId()
-        ]);
+        return $this->response->redirect('admin/core/menu/index/' . $menu->getMenuTypeId())->send();
     }
 
     /**
