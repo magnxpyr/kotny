@@ -7,11 +7,12 @@
  */
 
 // define global variables
+define('MG_VERSION', '0.1.0');
 define('DS', DIRECTORY_SEPARATOR);
 define('ROOT_PATH', dirname(__DIR__) . DS);
-define('APP_PATH', ROOT_PATH . 'app/');
-define('MEDIA_PATH', ROOT_PATH . 'media/');
 define('PUBLIC_PATH', __DIR__ . DS);
+define('APP_PATH', ROOT_PATH . 'app/');
+define('MEDIA_PATH', PUBLIC_PATH . 'media/');
 
 // Check phalcon framework installation.
 if (!extension_loaded('phalcon')) {

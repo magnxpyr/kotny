@@ -23,16 +23,6 @@ return [
     "I already have a membership" => "I already have a membership",
     "Register a new membership" => "Register a new membership",
     "I forgot my password" => "I forgot my password",
-    "%field% is required" => "%field% is required", //admin too
-    "%field% is not valid" => "%field% is not valid", //admin too
-
-    //Admin
-    'Title' => 'Title',
-    'Description' => 'Description',
-    'Role' => 'Role',
-    'Type' => 'Type',
-    'Path' => 'Path',
-    'Link' => 'Link',
-    'Status' => 'Status',
-    "%field% has to be and URL" => "%field% has to be and URL",
+    "%field% is required" => "%field% is required",
+    "%field% is not valid" => "%field% is not valid"
 ];

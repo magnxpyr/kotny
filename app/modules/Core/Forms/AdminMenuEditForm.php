@@ -98,7 +98,7 @@ class AdminMenuEditForm extends Form
         if ($this->request->getPost('path') == 1) {
             $link->addValidators([
                 new Url([
-                    'link' => $this->t->_('%field% has to be and URL', ['field' => $this->t->_('Link')])
+                    'link' => $this->t->_('%field% has to be an URL', ['field' => $this->t->_('Link')])
                 ]),
                 new PresenceOf([
                     'link' => $this->t->_('%field% is required', ['field' => $this->t->_('Link')])

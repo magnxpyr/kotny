@@ -21,7 +21,6 @@ class Bootstrap
     public function run()
     {
         // Define internal variables
-        define('MG_VERSION', '0.1.0');
         define('DEFAULT_THEME', 'default');
         define('THEMES_PATH', '../../../themes/');
 
@@ -221,7 +220,7 @@ class Bootstrap
         }
         $langFile = APP_PATH . "messages/" . $language . ".php";
 
-        //Check if we have a translation file for that lang
+        // Check if we have a translation file for that lang
         if (!file_exists($langFile)) {
             // Fallback to default
             $langFile = APP_PATH . "messages/en-US.php";
