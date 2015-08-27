@@ -199,9 +199,8 @@ class Bootstrap
 
         // Attach the Security plugin
         $eventsManager->attach('dispatch', new \Engine\Plugins\AclHandler());
-        // Attach the Error handler
         $eventsManager->attach('dispatch', new \Engine\Plugins\ErrorHandler());
-
+        $eventsManager->attach('dispatch', new \Engine\Plugins\Translation());
         $eventsManager->attach('dispatch:beforeDispatchLoop', function(\Phalcon\Events\Event $event, \Phalcon\Dispatcher $dispatcher) {
             $dispatcher->setActionName(lcfirst(\Phalcon\Text::camelize($dispatcher->getActionName())));
         });
@@ -210,25 +209,6 @@ class Bootstrap
         $dispatcher->setEventsManager($eventsManager);
 
         $di->setShared('dispatcher', $dispatcher);
-
-
-        // Get the language from session
-        $language = $session->get("lang");
-        if (!$language) {
-            // Ask browser what is the best language
-            $language = $request->getBestLanguage();
-        }
-        $langFile = APP_PATH . "messages/" . $language . ".php";
-
-        // Check if we have a translation file for that lang
-        if (!file_exists($langFile)) {
-            // Fallback to default
-            $langFile = APP_PATH . "messages/en-US.php";
-        }
-
-        $translator = new \Phalcon\Translate\Adapter\NativeArray(['content' => require $langFile]);
-
-        $di->setShared('t', $translator);
 
         // Set up crypt service
         $di->setShared('crypt', function() use ($config) {

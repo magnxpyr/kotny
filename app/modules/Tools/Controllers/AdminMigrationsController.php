@@ -25,7 +25,7 @@ use Tools\Helpers\Tools;
  * Class MigrationsController
  * @package Tools\Controllers
  */
-class MigrationsController extends ControllerBase
+class AdminMigrationsController extends ControllerBase
 {
     /**
      * @throws \Exception

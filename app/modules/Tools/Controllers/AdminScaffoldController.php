@@ -31,7 +31,7 @@ use Tools\Builder\Scaffold;
  * Class ScaffoldController
  * @package Tools\Controllers
  */
-class ScaffoldController extends ControllerBase
+class AdminScaffoldController extends ControllerBase
 {
     /**
      * Scaffold form

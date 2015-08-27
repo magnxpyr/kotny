@@ -17,7 +17,7 @@ use Tools\Helpers\Tools;
  * Class ControllersController
  * @package Tools\Controllers
  */
-class ControllersController extends ControllerBase
+class AdminControllersController extends ControllerBase
 {
     /**
      * @throws \Exception

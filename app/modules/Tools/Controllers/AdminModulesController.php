@@ -15,7 +15,7 @@ use Tools\Builder\Module;
  * Class ModulesController
  * @package Tools\Controllers
  */
-class ModulesController extends ControllerBase
+class AdminModulesController extends ControllerBase
 {
     /**
      * Create module form

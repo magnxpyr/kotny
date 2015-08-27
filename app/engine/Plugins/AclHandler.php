@@ -8,9 +8,8 @@
 
 namespace Engine\Plugins;
 
-use Core\Models\User;
-use Phalcon\Mvc\User\Plugin,
-    Phalcon\Acl;
+use Phalcon\Mvc\User\Plugin;
+use Phalcon\Acl;
 
 /**
  * Class Security

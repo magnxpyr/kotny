@@ -63,31 +63,31 @@ return [
                 'delete'
             ]
         ],
-        'tools/controllers' => [
+        'tools/admin-controllers' => [
             'description' => '',
             'actions' => [
                 '*'
             ]
         ],
-        'tools/migrations' => [
+        'tools/admin-migrations' => [
             'description' => '',
             'actions' => [
                 '*'
             ]
         ],
-        'tools/models' => [
+        'tools/admin-models' => [
             'description' => '',
             'actions' => [
                 '*'
             ]
         ],
-        'tools/modules' => [
+        'tools/admin-modules' => [
             'description' => '',
             'actions' => [
                 '*'
             ]
         ],
-        'tools/scaffold' => [
+        'tools/admin-scaffold' => [
             'description' => '',
             'actions' => [
                 '*'
@@ -162,19 +162,19 @@ return [
                 'core/user' => [
                     'actions' => ['*']
                 ],
-                'tools/controllers' => [
+                'tools/admin-controllers' => [
                     'actions' => ['*']
                 ],
-                'tools/migrations' => [
+                'tools/admin-migrations' => [
                     'actions' => ['*']
                 ],
-                'tools/models' => [
+                'tools/admin-models' => [
                     'actions' => ['*']
                 ],
-                'tools/modules' => [
+                'tools/admin-modules' => [
                     'actions' => ['*']
                 ],
-                'tools/scaffold' => [
+                'tools/admin-scaffold' => [
                     'actions' => ['*']
                 ]
             ]

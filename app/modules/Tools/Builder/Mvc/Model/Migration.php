@@ -171,7 +171,7 @@ class Migration
         $description = self::$_connection->describeColumns($table, $defaultSchema);
 
         foreach ($description as $field) {
-            /** @var \Phalcon\Db\Column $field */
+            /** @var \Phalcon\Db\ColumnInterface $field */
             $fieldDefinition = array();
             switch ($field->getType()) {
                 case Column::TYPE_INTEGER:
@@ -189,6 +189,9 @@ class Migration
                     break;
                 case Column::TYPE_DATETIME:
                     $fieldDefinition[] = "'type' => Column::TYPE_DATETIME";
+                    break;
+                case 17: // If so, then Phalcon is support for Column::TYPE_TIMESTAMP constant
+                    $fieldDefinition[] = "'type' => Column::TYPE_TIMESTAMP";
                     break;
                 case Column::TYPE_DECIMAL:
                     $fieldDefinition[] = "'type' => Column::TYPE_DECIMAL";
@@ -225,8 +228,8 @@ class Migration
                     $fieldDefinition[] = "'type' => Column::TYPE_JSONB";
                     break;
                 case Column::TYPE_BIGINTEGER:
-                            $fieldDefinition[] = "'type' => Column::TYPE_BIGINTEGER";
-                            break;
+                    $fieldDefinition[] = "'type' => Column::TYPE_BIGINTEGER";
+                    break;
                 default:
                     throw new DbException('Unrecognized data type ' . $field->getType() . ' at column ' . $field->getName());
             }
@@ -476,17 +479,24 @@ class ".$className." extends Migration\n{\n".
                 if (!is_object($tableColumn)) {
                     throw new DbException('Table must have at least one column');
                 }
+                /** @var  \Phalcon\Db\ColumnInterface $tableColumn */
                 $fields[$tableColumn->getName()] = $tableColumn;
             }
 
             if ($tableExists == true) {
                 $localFields = array();
+                /** @var  \Phalcon\Db\ColumnInterface[] $description */
                 $description = self::$_connection->describeColumns($tableName, $defaultSchema);
                 foreach ($description as $field) {
                     $localFields[$field->getName()] = $field;
                 }
 
                 foreach ($fields as $fieldName => $tableColumn) {
+                    /**
+                     * @var \Phalcon\Db\ColumnInterface $tableColumn
+                     * @var \Phalcon\Db\ColumnInterface[] $localFields
+                     */
+
                     if (!isset($localFields[$fieldName])) {
                         self::$_connection->addColumn($tableName, $tableColumn->getSchemaName(), $tableColumn);
                     } else {
@@ -501,6 +511,10 @@ class ".$className." extends Migration\n{\n".
                         }
 
                         if ($tableColumn->isNotNull() != $localFields[$fieldName]->isNotNull()) {
+                            $changed = true;
+                        }
+
+                        if ($tableColumn->getDefault() != $localFields[$fieldName]->getDefault()) {
                             $changed = true;
                         }
 

@@ -50,7 +50,7 @@ class Tools extends ControllerBase {
      * @var array
      */
     private static $_options = array(
-        'modules' => array(
+        'admin-modules' => array(
             'caption' => 'Modules',
             'options' => array(
                 'index' => array(
@@ -61,7 +61,7 @@ class Tools extends ControllerBase {
                 )
             )
         ),
-        'controllers' => array(
+        'admin-controllers' => array(
             'caption' => 'Controllers',
             'options' => array(
                 'index' => array(
@@ -69,7 +69,7 @@ class Tools extends ControllerBase {
                 )
             )
         ),
-        'models' => array(
+        'admin-models' => array(
             'caption' => 'Models',
             'options' => array(
                 'index' => array(
@@ -77,7 +77,7 @@ class Tools extends ControllerBase {
                 )
             )
         ),
-        'migrations' => array(
+        'admin-migrations' => array(
             'caption' => 'Migrations',
             'options' => array(
                 'index' => array(
@@ -88,7 +88,7 @@ class Tools extends ControllerBase {
                 )
             )
         ),
-        'scaffold' => array(
+        'admin-scaffold' => array(
             'caption' => 'Scaffold',
             'options' => array(
                 'index' => array(
@@ -233,11 +233,13 @@ class Tools extends ControllerBase {
      */
     public static function generateUrl($controller, $action = 'index', $params = null) {
         $baseUri = self::getUrl()->get();
+        $controller = str_replace('admin-', '', $controller);
         if(self::getRouter()->getMatchedRoute() !== null) {
             $uriPath = self::getRouter()->getMatchedRoute()->getPattern();
-            return str_replace(array('//', ':controller', ':action', ':params'), array('/', $controller, $action, $params), $baseUri . $uriPath);
+            return str_replace(['//', ':module', ':controller', ':action', ':params'],
+                ['/', 'tools', $controller, $action, $params], $baseUri . $uriPath);
         } else {
-            return $baseUri . "$controller/$action/$params";
+            return $baseUri . "tools/$controller/$action/$params";
         }
     }
 

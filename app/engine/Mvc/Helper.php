@@ -101,7 +101,8 @@ class Helper extends Component
      * @param string|null $params
      * @return string
      */
-    public function getUri($path, $get = true, $params = null) {
+    public function getUri($path, $get = true, $params = null)
+    {
         $protocol  = 'http://';
         if ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443) {
             $protocol = 'https://';
@@ -113,5 +114,18 @@ class Helper extends Component
             $path .= $params;
         }
         return $protocol . $_SERVER['HTTP_HOST'] . $path;
+    }
+
+    /**
+     * Check if is an admin page
+     * @return bool
+     */
+    public function isBackend()
+    {
+        $isBackend = false;
+        if (strpos($this->router->getMatchedRoute()->getName(), 'admin') !== false)
+            $isBackend = true;
+
+        return $isBackend;
     }
 }
