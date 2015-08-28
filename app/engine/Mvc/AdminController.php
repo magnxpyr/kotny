@@ -161,11 +161,9 @@ abstract class AdminController extends Controller
         foreach ($items as $item) {
             if (!empty($item['items'])) {
                 $result = $this->renderItems($item['items'], $content['active']);
-                /*
                 if($result['active'] == 2)  {
                     $content['breadcrumb'] .= "<li>".$item['prepend'].' '.$item['title']."</li>".$result['breadcrumb'];
                 }
-                */
                 $active = $result['active'] == 2 ? 'active' : '';
                 $content['html'] .= "<li class=\"treeview $active\">";
                 $content['html'] .= sprintf("<a href=\"#\">%s</i><span>%s</span><i class=\"fa fa-angle-left pull-right\"></i></a>", $item['prepend'], $item['title']);
@@ -174,12 +172,12 @@ abstract class AdminController extends Controller
                 $content['html'] .= $result['html'];
                 $content['html'] .= "</ul></li>";
             } else {
-                if($content['active'] != 2 && isset($item['href'])) {
+                if($content['active'] < 2 && isset($item['href'])) {
                     $content['active'] = strpos($item['href'], $route) !== false ? 1 : 0;
                 }
                 if($content['active'] == 1) {
                     $content['html'] .= '<li class="active">';
-                //    $content['breadcrumb'] .= '<li class="active">'.$item['title'].'</li>';
+                    $content['breadcrumb'] .= '<li class="active">'.$item['title'].'</li>';
                     $content['active'] = 2;
                 } else {
                     $content['html'] .= '<li>';

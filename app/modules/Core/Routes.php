@@ -19,6 +19,11 @@ class Routes {
      */
     public function init($router)
     {
+        $router->add('/', [
+            'controller' => 'index',
+            'action' => 'index'
+        ])->setName('core-ca');
+
         $router->add('/:controller', [
             'controller' => 1,
             'action' => 'index'

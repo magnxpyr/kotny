@@ -41,6 +41,10 @@ return [
             'description' => '',
             'actions' => ['*']
         ],
+        'core/admin-user' => [
+            'description' => '',
+            'actions' => ['*']
+        ],
         'core/admin-menu-type' => [
             'description' => '',
             'actions' => [
@@ -151,6 +155,9 @@ return [
                     'actions' => ['*']
                 ],
                 'core/admin-menu' => [
+                    'actions' => ['*']
+                ],
+                'core/admin-user' => [
                     'actions' => ['*']
                 ],
                 'core/index' => [
