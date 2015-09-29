@@ -6,6 +6,16 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname(dirname($vendorDir));
 
 return array(
+    'Test\\Searcher\\Models\\' => array($vendorDir . '/stanislav-web/phalcon-searcher/phpunit/src/Searcher/Models'),
+    'Test\\Searcher\\Hydrators\\' => array($vendorDir . '/stanislav-web/phalcon-searcher/phpunit/src/Searcher/Hydrators'),
+    'Test\\Searcher\\Factories\\' => array($vendorDir . '/stanislav-web/phalcon-searcher/phpunit/src/Searcher/Factories'),
+    'Test\\Searcher\\' => array($vendorDir . '/stanislav-web/phalcon-searcher/phpunit/src/Searcher'),
+    'Searcher\\Searcher\\Hydrators\\' => array($vendorDir . '/stanislav-web/phalcon-searcher/src/Searcher/Hydrators'),
+    'Searcher\\Searcher\\Factories\\' => array($vendorDir . '/stanislav-web/phalcon-searcher/src/Searcher/Factories'),
+    'Searcher\\Searcher\\Exceptions\\' => array($vendorDir . '/stanislav-web/phalcon-searcher/src/Searcher/Exceptions'),
+    'Searcher\\Searcher\\Aware\\' => array($vendorDir . '/stanislav-web/phalcon-searcher/src/Searcher/Aware'),
+    'Searcher\\' => array($vendorDir . '/stanislav-web/phalcon-searcher/src/Searcher'),
     'Sb\\Framework\\Mvc\\Model\\' => array($vendorDir . '/stibium/phalcon.eager-loading/src'),
     'Facebook\\' => array($vendorDir . '/facebook/php-sdk-v4/src/Facebook'),
+    'DataTables\\' => array($vendorDir . '/m1ome/phalcon-datatables/src'),
 );

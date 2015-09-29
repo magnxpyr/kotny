@@ -128,4 +128,19 @@ class Helper extends Component
 
         return $isBackend;
     }
+
+    /**
+     * Convert array to object
+     * @param $data
+     * @return \stdClass
+     */
+    public function arrayToObject($data){
+        $obj = new \stdClass();
+
+        foreach($data as $key => $val){
+            $obj->{$key} = $val;
+        }
+
+        return $obj;
+    }
 }

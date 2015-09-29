@@ -8,10 +8,10 @@
 
 namespace Core\Controllers;
 
-use Phalcon\Mvc\Model\Criteria;
-use Phalcon\Paginator\Adapter\Model as Paginator;
-use Engine\Mvc\AdminController;
+use DataTables\DataTable;
 use Core\Models\User;
+use Engine\Mvc\AdminController;
+use Phalcon\Paginator\Pager;
 
 class AdminUserController extends AdminController
 {
@@ -20,46 +20,24 @@ class AdminUserController extends AdminController
      */
     public function indexAction()
     {
-        $this->setTitle("Users");
-        $this->persistent->parameters = null;
+        $this->setTitle('Users');
     }
 
-    /**
-     * Searches for user
-     */
     public function searchAction()
     {
+        if ($this->request->isAjax()) {
+            $builder = $this->modelsManager->createBuilder()
+                ->columns('id, username, email, role_id')
+                ->from('Core\Models\User');
 
-        $numberPage = 1;
-        if ($this->request->isPost()) {
-            $query = Criteria::fromInput($this->di, "Core\\Models\\User", $_POST);
-            $this->persistent->parameters = $query->getParams();
-        } else {
-            $numberPage = $this->request->getQuery("page", "int");
+            $dataTables = new DataTable();
+            $response = $dataTables->fromBuilder($builder)->getResponse();
+
+            foreach ($response['data'] as &$data) {
+                $data['role_id'] = $this->helper->getUserRole($data['role_id']);
+            }
+            $this->returnJSON($response);
         }
-
-        $parameters = $this->persistent->parameters;
-        if (!is_array($parameters)) {
-            $parameters = array();
-        }
-        $parameters["order"] = "id";
-
-        $user = User::find($parameters);
-        if (count($user) == 0) {
-            $this->flash->notice("The search did not find any user");
-
-            return $this->dispatcher->forward(array(
-                "action" => "index"
-            ));
-        }
-
-        $paginator = new Paginator(array(
-            "data" => $user,
-            "limit"=> 10,
-            "page" => $numberPage
-        ));
-
-        $this->view->page = $paginator->getPaginate();
     }
 
     /**

@@ -177,7 +177,7 @@ class UserEmailConfirmations extends Model
 
         $params = [
             'siteName' => $this->getDI()->getShared('config')->app->siteName,
-            'confirmUrl' => $this->getDI()->getShared('url')->getUri(
+            'confirmUrl' => $this->getDI()->getShared('helper')->getUri(
                 'user/confirm-email',
                 true,
                 '?code=' . $this->rawToken

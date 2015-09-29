@@ -193,17 +193,17 @@
     },
     {
         "name": "phalcon/incubator",
-        "version": "dev-master",
-        "version_normalized": "9999999-dev",
+        "version": "v2.0.7",
+        "version_normalized": "2.0.7.0",
         "source": {
             "type": "git",
             "url": "https://github.com/phalcon/incubator.git",
-            "reference": "43bf209772e02d41753fb8882280e49f2da07eb5"
+            "reference": "3ca816904d2439847c48b74f0af2f25f9d158a9a"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/phalcon/incubator/zipball/43bf209772e02d41753fb8882280e49f2da07eb5",
-            "reference": "43bf209772e02d41753fb8882280e49f2da07eb5",
+            "url": "https://api.github.com/repos/phalcon/incubator/zipball/3ca816904d2439847c48b74f0af2f25f9d158a9a",
+            "reference": "3ca816904d2439847c48b74f0af2f25f9d158a9a",
             "shasum": ""
         },
         "require": {
@@ -218,9 +218,9 @@
             "phpunit/phpunit": "4.6.*",
             "squizlabs/php_codesniffer": "2.*"
         },
-        "time": "2015-07-27 10:39:48",
+        "time": "2015-08-18 07:35:12",
         "type": "library",
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "psr-0": {
                 "Phalcon": "Library/"
@@ -242,6 +242,114 @@
             "framework",
             "incubator",
             "phalcon"
+        ]
+    },
+    {
+        "name": "m1ome/phalcon-datatables",
+        "version": "1.1.6",
+        "version_normalized": "1.1.6.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/m1ome/phalcon-datatables.git",
+            "reference": "95788256b8369180b5d75b6005654c59e855781f"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/m1ome/phalcon-datatables/zipball/95788256b8369180b5d75b6005654c59e855781f",
+            "reference": "95788256b8369180b5d75b6005654c59e855781f",
+            "shasum": ""
+        },
+        "require-dev": {
+            "crysalead/kahlan": "~1.1",
+            "fzaninotto/faker": "1.5.*@dev"
+        },
+        "time": "2015-06-26 09:38:51",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev_master": "1.0-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "DataTables\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Pavel Makarenko",
+                "email": "cryfall@gmail.com"
+            }
+        ],
+        "description": "DataTables adapter for Phalcon Framework",
+        "keywords": [
+            "datatables",
+            "phalcon",
+            "plugin"
+        ]
+    },
+    {
+        "name": "stanislav-web/phalcon-searcher",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/stanislav-web/Searcher.git",
+            "reference": "bf01156d1a2416ceddef0d238469563b74087d44"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/stanislav-web/Searcher/zipball/bf01156d1a2416ceddef0d238469563b74087d44",
+            "reference": "bf01156d1a2416ceddef0d238469563b74087d44",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.5.0"
+        },
+        "time": "2015-02-10 08:52:13",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "1.x-dev"
+            }
+        },
+        "installation-source": "source",
+        "autoload": {
+            "psr-4": {
+                "Searcher\\": "src/Searcher",
+                "Searcher\\Searcher\\Aware\\": "src/Searcher/Aware",
+                "Searcher\\Searcher\\Exceptions\\": "src/Searcher/Exceptions",
+                "Searcher\\Searcher\\Factories\\": "src/Searcher/Factories",
+                "Searcher\\Searcher\\Hydrators\\": "src/Searcher/Hydrators",
+                "Test\\Searcher\\": "phpunit/src/Searcher",
+                "Test\\Searcher\\Factories\\": "phpunit/src/Searcher/Factories",
+                "Test\\Searcher\\Hydrators\\": "phpunit/src/Searcher/Hydrators",
+                "Test\\Searcher\\Models\\": "phpunit/src/Searcher/Models"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Stanislav WEB",
+                "email": "stanisov@gmail.com",
+                "homepage": "http://reds.com",
+                "role": "Developer"
+            }
+        ],
+        "description": "Phalcon Database Searcher. This is the search service is designed to search multiple SQL tables. Convenient to use autocomplete, search documents, search the whole site.",
+        "homepage": "https://github.com/stanislav-web/Searcher",
+        "keywords": [
+            "phalcon",
+            "phalcon search",
+            "phalcon searcher"
         ]
     }
 ]
