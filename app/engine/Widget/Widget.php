@@ -40,36 +40,37 @@ class Widget
          * @var \Engine\Widget\Controller $controller
          */
         $controller = new $controllerClass();
-        if (!isset($params['cache_key'])) {
-            $params['cache_key'] = $controller->createCacheKey($widget, $params);
+        if ($options !== null && $options['cache']) {
+            if (!isset($params['cache_key'])) {
+                $options['cache_key'] = $controller->createCacheKey($widget, $params);
+            }
+            if ($controller->cache->exists($options['cache_key'], 300)) {
+                echo $controller->cache->get($options['cache_key']);;
+                return;
+            }
         }
-        if ($controller->cache->exists($params['cache_key'], 300)) {
-            echo $controller->cache->get($params['cache_key']);;
-            return;
-        }
+
         if ($params !== null) {
             $controller->setParams($params);
         }
-        if ($options !== null) {
-            if (isset($options['noRender'])) {
-                $controller->setNoRender($options['noRender']);
-            }
+        if ($options !== null && isset($options['renderView'])) {
+            $controller->setRenderView($options['renderView']);
         }
         $controller->initialize();
         $controller->{"{$action}Action"}();
-        $controller->viewWidget->start();
-        $controller->viewWidget->setViewsDir(APP_PATH . "widgets/$widgetName/");
-        $controller->viewWidget->pick($action);
-        $controller->viewWidget->render('controller', $action);
-        $controller->viewWidget->finish();
+        if ($controller->getRenderView()) {
+            $controller->viewWidget->start();
+            $controller->viewWidget->setViewsDir(APP_PATH . "widgets/$widgetName/");
+            $controller->viewWidget->pick($action);
+            $controller->viewWidget->render('controller', $action);
+            $controller->viewWidget->finish();
+        }
 
         $html = $controller->viewWidget->getContent();
-        $controller->cache->save($params['cache_key'], $html, 300);
+        if ($options !== null && $options['cache']) {
+            $controller->cache->save($options['cache_key'], $html, 300);
+        }
         echo $html;
         return;
-
-    //    $controller->viewWidget->pick($action);
-    //    $controller->viewWidget->render('', $action);
-    //    print_r($controller->viewWidget); die;
     }
 }

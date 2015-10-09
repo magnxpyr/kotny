@@ -32,14 +32,19 @@ abstract class Controller extends \Phalcon\Mvc\Controller
     public $widgetName;
 
     /**
-     * @var array $params
+     * @var array
      */
     private $params = [];
 
     /**
-     * @var bool $noRender
+     * @var array
      */
-    private $noRender = true;
+    private $options = [];
+
+    /**
+     * @var bool
+     */
+    private $renderView = true;
 
     /**
      * Get widget parameter.
@@ -87,19 +92,64 @@ abstract class Controller extends \Phalcon\Mvc\Controller
     }
 
     /**
+     * Get widget option.
+     *
+     * @param string $key     Option name.
+     * @param null   $default Option default value.
+     * @return null
+     */
+    public function getOption($key, $default = null)
+    {
+        if (!isset($this->options[$key])) {
+            return $default;
+        }
+        return $this->options[$key];
+    }
+
+    /**
+     * Get all widget options.
+     *
+     * @return array
+     */
+    public function getOptions()
+    {
+        return $this->options;
+    }
+
+    /**
+     * Set all widget options
+     * @param $options
+     */
+    public function setOptions($options)
+    {
+        $this->options = $options;
+    }
+
+    /**
+     * Set a widget option
+     *
+     * @param string|int $key
+     * @param string|int|array $value
+     */
+    public function setOption($key, $value)
+    {
+        $this->options[$key] = $value;
+    }
+
+    /**
      * @return bool
      */
-    public function getNoRender()
+    public function getRenderView()
     {
-        return $this->noRender;
+        return $this->renderView;
     }
 
     /**
      * @param bool $value
      */
-    public function setNoRender($value)
+    public function setRenderView($value)
     {
-        $this->noRender = $value;
+        $this->renderView = $value;
     }
 
     /**
@@ -109,11 +159,11 @@ abstract class Controller extends \Phalcon\Mvc\Controller
      */
     public function getCacheKey()
     {
-        if (isset($this->params['cache_key'])) {
-            return $this->cache_prefix . $this->params['cache_key'];
+        if (isset($this->options['cache_key'])) {
+            return $this->cache_prefix . $this->options['cache_key'];
         }
-        if (isset($this->params['content_id'])) {
-            return $this->cache_prefix . $this->widgetName . $this->params['content_id'];
+        if (isset($this->options['content_id'])) {
+            return $this->cache_prefix . $this->widgetName . $this->options['content_id'];
         }
         return null;
     }
@@ -157,7 +207,7 @@ abstract class Controller extends \Phalcon\Mvc\Controller
      */
     public function initialize()
     {
-        if ($this->getNoRender()) {
+        if ($this->getRenderView()) {
             $this->viewWidget = $this->di->get('viewWidget');
         }
     }

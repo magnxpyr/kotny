@@ -27,7 +27,7 @@ class AdminUserController extends AdminController
     {
         if ($this->request->isAjax()) {
             $builder = $this->modelsManager->createBuilder()
-                ->columns('id, username, email, role_id')
+                ->columns('id, username, email, role_id, status')
                 ->from('Core\Models\User');
 
             $dataTables = new DataTable();
@@ -35,6 +35,7 @@ class AdminUserController extends AdminController
 
             foreach ($response['data'] as &$data) {
                 $data['role_id'] = $this->helper->getUserRole($data['role_id']);
+                $data['status'] = $this->helper->getUserStatus($data['status']);
             }
             $this->returnJSON($response);
         }

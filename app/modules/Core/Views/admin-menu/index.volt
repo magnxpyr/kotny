@@ -31,6 +31,7 @@
             <div class="col-xs-2">Status</div>
             <div class="col-xs-2">Role</div>
             <div class="col-xs-2">Id</div>
+            <div class="col-xs-2">Actions</div>
         </div>
 
         <?php
@@ -58,7 +59,7 @@
             echo '<div class="col-xs-2">' . $category->getId() . '</div>';
             echo '<div class="col-xs-2">' . $this->tag->linkTo("admin/core/menu/edit/" . $category->getId(), '<i class="fa fa-edit"></i>');
             $url = $this->url->get("admin/core/menu/delete/" . $category->getId());
-            echo '<a href="#" class="ajaxDelete" data-url="'.$url.'" data-parent="'.$category->id.'"><i class="fa fa-trash-o"></i></a></div></div>';
+            echo '<a href="#" class="ajaxDelete" data-url="'.$url.'" data-parent-id="#item_'.$category->getId().'"><i class="fa fa-trash-o"></i></a></div></div>';
             $level = $category->level;
         }
 

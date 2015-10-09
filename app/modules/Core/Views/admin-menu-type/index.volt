@@ -17,6 +17,7 @@
                     <th>Description</th>
                     <th>Role</th>
                     <th>Id</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -29,7 +30,9 @@
                             <td>{{ menu.getId() }}</td>
                             <td>
                                 {{ link_to("admin/core/menu-type/edit/"~menu.getId(), '<i class="fa fa-edit"></i>') }}
-                                {{ link_to("admin/core/menu-type/delete/"~menu.getId(), '<i class="fa fa-trash-o"></i>') }}
+                                <a href="#" class="ajaxDelete" data-url="{{ url("admin/core/menu-type/delete/"~menu.getId()) }}" data-parent-id="#item_{{ menu.getId() }}">
+                                    <i class="fa fa-trash-o"></i>
+                                </a>
                             </td>
                         </tr>
                     {% endfor %}

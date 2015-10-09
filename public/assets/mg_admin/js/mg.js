@@ -39,43 +39,47 @@ $(function ($) {
         });
     });
 
-    $("ol.sortable").nestedSortable({
-        handle: "i.fa-reorder",
-        items: "li",
-        isTree: true,
-        forcePlaceholderSize: true,
-        placeholder: "placeholder",
-        tolerance: "pointer",
-        toleranceElement: "> div"
-    });
+    if (typeof nestedSortable !== 'undefined' && $.isFunction(nestedSortable)) {
+        $("ol.sortable").nestedSortable({
+            handle: "i.fa-reorder",
+            items: "li",
+            isTree: true,
+            forcePlaceholderSize: true,
+            placeholder: "placeholder",
+            tolerance: "pointer",
+            toleranceElement: "> div"
+        });
 
-    $(".sortableSave").click(function() {
-        var root = $(this).data("root");
-        var url = $(this).data("url");
-        var data = $("ol.sortable#root_"+root).nestedSortable("toArray", { startDepthCount:0 });
-        if (data) {
-            $.post(url, {root: root, data: data }, function(response) {
-                if(response.success == true){
-                    console.log("save successfully");
-                 //   noty({layout:'center',type:'success',text:'Root "'+root+'" saved',timeout:2000});
-                } else {
-                    console.log("save failed");
-                }
-            }, "json");
-        }
-    });
+        $(".sortableSave").click(function () {
+            var root = $(this).data("root");
+            var url = $(this).data("url");
+            var data = $("ol.sortable#root_" + root).nestedSortable("toArray", {startDepthCount: 0});
+            if (data) {
+                $.post(url, {root: root, data: data}, function (response) {
+                    if (response.success == true) {
+                        console.log("save successfully");
+                        //   noty({layout:'center',type:'success',text:'Root "'+root+'" saved',timeout:2000});
+                    } else {
+                        console.log("save failed");
+                    }
+                }, "json");
+            }
+        });
+    }
 
-    $(".ajaxDelete").click(function(e) {
+    $(".box-body").on("click", '.ajaxDelete', function(e) {
         e.preventDefault();
-        var parent = $(this).data("parent");
+
+        var parent = $(this).data("parent-id");
         var url = $(this).data("url");
         var data = $(this).data("data");
         if (confirm('Do you really want to delete this item?')) {
             $.post(url, data, function(response) {
                 if(response.success) {
-                    $("#item_"+parent).remove();
+                    $(this).closest(parent).remove();
                 }
             });
         }
-    })
+
+    });
 });

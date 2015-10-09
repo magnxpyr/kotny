@@ -17,77 +17,19 @@
     </div>
 
     <div class="box-body">
-        <table id="table" class="table table-condensed table-hover table-striped">
-            <thead>
-            <tr>
-                <th data-column-id="id">#</th>
-                <th data-column-id="username">Username</th>
-                <th data-column-id="email">Email</th>
-                <th data-column-id="role_id">Role</th>
-                <th data-column-id="status">Status</th>
-            </tr>
-            </thead>
-            <tfoot>
-            <tr>
-                <th>Id</th>
-                <th>Username</th>
-                <th>Email</th>
-                <th>Role</th>
-                <th>Status</th>
-            </tr>
-            </tfoot>
-            <tbody>
-            </tbody>
-        </table>
-
+        {{ widget.render('GridView',
+            [
+                'columns': [
+                    ['data': 'id', 'searchable': false],
+                    ['data': 'username'],
+                    ['data': 'email'],
+                    ['data': 'role_id'],
+                    ['data': 'status']
+                ],
+                'url': url('admin/core/user/search'),
+                'tableId': '#table'
+            ],
+            ['cache': false]
+        ) }}
     </div>
 </div>
-
-{% do assets.addInlineJs('
-    $("#table tfoot th").each( function () {
-        var title = $("#table thead th").eq( $(this).index() ).text();
-        $(this).html("<input type=\"text\" placeholder=\"Search " +title+ "\" />");
-    } );
-
-    var table = $("#table").DataTable({
-        serverSide: true,
-        ajax: {
-            url: "'~url("admin/core/user/search")~'",
-            method: "POST",
-            deferRender: true
-        },
-        columns: [
-            {data: "id", searchable: false},
-            {data: "username"},
-            {data: "email"},
-            {data: "role_id"},
-            {data: "status"}
-        ],
-        columnDefs: [
-            {
-                render: function ( data, type, row ) {
-                    return function (o) { return "<i class=\"fa fa-edit\"></i><i class=\"fa fa-trash\"></i>"; }
-                },
-                targets:0
-            }
-        ],
-        initComplete: function () {
-            var r = $("#table tfoot tr");
-            r.find("th").each(function() {
-                $(this).css("padding", 8);
-            });
-            $("#table thead").append(r);
-            $("#search_0").css("text-align", "center");
-        }
-    });
-    table.columns().every( function () {
-        var that = this;
-        $( "input", this.footer() ).on( "keyup change", function () {
-            if ( that.search() !== this.value ) {
-                that
-                    .search( this.value )
-                    .draw();
-            }
-        } );
-    } );')
-%}
