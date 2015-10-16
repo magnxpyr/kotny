@@ -31,13 +31,7 @@ class AdminUserController extends AdminController
                 ->from('Core\Models\User');
 
             $dataTables = new DataTable();
-            $response = $dataTables->fromBuilder($builder)->getResponse();
-
-            foreach ($response['data'] as &$data) {
-                $data['role_id'] = $this->helper->getUserRole($data['role_id']);
-                $data['status'] = $this->helper->getUserStatus($data['status']);
-            }
-            $this->returnJSON($response);
+            $dataTables->fromBuilder($builder)->sendResponse();
         }
     }
 
