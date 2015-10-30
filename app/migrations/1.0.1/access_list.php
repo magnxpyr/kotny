@@ -27,33 +27,33 @@ class AccessListMigration_101 extends Migration
                         'autoIncrement' => true,
                         'first' => true
                     ]),
-                    new Column('roles_name', [
+                    new Column('role_id', [
                             'type' => Column::TYPE_VARCHAR,
                             'notNull' => true,
                             'size' => 32,
                             'after' => 'id'
                     ]),
-                    new Column('resources_name', [
+                    new Column('resource', [
                             'type' => Column::TYPE_VARCHAR,
                             'notNull' => true,
                             'size' => 32,
-                            'after' => 'roles_name'
+                            'after' => 'role_id'
                     ]),
-                    new Column('access_name', [
+                    new Column('action', [
                             'type' => Column::TYPE_VARCHAR,
                             'notNull' => true,
                             'size' => 32,
-                            'after' => 'resources_name'
+                            'after' => 'resource'
                     ]),
-                    new Column('allowed', [
+                    new Column('status', [
                             'type' => Column::TYPE_INTEGER,
                             'notNull' => true,
-                            'size' => 3,
-                            'after' => 'access_name'
+                            'size' => 1,
+                            'after' => 'action'
                     ])
                 ],
                 'indexes' => [
-                    new Index('PRIMARY', ['id', 'roles_name', 'resources_name', 'access_name'])
+                    new Index('PRIMARY', ['id', 'role_id', 'resource', 'action'])
                 ],
                 'options' => [
                     'TABLE_TYPE' => 'BASE TABLE',

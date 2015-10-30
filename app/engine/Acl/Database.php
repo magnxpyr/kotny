@@ -2,54 +2,80 @@
 
 namespace Engine\Acl;
 
-use Phalcon\Db;
-use Phalcon\Acl\Adapter;
-use Phalcon\Acl\AdapterInterface;
-use Phalcon\Acl\Exception;
-use Phalcon\Acl\Resource;
-use Phalcon\Acl;
-use Phalcon\Acl\Role;
+use Core\Model\AccessList;
+use Phalcon\Acl\Adapter\Memory as AclMemory;
+use Phalcon\Acl\Resource as AclResource;
+use Phalcon\Acl as PhalconAcl;
+use Phalcon\DI;
+use Phalcon\Events\Event as PhalconEvent;
+use Phalcon\Mvc\User\Plugin;
+use Phalcon\Text;
+use User\Model\Role;
+use User\Model\User;
 
 /**
- * Phalcon\Acl\Adapter\Database
+ * Engine\Acl\Database
  * Manages ACL lists in memory
  */
-class Database extends Adapter implements AdapterInterface
+class Database extends Plugin
 {
     /**
-     * @var array
+     * Acl cache key.
+     * @var string
      */
-    protected $options;
+    protected $cache_key = "acl_data";
 
     /**
-     * Class constructor.
-     *
-     * @param  array                  $options
-     * @throws \Phalcon\Acl\Exception
+     * Acl adapter.
+     * @var AclMemory
      */
-    public function __construct(array $options)
+    protected $acl;
+
+    /**
+     * Get acl system.
+     *
+     * @return AclMemory
+     */
+    public function getAcl()
     {
-        if (!isset($options['db'])) {
-            throw new Exception("Parameter 'db' is required");
+        if (!$this->acl) {
+            $cacheData = $this->getDI()->get('cacheData');
+            $acl = $cacheData->get($this->cache_key);
+            if ($acl === null) {
+                $acl = new AclMemory();
+                $acl->setDefaultAction(PhalconAcl::DENY);
+                // Prepare Roles.
+                $roles = Role::find();
+                $roleNames = [];
+                foreach ($roles as $role) {
+                    $roleNames[$role->id] = $role->name;
+                    $acl->addRole($role->name);
+                }
+                // Defining admin area.
+                $roleAdmin = Role::getRoleByType(self::DEFAULT_ROLE_ADMIN);
+                // Add "admin area" resource.
+                $acl->addResource($adminArea, "access");
+                $acl->allow($roleAdmin->name, self::ACL_ADMIN_AREA, 'access');
+                // Getting objects that is in acl.
+                // Looking for all models in modelsDir and check @Acl annotation.
+                $objects = $this->_addResources($acl, [self::ACL_ADMIN_AREA => ['actions' => ['access']]]);
+                // Load from database.
+                $access = Access::find();
+                foreach ($access as $item) {
+                    $value = $item->value;
+                    if (
+                        array_key_exists($item->object, $objects) &&
+                        in_array($item->action, $objects[$item->object]['actions']) &&
+                        ($value == "allow" || $value == "deny")
+                    ) {
+                        $acl->$value($roleNames[$item->role_id], $item->object, $item->action);
+                    }
+                }
+                $cacheData->save(self::CACHE_KEY_ACL, $acl, 2592000); // 30 days cache.
+            }
+            $this->_acl = $acl;
         }
-
-        if (!isset($options['roles'])) {
-            throw new Exception("Parameter 'roles' is required");
-        }
-
-        if (!isset($options['resources'])) {
-            throw new Exception("Parameter 'resources' is required");
-        }
-
-        if (!isset($options['resourcesAccesses'])) {
-            throw new Exception("Parameter 'resourcesAccesses' is required");
-        }
-
-        if (!isset($options['accessList'])) {
-            throw new Exception("Parameter 'accessList' is required");
-        }
-
-        $this->options = $options;
+        return $this->_acl;
     }
 
     /**

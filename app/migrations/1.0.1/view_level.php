@@ -11,12 +11,12 @@ use Phalcon\Db\Index;
 use Phalcon\Db\Reference;
 use Tools\Builder\Mvc\Model\Migration;
 
-class RolesMigration_101 extends Migration
+class ViewLevelMigration_101 extends Migration
 {
     public function up()
     {
         $this->morphTable(
-            'roles',
+            'view_level',
             [
                 'columns' => [
                     new Column('id', [
@@ -27,17 +27,18 @@ class RolesMigration_101 extends Migration
                         'autoIncrement' => true,
                         'first' => true
                     ]),
-                    new Column('title', [
+                    new Column('name', [
                         'type' => Column::TYPE_VARCHAR,
                         'notNull' => true,
-                        'size' => 32,
+                        'size' => 255,
                         'after' => 'id'
                     ]),
-                    new Column('description', [
-                        'type' => Column::TYPE_TEXT,
+                    new Column('roles', [
+                        'type' => Column::TYPE_VARCHAR,
+                        'notNull' => true,
                         'size' => 255,
                         'after' => 'name'
-                    ])
+                    ]),
                 ],
                 'indexes' => [
                     new Index('PRIMARY', ['id'])
