@@ -42,6 +42,12 @@ class Bootstrap
 
         // Load modules
         $modulesList = require_once APP_PATH . 'config/modules.php';
+
+        // Registering the registry
+        $registry = new \Phalcon\Registry();
+        $registry->modules = $modulesList;
+        $di->setShared('registry', $registry);
+
         // Load loader
         require_once APP_PATH . 'engine/Loader.php';
         $loader = new \Engine\Loader();
@@ -51,10 +57,6 @@ class Bootstrap
         $config = new \Phalcon\Config(array_merge_recursive($config, $modulesConfig));
         $loader->init($config->loader->namespaces);
         $di->setShared('config', $config);
-
-        // Registering the registry
-        $registry = new \Phalcon\Registry();
-        $di->setShared('registry', $registry);
 
         // Getting a request instance
         $request = new Phalcon\Http\Request();
@@ -69,13 +71,6 @@ class Bootstrap
             'controller' => 'index',
             'action' => 'index'
         ]);
-/*
-        $router->notFound([
-            'module' => 'core',
-            'controller' => 'error',
-            'action' => 'show404'
-        ]);
-*/
 
         foreach($modulesRoutes as $routeClass) {
             $route = new $routeClass;

@@ -24,6 +24,14 @@ class ErrorController extends Controller
     }
 
     /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return ['actions' => ['show404', 'show503']];
+    }
+
+    /**
      * Show 404 error
      */
     public function show404Action()

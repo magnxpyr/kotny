@@ -24,10 +24,24 @@ use Engine\Mvc\Controller;
  */
 class UserController extends Controller
 {
+    /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return [
+            'actions' => [
+                'index', 'login', 'loginWithFacebook', 'loginWithGoogle', 'register', 'logout', 'confirmEmail',
+                'forgotPassword', 'resetPassword'
+            ]
+        ];
+    }
+
     public function indexAction()
     {
 
     }
+
     /**
      * Login user
      */

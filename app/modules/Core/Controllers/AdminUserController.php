@@ -16,6 +16,14 @@ use Phalcon\Paginator\Pager;
 class AdminUserController extends AdminController
 {
     /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return ['actions' => ['index', 'search', 'new', 'edit', 'create', 'save', 'delete']];
+    }
+
+    /**
      * Index action
      */
     public function indexAction()

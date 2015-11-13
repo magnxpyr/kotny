@@ -23,6 +23,14 @@ use Core\Models\Menu;
 class AdminMenuController extends AdminController
 {
     /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return ['actions' => ['index', 'search', 'new', 'edit', 'save', 'delete', 'saveTree']];
+    }
+
+    /**
      * Index action
      */
     public function indexAction($id = null)

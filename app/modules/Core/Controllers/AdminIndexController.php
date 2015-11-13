@@ -17,6 +17,14 @@ use Engine\Mvc\AdminController;
 class AdminIndexController extends AdminController
 {
     /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return ['actions' => ['index']];
+    }
+
+    /**
      * Display Admin Dashboard
      */
     public function indexAction()

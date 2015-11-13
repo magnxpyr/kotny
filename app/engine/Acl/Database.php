@@ -2,16 +2,15 @@
 
 namespace Engine\Acl;
 
-use Core\Model\AccessList;
+use Core\Models\AccessList;
+use Core\Models\Role;
 use Phalcon\Acl\Adapter\Memory as AclMemory;
 use Phalcon\Acl\Resource as AclResource;
 use Phalcon\Acl as PhalconAcl;
+use Phalcon\Annotations\Adapter\Memory as AnnotationsMemory;
 use Phalcon\DI;
 use Phalcon\Events\Event as PhalconEvent;
 use Phalcon\Mvc\User\Plugin;
-use Phalcon\Text;
-use User\Model\Role;
-use User\Model\User;
 
 /**
  * Engine\Acl\Database
@@ -39,8 +38,8 @@ class Database extends Plugin
     public function getAcl()
     {
         if (!$this->acl) {
-            $cacheData = $this->getDI()->get('cacheData');
-            $acl = $cacheData->get($this->cache_key);
+            $cache = $this->getDI()->get('cache');
+            $acl = $cache->get($this->cache_key);
             if ($acl === null) {
                 $acl = new AclMemory();
                 $acl->setDefaultAction(PhalconAcl::DENY);
@@ -51,31 +50,87 @@ class Database extends Plugin
                     $roleNames[$role->id] = $role->name;
                     $acl->addRole($role->name);
                 }
-                // Defining admin area.
-                $roleAdmin = Role::getRoleByType(self::DEFAULT_ROLE_ADMIN);
-                // Add "admin area" resource.
-                $acl->addResource($adminArea, "access");
-                $acl->allow($roleAdmin->name, self::ACL_ADMIN_AREA, 'access');
-                // Getting objects that is in acl.
-                // Looking for all models in modelsDir and check @Acl annotation.
-                $objects = $this->_addResources($acl, [self::ACL_ADMIN_AREA => ['actions' => ['access']]]);
+                // Looking for all controllers inside modules and get actions.
+                $resources = $this->addResources($acl);
                 // Load from database.
-                $access = Access::find();
+                $access = AccessList::find();
                 foreach ($access as $item) {
-                    $value = $item->value;
+                    $value = $item->status;
                     if (
-                        array_key_exists($item->object, $objects) &&
-                        in_array($item->action, $objects[$item->object]['actions']) &&
-                        ($value == "allow" || $value == "deny")
+                        array_key_exists($item->resource, $resources) &&
+                        in_array($item->action, $resources[$item->resource]['actions']) &&
+                        ($value == 1 || $value == 2)
                     ) {
-                        $acl->$value($roleNames[$item->role_id], $item->object, $item->action);
+                        $acl->$value($roleNames[$item->role_id], $item->resource, $item->action);
                     }
                 }
-                $cacheData->save(self::CACHE_KEY_ACL, $acl, 2592000); // 30 days cache.
+                $cache->save($this->cache_key, $acl, 2592000); // 30 days cache.
             }
-            $this->_acl = $acl;
+            $this->acl = $acl;
         }
-        return $this->_acl;
+        return $this->acl;
+    }
+
+    /**
+     * Add resources to acl.
+     *
+     * @param AclMemory $acl     Acl object.
+     * @param array     $objects Related objects collection.
+     * @return array
+     */
+    private function addResources($acl)
+    {
+        $registry = $this->getDI()->get('registry');
+        $resources = [];
+        foreach ($registry->modules as $module) {
+            $controllersPath = ROOT_PATH . "modules\\$module\\Controllers\\";
+            $files = scandir($controllersPath);
+            foreach ($files as $file) {
+                if ($file == "." || $file == "..") {
+                    continue;
+                }
+                $class = str_replace('.php', '', $file);
+                $object = $this->getObject($class);
+                if ($object == null) {
+                    continue;
+                }
+                $objects[$class]['actions'] = $object->actions;
+                $objects[$class]['options'] = $object->options;
+            }
+            // Add objects to resources.
+            foreach ($objects as $key => $object) {
+                if (empty($object['actions'])) {
+                    $object['actions'] = [];
+                }
+                $acl->addResource($key, $object['actions']);
+            }
+
+        }
+        return $resources;
+    }
+
+
+    /**
+     * Get acl object.
+     *
+     * @param string $objectName Object name.
+     *
+     * @return null|\stdClass
+     */
+    public function getObject($objectName)
+    {
+        $object = new \stdClass();
+        $objectClass = new $objectName;
+        if (function_exists("behaviors")) {
+            $behaviors = $objectClass->behaviors;
+            if (isset($behaviors['actions'])) {
+                foreach ($behaviors['actions'] as $action) {
+                    $object->actions[] = $action;
+                }
+            }
+        }
+
+        return $object;
     }
 
     /**

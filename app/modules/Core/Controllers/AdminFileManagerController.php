@@ -125,6 +125,15 @@ class AdminFileManagerController extends AdminController
     }
 
     /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return ['actions' => ['index']];
+    }
+
+
+    /**
      * Display File Manager
      */
     public function indexAction()

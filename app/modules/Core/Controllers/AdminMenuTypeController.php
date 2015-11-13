@@ -22,6 +22,14 @@ use Core\Models\MenuType;
 class AdminMenuTypeController extends AdminController
 {
     /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return ['actions' => ['index', 'new', 'edit', 'save', 'delete']];
+    }
+
+    /**
      * Index action
      */
     public function indexAction()
