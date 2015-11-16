@@ -11,12 +11,12 @@ use Phalcon\Db\Index;
 use Phalcon\Db\Reference;
 use Tools\Builder\Mvc\Model\Migration;
 
-class AccessListMigration_101 extends Migration
+class ResourceMigration_101 extends Migration
 {
     public function up()
     {
         $this->morphTable(
-            'access_list',
+            'resources',
             [
                 'columns' => [
                     new Column('id', [
@@ -27,35 +27,15 @@ class AccessListMigration_101 extends Migration
                         'autoIncrement' => true,
                         'first' => true
                     ]),
-                    new Column('role_id', [
-                        'type' => Column::TYPE_INTEGER,
-                        'unsigned' => true,
-                        'notNull' => true,
-                        'size' => 2,
-                        'after' => 'id'
-                    ]),
-                    new Column('resource_id', [
-                        'type' => Column::TYPE_INTEGER,
-                        'unsigned' => true,
-                        'notNull' => true,
-                        'size' => 11,
-                        'after' => 'role_id'
-                    ]),
-                    new Column('access_name', [
+                    new Column('name', [
                         'type' => Column::TYPE_VARCHAR,
                         'notNull' => true,
-                        'size' => 64,
-                        'after' => 'resource_id'
+                        'size' => 255,
+                        'after' => 'id'
                     ]),
-                    new Column('status', [
-                        'type' => Column::TYPE_INTEGER,
-                        'notNull' => true,
-                        'size' => 1,
-                        'after' => 'access_name'
-                    ])
                 ],
                 'indexes' => [
-                    new Index('PRIMARY', ['id', 'role_id, resource_id, access_name'])
+                    new Index('PRIMARY', ['id', 'name'])
                 ],
                 'options' => [
                     'TABLE_TYPE' => 'BASE TABLE',

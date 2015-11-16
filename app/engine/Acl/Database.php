@@ -150,14 +150,14 @@ class Database extends Plugin
         }
 
         $exists = $this->options['db']->fetchOne(
-            'SELECT COUNT(*) FROM ' . $this->options['roles'] . ' WHERE name = ?',
+            'SELECT COUNT(*) FROM role WHERE name = ?',
             null,
             array($role->getName())
         );
 
         if (!$exists[0]) {
             $this->options['db']->execute(
-                'INSERT INTO ' . $this->options['roles'] . ' VALUES (?, ?)',
+                'INSERT INTO role VALUES (?, ?)',
                 array($role->getName(), $role->getDescription())
             );
 
@@ -183,7 +183,7 @@ class Database extends Plugin
      */
     public function addInherit($roleName, $roleToInherit)
     {
-        $sql = 'SELECT COUNT(*) FROM ' . $this->options['roles'] . ' WHERE name = ?';
+        $sql = 'SELECT COUNT(*) FROM role WHERE name = ?';
         $exists = $this->options['db']->fetchOne($sql, null, array($roleName));
         if (!$exists[0]) {
             throw new Exception("Role '" . $roleName . "' does not exist in the role list");
@@ -212,7 +212,7 @@ class Database extends Plugin
     public function isRole($roleName)
     {
         $exists = $this->options['db']->fetchOne(
-            'SELECT COUNT(*) FROM ' . $this->options['roles'] . ' WHERE name = ?',
+            'SELECT COUNT(*) FROM role WHERE name = ?',
             null,
             array($roleName)
         );

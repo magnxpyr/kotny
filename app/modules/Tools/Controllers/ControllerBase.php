@@ -29,6 +29,14 @@ use Tools\Helpers\Tools;
 class ControllerBase extends AdminController
 {
     /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return ['actions' => ['index']];
+    }
+
+    /**
      * Initialize controller
      * @throws \Exception
      */
