@@ -30,7 +30,7 @@ class ViewLevelMigration_101 extends Migration
                     new Column('name', [
                         'type' => Column::TYPE_VARCHAR,
                         'notNull' => true,
-                        'size' => 255,
+                        'size' => 64,
                         'after' => 'id'
                     ]),
                     new Column('roles', [

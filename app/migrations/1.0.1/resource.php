@@ -16,7 +16,7 @@ class ResourceMigration_101 extends Migration
     public function up()
     {
         $this->morphTable(
-            'resources',
+            'resource',
             [
                 'columns' => [
                     new Column('id', [
@@ -35,7 +35,8 @@ class ResourceMigration_101 extends Migration
                     ]),
                 ],
                 'indexes' => [
-                    new Index('PRIMARY', ['id', 'name'])
+                    new Index('PRIMARY', ['id']),
+                    new Index('UNIQUE', ['name'])
                 ],
                 'options' => [
                     'TABLE_TYPE' => 'BASE TABLE',

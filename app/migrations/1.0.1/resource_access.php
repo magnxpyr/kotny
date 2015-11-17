@@ -24,7 +24,6 @@ class ResourceAccessMigration_101 extends Migration
                         'size' => 11,
                         'unsigned' => true,
                         'notNull' => true,
-                        'autoIncrement' => true,
                         'first' => true
                     ]),
                     new Column('access_name', [
@@ -35,7 +34,7 @@ class ResourceAccessMigration_101 extends Migration
                     ]),
                 ],
                 'indexes' => [
-                    new Index('PRIMARY', ['resource_id, access_name'])
+                    new Index('PRIMARY', ['resource_id', 'access_name'])
                 ],
                 'options' => [
                     'TABLE_TYPE' => 'BASE TABLE',

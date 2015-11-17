@@ -55,7 +55,8 @@ class AccessListMigration_101 extends Migration
                     ])
                 ],
                 'indexes' => [
-                    new Index('PRIMARY', ['id', 'role_id, resource_id, access_name'])
+                    new Index('PRIMARY', ['id']),
+                    new Index('UNIQUE', ['role_id', 'resource_id', 'access_name'])
                 ],
                 'options' => [
                     'TABLE_TYPE' => 'BASE TABLE',
