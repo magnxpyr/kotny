@@ -3,9 +3,12 @@
 namespace Engine\Acl;
 
 use Core\Models\AccessList;
+use Core\Models\Resource;
 use Core\Models\Role;
+use Engine\Mvc\Exception;
 use Phalcon\Acl\Adapter\Memory as AclMemory;
 use Phalcon\Acl\Resource as AclResource;
+use Phalcon\Acl\Role as AclRole;
 use Phalcon\Acl as PhalconAcl;
 use Phalcon\Annotations\Adapter\Memory as AnnotationsMemory;
 use Phalcon\DI;
@@ -321,11 +324,11 @@ class Database extends Plugin
      */
     public function getResources()
     {
-        $resources = array();
-        $sql       = 'SELECT * FROM ' . $this->options['resources'];
+        $resources = [];
+        $resource = Resource::find();
 
-        foreach ($this->options['db']->fetchAll($sql, Db::FETCH_ASSOC) as $row) {
-            $resources[] = new Resource($row['name'], $row['description']);
+        foreach ($resource as $row) {
+            $resources[] = new AclResource($row->getName());
         }
 
         return $resources;
@@ -338,11 +341,11 @@ class Database extends Plugin
      */
     public function getRoles()
     {
-        $roles = array();
-        $sql   = 'SELECT * FROM ' . $this->options['roles'];
+        $roles = [];
+        $role = Role::find();
 
-        foreach ($this->options['db']->fetchAll($sql, Db::FETCH_ASSOC) as $row) {
-            $roles[] = new Role($row['name'], $row['description']);
+        foreach ($role as $row) {
+            $roles[] = new AclRole($row->getId());
         }
 
         return $roles;
