@@ -57,5 +57,14 @@ class RoleMigration_101 extends Migration
                 ]
             ]
         );
+
+        $this->batchInsert(
+            'role',
+            [
+                [1, 0, 'Guest', null],
+                [2, 0, 'User', null],
+                [3, 0, 'Admin', null]
+            ]
+        );
     }
 }

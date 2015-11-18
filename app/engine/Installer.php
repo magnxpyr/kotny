@@ -19,8 +19,6 @@ abstract class Installer
 {
     use DiBehavior;
 
-    const CURRENT_VERSION = 'abstract';
-
     public abstract function install();
 
     public abstract function update();

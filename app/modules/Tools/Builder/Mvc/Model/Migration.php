@@ -345,7 +345,7 @@ class ".$className." extends Migration\n{\n".
             } else {
                 $classData .= "\n\tpublic function afterUp()\n\t{\n";
             }
-            $classData .= "\t\t\$this->batchInsert('$table', array(\n\t\t\t" . join(",\n\t\t\t", $allFields) . "\n\t\t));";
+            $classData .= "\t\t\$this->batchInsertFromFile('$table', array(\n\t\t\t" . join(",\n\t\t\t", $allFields) . "\n\t\t));";
 
             $fileHandler = fopen(self::$_migrationPath . '/' . $table . '.dat', 'w');
             $cursor = self::$_connection->query('SELECT * FROM ' . $table);
@@ -664,7 +664,7 @@ class ".$className." extends Migration\n{\n".
      * @param string $tableName
      * @param string $fields
      */
-    public function batchInsert($tableName, $fields)
+    public function batchInsertFromFile($tableName, $fields)
     {
         $migrationData = self::$_migrationPath.'/'.$tableName.'.dat';
         if (file_exists($migrationData)) {
@@ -678,5 +678,19 @@ class ".$className." extends Migration\n{\n".
             fclose($batchHandler);
             self::$_connection->commit();
         }
+    }
+
+    /**
+     * Inserts multiple rows in a table
+     * @param string $tableName
+     * @param array $rows
+     */
+    public function batchInsert($tableName, $rows)
+    {
+        self::$_connection->begin();
+        foreach ($rows as $row) {
+            self::$_connection->insert($tableName, $row);
+        }
+        self::$_connection->commit();
     }
 }
