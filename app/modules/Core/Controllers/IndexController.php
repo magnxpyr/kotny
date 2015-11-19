@@ -22,7 +22,17 @@ class IndexController extends Controller
      */
     public function behaviors()
     {
-        return ['actions' => ['index']];
+        return [
+            'access' => [
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'actions' => ['*'],
+                        'roles' => ['*']
+                    ]
+                ]
+            ]
+        ];
     }
 
     public function indexAction()

@@ -21,7 +21,17 @@ class AdminIndexController extends AdminController
      */
     public function behaviors()
     {
-        return ['actions' => ['index']];
+        return [
+            'access' => [
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'actions' => ['index'],
+                        'roles' => ['guest']
+                    ]
+                ]
+            ]
+        ];
     }
 
     /**

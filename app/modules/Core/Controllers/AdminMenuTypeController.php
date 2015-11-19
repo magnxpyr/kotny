@@ -24,10 +24,7 @@ class AdminMenuTypeController extends AdminController
     /**
      * @inheritdoc
      */
-    public function behaviors()
-    {
-        return ['actions' => ['index', 'new', 'edit', 'save', 'delete']];
-    }
+    public function behaviors() {}
 
     /**
      * Index action

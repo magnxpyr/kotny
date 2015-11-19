@@ -10,6 +10,7 @@ namespace Engine\Mvc;
 
 use Phalcon\Mvc\Model;
 use Phalcon\Mvc\User\Component;
+use Phalcon\Text;
 
 /**
  * Class Helper
@@ -142,5 +143,15 @@ class Helper extends Component
         }
 
         return $obj;
+    }
+
+    /**
+     * Uncamelize and replace _ with -
+     * @param $str
+     * @return mixed
+     */
+    public function uncamelize($str)
+    {
+        return str_replace('_', '-', Text::camelize($str));
     }
 }

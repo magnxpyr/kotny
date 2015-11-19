@@ -25,13 +25,11 @@ class AdminMenuController extends AdminController
     /**
      * @inheritdoc
      */
-    public function behaviors()
-    {
-        return ['actions' => ['index', 'search', 'new', 'edit', 'save', 'delete', 'saveTree']];
-    }
+    public function behaviors() {}
 
     /**
      * Index action
+     * @param null $id
      */
     public function indexAction($id = null)
     {

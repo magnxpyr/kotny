@@ -41,4 +41,9 @@ abstract class Installer
             throw new Exception(sprintf('Sql file "%s" does not exists', $filePath));
         }
     }
+
+    public function getResources()
+    {
+
+    }
 }

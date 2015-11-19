@@ -30,9 +30,25 @@ class UserController extends Controller
     public function behaviors()
     {
         return [
-            'actions' => [
-                'index', 'login', 'loginWithFacebook', 'loginWithGoogle', 'register', 'logout', 'confirmEmail',
-                'forgotPassword', 'resetPassword'
+            'access' => [
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'actions' => ['logout'],
+                        'roles' => ['user']
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['login', 'loginWithFacebook', 'loginWithGoogle', 'register', 'confirmEmail',
+                                'forgotPassword', 'resetPassword'],
+                        'roles' => ['guest']
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['index'],
+                        'roles' => ['*']
+                    ]
+                ]
             ]
         ];
     }

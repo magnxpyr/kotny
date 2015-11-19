@@ -31,10 +31,7 @@ class ControllerBase extends AdminController
     /**
      * @inheritdoc
      */
-    public function behaviors()
-    {
-        return ['actions' => ['index']];
-    }
+    public function behaviors() {}
 
     /**
      * Initialize controller

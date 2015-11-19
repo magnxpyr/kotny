@@ -28,7 +28,17 @@ class ErrorController extends Controller
      */
     public function behaviors()
     {
-        return ['actions' => ['show404', 'show503']];
+        return [
+            'access' => [
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'actions' => ['*'],
+                        'roles' => ['*']
+                    ]
+                ]
+            ]
+        ];
     }
 
     /**
