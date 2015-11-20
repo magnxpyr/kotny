@@ -51,7 +51,7 @@ class Manager
     {
         $acl = $this->getDI()->get('acl');
 
-        $controllersPath = ROOT_PATH . "modules/Core/Controllers";
+        $controllersPath = APP_PATH . "modules/Core/Controllers";
 
         $files = scandir($controllersPath);
         foreach ($files as $file) {
@@ -60,9 +60,9 @@ class Manager
             }
             $className = str_replace('.php', '', $file);
 
-            $resourceName = 'Code' . $this->getDI()->helper->uncamelize($className);
+            $resourceName = 'module:Core/' . $this->getDI()->get('helper')->uncamelize($className);
 
-            $class = "Core\\$className";
+            $class = "Core\\Controllers\\$className";
             $class = new $class();
             $behaviors = $class->behaviors();
             if (!empty($behaviors)) {
@@ -73,7 +73,7 @@ class Manager
                     $acl->addResource($resourceName, $actions);
                 }
                 if (isset($behaviors['access']['rules'])) {
-                    foreach ($behaviors['access']['roles'] as $rule) {
+                    foreach ($behaviors['access']['rules'] as $rule) {
                         foreach ($rule['roles'] as $role) {
                             if ($rule['allow']) {
                                 $acl->allow($role, $resourceName, $rule['actions']);

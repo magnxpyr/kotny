@@ -6,20 +6,22 @@ use Core\Models\AccessList;
 use Core\Models\Resource;
 use Core\Models\Role;
 use Engine\Mvc\Exception;
+use Phalcon\Acl;
 use Phalcon\Acl\Adapter\Memory as AclMemory;
 use Phalcon\Acl\Resource as AclResource;
 use Phalcon\Acl\Role as AclRole;
 use Phalcon\Acl as PhalconAcl;
-use Phalcon\Annotations\Adapter\Memory as AnnotationsMemory;
+use Phalcon\Db;
 use Phalcon\DI;
-use Phalcon\Events\Event as PhalconEvent;
-use Phalcon\Mvc\User\Plugin;
+use Phalcon\Acl\Adapter;
+use Phalcon\Acl\AdapterInterface;
+
 
 /**
  * Engine\Acl\Database
  * Manages ACL lists in memory
  */
-class Database extends Plugin
+class Database extends Adapter implements AdapterInterface
 {
     /**
      * Acl cache key.
@@ -146,32 +148,26 @@ class Database extends Plugin
      * @param  string                   $accessInherits
      * @return boolean
      */
-    public function addRole($role, $accessInherits = null)
+    public function addRole($role, $accessInherits = 0)
     {
         if (!is_object($role)) {
-            $role = new Role($role);
+            $role = new AclRole($role);
         }
 
         $exists = $this->options['db']->fetchOne(
-            'SELECT COUNT(*) FROM role WHERE name = ?',
-            null,
-            array($role->getName())
+            'SELECT COUNT(*) FROM role WHERE name = ?', null, [$role->getName()]
         );
 
         if (!$exists[0]) {
             $this->options['db']->execute(
-                'INSERT INTO role VALUES (?, ?)',
-                array($role->getName(), $role->getDescription())
+                'INSERT INTO role (parent_id, name, description) VALUES (?, ?, ?)',
+                [$accessInherits, $role->getName(), $role->getDescription()]
             );
 
             $this->options['db']->execute(
-                'INSERT INTO ' . $this->options['accessList'] . ' VALUES (?, ?, ?, ?)',
-                array($role->getName(), '*', '*', $this->_defaultAccess)
+                'INSERT INTO access_list (role_id, resource_id, access_name, status) VALUES (?, ?, ?, ?)',
+                [$role->getName(), '*', '*', $this->_defaultAccess]
             );
-        }
-
-        if ($accessInherits) {
-            return $this->addInherit($role->getName(), $accessInherits);
         }
 
         return true;
@@ -215,9 +211,7 @@ class Database extends Plugin
     public function isRole($roleName)
     {
         $exists = $this->options['db']->fetchOne(
-            'SELECT COUNT(*) FROM role WHERE name = ?',
-            null,
-            array($roleName)
+            'SELECT COUNT(*) FROM role WHERE name = ?', null, [$roleName]
         );
 
         return (bool) $exists[0];
@@ -227,17 +221,13 @@ class Database extends Plugin
      * {@inheritdoc}
      *
      * @param  string  $resourceName
-     * @return boolean
+     * @return boolean|int
      */
     public function isResource($resourceName)
     {
-        $exists = $this->options['db']->fetchOne(
-            'SELECT COUNT(*) FROM ' . $this->options['resources'] . ' WHERE name = ?',
-            null,
-            array($resourceName)
-        );
+        $resource = Resource::findFirstByName($resourceName);
 
-        return (bool) $exists[0];
+        return $resource ? $resource->getId() : false;
     }
 
     /**
@@ -263,15 +253,12 @@ class Database extends Plugin
         }
 
         $exists = $this->options['db']->fetchOne(
-            'SELECT COUNT(*) FROM ' . $this->options['resources'] . ' WHERE name = ?',
-            null,
-            array($resource->getName())
+            'SELECT COUNT(*) FROM resource WHERE name = ?', null, [$resource->getName()]
         );
 
         if (!$exists[0]) {
             $this->options['db']->execute(
-                'INSERT INTO ' . $this->options['resources'] . ' VALUES (?, ?)',
-                array($resource->getName(), $resource->getDescription())
+                'INSERT INTO resource (name) VALUES (?)', [$resource->getName()]
             );
         }
 
@@ -292,24 +279,23 @@ class Database extends Plugin
      */
     public function addResourceAccess($resourceName, $accessList)
     {
-        if (!$this->isResource($resourceName)) {
+        $resourceId = $this->isResource($resourceName);
+        if (!$resourceId) {
             throw new Exception("Resource '" . $resourceName . "' does not exist in ACL");
         }
 
-        $sql = 'SELECT COUNT(*) FROM ' .
-            $this->options['resourcesAccesses'] .
-            ' WHERE resources_name = ? AND access_name = ?';
+        $sql = 'SELECT COUNT(*) FROM resource_access WHERE resources_id = ? AND access_name = ?';
 
         if (!is_array($accessList)) {
-            $accessList = array($accessList);
+            $accessList = [$accessList];
         }
 
         foreach ($accessList as $accessName) {
-            $exists = $this->options['db']->fetchOne($sql, null, array($resourceName, $accessName));
+            $exists = $this->options['db']->fetchOne($sql, null, [$resourceId, $accessName]);
             if (!$exists[0]) {
                 $this->options['db']->execute(
-                    'INSERT INTO ' . $this->options['resourcesAccesses'] . ' VALUES (?, ?)',
-                    array($resourceName, $accessName)
+                    'INSERT INTO resource_access VALUES (?, ?)',
+                    [$resourceId, $accessName]
                 );
             }
         }
@@ -477,9 +463,9 @@ class Database extends Plugin
         /**
          * Check if the access is valid in the resource
          */
-        $sql = 'SELECT COUNT(*) FROM ' .
-            $this->options['resourcesAccesses'] .
-            ' WHERE resources_name = ? AND access_name = ?';
+        $sql = 'SELECT COUNT(*) FROM resource_access ra, resource r WHERE
+              r.name = ? AND ra.access_name = ? AND ra.resource_id = r.id';
+
         $exists = $this->options['db']->fetchOne($sql, null, array($resourceName, $accessName));
         if (!$exists[0]) {
             throw new Exception(
@@ -490,9 +476,8 @@ class Database extends Plugin
         /**
          * Update the access in access_list
          */
-        $sql = 'SELECT COUNT(*) FROM ' .
-            $this->options['accessList'] .
-            ' WHERE roles_name = ? AND resources_name = ? AND access_name = ?';
+        $sql = 'SELECT COUNT(*) FROM access_list al, role, resource r WHERE r.name = ? AND r.name = ? AND al.access_name = ?
+            AND r.name';
         $exists = $this->options['db']->fetchOne($sql, null, array($roleName, $resourceName, $accessName));
         if (!$exists[0]) {
             $sql = 'INSERT INTO ' . $this->options['accessList'] . ' VALUES (?, ?, ?, ?)';
@@ -528,7 +513,7 @@ class Database extends Plugin
      * @param  string                 $resourceName
      * @param  array|string           $access
      * @param  integer                $action
-     * @throws \Phalcon\Acl\Exception
+     * @throws \Engine\Mvc\Exception
      */
     protected function allowOrDeny($roleName, $resourceName, $access, $action)
     {
@@ -537,7 +522,7 @@ class Database extends Plugin
         }
 
         if (!is_array($access)) {
-            $access = array($access);
+            $access = [$access];
         }
 
         foreach ($access as $accessName) {

@@ -8,6 +8,7 @@
 
 namespace Engine\Plugins;
 
+use Engine\Package\Manager;
 use Phalcon\Mvc\User\Plugin;
 use Phalcon\Acl;
 
@@ -30,7 +31,10 @@ class AclHandler extends Plugin
         if ($this->auth->hasRememberMe() && !$this->auth->isUserSignedIn()) {
             $this->auth->loginWithRememberMe(false);
         }
-
+/*
+        $manager = new Manager();
+        $manager->installModule();
+*/
         //By default the action is deny access
         $this->acl->setDefaultAction(Acl::DENY);
 
