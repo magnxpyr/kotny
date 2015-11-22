@@ -9,6 +9,7 @@
 namespace Core\Models;
 
 use Phalcon\Mvc\Model;
+use Sb\Framework\Mvc\Model\EagerLoadingTrait;
 
 /**
  * Class MenuType
@@ -16,6 +17,7 @@ use Phalcon\Mvc\Model;
  */
 class MenuType extends Model
 {
+    use EagerLoadingTrait;
 
     /**
      * @var integer

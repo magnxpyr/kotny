@@ -9,6 +9,7 @@
 namespace Core\Models;
 
 use Phalcon\Mvc\Model;
+use Sb\Framework\Mvc\Model\EagerLoadingTrait;
 
 /**
  * Class Role
@@ -16,6 +17,7 @@ use Phalcon\Mvc\Model;
  */
 class Role extends Model
 {
+    use EagerLoadingTrait;
 
     /**
      * @var integer
@@ -135,6 +137,7 @@ class Role extends Model
     public function initialize()
     {
         $this->setSource('role');
+        $this->hasMany('id', 'Core\Models\AccessList', 'role_id', ['alias' => 'accessList', 'reusable' => true]);
     }
 
     public function getSource()

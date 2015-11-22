@@ -19,20 +19,7 @@ class AdminIndexController extends AdminController
     /**
      * @inheritdoc
      */
-    public function behaviors()
-    {
-        return [
-            'access' => [
-                'rules' => [
-                    [
-                        'allow' => true,
-                        'actions' => ['index'],
-                        'roles' => ['guest']
-                    ]
-                ]
-            ]
-        ];
-    }
+    public function behaviors() {}
 
     /**
      * Display Admin Dashboard

@@ -171,14 +171,8 @@ class Bootstrap
                     $factory = new \Phalcon\Acl\Factory\Memory();
                     return $factory->create($aclConfig);
                 case 'database':
-                    return new \Phalcon\Acl\Adapter\Database([
-                        'db' => $db,
-                        'roles' => 'roles',
-                        'rolesInherits' => 'roles_inherits',
-                        'resources' => 'resources',
-                        'resourcesAccesses' => 'resources_accesses',
-                        'accessList' => 'access_list',
-                    ]);
+                    $acl = new \Engine\Acl\Database();
+                    return $acl->getAcl();
             }
         });
 

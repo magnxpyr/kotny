@@ -9,6 +9,7 @@
 namespace Core\Models;
 
 use Phalcon\Mvc\Model;
+use Sb\Framework\Mvc\Model\EagerLoadingTrait;
 
 /**
  * Class ResourceAccess
@@ -16,6 +17,7 @@ use Phalcon\Mvc\Model;
  */
 class ResourceAccess extends Model
 {
+    use EagerLoadingTrait;
 
     /**
      * @var integer
@@ -79,6 +81,7 @@ class ResourceAccess extends Model
     public function initialize()
     {
         $this->setSource('resource_access');
+        $this->belongsTo('resource_id', 'Core\Models\Resource', 'id', ['alias' => 'resource', 'reusable' => true]);
     }
 
     public function getSource()

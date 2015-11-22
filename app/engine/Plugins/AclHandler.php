@@ -8,6 +8,7 @@
 
 namespace Engine\Plugins;
 
+use Engine\Acl\Database;
 use Engine\Package\Manager;
 use Phalcon\Mvc\User\Plugin;
 use Phalcon\Acl;
@@ -31,12 +32,16 @@ class AclHandler extends Plugin
         if ($this->auth->hasRememberMe() && !$this->auth->isUserSignedIn()) {
             $this->auth->loginWithRememberMe(false);
         }
+
 /*
+        $acl = new Database();
+        $acl->addResource('*', '*');
+        $acl->allow('admin', '*', '*');
+        die;
+
         $manager = new Manager();
         $manager->installModule();
 */
-        //By default the action is deny access
-        $this->acl->setDefaultAction(Acl::DENY);
 
         //Check whether the "auth" variable exists in session to define the active role
         $role = $this->auth->getUserRole();
@@ -47,8 +52,9 @@ class AclHandler extends Plugin
         $action = $dispatcher->getActionName();
 
         //Check if the Role have access to the controller (resource)
-        $allowed = $this->acl->isAllowed($role, $module . '/' . $controller, $action);
-
+        $allowed = $this->acl->isAllowed($role, "module:$module/$controller", $action);
+        var_dump($allowed);
+        echo "$allowed $role", " module:$module/$controller ", $action; die;
         if ($allowed != Acl::ALLOW) {
             $this->dispatcher->setModuleName('core');
             $this->dispatcher->forward([

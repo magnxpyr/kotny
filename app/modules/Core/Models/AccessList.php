@@ -9,6 +9,7 @@
 namespace Core\Models;
 
 use Phalcon\Mvc\Model;
+use Sb\Framework\Mvc\Model\EagerLoadingTrait;
 
 /**
  * Class AccessList
@@ -16,6 +17,7 @@ use Phalcon\Mvc\Model;
  */
 class AccessList extends Model
 {
+    use EagerLoadingTrait;
 
     /**
      * @var integer
@@ -163,6 +165,8 @@ class AccessList extends Model
     public function initialize()
     {
         $this->setSource('access_list');
+        $this->belongsTo('resource_id', 'Core\Models\Resource', 'id', ['alias' => 'resource', 'reusable' => true]);
+        $this->belongsTo('role_id', 'Core\Models\Role', 'id', ['alias' => 'role', 'reusable' => true]);
     }
 
     public function getSource()

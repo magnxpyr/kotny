@@ -152,6 +152,6 @@ class Helper extends Component
      */
     public function uncamelize($str)
     {
-        return str_replace('_', '-', Text::camelize($str));
+        return str_replace('_', '-', Text::uncamelize($str));
     }
 }

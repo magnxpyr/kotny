@@ -9,6 +9,7 @@
 namespace Engine\Package;
 
 use Engine\Behavior\DiBehavior;
+use Engine\Acl\Database;
 
 /**
  * Class Manager
@@ -49,9 +50,11 @@ class Manager
      */
     public function installModule()
     {
-        $acl = $this->getDI()->get('acl');
+        $acl = new Database();
 
         $controllersPath = APP_PATH . "modules/Core/Controllers";
+
+        $roles = $acl->getRoles();
 
         $files = scandir($controllersPath);
         foreach ($files as $file) {
@@ -60,7 +63,8 @@ class Manager
             }
             $className = str_replace('.php', '', $file);
 
-            $resourceName = 'module:Core/' . $this->getDI()->get('helper')->uncamelize($className);
+            $resourceName = str_replace('Controller', '', $className);
+            $resourceName = 'module:core/' . $this->getDI()->get('helper')->uncamelize($resourceName);
 
             $class = "Core\\Controllers\\$className";
             $class = new $class();
@@ -74,6 +78,9 @@ class Manager
                 }
                 if (isset($behaviors['access']['rules'])) {
                     foreach ($behaviors['access']['rules'] as $rule) {
+                        if ($rule['roles'][0] == '*') {
+                            $rule['roles'] = $roles;
+                        }
                         foreach ($rule['roles'] as $role) {
                             if ($rule['allow']) {
                                 $acl->allow($role, $resourceName, $rule['actions']);
@@ -97,7 +104,7 @@ class Manager
      */
     public function getResourceAccess($class) {
         $functions = get_class_methods($class);
-        $actions = [];
+        $actions = ['*'];
         foreach ($functions as $function) {
             if (strpos($function, 'Action')) {
                 $actions[] = str_replace('Action', '', $function);
