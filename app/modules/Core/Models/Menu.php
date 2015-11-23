@@ -9,6 +9,7 @@
 namespace Core\Models;
 
 use Phalcon\Mvc\Model;
+use Sb\Framework\Mvc\Model\EagerLoadingTrait;
 
 /**
  * Class Menu
@@ -16,6 +17,7 @@ use Phalcon\Mvc\Model;
  */
 class Menu extends Model
 {
+    use EagerLoadingTrait;
 
     /**
      * @var integer
@@ -75,7 +77,7 @@ class Menu extends Model
     /**
      * @var integer
      */
-    protected $role_id;
+    protected $view_level;
 
     /**
      * Method to set the value of field id
@@ -221,14 +223,14 @@ class Menu extends Model
     }
 
     /**
-     * Method to set the value of field role_id
+     * Method to set the value of field view_level
      *
-     * @param integer $role_id
+     * @param integer $view_level
      * @return $this
      */
-    public function setRoleId($role_id)
+    public function setViewLevel($view_level)
     {
-        $this->role_id = $role_id;
+        $this->view_level = $view_level;
 
         return $this;
     }
@@ -344,13 +346,13 @@ class Menu extends Model
     }
 
     /**
-     * Returns the value of field role_id
+     * Returns the value of field view_level
      *
      * @return integer
      */
-    public function getRoleId()
+    public function getViewLevel()
     {
-        return $this->role_id;
+        return $this->view_level;
     }
 
     /**
@@ -359,7 +361,8 @@ class Menu extends Model
     public function initialize()
     {
         $this->setSource('menu');
-        $this->hasOne('menu_type_id', 'Core\Models\MenuType', 'id', ['alias' => 'menuType', 'reusable' => true]);
+        $this->belongsTo('menu_type_id', 'Core\Models\MenuType', 'id', ['alias' => 'menuType', 'reusable' => true]);
+        $this->belongsTo('view_level', 'Core\Models\ViewLevel', 'id', ['alias' => 'viewLevel', 'reusable' => true]);
     //    $this->addBehavior(new Model\Behavior\NestedSet(['rootAttribute' => 'parent_id']));
     }
 

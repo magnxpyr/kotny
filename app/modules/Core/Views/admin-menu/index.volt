@@ -29,7 +29,7 @@
         <div class="row list-item">
             <div class="col-xs-4">Title</div>
             <div class="col-xs-2">Status</div>
-            <div class="col-xs-2">Role</div>
+            <div class="col-xs-2">View Level</div>
             <div class="col-xs-2">Id</div>
             <div class="col-xs-2">Actions</div>
         </div>
@@ -55,7 +55,7 @@
             echo "<li id='item_$category->id'><div class='list-item'>\n";
             echo '<div class="col-xs-4"><i class="fa fa-reorder"></i>' . $category->getTitle() . '</div>';
             echo '<div class="col-xs-2">' . $this->helper->getArticleStatus($category->getStatus()) . '</div>';
-            echo '<div class="col-xs-2">' . $this->helper->getUserRole($category->getRoleId()) . '</div>';
+            echo '<div class="col-xs-2">' . $this->helper->getUserRole($category->getViewLevel()) . '</div>';
             echo '<div class="col-xs-2">' . $category->getId() . '</div>';
             echo '<div class="col-xs-2">' . $this->tag->linkTo("admin/core/menu/edit/" . $category->getId(), '<i class="fa fa-edit"></i>');
             $url = $this->url->get("admin/core/menu/delete/" . $category->getId());

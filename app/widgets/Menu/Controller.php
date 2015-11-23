@@ -10,6 +10,7 @@ namespace Widget\Menu;
 
 use Core\Models\Menu;
 use Phalcon\Db\Column;
+use Phalcon\Mvc\Model\EagerLoading\Loader;
 
 /**
  * Class Controller
@@ -22,12 +23,12 @@ class Controller extends \Engine\Widget\Controller
      */
     public function indexAction()
     {
-        $menuElements = Menu::find([
+        $menuElements = Loader::fromResultset(Menu::find([
             'conditions' => 'menu_type_id = ?1',
             'bind' => [1 => $this->getParam('id')],
             'bindTypes' => [Column::BIND_PARAM_INT],
             'order' => 'lft'
-        ]);
+        ]), 'viewLevel');
 
         $this->viewWidget->setVar('menuElements', $menuElements);
     }

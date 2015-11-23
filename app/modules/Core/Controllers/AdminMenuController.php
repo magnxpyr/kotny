@@ -140,7 +140,7 @@ class AdminMenuController extends AdminController
             $this->tag->setDefault("path", $menu->getPath());
             $this->tag->setDefault("link", $menu->getLink());
             $this->tag->setDefault("status", $menu->getStatus());
-            $this->tag->setDefault("role_id", $menu->getRoleId());
+            $this->tag->setDefault("view_level", $menu->getViewLevel());
         }
     }
 
