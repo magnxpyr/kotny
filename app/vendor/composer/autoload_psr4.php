@@ -6,6 +6,7 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname(dirname($vendorDir));
 
 return array(
+    'duncan3dc\\Helpers\\' => array($vendorDir . '/duncan3dc/fork-helper/src'),
     'Test\\Searcher\\Models\\' => array($vendorDir . '/stanislav-web/phalcon-searcher/phpunit/src/Searcher/Models'),
     'Test\\Searcher\\Hydrators\\' => array($vendorDir . '/stanislav-web/phalcon-searcher/phpunit/src/Searcher/Hydrators'),
     'Test\\Searcher\\Factories\\' => array($vendorDir . '/stanislav-web/phalcon-searcher/phpunit/src/Searcher/Factories'),
@@ -16,6 +17,7 @@ return array(
     'Searcher\\Searcher\\Aware\\' => array($vendorDir . '/stanislav-web/phalcon-searcher/src/Searcher/Aware'),
     'Searcher\\' => array($vendorDir . '/stanislav-web/phalcon-searcher/src/Searcher'),
     'Sb\\Framework\\Mvc\\Model\\' => array($vendorDir . '/stibium/phalcon.eager-loading/src'),
+    'Phalcon\\' => array($vendorDir . '/phalcon/incubator/Library/Phalcon'),
     'Facebook\\' => array($vendorDir . '/facebook/php-sdk-v4/src/Facebook'),
     'DataTables\\' => array($vendorDir . '/m1ome/phalcon-datatables/src'),
 );

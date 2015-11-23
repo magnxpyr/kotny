@@ -55,6 +55,10 @@ class Manager
         $controllersPath = APP_PATH . "modules/Core/Controllers";
 
         $roles = $acl->getRoles();
+        // remove admin from roles since already has access on everything
+        if(($key = array_search('admin', $roles)) !== false) {
+            unset($roles[$key]);
+        }
 
         $files = scandir($controllersPath);
         foreach ($files as $file) {

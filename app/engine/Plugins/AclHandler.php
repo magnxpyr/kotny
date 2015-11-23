@@ -32,7 +32,6 @@ class AclHandler extends Plugin
         if ($this->auth->hasRememberMe() && !$this->auth->isUserSignedIn()) {
             $this->auth->loginWithRememberMe(false);
         }
-
 /*
         $acl = new Database();
         $acl->addResource('*', '*');
@@ -53,8 +52,7 @@ class AclHandler extends Plugin
 
         //Check if the Role have access to the controller (resource)
         $allowed = $this->acl->isAllowed($role, "module:$module/$controller", $action);
-        var_dump($allowed);
-        echo "$allowed $role", " module:$module/$controller ", $action; die;
+
         if ($allowed != Acl::ALLOW) {
             $this->dispatcher->setModuleName('core');
             $this->dispatcher->forward([

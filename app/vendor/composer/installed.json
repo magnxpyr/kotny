@@ -192,59 +192,6 @@
         ]
     },
     {
-        "name": "phalcon/incubator",
-        "version": "v2.0.7",
-        "version_normalized": "2.0.7.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/phalcon/incubator.git",
-            "reference": "3ca816904d2439847c48b74f0af2f25f9d158a9a"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/phalcon/incubator/zipball/3ca816904d2439847c48b74f0af2f25f9d158a9a",
-            "reference": "3ca816904d2439847c48b74f0af2f25f9d158a9a",
-            "shasum": ""
-        },
-        "require": {
-            "ext-phalcon": ">=2.0.4",
-            "php": ">=5.3.21",
-            "swiftmailer/swiftmailer": "~5.2"
-        },
-        "require-dev": {
-            "codeception/codeception": "2.0.14",
-            "mockery/mockery": "*",
-            "php-mock/php-mock": "<0.6",
-            "phpunit/phpunit": "4.6.*",
-            "squizlabs/php_codesniffer": "2.*"
-        },
-        "time": "2015-08-18 07:35:12",
-        "type": "library",
-        "installation-source": "dist",
-        "autoload": {
-            "psr-0": {
-                "Phalcon": "Library/"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "BSD-3-Clause"
-        ],
-        "authors": [
-            {
-                "name": "Phalcon Team",
-                "email": "team@phalconphp.com"
-            }
-        ],
-        "description": "Adapters, prototypes or functionality that can be potentially incorporated to the C-framework.",
-        "homepage": "http://phalconphp.com",
-        "keywords": [
-            "framework",
-            "incubator",
-            "phalcon"
-        ]
-    },
-    {
         "name": "m1ome/phalcon-datatables",
         "version": "1.1.6",
         "version_normalized": "1.1.6.0",
@@ -350,6 +297,110 @@
             "phalcon",
             "phalcon search",
             "phalcon searcher"
+        ]
+    },
+    {
+        "name": "duncan3dc/fork-helper",
+        "version": "1.1.5",
+        "version_normalized": "1.1.5.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/duncan3dc/fork-helper.git",
+            "reference": "afb22fb541fdd1d82babccc6a3c1bc5cd1ec6f20"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/duncan3dc/fork-helper/zipball/afb22fb541fdd1d82babccc6a3c1bc5cd1ec6f20",
+            "reference": "afb22fb541fdd1d82babccc6a3c1bc5cd1ec6f20",
+            "shasum": ""
+        },
+        "require": {
+            "ext-pcntl": "*",
+            "ext-shmop": "*",
+            "php": ">=5.4.0"
+        },
+        "time": "2015-06-28 21:54:15",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "duncan3dc\\Helpers\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "Apache-2.0"
+        ],
+        "authors": [
+            {
+                "name": "Craig Duncan",
+                "email": "git@duncanc.co.uk",
+                "homepage": "https://github.com/duncan3dc",
+                "role": "Developer"
+            }
+        ],
+        "description": "Simple class to fork processes in PHP and allow multi-threading",
+        "homepage": "https://github.com/duncan3dc/fork-helper",
+        "keywords": [
+            "control",
+            "fork",
+            "multi-threading",
+            "pcntl",
+            "process"
+        ]
+    },
+    {
+        "name": "phalcon/incubator",
+        "version": "v2.0.8",
+        "version_normalized": "2.0.8.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/phalcon/incubator.git",
+            "reference": "5c2e758f4f3b41a99d9cd6f2dac4c239ff1a9522"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/phalcon/incubator/zipball/5c2e758f4f3b41a99d9cd6f2dac4c239ff1a9522",
+            "reference": "5c2e758f4f3b41a99d9cd6f2dac4c239ff1a9522",
+            "shasum": ""
+        },
+        "require": {
+            "duncan3dc/fork-helper": "@stable",
+            "ext-phalcon": ">=2.0.4",
+            "php": ">=5.4",
+            "swiftmailer/swiftmailer": "~5.2"
+        },
+        "require-dev": {
+            "codeception/codeception": "2.0.14",
+            "mockery/mockery": "*",
+            "php-mock/php-mock": "*",
+            "phpunit/phpunit": "4.6.*",
+            "squizlabs/php_codesniffer": "2.*"
+        },
+        "time": "2015-09-25 22:29:27",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Phalcon\\": "Library/Phalcon/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "BSD-3-Clause"
+        ],
+        "authors": [
+            {
+                "name": "Phalcon Team",
+                "email": "team@phalconphp.com"
+            }
+        ],
+        "description": "Adapters, prototypes or functionality that can be potentially incorporated to the C-framework.",
+        "homepage": "http://phalconphp.com",
+        "keywords": [
+            "framework",
+            "incubator",
+            "phalcon"
         ]
     }
 ]
