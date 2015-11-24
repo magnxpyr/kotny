@@ -9,6 +9,7 @@
 namespace Core\Forms;
 
 use Core\Models\MenuType;
+use Core\Models\ViewLevel;
 use Phalcon\Forms\Element\Hidden;
 use Phalcon\Forms\Element\Select;
 use Phalcon\Forms\Element\Text;
@@ -35,7 +36,7 @@ class AdminMenuEditForm extends Form
 
         // Type
         $menu_type = new Select('menu_type_id',
-            MenuType::findSelect(),
+            MenuType::find(),
             ['using' => ['id', 'title'], 'class' => 'form-control']
         );
         $menu_type->setLabel($this->t->_('Menu Type'));
@@ -121,16 +122,16 @@ class AdminMenuEditForm extends Form
         );
         $this->add($status);
 
-        // User role
-        $role = new Select('role_id',
-            $this->helper->getUserRoles(),
+        // User view level
+        $role = new Select('view_level',
+            ViewLevel::find(),
             ['using' => ['id', 'name'], 'class' => 'form-control']
         );
-        $role->setLabel($this->t->_('Role'));
+        $role->setLabel($this->t->_('View Level'));
         $role->setFilters('int');
         $role->addValidator(
             new PresenceOf([
-                'role_id' => $this->t->_('%field% is required', ['field' => $this->t->_('Role')])
+                'role_id' => $this->t->_('%field% is required', ['field' => $this->t->_('View Level')])
             ])
         );
         $this->add($role);

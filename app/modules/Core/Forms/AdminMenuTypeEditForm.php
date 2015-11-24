@@ -8,6 +8,7 @@
 
 namespace Core\Forms;
 
+use Core\Models\Role;
 use Phalcon\Forms\Element\Hidden;
 use Phalcon\Forms\Element\Select;
 use Phalcon\Forms\Element\Text;
@@ -46,7 +47,7 @@ class AdminMenuTypeEditForm extends Form
 
         // User role
         $role = new Select('role_id',
-            $this->helper->getUserRoles(),
+            Role::find(),
             ['using' => ['id', 'name'], 'class' => 'form-control']
         );
         $role->setLabel($this->t->_('Role'));
