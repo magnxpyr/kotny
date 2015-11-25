@@ -7,9 +7,7 @@ $level = 1;
 
 echo '<ul class="nav navbar-nav pull-right">';
 foreach($menuElements as $elements) {
-    //TODO check if viewLevel has access in acl
-    $roles = json_decode($elements->viewLevel->getRoles());
-    if (!in_array($this->auth->getUserRole(), $roles)) continue;
+    if (!$this->helper->acl->checkViewLevel($elements->viewLevel->getRoles())) continue;
 
     if ($elements->path == 0) {
         $link = $this->url->get($elements->path);

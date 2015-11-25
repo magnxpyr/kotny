@@ -55,7 +55,7 @@ class Database extends Adapter implements AdapterInterface
         if (!$this->acl) {
             $cache = $this->getDI()->get('cache');
             $acl = $cache->get($this->cache_key);
-        //    if ($acl === null) {
+            if ($acl === null) {
                 $acl = new AclMemory();
                 $acl->setDefaultAction(PhalconAcl::DENY);
                 // Prepare Roles.
@@ -85,8 +85,8 @@ class Database extends Adapter implements AdapterInterface
                     }
 
                 }
-                $cache->save($this->cache_key, $acl, 2592000); // 30 days cache.
-     //       }
+                $cache->save($this->cache_key, $acl, DEV ? 0 : 2592000); // 30 days cache.
+            }
             $this->acl = $acl;
         }
         return $this->acl;
@@ -492,5 +492,15 @@ class Database extends Adapter implements AdapterInterface
         foreach ($access as $accessName) {
             $this->insertOrUpdateAccess($roleName, $resourceName, $accessName, $action);
         }
+    }
+
+    public function checkViewLevel($viewLevel)
+    {
+        $allow = false;
+        $roles = json_decode($viewLevel);
+        if (in_array($this->getDI()->get('auth')->getUserRole(), $roles))
+            $allow = true;
+
+        return $allow;
     }
 }

@@ -36,6 +36,7 @@ class Bootstrap
         }
 
         define('CACHE_PATH', $config['app']['cacheDir']);
+        define('DEV', $config['app']['development']);
 
         // set cookies time
         $config['app']['cookie']['expire'] = time() + $config['app']['cookie']['expire'];
@@ -77,6 +78,13 @@ class Bootstrap
             $route->init($router);
         }
         $di->setShared('router', $router);
+
+        // Register helper
+        $di->setShared('helper', function() {
+            $helper = new \Engine\Mvc\Helper();
+            $helper->acl = new \Engine\Acl\Database();
+            return $helper;
+        });
 
         // Generate urls
         $url = new Phalcon\Mvc\Url();
@@ -164,15 +172,14 @@ class Bootstrap
         $di->setShared('db', $db);
 
         // Register ACL to DI
-        $di->setShared('acl', function () use ($config, $db) {
+        $di->setShared('acl', function () use ($config, $db, $di) {
             switch($config->app->aclAdapter) {
                 case 'memory':
                     $aclConfig = new \Phalcon\Config(include APP_PATH . 'config/acl.php');
                     $factory = new \Phalcon\Acl\Factory\Memory();
                     return $factory->create($aclConfig);
                 case 'database':
-                    $acl = new \Engine\Acl\Database();
-                    return $acl->getAcl();
+                    return $di->get('helper')->acl->getAcl();
             }
         });
 
@@ -254,11 +261,6 @@ class Bootstrap
                     break;
             }
             return new \Phalcon\Mailer\Manager($settings);
-        });
-
-        // Register helper
-        $di->setShared('helper', function() {
-            return new \Engine\Mvc\Helper();
         });
 
         // Register the flash service with custom CSS classes
