@@ -15,7 +15,6 @@
                 <tr>
                     <th>Title</th>
                     <th>Description</th>
-                    <th>Role</th>
                     <th>Id</th>
                     <th>Actions</th>
                 </tr>
@@ -26,7 +25,6 @@
                         <tr data-item="item_{{ menu.getId() }}">
                             <td>{{ link_to("admin/core/menu/index/"~menu.getId(), menu.getTitle()) }}</td>
                             <td>{{ menu.getDescription() }}</td>
-                            <td>{{ menu.getRoleId() }}</td>
                             <td>{{ menu.getId() }}</td>
                             <td>
                                 {{ link_to("admin/core/menu-type/edit/"~menu.getId(), '<i class="fa fa-edit"></i>') }}

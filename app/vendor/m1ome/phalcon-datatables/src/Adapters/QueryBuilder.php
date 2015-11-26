@@ -27,7 +27,9 @@ class QueryBuilder extends AdapterInterface{
     });
 
     $this->bind('order', function($order) {
-      $this->builder->orderBy(implode(', ', $order));
+        if(!empty($order)) {
+            $this->builder->orderBy(implode(', ', $order));
+        }
     });
 
     $builder = new PQueryBuilder([

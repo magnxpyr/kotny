@@ -23,7 +23,7 @@
                     ['data': 'id', 'searchable': false],
                     ['data': 'username'],
                     ['data': 'email'],
-                    ['data': 'role_id'],
+                    ['data': 'name'],
                     ['data': 'status']
                 ],
                 'url': url('admin/core/user/search'),

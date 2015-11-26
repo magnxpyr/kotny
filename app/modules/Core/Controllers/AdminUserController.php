@@ -8,6 +8,7 @@
 
 namespace Core\Controllers;
 
+use Core\Forms\AdminUserEditForm;
 use DataTables\DataTable;
 use Core\Models\User;
 use Engine\Mvc\AdminController;
@@ -32,8 +33,11 @@ class AdminUserController extends AdminController
     {
         if ($this->request->isAjax()) {
             $builder = $this->modelsManager->createBuilder()
-                ->columns('id, username, email, role_id, status')
-                ->from('Core\Models\User');
+                ->columns('u.id, u.username, u.email, r.name, u.status')
+                ->addFrom('Core\Models\User', 'u')
+                ->addFrom('Core\Models\Role', 'r')
+                ->where('u.role_id = r.id')
+                ->orderBy('u.id');
 
             $dataTables = new DataTable();
             $dataTables->fromBuilder($builder)->sendResponse();
@@ -55,24 +59,24 @@ class AdminUserController extends AdminController
      */
     public function editAction($id)
     {
-
+        $this->setTitle('Edit Menu');
+        $form = new AdminUserEditForm();
+        $this->view->setVar('form', $form);
         if (!$this->request->isPost()) {
+            $menuType = User::findFirstById($id);
+            if (!$menuType) {
+                $this->flash->error("Menu was not found");
 
-            $user = User::findFirst($id);
-            if (!$user) {
-                $this->flash->error("user was not found");
-
-                return $this->dispatcher->forward(array(
+                return $this->dispatcher->forward([
                     "action" => "index"
-                ));
+                ]);
             }
 
-            $this->view->id = $user->id;
-
-            $this->tag->setDefault("id", $user->getId());
-            $this->tag->setDefault("username", $user->getUsername());
-
-            
+            $this->tag->setDefault("id", $menuType->getId());
+            $this->tag->setDefault("username", $menuType->getUsername());
+            $this->tag->setDefault("email", $menuType->getEmail());
+            $this->tag->setDefault("role_id", $menuType->getRoleId());
+            $this->tag->setDefault("status", $menuType->getStatus());
         }
     }
 

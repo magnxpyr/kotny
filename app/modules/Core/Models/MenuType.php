@@ -53,19 +53,6 @@ class MenuType extends Model
     }
 
     /**
-     * Method to set the value of field role_id
-     *
-     * @param integer $id
-     * @return $this
-     */
-    public function setRoleId($id)
-    {
-        $this->role_id = $id;
-
-        return $this;
-    }
-
-    /**
      * Method to set the value of field title
      *
      * @param string $title
@@ -99,16 +86,6 @@ class MenuType extends Model
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Returns the value of field role_id
-     *
-     * @return integer
-     */
-    public function getRoleId()
-    {
-        return $this->role_id;
     }
 
     /**
