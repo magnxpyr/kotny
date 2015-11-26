@@ -41,7 +41,7 @@ class ErrorHandler extends Plugin
             return false;
         }
 
-        if ($this->di->getShared('config')->app->development) {
+        if (DEV) {
             throw $exception;
         } else {
         //    log the exception

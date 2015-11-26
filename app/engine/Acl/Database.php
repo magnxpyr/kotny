@@ -16,14 +16,12 @@ use Engine\Behavior\DiBehavior;
 use Engine\Mvc\Exception;
 use Phalcon\Acl;
 use Phalcon\Acl\Adapter\Memory as AclMemory;
-use Phalcon\Acl\Resource as AclResource;
 use Phalcon\Acl\Role as AclRole;
 use Phalcon\Acl as PhalconAcl;
 use Phalcon\Db;
 use Phalcon\DI;
 use Phalcon\Acl\Adapter;
 use Phalcon\Acl\AdapterInterface;
-use Tools\Builder\Controller;
 
 /**
  * Engine\Acl\Database
@@ -159,24 +157,18 @@ class Database extends Adapter implements AdapterInterface
      */
     public function addInherit($roleName, $roleToInherit)
     {
-        $sql = 'SELECT COUNT(*) FROM role WHERE name = ?';
-        $exists = $this->db->fetchOne($sql, null, array($roleName));
-        if (!$exists[0]) {
+        $role = Role::findFirstByName($roleName);
+        if (!$role) {
             throw new Exception("Role '" . $roleName . "' does not exist in the role list");
         }
 
-        $exists = $this->db->fetchOne(
-            'SELECT COUNT(*) FROM ' . $this->options['rolesInherits'] . ' WHERE roles_name = ? AND roles_inherit = ?',
-            null,
-            array($roleName, $roleToInherit)
-        );
-
-        if (!$exists[0]) {
-            $this->db->execute(
-                'INSERT INTO ' . $this->options['rolesInherits'] . ' VALUES (?, ?)',
-                array($roleName, $roleToInherit)
-            );
+        $roleInherit = Role::findFirstByName($roleToInherit);
+        if (!$role) {
+            throw new Exception("Inherit Role '" . $roleName . "' does not exist in the role list");
         }
+
+        $role->setParentId($roleInherit->getId());
+        $role->save();
     }
 
     /**
@@ -388,37 +380,7 @@ class Database extends Adapter implements AdapterInterface
      */
     public function isAllowed($role, $resource, $access)
     {
-        $sql = implode(' ', array(
-            'SELECT allowed FROM', $this->options['accessList'], 'AS a',
-            // role_name in:
-            'WHERE roles_name IN (',
-            // given 'role'-parameter
-            'SELECT ? ',
-            // inherited role_names
-            'UNION SELECT roles_inherit FROM', $this->options['rolesInherits'], 'WHERE roles_name = ?',
-            // or 'any'
-            "UNION SELECT '*'",
-            ')',
-            // resources_name should be given one or 'any'
-            "AND resources_name IN (?, '*')",
-            // access_name should be given one or 'any'
-            "AND access_name IN (?, '*')",
-            // order be the sum of bools for 'literals' before 'any'
-            "ORDER BY (roles_name != '*')+(resources_name != '*')+(access_name != '*') DESC",
-            // get only one...
-            'LIMIT 1'
-        ));
 
-        // fetch one entry...
-        $allowed = $this->db->fetchOne($sql, Db::FETCH_NUM, array($role, $role, $resource, $access));
-        if (is_array($allowed)) {
-            return (bool) $allowed[0];
-        }
-
-        /**
-         * Return the default access action
-         */
-        return $this->_defaultAccess;
     }
 
     /**

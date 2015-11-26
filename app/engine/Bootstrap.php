@@ -101,7 +101,7 @@ class Bootstrap
             $view->setLayout(DEFAULT_THEME);
 
             $volt = new \Phalcon\Mvc\View\Engine\Volt($view, $di);
-            if($config->app->development) {
+            if(DEV) {
                 // Prevent caching annoyances
                 $voltOptions['compileAlways'] = true;
             }
@@ -131,7 +131,7 @@ class Bootstrap
             ));
 */
             $volt = new \Phalcon\Mvc\View\Engine\Volt($view, $di);
-            if($config->app->development) {
+            if(DEV) {
                 // Prevent caching annoyances
                 $voltOptions['compileAlways'] = true;
             }
@@ -279,7 +279,7 @@ class Bootstrap
             return new \Phalcon\Flash\Session($flash);
         });
 
-        if ($config->app->development) {
+        if (DEV) {
             // Load development options
             new \Engine\Development($di);
         }

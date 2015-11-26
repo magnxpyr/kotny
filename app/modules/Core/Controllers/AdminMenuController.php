@@ -11,6 +11,7 @@ namespace Core\Controllers;
 use Core\Forms\AdminMenuEditForm;
 use Core\Models\MenuType;
 use Phalcon\Mvc\Model\Criteria;
+use Phalcon\Mvc\Model\EagerLoading\Loader;
 use Phalcon\Mvc\View;
 use Phalcon\Paginator\Adapter\Model as Paginator;
 use Engine\Mvc\AdminController;
@@ -41,11 +42,11 @@ class AdminMenuController extends AdminController
 
         $menuType = MenuType::find(['columns' => ['id', 'title']]);
 
-        $menu = Menu::find([
+        $menu = Loader::fromResultset(Menu::find([
             'conditions' => 'menu_type_id = ?1',
             'bind' => [1 => $menuId],
             'order' => 'lft'
-        ]);
+        ]), 'viewLevel');
 
         if (count($menu) == 0) {
             $this->flash->notice("The search did not find any menu");

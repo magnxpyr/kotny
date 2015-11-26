@@ -55,7 +55,7 @@
             echo "<li id='item_$category->id'><div class='list-item'>\n";
             echo '<div class="col-xs-4"><i class="fa fa-reorder"></i>' . $category->getTitle() . '</div>';
             echo '<div class="col-xs-2">' . $this->helper->getArticleStatus($category->getStatus()) . '</div>';
-            echo '<div class="col-xs-2"></div>';
+            echo '<div class="col-xs-2">' . $category->viewLevel->getName() . '</div>';
             echo '<div class="col-xs-2">' . $category->getId() . '</div>';
             echo '<div class="col-xs-2">' . $this->tag->linkTo("admin/core/menu/edit/" . $category->getId(), '<i class="fa fa-edit"></i>');
             $url = $this->url->get("admin/core/menu/delete/" . $category->getId());
