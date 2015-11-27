@@ -55,7 +55,7 @@ class ViewLevelMigration_101 extends Migration
         $this->batchInsert(
             'view_level',
             [
-                [1, 'Public', json_encode([0])],
+                [1, 'Public', json_encode([1,2,3])],
                 [2, 'Guest', json_encode([1])],
                 [3, 'Registered', json_encode([2,3])],
                 [4, 'Administrator', json_encode([3])]

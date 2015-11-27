@@ -10,6 +10,7 @@ namespace Core\Forms;
 
 use Core\Models\Role;
 use Phalcon\Forms\Element\Hidden;
+use Phalcon\Forms\Element\Password;
 use Phalcon\Forms\Element\Select;
 use Phalcon\Forms\Element\Text;
 use Phalcon\Forms\Element\TextArea;
@@ -57,6 +58,19 @@ class AdminUserEditForm extends Form
             ])
         ]);
         $this->add($email);
+
+        // Password
+        $password = new Password('password', [
+            'class' => 'form-control'
+        ]);
+        $password->setLabel($this->t->_('Password'));
+        $password->setFilters('string');
+        $password->addValidators([
+            new PresenceOf([
+                'password' => $this->t->_('%field% is required', ['field' => $this->t->_('Password')])
+            ])
+        ]);
+        $this->add($password);
 
         // User role
         $role = new Select('role_id',
