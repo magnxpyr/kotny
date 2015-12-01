@@ -27,7 +27,7 @@
                     ['data': 'status']
                 ],
                 'url': url('admin/core/user/search'),
-                'tableId': '#table'
+                'tableId': 'table'
             ],
             ['cache': false]
         ) }}

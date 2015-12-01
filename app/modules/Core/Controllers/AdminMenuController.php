@@ -83,9 +83,10 @@ class AdminMenuController extends AdminController
         if (count($menu) == 0) {
             $this->flash->notice("The search did not find any menu");
 
-            return $this->dispatcher->forward([
+            $this->dispatcher->forward([
                 "action" => "index"
             ]);
+            return;
         }
 
         $paginator = new Paginator([
@@ -126,9 +127,10 @@ class AdminMenuController extends AdminController
             if (!$menu) {
                 $this->flash->error("Menu was not found");
 
-                return $this->dispatcher->forward([
+                $this->dispatcher->forward([
                     "action" => "index"
                 ]);
+                return;
             }
 
             $form = new AdminMenuEditForm();
@@ -151,9 +153,10 @@ class AdminMenuController extends AdminController
     public function saveAction()
     {
         if (!$this->request->isPost()) {
-            return $this->dispatcher->forward([
+            $this->dispatcher->forward([
                 "action" => "index"
             ]);
+            return;
         }
 
         $form = new AdminMenuEditForm();
@@ -167,22 +170,25 @@ class AdminMenuController extends AdminController
         if (!$form->isValid()) {
             $this->flashErrors($form);
 
-            return $this->dispatcher->forward([
+            $this->dispatcher->forward([
                 "action" => "new"
             ]);
+            return;
         }
 
         if (!$menu->save()) {
             $this->flashErrors($menu);
 
-            return $this->dispatcher->forward([
+            $this->dispatcher->forward([
                 "action" => "new"
             ]);
+            return;
         }
 
         $this->flash->success("Menu was updated successfully");
 
-        return $this->response->redirect('admin/core/menu/index/' . $menu->getMenuTypeId())->send();
+        $this->response->redirect('admin/core/menu/index/' . $menu->getMenuTypeId())->send();
+        return;
     }
 
     /**
@@ -195,16 +201,17 @@ class AdminMenuController extends AdminController
         if (!$this->request->isAjax() || !$this->request->isPost()) {
             return;
         }
-        $menuType = Menu::findFirstById($id);
-        if (!$menuType) {
+        $menu = Menu::findFirstById($id);
+        if (!$menu) {
             return;
         }
 
-        if (!$menuType->delete()) {
+        if (!$menu->delete()) {
             return;
         }
 
-        return $this->returnJSON(['success' => true]);
+        $this->returnJSON(['success' => true]);
+        return;
     }
 
     public function saveTreeAction()
@@ -230,6 +237,7 @@ class AdminMenuController extends AdminController
             }
         }
 
-        return $this->returnJSON(['success' => true]);
+        $this->returnJSON(['success' => true]);
+        return;
     }
 }

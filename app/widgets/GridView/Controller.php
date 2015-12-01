@@ -53,7 +53,7 @@ class Controller extends \Engine\Widget\Controller
      */
     private function getTableHtml()
     {
-        echo '<table id="table" class="table table-condensed table-hover table-striped"><thead><tr>';
+        echo '<table id="'.$this->getParam('tableId').'" class="table table-condensed table-hover table-striped"><thead><tr>';
         echo $this->headHtml;
         echo '<th data-column-id="actions">Actions</th></tr><tr>';
         echo $this->searchHtml;
@@ -65,7 +65,7 @@ class Controller extends \Engine\Widget\Controller
      */
     private function getJs()
     {
-        $js = 'var table = $("'.$this->getParam('tableId').'").DataTable({
+        $js = 'var table = $("#'.$this->getParam('tableId').'").DataTable({
             serverSide: true,
             ajax: {
                 url: "'.$this->getParam('url').'",
@@ -101,7 +101,7 @@ class Controller extends \Engine\Widget\Controller
             $( "input", table.column( colIdx ).header() ).on( "keyup change", function () {
                 table
                     .column( colIdx )
-                    .search( this.value )
+                    .search( this.value, true, false )
                     .draw();
             } );
             $("input", table.column(colIdx).header()).on("click", function(e) {

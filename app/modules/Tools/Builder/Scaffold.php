@@ -209,10 +209,10 @@ class Scaffold extends Component
             $this->_makeViewIndexVolt(null, $options);
 
             //View search.phtml
-            $this->_makeViewSearchVolt(null, $options);
+        //    $this->_makeViewSearchVolt(null, $options);
 
             //View new.phtml
-            $this->_makeViewNewVolt(null, $options);
+        //    $this->_makeViewNewVolt(null, $options);
 
             //View edit.phtml
             $this->_makeViewEditVolt(null, $options);
@@ -224,10 +224,10 @@ class Scaffold extends Component
             $this->_makeViewIndex(null, $options);
 
             //View search.phtml
-            $this->_makeViewSearch(null, $options);
+        //    $this->_makeViewSearch(null, $options);
 
             //View new.phtml
-            $this->_makeViewNew(null, $options);
+        //    $this->_makeViewNew(null, $options);
 
             //View edit.phtml
             $this->_makeViewEdit(null, $options);

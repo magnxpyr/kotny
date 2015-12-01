@@ -8,17 +8,19 @@
 
 namespace Core\Forms;
 
+use Core\Models\Role;
 use Phalcon\Forms\Element\Hidden;
+use Phalcon\Forms\Element\Select;
 use Phalcon\Forms\Element\Text;
-use Phalcon\Forms\Element\TextArea;
 use Engine\Forms\Form;
+use Phalcon\Forms\Element\TextArea;
 use Phalcon\Validation\Validator\PresenceOf;
 
 /**
  * Class AdminMenuTypeCreateForm
  * @package Core\Forms
  */
-class AdminMenuTypeEditForm extends Form
+class AdminRoleEditForm extends Form
 {
     /**
      * Initialize the Change Password Form
@@ -30,18 +32,37 @@ class AdminMenuTypeEditForm extends Form
         $id->setFilters('int');
         $this->add($id);
 
-        // Title
-        $title = new Text('title', [
-            'class' => 'form-control'
-        ]);
-        $title->setLabel($this->t->_('Title'));
-        $title->setFilters('string');
-        $title->addValidators([
+        // Parent
+        $role = new Select('parent_id',
+            Role::find(),
+            [
+                'using' => ['id', 'name'],
+                'useEmpty' => true,
+                'emptyValue' => 'None',
+                'class' => 'form-control'
+            ]
+        );
+        $role->setLabel($this->t->_('Parent'));
+        $role->setFilters('int');
+        $role->addValidators([
             new PresenceOf([
-                'title' => $this->t->_('%field% is required', ['field' => $this->t->_('Title')])
+                'parent_id' => $this->t->_('%field% is required', ['field' => $this->t->_('Parent')])
             ])
         ]);
-        $this->add($title);
+        $this->add($role);
+
+        // Title
+        $name = new Text('name', [
+            'class' => 'form-control'
+        ]);
+        $name->setLabel($this->t->_('Name'));
+        $name->setFilters('string');
+        $name->addValidators([
+            new PresenceOf([
+                'name' => $this->t->_('%field% is required', ['field' => $this->t->_('Name')])
+            ])
+        ]);
+        $this->add($name);
 
         // Description
         $description = new TextArea('description', [

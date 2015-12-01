@@ -12,6 +12,7 @@ use Core\Forms\AdminUserEditForm;
 use DataTables\DataTable;
 use Core\Models\User;
 use Engine\Mvc\AdminController;
+use Phalcon\Mvc\View;
 use Phalcon\Paginator\Pager;
 
 class AdminUserController extends AdminController
@@ -31,17 +32,17 @@ class AdminUserController extends AdminController
 
     public function searchAction()
     {
-        if ($this->request->isAjax()) {
-            $builder = $this->modelsManager->createBuilder()
-                ->columns('u.id, u.username, u.email, r.name, u.status')
-                ->addFrom('Core\Models\User', 'u')
-                ->addFrom('Core\Models\Role', 'r')
-                ->where('u.role_id = r.id')
-                ->orderBy('u.id');
-
-            $dataTables = new DataTable();
-            $dataTables->fromBuilder($builder)->sendResponse();
+        if (!$this->request->isAjax() || !$this->request->isPost()) {
+            return;
         }
+        $builder = $this->modelsManager->createBuilder()
+            ->columns('u.id, u.username, u.email, r.name, u.status')
+            ->addFrom('Core\Models\User', 'u')
+            ->addFrom('Core\Models\Role', 'r')
+            ->where('u.role_id = r.id');
+
+        $dataTables = new DataTable();
+        $dataTables->fromBuilder($builder)->sendResponse();
     }
 
     /**
@@ -49,7 +50,11 @@ class AdminUserController extends AdminController
      */
     public function newAction()
     {
-
+        $this->setTitle('Create User');
+        $form = new AdminUserEditForm();
+        $this->view->setVar('form', $form);
+        $this->view->render('admin-user', 'edit');
+        $this->view->setRenderLevel(View::LEVEL_ACTION_VIEW);
     }
 
     /**
@@ -59,120 +64,71 @@ class AdminUserController extends AdminController
      */
     public function editAction($id)
     {
-        $this->setTitle('Edit Menu');
+        $this->setTitle('Edit User');
         $form = new AdminUserEditForm();
         $this->view->setVar('form', $form);
         if (!$this->request->isPost()) {
-            $menuType = User::findFirstById($id);
-            if (!$menuType) {
-                $this->flash->error("Menu was not found");
+            $model = User::findFirstById($id);
+            if (!$model) {
+                $this->flash->error("User was not found");
 
-                return $this->dispatcher->forward([
+                $this->dispatcher->forward([
                     "action" => "index"
                 ]);
+                return;
             }
 
-            $this->tag->setDefault("id", $menuType->getId());
-            $this->tag->setDefault("username", $menuType->getUsername());
-            $this->tag->setDefault("email", $menuType->getEmail());
-            $this->tag->setDefault("role_id", $menuType->getRoleId());
-            $this->tag->setDefault("status", $menuType->getStatus());
+            $this->tag->setDefault("id", $model->getId());
+            $this->tag->setDefault("username", $model->getUsername());
+            $this->tag->setDefault("password", $model->getPassword());
+            $this->tag->setDefault("email", $model->getEmail());
+            $this->tag->setDefault("role_id", $model->getRoleId());
+            $this->tag->setDefault("status", $model->getStatus());
         }
     }
 
     /**
-     * Creates a new user
-     */
-    public function createAction()
-    {
-        if (!$this->request->isPost()) {
-            return $this->dispatcher->forward(array(
-                "action" => "index"
-            ));
-        }
-
-        $user = new User();
-
-        $user->setUsername($this->request->getPost("username"));
-        $user->setAuthKey($this->request->getPost("auth_key"));
-        $user->setHashKey($this->request->getPost("hash_key"));
-        $user->setPassword($this->request->getPost("password"));
-        $user->setResetToken($this->request->getPost("reset_token"));
-        $user->setEmail($this->request->getPost("email", "email"));
-        $user->setRole($this->request->getPost("role"));
-        $user->setStatus($this->request->getPost("status"));
-        $user->setRegisterDate($this->request->getPost("register_date"));
-        $user->setLastVisitDate($this->request->getPost("last_visit_date"));
-        
-
-        if (!$user->save()) {
-            foreach ($user->getMessages() as $message) {
-                $this->flash->error($message);
-            }
-
-            return $this->dispatcher->forward(array(
-                "action" => "new"
-            ));
-        }
-
-        $this->flash->success("user was created successfully");
-
-        return $this->dispatcher->forward(array(
-            "action" => "index"
-        ));
-    }
-
-    /**
-     * Saves a user edited
-     *
+     * Saves a user
      */
     public function saveAction()
     {
         if (!$this->request->isPost()) {
-            return $this->dispatcher->forward(array(
+            $this->dispatcher->forward([
                 "action" => "index"
-            ));
+            ]);
+            return;
         }
 
-        $id = $this->request->getPost("id");
-
-        $user = User::findFirst($id);
-        if (!$user) {
-            $this->flash->error("user does not exist " . $id);
-
-            return $this->dispatcher->forward(array(
-                "action" => "index"
-            ));
+        $form = new AdminUserEditForm();
+        if (!empty($this->request->getPost('id'))) {
+            $menu = User::findFirstById($this->request->getPost('id'));
+        } else {
+            $menu = new User();
         }
 
-        $user->setUsername($this->request->getPost("username"));
-        $user->setAuthKey($this->request->getPost("auth_key"));
-        $user->setHashKey($this->request->getPost("hash_key"));
-        $user->setPassword($this->request->getPost("password"));
-        $user->setResetToken($this->request->getPost("reset_token"));
-        $user->setEmail($this->request->getPost("email", "email"));
-        $user->setRole($this->request->getPost("role"));
-        $user->setStatus($this->request->getPost("status"));
-        $user->setRegisterDate($this->request->getPost("register_date"));
-        $user->setLastVisitDate($this->request->getPost("last_visit_date"));
-        
+        $form->bind($this->request->getPost(), $menu);
+        if (!$form->isValid()) {
+            $this->flashErrors($form);
 
-        if (!$user->save()) {
-            foreach ($user->getMessages() as $message) {
-                $this->flash->error($message);
-            }
-
-            return $this->dispatcher->forward(array(
-                "action" => "edit",
-                "params" => array($user->id)
-            ));
+            $this->dispatcher->forward([
+                "action" => "new"
+            ]);
+            return;
         }
 
-        $this->flash->success("user was updated successfully");
+        if (!$menu->save()) {
+            $this->flashErrors($menu);
 
-        return $this->dispatcher->forward(array(
-            "action" => "index"
-        ));
+            $this->dispatcher->forward([
+                "action" => "new"
+            ]);
+            return;
+        }
+
+        $this->flash->success("Menu was updated successfully");
+
+        $this->response->redirect('admin/core/user/index')->send();
+        return;
     }
 
     /**
@@ -182,29 +138,19 @@ class AdminUserController extends AdminController
      */
     public function deleteAction($id)
     {
-        $user = User::findFirst($id);
-        if (!$user) {
-            $this->flash->error("user was not found");
-
-            return $this->dispatcher->forward(array(
-                "action" => "index"
-            ));
+        if (!$this->request->isAjax() || !$this->request->isPost()) {
+            return;
+        }
+        $menuType = User::findFirstById($id);
+        if (!$menuType) {
+            return;
         }
 
-        if (!$user->delete()) {
-            foreach ($user->getMessages() as $message) {
-                $this->flash->error($message);
-            }
-
-            return $this->dispatcher->forward(array(
-                "action" => "search"
-            ));
+        if (!$menuType->delete()) {
+            return;
         }
 
-        $this->flash->success("user was deleted successfully");
-
-        return $this->dispatcher->forward(array(
-            "action" => "index"
-        ));
+        $this->returnJSON(['success' => true]);
+        return;
     }
 }

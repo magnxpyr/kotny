@@ -8,18 +8,17 @@
 
 namespace Core\Controllers;
 
-use Core\Forms\AdminMenuTypeEditForm;
-use Phalcon\Mvc\Model\Criteria;
+use Core\Forms\AdminRoleEditForm;
+use DataTables\DataTable;
 use Phalcon\Mvc\View;
-use Phalcon\Paginator\Adapter\Model as Paginator;
-use Engine\Mvc\AdminController;
-use Core\Models\MenuType;
+use Engine\Mvc\Controller;
+use Core\Models\Role;
 
 /**
- * Class AdminMenuController
- * @package Engine\ModuleCore\Controllers
+ * Class RoleController
+ * @package Core\Controllers
  */
-class AdminMenuTypeController extends AdminController
+class RoleController extends Controller
 {
     /**
      * @inheritdoc
@@ -31,23 +30,22 @@ class AdminMenuTypeController extends AdminController
      */
     public function indexAction()
     {
-        $this->setTitle('Menu Type');
+        $this->setTitle('Users');
+    }
 
-        $numberPage = 1;
+    public function searchAction()
+    {
+        if ($this->request->isAjax()) {
+            $builder = $this->modelsManager->createBuilder()
+                ->columns('u.id, u.username, u.email, r.name, u.status')
+                ->addFrom('Core\Models\User', 'u')
+                ->addFrom('Core\Models\Role', 'r')
+                ->where('u.role_id = r.id')
+                ->orderBy('u.id');
 
-        $menuType = MenuType::find();
-
-        if (count($menuType) == 0) {
-            $this->flash->notice("The search did not find any menu");
+            $dataTables = new DataTable();
+            $dataTables->fromBuilder($builder)->sendResponse();
         }
-
-        $paginator = new Paginator([
-            "data" => $menuType,
-            "limit"=> 10,
-            "page" => $numberPage
-        ]);
-
-        $this->view->setVar('page', $paginator->getPaginate());
     }
 
     /**
@@ -55,27 +53,27 @@ class AdminMenuTypeController extends AdminController
      */
     public function newAction()
     {
-        $this->setTitle('Create Menu');
-        $form = new AdminMenuTypeEditForm();
+        $this->setTitle('Create Role');
+        $form = new AdminRoleEditForm();
         $this->view->setVar('form', $form);
-        $this->view->render('admin-menu-type', 'edit');
+        $this->view->render('admin-role', 'edit');
         $this->view->setRenderLevel(View::LEVEL_ACTION_VIEW);
     }
 
     /**
-     * Edits a menu
+     * Edits a user
      *
-     * @param int $id
+     * @param string $id
      */
     public function editAction($id)
     {
-        $this->setTitle('Edit Menu');
-        $form = new AdminMenuTypeEditForm();
+        $this->setTitle('Edit User');
+        $form = new AdminRoleEditForm();
         $this->view->setVar('form', $form);
         if (!$this->request->isPost()) {
-            $menuType = MenuType::findFirstById($id);
-            if (!$menuType) {
-                $this->flash->error("Menu was not found");
+            $model = Role::findFirstById($id);
+            if (!$model) {
+                $this->flash->error("Role was not found");
 
                 $this->dispatcher->forward([
                     "action" => "index"
@@ -83,14 +81,15 @@ class AdminMenuTypeController extends AdminController
                 return;
             }
 
-            $this->tag->setDefault("id", $menuType->getId());
-            $this->tag->setDefault("title", $menuType->getTitle());
-            $this->tag->setDefault("description", $menuType->getDescription());
+            $this->tag->setDefault("id", $model->getId());
+            $this->tag->setDefault("name", $model->getName());
+            $this->tag->setDefault("parent_id", $model->getParentId());
+            $this->tag->setDefault("description", $model->getDescription());
         }
     }
 
     /**
-     * Saves a menu edited
+     * Saves a user
      */
     public function saveAction()
     {
@@ -101,11 +100,11 @@ class AdminMenuTypeController extends AdminController
             return;
         }
 
-        $form = new AdminMenuTypeEditForm();
+        $form = new AdminRoleEditForm();
         if (!empty($this->request->getPost('id'))) {
-            $menu = MenuType::findFirstById($this->request->getPost('id'));
+            $menu = Role::findFirstById($this->request->getPost('id'));
         } else {
-            $menu = new MenuType();
+            $menu = new Role();
         }
 
         $form->bind($this->request->getPost(), $menu);
@@ -127,14 +126,14 @@ class AdminMenuTypeController extends AdminController
             return;
         }
 
-        $this->flash->success("Menu was updated successfully");
+        $this->flash->success("Role was updated successfully");
 
-        $this->response->redirect('admin/core/menu-type/index')->send();
+        $this->response->redirect('admin/core/user/index')->send();
         return;
     }
 
     /**
-     * Deletes a menu
+     * Deletes a user
      *
      * @param string $id
      */
@@ -143,7 +142,7 @@ class AdminMenuTypeController extends AdminController
         if (!$this->request->isAjax() || !$this->request->isPost()) {
             return;
         }
-        $menuType = MenuType::findFirstById($id);
+        $menuType = Role::findFirstById($id);
         if (!$menuType) {
             return;
         }

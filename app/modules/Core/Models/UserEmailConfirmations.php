@@ -10,7 +10,7 @@ namespace Core\Models;
 
 use Phalcon\Mailer\Manager;
 use Phalcon\Mvc\Model;
-use Sb\Framework\Mvc\Model\EagerLoadingTrait;
+use Phalcon\Mvc\Model\EagerLoadingTrait;
 
 /**
  * Class UserEmailConfirmations

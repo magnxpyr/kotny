@@ -34,10 +34,10 @@
     },
     "require-dev": {
         "phalcon/incubator": "dev-master",
+        "m1ome/phalcon-datatables" : "dev-master",
         "swiftmailer/swiftmailer": "5.4.*",
         "facebook/php-sdk-v4" : "4.0.*",
-        "google/apiclient": "1.1.2",
-        "stibium/phalcon.eager-loading": "dev-php-5.3"
+        "google/apiclient": "1.1.2"
     },
     "config": {
         "vendor-dir": "app/vendor"

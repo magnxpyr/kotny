@@ -2,7 +2,9 @@
 $namespace$
 
 use Phalcon\Mvc\Model\Criteria;
-use Phalcon\Paginator\Adapter\Model as Paginator;
+use Phalcon\Mvc\View;
+use Phalcon\Paginator\Pager;
+use DataTables\DataTable;
 use $controllerClass$;
 use $modelClass$;
 
@@ -13,11 +15,16 @@ use $modelClass$;
 class $className$Controller extends $controllerName$
 {
     /**
+     * @inheritdoc
+     */
+    public function behaviors() {}
+
+    /**
      * Index action
      */
     public function indexAction()
     {
-        $this->persistent->parameters = null;
+        $this->setTitle('$plural$');
     }
 
     /**
@@ -25,36 +32,17 @@ class $className$Controller extends $controllerName$
      */
     public function searchAction()
     {
-        $numberPage = 1;
-        if ($this->request->isPost()) {
-            $query = Criteria::fromInput($this->di, "$className$", $_POST);
-            $this->persistent->parameters = $query->getParams();
-        } else {
-            $numberPage = $this->request->getQuery("page", "int");
+        if (!$this->request->isAjax() || !$this->request->isPost()) {
+            return;
         }
+        $builder = $this->modelsManager->createBuilder()
+            ->columns('u.id, u.username, u.email, r.name, u.status')
+            ->addFrom('Core\Models\User', 'u')
+            ->addFrom('Core\Models\Role', 'r')
+            ->where('u.role_id = r.id');
 
-        $parameters = $this->persistent->parameters;
-        if (!is_array($parameters)) {
-            $parameters = array();
-        }
-        $parameters["order"] = "$pk$";
-
-        $pluralVar$ = $className$::find($parameters);
-        if (count($pluralVar$) == 0) {
-            $this->flash->notice("The search did not find any $plural$");
-
-            return $this->dispatcher->forward(array(
-                "action" => "index"
-            ));
-        }
-
-        $paginator = new Paginator(array(
-            "data" => $pluralVar$,
-            "limit"=> 10,
-            "page" => $numberPage
-        ));
-
-        $this->view->page = $paginator->getPaginate();
+        $dataTables = new DataTable();
+        $dataTables->fromBuilder($builder)->sendResponse();
     }
 
     /**
@@ -62,7 +50,11 @@ class $className$Controller extends $controllerName$
      */
     public function newAction()
     {
-
+        $this->setTitle('Create User');
+        $form = new AdminUserEditForm();
+        $this->view->setVar('form', $form);
+        $this->view->render('admin-user', 'edit');
+        $this->view->setRenderLevel(View::LEVEL_ACTION_VIEW);
     }
 
     /**
@@ -72,51 +64,27 @@ class $className$Controller extends $controllerName$
      */
     public function editAction($pkVar$)
     {
+        $this->setTitle('Edit User');
+        $form = new AdminUserEditForm();
+        $this->view->setVar('form', $form);
         if (!$this->request->isPost()) {
-            $singularVar$ = $className$::findFirstBy$pkFind$($pkVar$);
-            if (!$singularVar$) {
-                $this->flash->error("$singular$ was not found");
+            $model = User::findFirstById($id);
+            if (!$model) {
+                $this->flash->error("User was not found");
 
-                return $this->dispatcher->forward(array(
+                $this->dispatcher->forward([
                     "action" => "index"
-                ));
-            }
-            $this->view->$pk$ = $singularVar$->$pk$;
-
-            $assignTagDefaults$
-        }
-    }
-
-    /**
-     * Creates a new $singular$
-     */
-    public function createAction()
-    {
-        if (!$this->request->isPost()) {
-            return $this->dispatcher->forward(array(
-                "action" => "index"
-            ));
-        }
-
-        $singularVar$ = new $className$();
-
-        $assignInputFromRequestCreate$
-
-        if (!$singularVar$->save()) {
-            foreach ($singularVar$->getMessages() as $message) {
-                $this->flash->error($message);
+                ]);
+                return;
             }
 
-            return $this->dispatcher->forward(array(
-                "action" => "new"
-            ));
+            $this->tag->setDefault("id", $model->getId());
+            $this->tag->setDefault("username", $model->getUsername());
+            $this->tag->setDefault("password", $model->getPassword());
+            $this->tag->setDefault("email", $model->getEmail());
+            $this->tag->setDefault("role_id", $model->getRoleId());
+            $this->tag->setDefault("status", $model->getStatus());
         }
-
-        $this->flash->success("$singular$ was created successfully");
-
-        return $this->dispatcher->forward(array(
-            "action" => "index"
-        ));
     }
 
     /**
@@ -125,40 +93,42 @@ class $className$Controller extends $controllerName$
     public function saveAction()
     {
         if (!$this->request->isPost()) {
-            return $this->dispatcher->forward(array(
+            $this->dispatcher->forward([
                 "action" => "index"
-            ));
+            ]);
+            return;
         }
 
-        $pkVar$ = $this->request->getPost("$pk$");
-
-        $singularVar$ = $className$::findFirstBy$pkFind$($pkVar$);
-        if (!$singularVar$) {
-            $this->flash->error("$singular$ does not exist " . $pkVar$);
-
-            return $this->dispatcher->forward(array(
-                "action" => "index"
-            ));
+        $form = new AdminUserEditForm();
+        if (!empty($this->request->getPost('id'))) {
+            $menu = User::findFirstById($this->request->getPost('id'));
+        } else {
+            $menu = new User();
         }
 
-        $assignInputFromRequestUpdate$
+        $form->bind($this->request->getPost(), $menu);
+        if (!$form->isValid()) {
+            $this->flashErrors($form);
 
-        if (!$singularVar$->save()) {
-            foreach ($singularVar$->getMessages() as $message) {
-                $this->flash->error($message);
-            }
-
-            return $this->dispatcher->forward(array(
-                "action" => "edit",
-                "params" => array($singularVar$->$pk$)
-            ));
+            $this->dispatcher->forward([
+                "action" => "new"
+            ]);
+            return;
         }
 
-        $this->flash->success("$singular$ was updated successfully");
+        if (!$menu->save()) {
+            $this->flashErrors($menu);
 
-        return $this->dispatcher->forward(array(
-            "action" => "index"
-        ));
+            $this->dispatcher->forward([
+                "action" => "new"
+            ]);
+            return;
+        }
+
+        $this->flash->success("Menu was updated successfully");
+
+        $this->response->redirect('admin/core/user/index')->send();
+        return;
     }
 
     /**
@@ -168,29 +138,19 @@ class $className$Controller extends $controllerName$
      */
     public function deleteAction($pkVar$)
     {
-        $singularVar$ = $className$::findFirstBy$pkFind$($pkVar$);
-        if (!$singularVar$) {
-            $this->flash->error("$singular$ was not found");
-
-            return $this->dispatcher->forward(array(
-                "action" => "index"
-            ));
+        if (!$this->request->isAjax() || !$this->request->isPost()) {
+            return;
+        }
+        $menuType = User::findFirstById($id);
+        if (!$menuType) {
+            return;
         }
 
-        if (!$singularVar$->delete()) {
-            foreach ($singularVar$->getMessages() as $message) {
-                $this->flash->error($message);
-            }
-
-            return $this->dispatcher->forward(array(
-                "action" => "search"
-            ));
+        if (!$menuType->delete()) {
+            return;
         }
 
-        $this->flash->success("$singular$ was deleted successfully");
-
-        return $this->dispatcher->forward(array(
-            "action" => "index"
-        ));
+        $this->returnJSON(['success' => true]);
+        return;
     }
 }

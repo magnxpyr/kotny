@@ -150,156 +150,6 @@
         ]
     },
     {
-        "name": "stibium/phalcon.eager-loading",
-        "version": "dev-php-5.3",
-        "version_normalized": "dev-php-5.3",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/stibiumz/phalcon.eager-loading.git",
-            "reference": "a3e2fc6024838e97ce169d8ca8e0c7046fb4077c"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/stibiumz/phalcon.eager-loading/zipball/a3e2fc6024838e97ce169d8ca8e0c7046fb4077c",
-            "reference": "a3e2fc6024838e97ce169d8ca8e0c7046fb4077c",
-            "shasum": ""
-        },
-        "require": {
-            "ext-phalcon": "1.3 - 2.0",
-            "php": ">=5.3"
-        },
-        "time": "2015-06-23 09:23:16",
-        "type": "library",
-        "installation-source": "source",
-        "autoload": {
-            "psr-4": {
-                "Sb\\Framework\\Mvc\\Model\\": "src"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "Unlicense"
-        ],
-        "authors": [
-            {
-                "name": "Óscar Enríquez",
-                "homepage": "http://oscar.xyz"
-            }
-        ],
-        "description": "Solves N+1 query problem in Phalcon Model",
-        "keywords": [
-            "phalcon"
-        ]
-    },
-    {
-        "name": "m1ome/phalcon-datatables",
-        "version": "1.1.6",
-        "version_normalized": "1.1.6.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/m1ome/phalcon-datatables.git",
-            "reference": "95788256b8369180b5d75b6005654c59e855781f"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/m1ome/phalcon-datatables/zipball/95788256b8369180b5d75b6005654c59e855781f",
-            "reference": "95788256b8369180b5d75b6005654c59e855781f",
-            "shasum": ""
-        },
-        "require-dev": {
-            "crysalead/kahlan": "~1.1",
-            "fzaninotto/faker": "1.5.*@dev"
-        },
-        "time": "2015-06-26 09:38:51",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev_master": "1.0-dev"
-            }
-        },
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "DataTables\\": "src/"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Pavel Makarenko",
-                "email": "cryfall@gmail.com"
-            }
-        ],
-        "description": "DataTables adapter for Phalcon Framework",
-        "keywords": [
-            "datatables",
-            "phalcon",
-            "plugin"
-        ]
-    },
-    {
-        "name": "stanislav-web/phalcon-searcher",
-        "version": "dev-master",
-        "version_normalized": "9999999-dev",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/stanislav-web/Searcher.git",
-            "reference": "bf01156d1a2416ceddef0d238469563b74087d44"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/stanislav-web/Searcher/zipball/bf01156d1a2416ceddef0d238469563b74087d44",
-            "reference": "bf01156d1a2416ceddef0d238469563b74087d44",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=5.5.0"
-        },
-        "time": "2015-02-10 08:52:13",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "1.x-dev"
-            }
-        },
-        "installation-source": "source",
-        "autoload": {
-            "psr-4": {
-                "Searcher\\": "src/Searcher",
-                "Searcher\\Searcher\\Aware\\": "src/Searcher/Aware",
-                "Searcher\\Searcher\\Exceptions\\": "src/Searcher/Exceptions",
-                "Searcher\\Searcher\\Factories\\": "src/Searcher/Factories",
-                "Searcher\\Searcher\\Hydrators\\": "src/Searcher/Hydrators",
-                "Test\\Searcher\\": "phpunit/src/Searcher",
-                "Test\\Searcher\\Factories\\": "phpunit/src/Searcher/Factories",
-                "Test\\Searcher\\Hydrators\\": "phpunit/src/Searcher/Hydrators",
-                "Test\\Searcher\\Models\\": "phpunit/src/Searcher/Models"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Stanislav WEB",
-                "email": "stanisov@gmail.com",
-                "homepage": "http://reds.com",
-                "role": "Developer"
-            }
-        ],
-        "description": "Phalcon Database Searcher. This is the search service is designed to search multiple SQL tables. Convenient to use autocomplete, search documents, search the whole site.",
-        "homepage": "https://github.com/stanislav-web/Searcher",
-        "keywords": [
-            "phalcon",
-            "phalcon search",
-            "phalcon searcher"
-        ]
-    },
-    {
         "name": "duncan3dc/fork-helper",
         "version": "1.1.5",
         "version_normalized": "1.1.5.0",
@@ -351,35 +201,38 @@
     },
     {
         "name": "phalcon/incubator",
-        "version": "v2.0.8",
-        "version_normalized": "2.0.8.0",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
         "source": {
             "type": "git",
             "url": "https://github.com/phalcon/incubator.git",
-            "reference": "5c2e758f4f3b41a99d9cd6f2dac4c239ff1a9522"
+            "reference": "f376f57213e278b99a7aebea83f40f4d411ebf4f"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/phalcon/incubator/zipball/5c2e758f4f3b41a99d9cd6f2dac4c239ff1a9522",
-            "reference": "5c2e758f4f3b41a99d9cd6f2dac4c239ff1a9522",
+            "url": "https://api.github.com/repos/phalcon/incubator/zipball/f376f57213e278b99a7aebea83f40f4d411ebf4f",
+            "reference": "f376f57213e278b99a7aebea83f40f4d411ebf4f",
             "shasum": ""
         },
         "require": {
-            "duncan3dc/fork-helper": "@stable",
+            "duncan3dc/fork-helper": "*",
             "ext-phalcon": ">=2.0.4",
             "php": ">=5.4",
             "swiftmailer/swiftmailer": "~5.2"
         },
         "require-dev": {
-            "codeception/codeception": "2.0.14",
+            "codeception/codeception": "2.*",
             "mockery/mockery": "*",
             "php-mock/php-mock": "*",
-            "phpunit/phpunit": "4.6.*",
+            "phpunit/phpunit": "4.*",
             "squizlabs/php_codesniffer": "2.*"
         },
-        "time": "2015-09-25 22:29:27",
+        "suggest": {
+            "duncan3dc/fork-helper": "Allows using Phalcon\\Queue\\Beanstalk\\Extended"
+        },
+        "time": "2015-11-25 21:26:25",
         "type": "library",
-        "installation-source": "dist",
+        "installation-source": "source",
         "autoload": {
             "psr-4": {
                 "Phalcon\\": "Library/Phalcon/"
@@ -401,6 +254,55 @@
             "framework",
             "incubator",
             "phalcon"
+        ]
+    },
+    {
+        "name": "m1ome/phalcon-datatables",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/m1ome/phalcon-datatables.git",
+            "reference": "dfa67667557cb8464b4917bfe2856adb3a0380e4"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/m1ome/phalcon-datatables/zipball/dfa67667557cb8464b4917bfe2856adb3a0380e4",
+            "reference": "dfa67667557cb8464b4917bfe2856adb3a0380e4",
+            "shasum": ""
+        },
+        "require-dev": {
+            "crysalead/kahlan": "~1.1",
+            "fzaninotto/faker": "1.5.*@dev"
+        },
+        "time": "2015-11-27 10:13:36",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev_master": "1.0-dev"
+            }
+        },
+        "installation-source": "source",
+        "autoload": {
+            "psr-4": {
+                "DataTables\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Pavel Makarenko",
+                "email": "cryfall@gmail.com"
+            }
+        ],
+        "description": "DataTables adapter for Phalcon Framework",
+        "keywords": [
+            "datatables",
+            "phalcon",
+            "plugin"
         ]
     }
 ]
