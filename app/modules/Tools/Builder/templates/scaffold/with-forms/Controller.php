@@ -50,8 +50,8 @@ class $className$Controller extends $controllerName$
      */
     public function newAction()
     {
-        $this->setTitle('Create User');
-        $form = new AdminUserEditForm();
+        $this->setTitle('Create $singular$');
+        $form = new $className$EditForm();
         $this->view->setVar('form', $form);
         $this->view->render('admin-user', 'edit');
         $this->view->setRenderLevel(View::LEVEL_ACTION_VIEW);
