@@ -18,7 +18,7 @@ use Core\Models\Role;
  * Class RoleController
  * @package Core\Controllers
  */
-class RoleController extends Controller
+class AdminRoleController extends Controller
 {
     /**
      * @inheritdoc

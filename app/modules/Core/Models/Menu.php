@@ -376,7 +376,7 @@ class Menu extends Model
      */
     public function beforeValidation()
     {
-        if(empty($this->getId())) {
+        if(empty($this->id)) {
             $this
                 ->setLevel(1)
                 ->setLft(0)
