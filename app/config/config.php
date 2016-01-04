@@ -4,9 +4,9 @@ return [
     'database' => [
         'adapter'   => 'Mysql',
         'host'      => 'localhost',
-        'username'  => 'root',
-        'password'  => 'bingo',
-        'dbname'    => 'cms',
+        'username'  => '',
+        'password'  => '',
+        'dbname'    => '',
     ],
     'app' => [
         'offline' => false,
@@ -15,7 +15,7 @@ return [
         'baseUri' => '/', // must end with trailing slash /
         'cryptKey' => '721a79281f408416', // Use your own 8 bits key!
         'development' => true,
-        'aclAdapter' => 'memory', // database, memory
+        'aclAdapter' => 'database', // database, memory
         'cacheDir' => ROOT_PATH . 'cache/',
         'cookie' => [
             'name' => 'mgRm',

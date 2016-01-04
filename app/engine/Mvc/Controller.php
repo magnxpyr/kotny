@@ -7,6 +7,8 @@
  */
 
 namespace Engine\Mvc;
+use Phalcon\Assets\Filters\Cssmin;
+use Phalcon\Assets\Filters\Jsmin;
 
 /**
  * Base Controller
@@ -86,7 +88,7 @@ abstract class Controller extends \Phalcon\Mvc\Controller
             ->addCss('assets/default/css/pdw.css')
             ->addCss('assets/default/css/style.css')
             ->join(true)
-            ->addFilter(new \Phalcon\Assets\Filters\Cssmin());
+            ->addFilter(new Cssmin());
         $this->assets->collection('header-css')
             ->addCss('vendor/bootstrap/css/bootstrap.min.css')
             ->addCss('vendor/font-awesome/css/font-awesome.min.css');
@@ -102,7 +104,7 @@ abstract class Controller extends \Phalcon\Mvc\Controller
             ->addJs('assets/default/js/pdw.js')
             ->addJs('assets/default/js/mg.js')
             ->join(true)
-            ->addFilter(new \Phalcon\Assets\Filters\Jsmin());
+            ->addFilter(new Jsmin());
         $this->assets->collection('footer-js');
     }
 
