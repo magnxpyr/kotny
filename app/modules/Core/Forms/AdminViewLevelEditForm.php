@@ -17,10 +17,10 @@ use Phalcon\Forms\Element\TextArea;
 use Phalcon\Validation\Validator\PresenceOf;
 
 /**
- * Class AdminRoleEditForm
+ * Class AdminViewLevelEditForm
  * @package Core\Forms
  */
-class AdminRoleEditForm extends Form
+class AdminViewLevelEditForm extends Form
 {
     /**
      * Initialize the Change Password Form

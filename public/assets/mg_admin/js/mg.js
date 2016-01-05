@@ -1,5 +1,5 @@
 /**
- * @copyright   2006 - 2015 Magnxpyr Network
+ * @copyright   2006 - 2016 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @url         http://www.magnxpyr.com
  * @authors     Stefan Chiriac <stefan@magnxpyr.com>
@@ -70,16 +70,16 @@ $(function ($) {
     $(".box-body").on("click", '.ajaxDelete', function(e) {
         e.preventDefault();
 
-        var parent = $(this).data("parent-id");
-        var url = $(this).data("url");
-        var data = $(this).data("data");
+        var t = this;
+        var parent = $(t).data("parent-id");
+        var url = $(t).data("url");
+        var data = $(t).data("data");
         if (confirm('Do you really want to delete this item?')) {
             $.post(url, data, function(response) {
                 if(response.success) {
-                    $(this).closest(parent).remove();
+                    $(t).closest(parent).remove();
                 }
             });
         }
-
     });
 });

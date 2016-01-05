@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'copyright' => "/**\n * @copyright   2006 - 2015 Magnxpyr Network\n".
+    'copyright' => "/**\n * @copyright   2006 - 2016 Magnxpyr Network\n".
         " * @license     New BSD License; see LICENSE\n".
         " * @link        http://www.magnxpyr.com\n".
         " * @author      Stefan Chiriac <stefan@magnxpyr.com>\n */",

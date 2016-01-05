@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2015 Magnxpyr Network
+ * @copyright   2006 - 2016 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -10,15 +10,15 @@ namespace Core\Controllers;
 
 use Core\Forms\AdminRoleEditForm;
 use DataTables\DataTable;
+use Engine\Mvc\AdminController;
 use Phalcon\Mvc\View;
-use Engine\Mvc\Controller;
 use Core\Models\Role;
 
 /**
- * Class RoleController
+ * Class AdminRoleController
  * @package Core\Controllers
  */
-class AdminRoleController extends Controller
+class AdminRoleController extends AdminController
 {
     /**
      * @inheritdoc
@@ -30,18 +30,14 @@ class AdminRoleController extends Controller
      */
     public function indexAction()
     {
-        $this->setTitle('Users');
+        $this->setTitle('Roles');
     }
 
     public function searchAction()
     {
         if ($this->request->isAjax()) {
             $builder = $this->modelsManager->createBuilder()
-                ->columns('u.id, u.username, u.email, r.name, u.status')
-                ->addFrom('Core\Models\User', 'u')
-                ->addFrom('Core\Models\Role', 'r')
-                ->where('u.role_id = r.id')
-                ->orderBy('u.id');
+                ->from('Core\Models\Role');
 
             $dataTables = new DataTable();
             $dataTables->fromBuilder($builder)->sendResponse();
@@ -61,13 +57,13 @@ class AdminRoleController extends Controller
     }
 
     /**
-     * Edits a user
+     * Edits a role
      *
      * @param string $id
      */
     public function editAction($id)
     {
-        $this->setTitle('Edit User');
+        $this->setTitle('Edit Role');
         $form = new AdminRoleEditForm();
         $this->view->setVar('form', $form);
         if (!$this->request->isPost()) {
@@ -89,7 +85,7 @@ class AdminRoleController extends Controller
     }
 
     /**
-     * Saves a user
+     * Saves a role
      */
     public function saveAction()
     {
@@ -128,12 +124,12 @@ class AdminRoleController extends Controller
 
         $this->flash->success("Role was updated successfully");
 
-        $this->response->redirect('admin/core/user/index')->send();
+        $this->response->redirect('admin/core/role/index')->send();
         return;
     }
 
     /**
-     * Deletes a user
+     * Deletes a role
      *
      * @param string $id
      */

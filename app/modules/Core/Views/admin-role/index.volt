@@ -5,7 +5,7 @@
             <div class="col-xs-6 col-md-6">
                 <ul class="nav nav-pills">
                     <li>
-                        <button onclick="location.href='{{ url("admin/core/user/new") }}'" class="btn btn-sm btn-block btn-primary">
+                        <button onclick="location.href='{{ url("admin/core/role/new") }}'" class="btn btn-sm btn-block btn-primary">
                             <i class="fa fa-plus"></i> New</button>
                     </li>
                 </ul>
@@ -21,15 +21,14 @@
             [
                 'columns': [
                     ['data': 'id', 'searchable': false],
-                    ['data': 'username'],
-                    ['data': 'email'],
                     ['data': 'name'],
-                    ['data': 'status']
+                    ['data': 'parent_id'],
+                    ['data': 'description']
                 ],
-                'url': url('admin/core/user/search'),
+                'url': url('admin/core/role/search'),
                 'actions': [
-                    'update': url('admin/core/user/edit'),
-                    'delete': url('admin/core/user/delete')
+                    'update': url('admin/core/role/edit'),
+                    'delete': url('admin/core/role/delete')
                 ],
                 'tableId': 'table'
             ],

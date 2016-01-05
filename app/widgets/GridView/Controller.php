@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2015 Magnxpyr Network
+ * @copyright   2006 - 2016 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -82,8 +82,8 @@ class Controller extends \Engine\Widget\Controller
                 orderable: false,
                 searchable: false,
                 render: function (data, type, row) {
-                    return "<a href=\"'.$this->url->get('admin/core/user/edit').'/"+data.DT_RowId+"\"><i class=\"fa fa-edit\"></i></a>" +
-                        "<a href=\"#\" class=\"ajaxDelete\" data-url=\"'.$this->url->get('admin/core/user/delete').'/" + data.DT_RowId +
+                    return "<a href=\"'.$this->getParam('actions')['update'].'/"+data.DT_RowId+"\"><i class=\"fa fa-edit\"></i></a>" +
+                        "<a href=\"#\" class=\"ajaxDelete\" data-url=\"'.$this->getParam('actions')['delete'].'/" + data.DT_RowId +
                         "\" data-parent-id=\"#"+data.DT_RowId+"\"><i class=\"fa fa-trash-o\"></i></a>";
                 }
             }';
