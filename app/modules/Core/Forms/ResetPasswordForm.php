@@ -25,7 +25,7 @@ use Phalcon\Validation\Validator\Identical;
 class ResetPasswordForm extends Form
 {
     /**
-     * Initialize the Reset Password Form
+     * Initialize the form
      */
     public function initialize()
     {

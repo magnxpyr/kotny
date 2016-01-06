@@ -38,7 +38,7 @@ class LoginForm extends Form
     }
 
     /**
-     * Initialize the Login Form
+     * Initialize the form
      */
     public function initialize()
     {

@@ -21,7 +21,7 @@ use Phalcon\Validation\Validator\Email;
 class ConfirmEmailForm extends Form
 {
     /**
-     * Initialize the Confirm Email Form
+     * Initialize the form
      */
     public function initialize()
     {

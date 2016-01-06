@@ -9,6 +9,7 @@
 namespace Core\Forms;
 
 use Core\Models\Role;
+use Phalcon\Forms\Element\Check;
 use Phalcon\Forms\Element\Hidden;
 use Phalcon\Forms\Element\Select;
 use Phalcon\Forms\Element\Text;
@@ -23,7 +24,13 @@ use Phalcon\Validation\Validator\PresenceOf;
 class AdminViewLevelEditForm extends Form
 {
     /**
-     * Initialize the Change Password Form
+     * View level id
+     * @var integer
+     */
+    public $viewLevel;
+
+    /**
+     * Initialize the form
      */
     public function initialize()
     {
@@ -32,21 +39,7 @@ class AdminViewLevelEditForm extends Form
         $id->setFilters('int');
         $this->add($id);
 
-        // Parent
-        $role = new Select('parent_id',
-            Role::find(),
-            [
-                'using' => ['id', 'name'],
-                'useEmpty' => true,
-                'emptyValue' => 'None',
-                'class' => 'form-control'
-            ]
-        );
-        $role->setLabel($this->t->_('Parent'));
-        $role->setFilters('int');
-        $this->add($role);
-
-        // Title
+        // Name
         $name = new Text('name', [
             'class' => 'form-control'
         ]);
@@ -59,14 +52,13 @@ class AdminViewLevelEditForm extends Form
         ]);
         $this->add($name);
 
-        // Description
-        $description = new TextArea('description', [
-            'rows' => 5,
-            'cols' => 30,
+        $role = Role::findFirstById($this->viewLevel)->getRoles();
+
+        // Roles
+        $roles = new Check('roles', [
             'class' => 'form-control'
         ]);
-        $description->setLabel($this->t->_('Description'));
-        $description->setFilters('string');
-        $this->add($description);
+        $roles->setLabel($this->t->_('Roles'));
+        $this->add($roles);
     }
 }

@@ -26,7 +26,7 @@ use Phalcon\Validation\Validator\Uniqueness;
 class RegisterForm extends Form
 {
     /**
-     * Initialize the Register Form
+     * Initialize the form
      */
     public function initialize()
     {

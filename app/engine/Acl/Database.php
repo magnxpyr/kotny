@@ -456,10 +456,15 @@ class Database extends Adapter implements AdapterInterface
         }
     }
 
-    public function checkViewLevel($viewLevel)
+    /**
+     * Check if current user has access to view
+     *
+     * @param $roles
+     * @return bool
+     */
+    public function checkViewLevel($roles)
     {
         $allow = false;
-        $roles = json_decode($viewLevel);
         if (in_array($this->getDI()->get('auth')->getUserRole(), $roles))
             $allow = true;
 

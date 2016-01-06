@@ -21,7 +21,7 @@ use Phalcon\Validation\Validator\Confirmation;
 class ChangePasswordForm extends Form
 {
     /**
-     * Initialize the Change Password Form
+     * Initialize the form
      */
     public function initialize()
     {

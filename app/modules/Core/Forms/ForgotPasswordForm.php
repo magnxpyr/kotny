@@ -21,7 +21,7 @@ use Phalcon\Validation\Validator\Email;
 class ForgotPasswordForm extends Form
 {
     /**
-     * Initialize the Forgot Password Form
+     * Initialize the form
      */
     public function initialize()
     {

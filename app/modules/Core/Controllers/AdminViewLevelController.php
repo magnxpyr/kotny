@@ -39,10 +39,7 @@ class AdminViewLevelController extends AdminController
             return;
         }
         $builder = $this->modelsManager->createBuilder()
-            ->columns('u.id, u.username, u.email, r.name, u.status')
-            ->addFrom('Core\Models\User', 'u')
-            ->addFrom('Core\Models\Role', 'r')
-            ->where('u.role_id = r.id');
+            ->from('Core\Models\ViewLevel');
 
         $dataTables = new DataTable();
         $dataTables->fromBuilder($builder)->sendResponse();
@@ -68,10 +65,11 @@ class AdminViewLevelController extends AdminController
     public function editAction($id)
     {
         $this->setTitle('Edit View Level');
+        $model = ViewLevel::findFirstById($id);
         $form = new AdminViewLevelEditForm();
+        $form->viewLevel = $id;
         $this->view->setVar('form', $form);
         if (!$this->request->isPost()) {
-            $model = ViewLevel::findFirstById($id);
             if (!$model) {
                 $this->flash->error("View level was not found");
 
@@ -82,11 +80,8 @@ class AdminViewLevelController extends AdminController
             }
 
             $this->tag->setDefault("id", $model->getId());
-            $this->tag->setDefault("username", $model->getUsername());
-            $this->tag->setDefault("password", $model->getPassword());
-            $this->tag->setDefault("email", $model->getEmail());
-            $this->tag->setDefault("role_id", $model->getRoleId());
-            $this->tag->setDefault("status", $model->getStatus());
+            $this->tag->setDefault("name", $model->getName());
+            $this->tag->setDefault("roles", $model->getRoles());
         }
     }
 

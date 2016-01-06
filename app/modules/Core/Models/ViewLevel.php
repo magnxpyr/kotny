@@ -92,13 +92,13 @@ class ViewLevel extends Model
     }
 
     /**
-     * Returns the value of field roles
+     * Returns array of field roles
      *
-     * @return string
+     * @return array
      */
     public function getRoles()
     {
-        return $this->roles;
+        return json_decode($this->roles);
     }
 
     /**

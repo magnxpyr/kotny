@@ -21,12 +21,10 @@
             [
                 'columns': [
                     ['data': 'id', 'searchable': false],
-                    ['data': 'username'],
-                    ['data': 'email'],
                     ['data': 'name'],
-                    ['data': 'status']
+                    ['data': 'roles']
                 ],
-                'url': url('admin/core/user/search'),
+                'url': url('admin/core/view-level/search'),
                 'actions': [
                     'update': url('admin/core/view-level/edit'),
                     'delete': url('admin/core/view-level/delete')

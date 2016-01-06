@@ -23,7 +23,7 @@ use Phalcon\Validation\Validator\PresenceOf;
 class AdminUserEditForm extends Form
 {
     /**
-     * Initialize the Change Password Form
+     * Initialize the form
      */
     public function initialize()
     {
