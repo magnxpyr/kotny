@@ -297,7 +297,7 @@ class Database extends Adapter implements AdapterInterface
         $role = Role::find();
 
         foreach ($role as $row) {
-            $roles[] = $row->getName();
+            $roles[$row->getId()] = $row->getName();
         }
 
         return $roles;

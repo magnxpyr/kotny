@@ -8,13 +8,10 @@
 
 namespace Core\Forms;
 
-use Core\Models\Role;
 use Phalcon\Forms\Element\Check;
 use Phalcon\Forms\Element\Hidden;
-use Phalcon\Forms\Element\Select;
 use Phalcon\Forms\Element\Text;
 use Engine\Forms\Form;
-use Phalcon\Forms\Element\TextArea;
 use Phalcon\Validation\Validator\PresenceOf;
 
 /**
@@ -23,12 +20,6 @@ use Phalcon\Validation\Validator\PresenceOf;
  */
 class AdminViewLevelEditForm extends Form
 {
-    /**
-     * View level id
-     * @var integer
-     */
-    public $viewLevel;
-
     /**
      * Initialize the form
      */
@@ -52,13 +43,20 @@ class AdminViewLevelEditForm extends Form
         ]);
         $this->add($name);
 
-        $role = Role::findFirstById($this->viewLevel)->getRoles();
+        // Id
+        $id = new Hidden('id');
+        $id->setFilters('string');
+        $this->add($id);
 
         // Roles
-        $roles = new Check('roles', [
-            'class' => 'form-control'
-        ]);
-        $roles->setLabel($this->t->_('Roles'));
-        $this->add($roles);
+        foreach ($this->helper->acl->getRoles() as $key => $role) {
+            $roles = new Check("role$key", [
+                'name' => 'role[]',
+                'value' => $key
+            ]);
+            $roles->setLabel($role);
+            $roles->setFilters('int');
+            $this->add($roles);
+        }
     }
 }

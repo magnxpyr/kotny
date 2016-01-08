@@ -11,43 +11,52 @@ use Phalcon\Db\Index;
 use Phalcon\Db\Reference;
 use Tools\Builder\Mvc\Model\Migration;
 
-class RoleMigration_101 extends Migration
+class AccessListMigration_100 extends Migration
 {
     public function up()
     {
         $this->morphTable(
-            'role',
+            'access_list',
             [
                 'columns' => [
                     new Column('id', [
                         'type' => Column::TYPE_INTEGER,
-                        'size' => 2,
+                        'size' => 11,
                         'unsigned' => true,
                         'notNull' => true,
                         'autoIncrement' => true,
                         'first' => true
                     ]),
-                    new Column('parent_id', [
+                    new Column('role_id', [
                         'type' => Column::TYPE_INTEGER,
-                        'size' => 2,
                         'unsigned' => true,
                         'notNull' => true,
+                        'size' => 2,
                         'after' => 'id'
                     ]),
-                    new Column('name', [
+                    new Column('resource_id', [
+                        'type' => Column::TYPE_INTEGER,
+                        'unsigned' => true,
+                        'notNull' => true,
+                        'size' => 11,
+                        'after' => 'role_id'
+                    ]),
+                    new Column('access_name', [
                         'type' => Column::TYPE_VARCHAR,
                         'notNull' => true,
-                        'size' => 32,
-                        'after' => 'parent_id'
+                        'size' => 64,
+                        'after' => 'resource_id'
                     ]),
-                    new Column('description', [
-                        'type' => Column::TYPE_TEXT,
-                        'size' => 255,
-                        'after' => 'name'
+                    new Column('status', [
+                        'type' => Column::TYPE_INTEGER,
+                        'notNull' => true,
+                        'size' => 1,
+                        'after' => 'access_name'
                     ])
                 ],
                 'indexes' => [
-                    new Index('PRIMARY', ['id', 'parent_id'])
+                    new Index('PRIMARY', ['id']),
+                    new Index('UNIQUE', ['role_id', 'resource_id', 'access_name'])
                 ],
                 'options' => [
                     'TABLE_TYPE' => 'BASE TABLE',
@@ -55,15 +64,6 @@ class RoleMigration_101 extends Migration
                     'ENGINE' => 'InnoDB',
                     'TABLE_COLLATION' => 'utf8_general_ci'
                 ]
-            ]
-        );
-
-        $this->batchInsert(
-            'role',
-            [
-                [1, 0, 'guest', null],
-                [2, 0, 'user', null],
-                [3, 0, 'admin', null]
             ]
         );
     }

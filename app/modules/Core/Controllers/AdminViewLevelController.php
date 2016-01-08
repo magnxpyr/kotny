@@ -65,11 +65,11 @@ class AdminViewLevelController extends AdminController
     public function editAction($id)
     {
         $this->setTitle('Edit View Level');
-        $model = ViewLevel::findFirstById($id);
         $form = new AdminViewLevelEditForm();
-        $form->viewLevel = $id;
+
         $this->view->setVar('form', $form);
         if (!$this->request->isPost()) {
+            $model = ViewLevel::findFirstById($id);
             if (!$model) {
                 $this->flash->error("View level was not found");
 
@@ -81,7 +81,11 @@ class AdminViewLevelController extends AdminController
 
             $this->tag->setDefault("id", $model->getId());
             $this->tag->setDefault("name", $model->getName());
-            $this->tag->setDefault("roles", $model->getRoles());
+            if (!empty($model->getRoles())) {
+                foreach ($model->getRoles() as $role) {
+                    $this->tag->setDefault("role$role", $role);
+                }
+            }
         }
     }
 
@@ -104,7 +108,15 @@ class AdminViewLevelController extends AdminController
             $menu = new ViewLevel();
         }
 
-        $form->bind($this->request->getPost(), $menu);
+        $roles = [];
+        $post = $this->request->getPost();
+        foreach ($post['role'] as $role) {
+            $post["role$role"] = $role;
+            $roles[] = (int)$role;
+        }
+        unset($post['role']);
+        $form->bind($post, $menu);
+
         if (!$form->isValid()) {
             $this->flashErrors($form);
 
@@ -113,6 +125,8 @@ class AdminViewLevelController extends AdminController
             ]);
             return;
         }
+
+        $menu->setRoles(json_encode($roles));
 
         if (!$menu->save()) {
             $this->flashErrors($menu);

@@ -11,30 +11,37 @@ use Phalcon\Db\Index;
 use Phalcon\Db\Reference;
 use Tools\Builder\Mvc\Model\Migration;
 
-class ResourceAccessMigration_101 extends Migration
+class ViewLevelMigration_100 extends Migration
 {
     public function up()
     {
         $this->morphTable(
-            'resource_access',
+            'view_level',
             [
                 'columns' => [
-                    new Column('resource_id', [
+                    new Column('id', [
                         'type' => Column::TYPE_INTEGER,
                         'size' => 11,
                         'unsigned' => true,
                         'notNull' => true,
+                        'autoIncrement' => true,
                         'first' => true
                     ]),
-                    new Column('access_name', [
+                    new Column('name', [
                         'type' => Column::TYPE_VARCHAR,
                         'notNull' => true,
                         'size' => 64,
-                        'after' => 'resource_id'
+                        'after' => 'id'
+                    ]),
+                    new Column('roles', [
+                        'type' => Column::TYPE_VARCHAR,
+                        'notNull' => true,
+                        'size' => 255,
+                        'after' => 'name'
                     ]),
                 ],
                 'indexes' => [
-                    new Index('PRIMARY', ['resource_id', 'access_name'])
+                    new Index('PRIMARY', ['id'])
                 ],
                 'options' => [
                     'TABLE_TYPE' => 'BASE TABLE',
@@ -42,6 +49,16 @@ class ResourceAccessMigration_101 extends Migration
                     'ENGINE' => 'InnoDB',
                     'TABLE_COLLATION' => 'utf8_general_ci'
                 ]
+            ]
+        );
+
+        $this->batchInsert(
+            'view_level',
+            [
+                [1, 'Public', json_encode([1,2,3])],
+                [2, 'Guest', json_encode([1])],
+                [3, 'Registered', json_encode([2,3])],
+                [4, 'Administrator', json_encode([3])]
             ]
         );
     }

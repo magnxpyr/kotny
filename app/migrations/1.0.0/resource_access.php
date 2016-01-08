@@ -11,32 +11,30 @@ use Phalcon\Db\Index;
 use Phalcon\Db\Reference;
 use Tools\Builder\Mvc\Model\Migration;
 
-class ResourceMigration_101 extends Migration
+class ResourceAccessMigration_100 extends Migration
 {
     public function up()
     {
         $this->morphTable(
-            'resource',
+            'resource_access',
             [
                 'columns' => [
-                    new Column('id', [
+                    new Column('resource_id', [
                         'type' => Column::TYPE_INTEGER,
                         'size' => 11,
                         'unsigned' => true,
                         'notNull' => true,
-                        'autoIncrement' => true,
                         'first' => true
                     ]),
-                    new Column('name', [
+                    new Column('access_name', [
                         'type' => Column::TYPE_VARCHAR,
                         'notNull' => true,
-                        'size' => 255,
-                        'after' => 'id'
+                        'size' => 64,
+                        'after' => 'resource_id'
                     ]),
                 ],
                 'indexes' => [
-                    new Index('PRIMARY', ['id']),
-                    new Index('UNIQUE', ['name'])
+                    new Index('PRIMARY', ['resource_id', 'access_name'])
                 ],
                 'options' => [
                     'TABLE_TYPE' => 'BASE TABLE',

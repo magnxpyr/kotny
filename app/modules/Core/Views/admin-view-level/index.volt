@@ -21,8 +21,7 @@
             [
                 'columns': [
                     ['data': 'id', 'searchable': false],
-                    ['data': 'name'],
-                    ['data': 'roles']
+                    ['data': 'name']
                 ],
                 'url': url('admin/core/view-level/search'),
                 'actions': [

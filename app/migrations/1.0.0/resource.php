@@ -11,12 +11,12 @@ use Phalcon\Db\Index;
 use Phalcon\Db\Reference;
 use Tools\Builder\Mvc\Model\Migration;
 
-class ViewLevelMigration_101 extends Migration
+class ResourceMigration_100 extends Migration
 {
     public function up()
     {
         $this->morphTable(
-            'view_level',
+            'resource',
             [
                 'columns' => [
                     new Column('id', [
@@ -30,18 +30,13 @@ class ViewLevelMigration_101 extends Migration
                     new Column('name', [
                         'type' => Column::TYPE_VARCHAR,
                         'notNull' => true,
-                        'size' => 64,
-                        'after' => 'id'
-                    ]),
-                    new Column('roles', [
-                        'type' => Column::TYPE_VARCHAR,
-                        'notNull' => true,
                         'size' => 255,
-                        'after' => 'name'
+                        'after' => 'id'
                     ]),
                 ],
                 'indexes' => [
-                    new Index('PRIMARY', ['id'])
+                    new Index('PRIMARY', ['id']),
+                    new Index('UNIQUE', ['name'])
                 ],
                 'options' => [
                     'TABLE_TYPE' => 'BASE TABLE',
@@ -49,16 +44,6 @@ class ViewLevelMigration_101 extends Migration
                     'ENGINE' => 'InnoDB',
                     'TABLE_COLLATION' => 'utf8_general_ci'
                 ]
-            ]
-        );
-
-        $this->batchInsert(
-            'view_level',
-            [
-                [1, 'Public', json_encode([1,2,3])],
-                [2, 'Guest', json_encode([1])],
-                [3, 'Registered', json_encode([2,3])],
-                [4, 'Administrator', json_encode([3])]
             ]
         );
     }

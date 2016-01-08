@@ -113,5 +113,4 @@ class ViewLevel extends Model
     {
         return 'view_level';
     }
-
 }
