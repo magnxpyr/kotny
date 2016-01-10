@@ -11,12 +11,12 @@ use Phalcon\Db\Index;
 use Phalcon\Db\Reference;
 use Tools\Builder\Mvc\Model\Migration;
 
-class ContentMigration_101 extends Migration
+class CategoryMigration_101 extends Migration
 {
     public function up()
     {
         $this->morphTable(
-            'content',
+            'category',
             [
                 'columns' => [
                     new Column('id', [
@@ -39,13 +39,8 @@ class ContentMigration_101 extends Migration
                         'size' => 255,
                         'after' => 'title'
                     ]),
-                    new Column('introtext', [
-                        'type' => 'MEDIUMTEXT',
-                        'size' => 255,
-                        'after' => 'alias'
-                    ]),
-                    new Column('fulltext', [
-                        'type' => 'MEDIUMTEXT',
+                    new Column('description', [
+                        'type' => Column::TYPE_VARCHAR,
                         'size' => 255,
                         'after' => 'alias'
                     ]),
@@ -55,13 +50,6 @@ class ContentMigration_101 extends Migration
                         'size' => 2048,
                         'after' => 'description'
                     ]),
-                    new Column('category', [
-                        'type' => Column::TYPE_INTEGER,
-                        'notNull' => true,
-                        'unsigned' => true,
-                        'size' => 11,
-                        'after' => 'description'
-                    ]),
                     new Column('hits', [
                         'type' => Column::TYPE_INTEGER,
                         'notNull' => true,
@@ -69,18 +57,11 @@ class ContentMigration_101 extends Migration
                         'default' => 0,
                         'after' => 'metadata'
                     ]),
-                    new Column('featured', [
-                        'type' => 'TINYINT',
-                        'notNull' => true,
-                        'size' => 1,
-                        'default' => 0,
-                        'after' => 'hits'
-                    ]),
                     new Column('status', [
                         'type' => Column::TYPE_INTEGER,
                         'notNull' => true,
                         'size' => 1,
-                        'after' => 'featured'
+                        'after' => 'hits'
                     ]),
                     new Column('view_level', [
                         'type' => 'TINYINT',
@@ -88,6 +69,35 @@ class ContentMigration_101 extends Migration
                         'unsigned' => true,
                         'size' => 2,
                         'after' => 'status'
+                    ]),
+                    new Column('parent_id', [
+                        'type' => Column::TYPE_INTEGER,
+                        'size' => 5,
+                        'default' => 0,
+                        'unsigned' => true,
+                        'notNull' => true,
+                        'after' => 'view_level'
+                    ]),
+                    new Column('level', [
+                        'type' => Column::TYPE_INTEGER,
+                        'size' => 2,
+                        'default' => 0,
+                        'notNull' => true,
+                        'after' => 'parent_id'
+                    ]),
+                    new Column('lft', [
+                        'type' => Column::TYPE_INTEGER,
+                        'size' => 5,
+                        'default' => 0,
+                        'notNull' => true,
+                        'after' => 'level'
+                    ]),
+                    new Column('rgt', [
+                        'type' => Column::TYPE_INTEGER,
+                        'size' => 5,
+                        'default' => 0,
+                        'notNull' => true,
+                        'after' => 'lft'
                     ]),
                     new Column('created_at', [
                         'type' => Column::TYPE_INTEGER,
