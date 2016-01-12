@@ -11,12 +11,12 @@ use Phalcon\Db\Index;
 use Phalcon\Db\Reference;
 use Tools\Builder\Mvc\Model\Migration;
 
-class WidgetMigration_101 extends Migration
+class ModuleMigration_101 extends Migration
 {
     public function up()
     {
         $this->morphTable(
-            'widget',
+            'module',
             [
                 'columns' => [
                     new Column('id', [
@@ -37,41 +37,36 @@ class WidgetMigration_101 extends Migration
                         'type' => Column::TYPE_VARCHAR,
                         'notNull' => true,
                         'size' => 255,
-                        'after' => 'name'
-                    ]),
-                    new Column('params', [
-                        'type' => Column::TYPE_VARCHAR,
-                        'size' => 255,
-                        'after' => 'title'
+                        'after' => 'id'
                     ]),
                     new Column('description', [
                         'type' => Column::TYPE_VARCHAR,
                         'size' => 255,
-                        'after' => 'params'
+                        'after' => 'id'
                     ]),
                     new Column('version', [
                         'type' => Column::TYPE_VARCHAR,
                         'notNull' => true,
                         'size' => 20,
-                        'after' => 'description'
+                        'after' => 'id'
                     ]),
                     new Column('author', [
                         'type' => Column::TYPE_VARCHAR,
                         'notNull' => true,
                         'size' => 100,
-                        'after' => 'version'
+                        'after' => 'id'
                     ]),
                     new Column('website', [
                         'type' => Column::TYPE_VARCHAR,
                         'size' => 255,
-                        'after' => 'author'
+                        'after' => 'id'
                     ]),
                     new Column('status', [
                         'type' => 'TINYINT',
                         'notNull' => true,
                         'size' => 1,
-                        'after' => 'website'
-                    ]),
+                        'after' => 'id'
+                    ])
                 ],
                 'indexes' => [
                     new Index('PRIMARY', ['id'])
