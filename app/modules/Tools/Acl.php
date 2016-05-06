@@ -6,13 +6,4 @@
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
-namespace Engine;
-
-/**
- * Class Utils
- * @package Engine
- */
-class Utils
-{
-
-}
+return [];

@@ -48,7 +48,7 @@ class $className$Controller extends $controllerName$
     /**
      * Displays the creation form
      */
-    public function newAction()
+    public function createAction()
     {
         $this->setTitle('Create $singular$');
         $form = new $className$EditForm();

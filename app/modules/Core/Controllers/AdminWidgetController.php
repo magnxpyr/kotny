@@ -8,32 +8,31 @@
 
 namespace Core\Controllers;
 
+use Core\Forms\AdminWidgetEditForm;
+use Core\Models\Widget;
+use DataTables\DataTable;
 use Engine\Mvc\AdminController;
+use Phalcon\Paginator\Adapter\Model as Paginator;
 
 class AdminWidgetController extends AdminController
 {
-    /**
-     * @inheritdoc
-     */
-    public function behaviors() {}
-
     /**
      * Index action
      */
     public function indexAction()
     {
-        $this->setTitle('Menu Type');
+        $this->setTitle('Widget');
 
         $numberPage = 1;
 
-        $menuType = MenuType::find();
+        $model = Widget::find();
 
-        if (count($menuType) == 0) {
-            $this->flash->notice("The search did not find any menu");
+        if (count($model) == 0) {
+            $this->flash->notice("The search did not find any widget");
         }
 
         $paginator = new Paginator([
-            "data" => $menuType,
+            "data" => $model,
             "limit"=> 10,
             "page" => $numberPage
         ]);
@@ -41,16 +40,16 @@ class AdminWidgetController extends AdminController
         $this->view->setVar('page', $paginator->getPaginate());
     }
 
-    /**
-     * Displays the creation form
-     */
-    public function newAction()
+    public function searchAction()
     {
-        $this->setTitle('Create Menu');
-        $form = new AdminMenuTypeEditForm();
-        $this->view->setVar('form', $form);
-        $this->view->render('admin-menu-type', 'edit');
-        $this->view->setRenderLevel(View::LEVEL_ACTION_VIEW);
+        if (!$this->request->isAjax() || !$this->request->isPost()) {
+            return;
+        }
+        $builder = $this->modelsManager->createBuilder()
+            ->from('Core\Models\Widget');
+
+        $dataTables = new DataTable();
+        $dataTables->fromBuilder($builder)->sendResponse();
     }
 
     /**
@@ -61,10 +60,10 @@ class AdminWidgetController extends AdminController
     public function editAction($id)
     {
         $this->setTitle('Edit Menu');
-        $form = new AdminMenuTypeEditForm();
+        $form = new AdminWidgetEditForm();
         $this->view->setVar('form', $form);
         if (!$this->request->isPost()) {
-            $menuType = MenuType::findFirstById($id);
+            $menuType = Widget::findFirstById($id);
             if (!$menuType) {
                 $this->flash->error("Menu was not found");
 
@@ -75,7 +74,7 @@ class AdminWidgetController extends AdminController
             }
 
             $this->tag->setDefault("id", $menuType->getId());
-            $this->tag->setDefault("title", $menuType->getTitle());
+            $this->tag->setDefault("status", $menuType->getStatus());
             $this->tag->setDefault("description", $menuType->getDescription());
         }
     }
@@ -92,11 +91,12 @@ class AdminWidgetController extends AdminController
             return;
         }
 
-        $form = new AdminMenuTypeEditForm();
-        if (!empty($this->request->getPost('id'))) {
-            $menu = MenuType::findFirstById($this->request->getPost('id'));
+        $form = new AdminWidgetEditForm();
+        $id = $this->request->getPost('id');
+        if (!empty($id)) {
+            $menu = Widget::findFirstById($this->request->getPost('id'));
         } else {
-            $menu = new MenuType();
+            $menu = new Widget();
         }
 
         $form->bind($this->request->getPost(), $menu);
@@ -118,14 +118,14 @@ class AdminWidgetController extends AdminController
             return;
         }
 
-        $this->flash->success("Menu was updated successfully");
+        $this->flash->success("Widget was updated successfully");
 
-        $this->response->redirect('admin/core/menu-type/index')->send();
+        $this->response->redirect('admin/core/widget/index')->send();
         return;
     }
 
     /**
-     * Deletes a menu
+     * Deletes a widget
      *
      * @param string $id
      */
@@ -134,7 +134,7 @@ class AdminWidgetController extends AdminController
         if (!$this->request->isAjax() || !$this->request->isPost()) {
             return;
         }
-        $menuType = MenuType::findFirstById($id);
+        $menuType = Widget::findFirstById($id);
         if (!$menuType) {
             return;
         }

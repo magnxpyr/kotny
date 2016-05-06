@@ -39,8 +39,6 @@ class Controller extends \Engine\Widget\Controller
     {
         // disable view render
         $this->setRenderView(false);
-        if (!$this->getParam('actions'))
-            $this->setParam('actions', true);
 
         // render our content
         $this->getHtml();
@@ -55,9 +53,9 @@ class Controller extends \Engine\Widget\Controller
     {
         echo '<table id="'.$this->getParam('tableId').'" class="table table-condensed table-hover table-striped"><thead><tr>';
         echo $this->headHtml;
-        echo '<th data-column-id="actions">Actions</th></tr><tr>';
+        echo '</tr><tr>';
         echo $this->searchHtml;
-        echo '<th></th></tr></thead><tbody></tbody></table>';
+        echo '</tr></thead><tbody></tbody></table>';
     }
 
     /**
@@ -72,7 +70,16 @@ class Controller extends \Engine\Widget\Controller
                 method: "POST",
                 deferRender: true
             },
-            columns: ['.$this->js;
+            order: [[1, "desc"]],
+            columns: [{
+                data: null,
+                defaultContent: "",
+                orderable: false,
+                searchable: false,
+                render: function (data, type, row) {
+                    return "<input type=\"checkbox\" name=\"id[]\" value=\"\">";
+                }
+            },'.$this->js;
 
         if ($this->getParam('actions')) {
             $js .= '
@@ -89,14 +96,14 @@ class Controller extends \Engine\Widget\Controller
             }';
         }
 
-        $js .= '],';
+        $js .= ']';
 
         if ($this->getParam('options')) {
-            $js .= $this->getParam('options');
+            $js .= "," . $this->getParam('options');
         }
 
-        $js .='});
         // Apply the search
+        $js .='});
         table.columns().eq(0).each(function( colIdx ) {
             $( "input", table.column( colIdx ).header() ).on( "keyup change", function () {
                 table
@@ -112,8 +119,13 @@ class Controller extends \Engine\Widget\Controller
         $this->assets->addInlineJs($js);
     }
 
+    /**
+     * Generate table head and js
+     */
     private function getHtml()
     {
+        $this->headHtml .= '<th data-column-id="select-all-checkboxes"><input type="checkbox" name="select-all" value="1" id="select-all"></th>';
+        $this->searchHtml .= '<th></th>';
         foreach ($this->getParam('columns') as $column) {
             $this->headHtml .= '<th data-column-id="'.$column['data'].'">'.ucfirst($column['data']).'</th>';
 
@@ -129,5 +141,7 @@ class Controller extends \Engine\Widget\Controller
             if(isset($column['searchable'])) $this->js .= ', searchable: "' .$column['searchable'].'"';
             $this->js .=  '},';
         }
+        $this->headHtml .= '<th data-column-id="actions">Actions</th>';
+        $this->searchHtml .= '<th></th>';
     }
 }

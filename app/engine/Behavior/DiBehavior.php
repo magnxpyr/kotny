@@ -9,7 +9,6 @@
 namespace Engine\Behavior;
 
 use Phalcon\DI;
-use Phalcon\DiInterface;
 
 /**
  * Dependency container trait.
@@ -24,20 +23,8 @@ trait DiBehavior
     private $di;
 
     /**
-     * Create object.
-     * @param DiInterface $di
-     */
-    public function __construct($di = null)
-    {
-        if ($di == null) {
-            $di = DI::getDefault();
-        }
-        $this->setDI($di);
-    }
-
-    /**
      * Set DI.
-     * @param DiInterface $di
+     * @param \Phalcon\DiInterface $di
      * @return void
      */
     public function setDI($di)
@@ -51,6 +38,10 @@ trait DiBehavior
      */
     public function getDI()
     {
+        if ($this->di == null) {
+            $di = Di::getDefault();
+            $this->setDI($di);
+        }
         return $this->di;
     }
 }

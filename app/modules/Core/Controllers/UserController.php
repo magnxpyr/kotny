@@ -24,35 +24,6 @@ use Engine\Mvc\Controller;
  */
 class UserController extends Controller
 {
-    /**
-     * @inheritdoc
-     */
-    public function behaviors()
-    {
-        return [
-            'access' => [
-                'rules' => [
-                    [
-                        'allow' => true,
-                        'actions' => ['logout'],
-                        'roles' => ['user']
-                    ],
-                    [
-                        'allow' => true,
-                        'actions' => ['login', 'loginWithFacebook', 'loginWithGoogle', 'register', 'confirmEmail',
-                                'forgotPassword', 'resetPassword'],
-                        'roles' => ['guest']
-                    ],
-                    [
-                        'allow' => true,
-                        'actions' => ['index'],
-                        'roles' => ['*']
-                    ]
-                ]
-            ]
-        ];
-    }
-
     public function indexAction()
     {
 

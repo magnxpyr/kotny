@@ -10,7 +10,7 @@ echo $this->getContent();
 
 <div class="col-md-6 col-sm-6">
     <?php echo $this->tag->form(array("$plural$/search", "autocomplete" => "off", "class" => "form-horizontal")) ?>
-        <?php echo $this->tag->linkTo(array("$plural$/new", "Create $plural$")) ?>
+        <?php echo $this->tag->linkTo(array("$plural$/create", "Create $plural$")) ?>
         <fieldset>
             $captureFields$
             <div class="form-group">

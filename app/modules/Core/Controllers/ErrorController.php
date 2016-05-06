@@ -24,24 +24,6 @@ class ErrorController extends Controller
     }
 
     /**
-     * @inheritdoc
-     */
-    public function behaviors()
-    {
-        return [
-            'access' => [
-                'rules' => [
-                    [
-                        'allow' => true,
-                        'actions' => ['*'],
-                        'roles' => ['*']
-                    ]
-                ]
-            ]
-        ];
-    }
-
-    /**
      * Show 404 error
      */
     public function show404Action()

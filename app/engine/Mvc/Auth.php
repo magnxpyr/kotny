@@ -77,8 +77,10 @@ class Auth extends Component
     public function loginWithRememberMe($redirect = true)
     {
         $cookie = explode(':', $this->cookies->get($this->cookie->name)->getValue());
-    //    $auth = UserAuthTokens::findFirstBySelector($cookie[0]);
-        $auth = UserAuthTokens::findFirstBySelector($cookie[0])->load('user');
+        $auth = UserAuthTokens::findFirstBySelector($cookie[0]);
+        if ($auth) {
+            $auth = UserAuthTokens::findFirstBySelector($cookie[0])->load('user');
+        }
         if ($auth) {
             // fist check cookie valid and then look for user
             if ($this->security->hash_equals($auth->getToken(), hash('sha256', trim($cookie[1])))) {
@@ -523,7 +525,8 @@ class Auth extends Component
             $this->session->remove('returnUrl');
         } else {
             $returnUrl = $this->url->get();
+            print_r($returnUrl);
         }
-        return $this->response->redirect($returnUrl != '/' ? $returnUrl : '')->send();
+        return $this->response->redirect($returnUrl != '/' ? $returnUrl : '', true)->send();
     }
 }

@@ -17,24 +17,6 @@ use Phalcon\Mvc\View;
  */
 class IndexController extends Controller
 {
-    /**
-     * @inheritdoc
-     */
-    public function behaviors()
-    {
-        return [
-            'access' => [
-                'rules' => [
-                    [
-                        'allow' => true,
-                        'actions' => ['*'],
-                        'roles' => ['*']
-                    ]
-                ]
-            ]
-        ];
-    }
-
     public function indexAction()
     {
 

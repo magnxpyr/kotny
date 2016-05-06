@@ -3,7 +3,7 @@
 
 <div class="col-md-6 col-sm-6">
 	{{ form("$plural$/search", "method":"post", "autocomplete" : "off", "class": "form-horizontal") }}
-		{{ link_to("$plural$/new", "Create $plural$") }}
+		{{ link_to("$plural$/create", "Create $plural$") }}
 		<fieldset>
 			$captureFields$
 			<div class="form-group">

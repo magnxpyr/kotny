@@ -23,6 +23,7 @@ class Bootstrap
         // Define internal variables
         define('DEFAULT_THEME', 'default');
         define('THEMES_PATH', '../../../themes/');
+        define('MODULES_PATH', APP_PATH . 'modules/');
 
         // The FactoryDefault Dependency Injector automatically register the right services providing a full stack framework
         $di = new \Phalcon\DI\FactoryDefault();
@@ -34,6 +35,8 @@ class Bootstrap
                 $config = require_once APP_PATH . 'config/development/config.php';
             }
         }
+
+        date_default_timezone_set($config['app']['timezone']);
 
         define('CACHE_PATH', $config['app']['cacheDir']);
         define('DEV', $config['app']['development']);
@@ -81,9 +84,7 @@ class Bootstrap
 
         // Register helper
         $di->setShared('helper', function() {
-            $helper = new \Engine\Mvc\Helper();
-            $helper->acl = new \Engine\Acl\Database();
-            return $helper;
+            return new \Engine\Mvc\Helper();
         });
 
         // Generate urls
@@ -108,6 +109,14 @@ class Bootstrap
             $voltOptions['compiledPath'] = $config->app->cacheDir . 'volt/';
             $voltOptions['compiledSeparator'] = '_';
             $volt->setOptions($voltOptions);
+            $compiler = $volt->getCompiler();
+            // add a function
+            $compiler->addFunction(
+                'f',
+                function ($resolvedArgs, $exprArgs) {
+                    return 'function($model){ return ' . trim($resolvedArgs,"'\"") .';}';
+                }
+            );
             $phtml = new \Phalcon\Mvc\View\Engine\Php($view, $di);
 
             $view->registerEngines([
@@ -138,6 +147,14 @@ class Bootstrap
             $voltOptions['compiledPath'] = $config->app->cacheDir . 'volt/';
             $voltOptions['compiledSeparator'] = 'widget_';
             $volt->setOptions($voltOptions);
+            $compiler = $volt->getCompiler();
+            // add a function
+            $compiler->addFunction(
+                'f',
+                function ($resolvedArgs, $exprArgs) {
+                    return 'function($model){ return ' . trim($resolvedArgs,"'\"") .';}';
+                }
+            );
             $phtml = new \Phalcon\Mvc\View\Engine\Php($view, $di);
 
             $view->registerEngines([
@@ -147,7 +164,7 @@ class Bootstrap
             return $view;
         });
 
-        $di->set('widget', function() {
+        $di->setShared('widget', function() {
             return new Engine\Widget\Widget();
         });
 
@@ -175,11 +192,11 @@ class Bootstrap
         $di->setShared('acl', function () use ($config, $db, $di) {
             switch($config->app->aclAdapter) {
                 case 'memory':
-                    $aclConfig = new \Phalcon\Config(include APP_PATH . 'config/acl.php');
-                    $factory = new \Phalcon\Acl\Factory\Memory();
-                    return $factory->create($aclConfig);
+                    $acl = new \Engine\Acl\Memory();
+                    return $acl->getAcl();
                 case 'database':
-                    return $di->get('helper')->acl->getAcl();
+                    $acl = new \Engine\Acl\Database();
+                    return $acl->getAcl();
             }
         });
 
@@ -187,7 +204,7 @@ class Bootstrap
         $di->setShared('response', $response);
 
 
-        //Obtain the standard eventsManager from the DI
+        // Obtain the standard eventsManager from the DI
         $eventsManager = new \Phalcon\Events\Manager();
 
         //Registering a dispatcher
@@ -229,7 +246,8 @@ class Bootstrap
         ]);
 
         $cache = new \Phalcon\Cache\Backend\File($cacheFrontend, [
-            "cacheDir" => $config->app->cacheDir . "backend/"
+            "cacheDir" => $config->app->cacheDir . "backend/",
+            "lifetime" => 172800
         ]);
 
         $di->setShared('cache', $cache);

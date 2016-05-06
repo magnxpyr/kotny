@@ -5,7 +5,7 @@
             <div class="col-xs-6 col-md-6">
                 <ul class="nav nav-pills">
                     <li>
-                        <button onclick="location.href='{{ url("admin/core/role/new") }}'" class="btn btn-sm btn-block btn-primary">
+                        <button onclick="location.href='{{ url("admin/core/role/create") }}'" class="btn btn-sm btn-block btn-primary">
                             <i class="fa fa-plus"></i> New</button>
                     </li>
                 </ul>

@@ -13,11 +13,6 @@ use Engine\Mvc\Controller;
 class ContentController extends Controller
 {
     /**
-     * @inheritdoc
-     */
-    public function behaviors() {}
-
-    /**
      * Index action
      */
     public function indexAction()
@@ -44,7 +39,7 @@ class ContentController extends Controller
     /**
      * Displays the creation form
      */
-    public function newAction()
+    public function createAction()
     {
         $this->setTitle('Create Menu');
         $form = new AdminMenuTypeEditForm();
@@ -93,7 +88,8 @@ class ContentController extends Controller
         }
 
         $form = new AdminMenuTypeEditForm();
-        if (!empty($this->request->getPost('id'))) {
+        $id = $this->request->getPost('id');
+        if (!empty($id)) {
             $menu = MenuType::findFirstById($this->request->getPost('id'));
         } else {
             $menu = new MenuType();

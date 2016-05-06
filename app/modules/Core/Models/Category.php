@@ -9,6 +9,7 @@
 namespace Core\Models;
 
 use Phalcon\Mvc\Model;
+use Phalcon\Mvc\Model\EagerLoadingTrait;
 
 /**
  * Class Category
@@ -16,6 +17,7 @@ use Phalcon\Mvc\Model;
  */
 class Category extends Model
 {
+    use EagerLoadingTrait;
 
     /**
      * @var integer
@@ -471,6 +473,7 @@ class Category extends Model
     public function initialize()
     {
         $this->setSource('category');
+        $this->hasOne('view_level', 'Core\Models\ViewLevel', 'id', ['alias' => 'viewLevel', 'reusable' => true]);
     }
 
     public function getSource()
@@ -478,4 +481,22 @@ class Category extends Model
         return 'category';
     }
 
+    /**
+     * Set default values before create
+     */
+    public function beforeValidation()
+    {
+        if(empty($this->id)) {
+            $this
+                ->setCreatedAt(time())
+                ->setCreatedBy($this->getDI()->get("auth")->getUserId())
+                ->setLevel(1)
+                ->setLft(0)
+                ->setRgt(0);
+        } else {
+            $this
+                ->setModifiedAt(time())
+                ->setModifiedBy($this->getDI()->get("auth")->getUserId());
+        }
+    }
 }

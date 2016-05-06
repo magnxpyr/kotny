@@ -9,7 +9,6 @@
 namespace Core\Controllers;
 
 use Core\Forms\AdminMenuTypeEditForm;
-use Phalcon\Mvc\Model\Criteria;
 use Phalcon\Mvc\View;
 use Phalcon\Paginator\Adapter\Model as Paginator;
 use Engine\Mvc\AdminController;
@@ -22,11 +21,6 @@ use Core\Models\MenuType;
 class AdminMenuTypeController extends AdminController
 {
     /**
-     * @inheritdoc
-     */
-    public function behaviors() {}
-
-    /**
      * Index action
      */
     public function indexAction()
@@ -35,14 +29,14 @@ class AdminMenuTypeController extends AdminController
 
         $numberPage = 1;
 
-        $menuType = MenuType::find();
+        $model = MenuType::find();
 
-        if (count($menuType) == 0) {
+        if (count($model) == 0) {
             $this->flash->notice("The search did not find any menu");
         }
 
         $paginator = new Paginator([
-            "data" => $menuType,
+            "data" => $model,
             "limit"=> 10,
             "page" => $numberPage
         ]);
@@ -53,7 +47,7 @@ class AdminMenuTypeController extends AdminController
     /**
      * Displays the creation form
      */
-    public function newAction()
+    public function createAction()
     {
         $this->setTitle('Create Menu');
         $form = new AdminMenuTypeEditForm();
@@ -102,7 +96,8 @@ class AdminMenuTypeController extends AdminController
         }
 
         $form = new AdminMenuTypeEditForm();
-        if (!empty($this->request->getPost('id'))) {
+        $id = $this->request->getPost('id');
+        if (!empty($id)) {
             $menu = MenuType::findFirstById($this->request->getPost('id'));
         } else {
             $menu = new MenuType();

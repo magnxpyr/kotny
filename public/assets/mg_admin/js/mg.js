@@ -39,7 +39,7 @@ $(function ($) {
         });
     });
 
-    if (typeof nestedSortable !== 'undefined' && $.isFunction(nestedSortable)) {
+    if (typeof jQuery().nestedSortable !== 'undefined' && $.isFunction(jQuery().nestedSortable)) {
         $("ol.sortable").nestedSortable({
             handle: "i.fa-reorder",
             items: "li",

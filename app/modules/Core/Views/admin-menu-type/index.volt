@@ -3,7 +3,7 @@
     <div class="box-header with-border">
         <div class="col-sm-6">
             <ul class="nav nav-pills">
-                <li><button onclick="location.href='{{ url("admin/core/menu-type/new") }}'" class="btn btn-sm btn-block btn-primary"><i class='fa fa-plus'></i> New</button></li>
+                <li><button onclick="location.href='{{ url("admin/core/menu-type/create") }}'" class="btn btn-sm btn-block btn-primary"><i class='fa fa-plus'></i> New</button></li>
             </ul>
         </div>
     </div>

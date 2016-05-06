@@ -12,7 +12,7 @@ use Core\Models\AccessList;
 use Core\Models\Resource;
 use Core\Models\ResourceAccess;
 use Core\Models\Role;
-use Engine\Behavior\DiBehavior;
+use Engine\Behavior\AclBehavior;
 use Engine\Mvc\Exception;
 use Phalcon\Acl;
 use Phalcon\Acl\Adapter\Memory as AclMemory;
@@ -24,24 +24,13 @@ use Phalcon\Acl\Adapter;
 use Phalcon\Acl\AdapterInterface;
 
 /**
- * Engine\Acl\Database
  * Manages ACL lists in memory
+ * Class Database
+ * @package Engine\Acl
  */
 class Database extends Adapter implements AdapterInterface
 {
-    use DiBehavior;
-
-    /**
-     * Acl cache key.
-     * @var string
-     */
-    protected $cache_key = "acl_data";
-
-    /**
-     * Acl adapter.
-     * @var AclMemory
-     */
-    protected $acl;
+    use AclBehavior;
 
     /**
      * Get acl system.
@@ -50,16 +39,24 @@ class Database extends Adapter implements AdapterInterface
      */
     public function getAcl()
     {
+        if (DEV) {
+            $this->cacheExpire = 1;
+        }
         if (!$this->acl) {
             $cache = $this->getDI()->get('cache');
-            $acl = $cache->get($this->cache_key);
-            if ($acl === null) {
-                $acl = new AclMemory();
+            if ($cache->exists($this->cacheKey, $this->cacheExpire)) {
+                $acl = $cache->get($this->cacheKey);
+            } else {
+                $acl = new MemoryBase();
                 $acl->setDefaultAction(PhalconAcl::DENY);
                 // Prepare Roles.
                 $roles = Role::find();
                 foreach ($roles as $role) {
-                    $acl->addRole($role->getId());
+                    if ($role->getParentId() > 0) {
+                        $acl->addRole($role->getId(), $role->getParentId());
+                    } else {
+                        $acl->addRole($role->getId());
+                    }
                 }
                 // Looking for all controllers inside modules and get actions.
                 $resources = Resource::with('resourceAccess');
@@ -83,35 +80,11 @@ class Database extends Adapter implements AdapterInterface
                     }
 
                 }
-                $cache->save($this->cache_key, $acl, DEV ? 0 : 2592000); // 30 days cache.
+                $cache->save($this->cacheKey, $acl, $this->cacheExpire);
             }
             $this->acl = $acl;
         }
         return $this->acl;
-    }
-
-
-    /**
-     * Get acl object.
-     *
-     * @param string $objectName Object name.
-     *
-     * @return null|\stdClass
-     */
-    public function getObject($objectName)
-    {
-        $object = new \stdClass();
-        $objectClass = new $objectName;
-        if (function_exists("behaviors")) {
-            $behaviors = $objectClass->behaviors;
-            if (isset($behaviors['actions'])) {
-                foreach ($behaviors['actions'] as $action) {
-                    $object->actions[] = $action;
-                }
-            }
-        }
-
-        return $object;
     }
 
     /**
@@ -454,20 +427,5 @@ class Database extends Adapter implements AdapterInterface
         foreach ($access as $accessName) {
             $this->insertOrUpdateAccess($roleName, $resourceName, $accessName, $action);
         }
-    }
-
-    /**
-     * Check if current user has access to view
-     *
-     * @param $roles
-     * @return bool
-     */
-    public function checkViewLevel($roles)
-    {
-        $allow = false;
-        if (in_array($this->getDI()->get('auth')->getUserRole(), $roles))
-            $allow = true;
-
-        return $allow;
     }
 }

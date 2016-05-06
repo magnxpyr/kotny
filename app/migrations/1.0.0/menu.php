@@ -92,7 +92,7 @@ class MenuMigration_100 extends Migration
                         'notNull' => true,
                         'after' => 'lft'
                     ]),
-                    new Column('role_id', [
+                    new Column('view_level', [
                         'type' => Column::TYPE_INTEGER,
                         'size' => 2,
                         'notNull' => true,

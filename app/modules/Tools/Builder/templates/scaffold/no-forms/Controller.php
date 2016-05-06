@@ -60,7 +60,7 @@ class $className$Controller extends $controllerName$
     /**
      * Displays the creation form
      */
-    public function newAction()
+    public function createAction()
     {
 
     }

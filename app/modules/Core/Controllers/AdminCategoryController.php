@@ -8,113 +8,62 @@
 
 namespace Core\Controllers;
 
+use Core\Forms\AdminCategoryEditForm;
+use Core\Models\Category;
 use Engine\Mvc\AdminController;
+use Engine\Utils;
+use Phalcon\Mvc\Model\EagerLoading\Loader;
+use Phalcon\Mvc\View;
 
 class AdminCategoryController extends AdminController
 {
     /**
-     * @inheritdoc
-     */
-    public function behaviors() {}
-
-    /**
      * Index action
-     * @param null $id
      */
-    public function indexAction($id = null)
+    public function indexAction()
     {
         $this->assets->collection('footer-js')->addJs('vendor/jquery-ui/extra/jquery.mjs.nestedSortable.js');
-        $this->setTitle('Menu');
+        $this->setTitle('Categories');
 
-        $menuId = $this->request->isPost() ? $this->request->getPost('menuType') : $id;
-        if ($menuId == null) { $menuId = 1; }
-
-        $menuType = MenuType::find(['columns' => ['id', 'title']]);
-
-        $menu = Loader::fromResultset(Menu::find([
-            'conditions' => 'menu_type_id = ?1',
-            'bind' => [1 => $menuId],
+        $model = Loader::fromResultset(Category::find([
             'order' => 'lft'
         ]), 'viewLevel');
 
-        if (count($menu) == 0) {
-            $this->flash->notice("The search did not find any menu");
+        if (count($model) == 0) {
+            $this->flash->notice("The search did not find any categories");
+            $model = [];
         }
-
-        $this->tag->setDefault('menuType', $menuId);
 
         $this->view->setVars([
-            'menu' => $menu,
-            'menuType' => $menuType
+            'model' => $model
         ]);
-    }
-
-    /**
-     * Searches for menu
-     */
-    public function searchAction()
-    {
-        $numberPage = 1;
-        if ($this->request->isPost()) {
-            $query = Criteria::fromInput($this->di, "Core\\Models\\Menu", $_POST);
-            $this->persistent->set('parameters', $query->getParams());
-        } else {
-            $numberPage = $this->request->getQuery("page", "int");
-        }
-
-        $parameters = $this->persistent->get('parameters');
-        if (!is_array($parameters)) {
-            $parameters = [];
-        }
-        $parameters["order"] = "id";
-
-        $menu = Menu::find($parameters);
-        if (count($menu) == 0) {
-            $this->flash->notice("The search did not find any menu");
-
-            $this->dispatcher->forward([
-                "action" => "index"
-            ]);
-            return;
-        }
-
-        $paginator = new Paginator([
-            "data" => $menu,
-            "limit"=> 10,
-            "page" => $numberPage
-        ]);
-
-        $this->view->setVar('page', $paginator->getPaginate());
     }
 
     /**
      * Displays the creation form
      */
-    public function newAction()
+    public function createAction()
     {
-        $this->setTitle('New Menu Item');
-        $form = new AdminMenuEditForm();
-        if ($this->request->has('menu_type')) {
-            $this->tag->setDefault("menu_type_id", $this->request->get('menu_type_id'));
-        }
+        $this->setTitle('New Category');
+        $form = new AdminCategoryEditForm();
         $this->view->setVar('form', $form);
-        $this->view->render('admin-menu', 'edit');
+        $this->view->render('admin-category', 'edit');
         $this->view->setRenderLevel(View::LEVEL_ACTION_VIEW);
     }
 
     /**
-     * Edits a menu
+     * Edits a category
      *
      * @param string $id
      */
     public function editAction($id)
     {
         if (!$this->request->isPost()) {
-            $this->setTitle('Edit Menu Item');
-            $menu = Menu::findFirstById($id);
+            $this->setTitle('Edit Category');
+            $category = Category::findFirstById($id);
 
-            if (!$menu) {
-                $this->flash->error("Menu was not found");
+            if (!$category) {
+                $this->flash->error("Category was not found");
 
                 $this->dispatcher->forward([
                     "action" => "index"
@@ -122,22 +71,21 @@ class AdminCategoryController extends AdminController
                 return;
             }
 
-            $form = new AdminMenuEditForm();
+            $form = new AdminCategoryEditForm();
             $this->view->setVar('form', $form);
 
-            $this->tag->setDefault("id", $menu->getId());
-            $this->tag->setDefault("menu_type_id", $menu->getMenuTypeId());
-            $this->tag->setDefault("type", $menu->getType());
-            $this->tag->setDefault("title", $menu->getTitle());
-            $this->tag->setDefault("path", $menu->getPath());
-            $this->tag->setDefault("link", $menu->getLink());
-            $this->tag->setDefault("status", $menu->getStatus());
-            $this->tag->setDefault("view_level", $menu->getViewLevel());
+            $this->tag->setDefault("id", $category->getId());
+            $this->tag->setDefault("title", $category->getTitle());
+            $this->tag->setDefault("alias", $category->getAlias());
+            $this->tag->setDefault("status", $category->getStatus());
+            $this->tag->setDefault("view_level", $category->getViewLevel());
+            $this->tag->setDefault("metadata", $category->getMetadata());
+            $this->tag->setDefault("description", $category->getDescription());
         }
     }
 
     /**
-     * Saves a menu edited
+     * Saves a category edited
      */
     public function saveAction()
     {
@@ -148,14 +96,15 @@ class AdminCategoryController extends AdminController
             return;
         }
 
-        $form = new AdminMenuEditForm();
-        if (!empty($this->request->getPost('id'))) {
-            $menu = Menu::findFirstById($this->request->getPost('id'));
+        $form = new AdminCategoryEditForm();
+        $id = $this->request->getPost('id');
+        if (!empty($id)) {
+            $model = Category::findFirstById($this->request->getPost('id'));
         } else {
-            $menu = new Menu();
+            $model = new Category();
         }
 
-        $form->bind($this->request->getPost(), $menu);
+        $form->bind($this->request->getPost(), $model);
         if (!$form->isValid()) {
             $this->flashErrors($form);
 
@@ -165,8 +114,8 @@ class AdminCategoryController extends AdminController
             return;
         }
 
-        if (!$menu->save()) {
-            $this->flashErrors($menu);
+        if (!$model->save()) {
+            $this->flashErrors($model);
 
             $this->dispatcher->forward([
                 "action" => "new"
@@ -174,14 +123,14 @@ class AdminCategoryController extends AdminController
             return;
         }
 
-        $this->flash->success("Menu was updated successfully");
+        $this->flash->success("Category was updated successfully");
 
-        $this->response->redirect('admin/core/menu/index/' . $menu->getMenuTypeId())->send();
+        $this->response->redirect('admin/core/category/index')->send();
         return;
     }
 
     /**
-     * Deletes a menu
+     * Deletes a category
      *
      * @param string $id
      */
@@ -190,12 +139,9 @@ class AdminCategoryController extends AdminController
         if (!$this->request->isAjax() || !$this->request->isPost()) {
             return;
         }
-        $menu = Menu::findFirstById($id);
-        if (!$menu) {
-            return;
-        }
 
-        if (!$menu->delete()) {
+        $model = Category::findFirstById($id);
+        if (!$model || !$model->delete()) {
             return;
         }
 
@@ -213,7 +159,7 @@ class AdminCategoryController extends AdminController
 
         foreach ($data as $el) {
             if ($el['item_id']) {
-                $model = Menu::findFirstById($el['item_id']);
+                $model = Category::findFirstById($el['item_id']);
                 if ($model) {
                     if ($el['parent_id']) {
                         $model->setParentId($el['parent_id']);

@@ -29,19 +29,14 @@ use Tools\Helpers\Tools;
 class ControllerBase extends AdminController
 {
     /**
-     * @inheritdoc
-     */
-    public function behaviors() {}
-
-    /**
      * Initialize controller
      * @throws \Exception
      */
-    protected function initialize()
-    {
-        parent::initialize();
-        $this->_checkAccess();
-    }
+//    protected function initialize()
+//    {
+//        parent::initialize();
+//        $this->_checkAccess();
+//    }
 
     /**
      * Check remote IP address to disable remote activity

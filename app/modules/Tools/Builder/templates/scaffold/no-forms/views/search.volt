@@ -2,7 +2,7 @@
 
 <div class="btn-toolbar">
     {{ link_to("$plural$/index", "Go Back", "class": "btn btn-success") }}
-    {{ link_to("$plural$/new", "Create", "class": "btn btn-success") }}
+    {{ link_to("$plural$/create", "Create", "class": "btn btn-success") }}
 </div>
 
 <div class="panel panel-default">

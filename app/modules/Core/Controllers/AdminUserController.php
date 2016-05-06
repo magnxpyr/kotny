@@ -18,11 +18,6 @@ use Phalcon\Paginator\Pager;
 class AdminUserController extends AdminController
 {
     /**
-     * @inheritdoc
-     */
-    public function behaviors() {}
-
-    /**
      * Index action
      */
     public function indexAction()
@@ -48,7 +43,7 @@ class AdminUserController extends AdminController
     /**
      * Displays the creation form
      */
-    public function newAction()
+    public function createAction()
     {
         $this->setTitle('Create User');
         $form = new AdminUserEditForm();
@@ -100,7 +95,8 @@ class AdminUserController extends AdminController
         }
 
         $form = new AdminUserEditForm();
-        if (!empty($this->request->getPost('id'))) {
+        $id = $this->request->getPost('id');
+        if (!empty($id)) {
             $menu = User::findFirstById($this->request->getPost('id'));
         } else {
             $menu = new User();

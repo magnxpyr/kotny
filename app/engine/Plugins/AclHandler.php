@@ -51,7 +51,7 @@ class AclHandler extends Plugin
         $action = $dispatcher->getActionName();
 
         //Check if the Role have access to the controller (resource)
-        $allowed = $this->acl->isAllowed($role, "module:$module/$controller", $action);
+        $allowed = $this->acl->isAllowed((string)$role, "module:$module/$controller", $action);
 
         if ($allowed != Acl::ALLOW) {
             $this->dispatcher->setModuleName('core');

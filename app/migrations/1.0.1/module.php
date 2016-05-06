@@ -33,12 +33,6 @@ class ModuleMigration_101 extends Migration
                         'size' => 255,
                         'after' => 'id'
                     ]),
-                    new Column('title', [
-                        'type' => Column::TYPE_VARCHAR,
-                        'notNull' => true,
-                        'size' => 255,
-                        'after' => 'id'
-                    ]),
                     new Column('description', [
                         'type' => Column::TYPE_VARCHAR,
                         'size' => 255,

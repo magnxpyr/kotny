@@ -7,7 +7,7 @@ $level = 1;
 
 echo '<ul class="nav navbar-nav pull-right">';
 foreach($menuElements as $elements) {
-    if (!$this->helper->acl->checkViewLevel($elements->viewLevel->getRoles())) continue;
+    if (!$this->acl->checkViewLevel($elements->viewLevel->getRoles())) continue;
 
     if ($elements->path == 0) {
         $link = $this->url->get($elements->path);

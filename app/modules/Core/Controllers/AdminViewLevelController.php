@@ -21,11 +21,6 @@ use Phalcon\Mvc\View;
 class AdminViewLevelController extends AdminController
 {
     /**
-     * @inheritdoc
-     */
-    public function behaviors() {}
-
-    /**
      * Index action
      */
     public function indexAction()
@@ -48,7 +43,7 @@ class AdminViewLevelController extends AdminController
     /**
      * Displays the creation form
      */
-    public function newAction()
+    public function createAction()
     {
         $this->setTitle('Create View Level');
         $form = new AdminViewLevelEditForm();
@@ -102,7 +97,8 @@ class AdminViewLevelController extends AdminController
         }
 
         $form = new AdminViewLevelEditForm();
-        if (!empty($this->request->getPost('id'))) {
+        $id = $this->request->getPost('id');
+        if (!empty($id)) {
             $menu = ViewLevel::findFirstById($this->request->getPost('id'));
         } else {
             $menu = new ViewLevel();

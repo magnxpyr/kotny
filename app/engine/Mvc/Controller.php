@@ -30,12 +30,6 @@ abstract class Controller extends \Phalcon\Mvc\Controller
     }
 
     /**
-     * Define access and behaviors
-     * @return array
-     */
-    abstract public function behaviors();
-
-    /**
      * Set page title
      * @param string $title
      */

@@ -33,12 +33,6 @@ class WidgetMigration_101 extends Migration
                         'size' => 255,
                         'after' => 'id'
                     ]),
-                    new Column('title', [
-                        'type' => Column::TYPE_VARCHAR,
-                        'notNull' => true,
-                        'size' => 255,
-                        'after' => 'name'
-                    ]),
                     new Column('params', [
                         'type' => Column::TYPE_VARCHAR,
                         'size' => 255,

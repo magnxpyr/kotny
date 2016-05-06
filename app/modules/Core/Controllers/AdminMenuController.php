@@ -24,11 +24,6 @@ use Core\Models\Menu;
 class AdminMenuController extends AdminController
 {
     /**
-     * @inheritdoc
-     */
-    public function behaviors() {}
-
-    /**
      * Index action
      * @param null $id
      */
@@ -42,20 +37,20 @@ class AdminMenuController extends AdminController
 
         $menuType = MenuType::find(['columns' => ['id', 'title']]);
 
-        $menu = Loader::fromResultset(Menu::find([
+        $model = Loader::fromResultset(Menu::find([
             'conditions' => 'menu_type_id = ?1',
             'bind' => [1 => $menuId],
             'order' => 'lft'
         ]), 'viewLevel');
 
-        if (count($menu) == 0) {
+        if (count($model) == 0) {
             $this->flash->notice("The search did not find any menu");
         }
 
         $this->tag->setDefault('menuType', $menuId);
 
         $this->view->setVars([
-            'menu' => $menu,
+            'model' => $model,
             'menuType' => $menuType
         ]);
     }
@@ -101,7 +96,7 @@ class AdminMenuController extends AdminController
     /**
      * Displays the creation form
      */
-    public function newAction()
+    public function createAction()
     {
         $this->setTitle('New Menu Item');
         $form = new AdminMenuEditForm();
@@ -160,7 +155,8 @@ class AdminMenuController extends AdminController
         }
 
         $form = new AdminMenuEditForm();
-        if (!empty($this->request->getPost('id'))) {
+        $id = $this->request->getPost('id');
+        if (!empty($id)) {
             $menu = Menu::findFirstById($this->request->getPost('id'));
         } else {
             $menu = new Menu();

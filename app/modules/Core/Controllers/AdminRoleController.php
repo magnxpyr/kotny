@@ -21,11 +21,6 @@ use Core\Models\Role;
 class AdminRoleController extends AdminController
 {
     /**
-     * @inheritdoc
-     */
-    public function behaviors() {}
-
-    /**
      * Index action
      */
     public function indexAction()
@@ -47,7 +42,7 @@ class AdminRoleController extends AdminController
     /**
      * Displays the creation form
      */
-    public function newAction()
+    public function createAction()
     {
         $this->setTitle('Create Role');
         $form = new AdminRoleEditForm();
@@ -97,7 +92,8 @@ class AdminRoleController extends AdminController
         }
 
         $form = new AdminRoleEditForm();
-        if (!empty($this->request->getPost('id'))) {
+        $id = $this->request->getPost('id');
+        if (!empty($id)) {
             $menu = Role::findFirstById($this->request->getPost('id'));
         } else {
             $menu = new Role();
