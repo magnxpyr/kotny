@@ -106,7 +106,7 @@ class $className$Controller extends $controllerName$
             $menu = new User();
         }
 
-        $form->bind($this->request->getPost(), $menu);
+        $form->bind($_POST, $menu);
         if (!$form->isValid()) {
             $this->flashErrors($form);
 

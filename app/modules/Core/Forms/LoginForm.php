@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2016 Magnxpyr Network
+ * @copyright   2006 - 2017 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -25,23 +25,12 @@ use Phalcon\Validation\Validator\Identical;
 class LoginForm extends Form
 {
     /**
-     * @var null $lastCsrfValue
-     */
-    private $lastCsrfValue = null;
-
-    /**
-     * Get last Csrf value
-     */
-    public function getCsrf()
-    {
-        return ($this->lastCsrfValue !== null) ? $this->lastCsrfValue : $this->lastCsrfValue = $this->security->getSessionToken();
-    }
-
-    /**
      * Initialize the form
      */
     public function initialize()
     {
+        parent::initialize();
+
         // Username
         $username = new Text('username', [
             'placeholder' => $this->t->_('Username'),
@@ -79,14 +68,6 @@ class LoginForm extends Form
         $remember->setFilters('int');
         $remember->setLabel($this->t->_('Remember me'));
         $this->add($remember);
-
-        // CSRF
-        $csrf = new Hidden('csrf');
-        $csrf->addValidator(new Identical([
-            'accepted' => $this->security->getSessionToken(),
-            'message' => $this->t->_('CSRF validation failed')
-        ]));
-        $this->add($csrf);
 
         // Submit
         $this->add(new Submit('login', [

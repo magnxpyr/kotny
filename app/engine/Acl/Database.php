@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2016 Magnxpyr Network
+ * @copyright   2006 - 2017 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -13,6 +13,7 @@ use Core\Models\Resource;
 use Core\Models\ResourceAccess;
 use Core\Models\Role;
 use Engine\Behavior\AclBehavior;
+use Engine\Meta;
 use Engine\Mvc\Exception;
 use Phalcon\Acl;
 use Phalcon\Acl\Adapter\Memory as AclMemory;
@@ -30,7 +31,28 @@ use Phalcon\Acl\AdapterInterface;
  */
 class Database extends Adapter implements AdapterInterface
 {
-    use AclBehavior;
+    use AclBehavior,
+        Meta;
+
+    /**
+     * Sets the default access level (Phalcon\Acl::ALLOW or Phalcon\Acl::DENY) for no arguments provided in isAllowed action if there exists func for accessKey
+     *
+     * @param int $defaultAccess
+     */
+    public function setNoArgumentsDefaultAction($defaultAccess)
+    {
+
+    }
+
+    /**
+     * Returns the default ACL access level for no arguments provided in isAllowed action if there exists func for accessKey
+     *
+     * @return int
+     */
+    public function getNoArgumentsDefaultAction()
+    {
+
+    }
 
     /**
      * Get acl system.
@@ -152,6 +174,10 @@ class Database extends Adapter implements AdapterInterface
      */
     public function isRole($roleName)
     {
+        if ($roleName == '*') {
+            return true;
+        }
+
         $role = Role::findFirstByName($roleName);
 
         return (bool) $role;
@@ -305,7 +331,7 @@ class Database extends Adapter implements AdapterInterface
      * @param string       $resourceName
      * @param array|string $access
      */
-    public function allow($roleName, $resourceName, $access)
+    public function allow($roleName, $resourceName, $access, $func = null)
     {
         $this->allowOrDeny($roleName, $resourceName, $access, Acl::ALLOW);
     }
@@ -330,7 +356,7 @@ class Database extends Adapter implements AdapterInterface
      * @param  array|string $access
      * @return boolean
      */
-    public function deny($roleName, $resourceName, $access)
+    public function deny($roleName, $resourceName, $access, $func = null)
     {
         $this->allowOrDeny($roleName, $resourceName, $access, Acl::DENY);
     }
@@ -351,7 +377,7 @@ class Database extends Adapter implements AdapterInterface
      *
      * @return bool
      */
-    public function isAllowed($role, $resource, $access)
+    public function isAllowed($role, $resource, $access, array $parameters = null)
     {
 
     }
@@ -368,7 +394,11 @@ class Database extends Adapter implements AdapterInterface
      */
     protected function insertOrUpdateAccess($roleName, $resourceName, $accessName, $action)
     {
-        $roleId = Role::findFirstByName($roleName)->getId();
+        if ($roleName == '*') {
+            $roleId = $roleName;
+        } else {
+            $roleId = Role::findFirstByName($roleName)->getId();
+        }
         $resourceId = Resource::findFirstByName($resourceName)->getId();
 
         /**

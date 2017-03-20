@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2016 Magnxpyr Network
+ * @copyright   2006 - 2017 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -8,7 +8,7 @@
 
 namespace Core\Models;
 
-use Phalcon\Mvc\Model;
+use Engine\Mvc\Model;
 
 /**
  * Class Content
@@ -16,81 +16,85 @@ use Phalcon\Mvc\Model;
  */
 class Content extends Model
 {
-
     /**
      * @var integer
      */
-    protected $id;
+    private $id;
 
     /**
      * @var string
      */
-    protected $title;
+    private $title;
 
     /**
      * @var string
      */
-    protected $alias;
+    private $alias;
 
     /**
      * @var string
      */
-    protected $introtext;
+    private $introtext;
 
     /**
      * @var string
      */
-    protected $fulltext;
+    private $fulltext;
 
     /**
      * @var string
      */
-    protected $metadata;
+    private $metadata;
 
     /**
      * @var integer
      */
-    protected $category;
+    private $category;
 
     /**
      * @var integer
      */
-    protected $hits;
+    private $hits;
 
     /**
      * @var integer
      */
-    protected $featured;
+    private $featured;
 
     /**
      * @var integer
      */
-    protected $status;
+    private $status;
 
     /**
      * @var integer
      */
-    protected $view_level;
+    private $view_level;
 
     /**
      * @var integer
      */
-    protected $created_at;
+    private $created_at;
 
     /**
      * @var integer
      */
-    protected $created_by;
+    private $created_by;
 
     /**
      * @var integer
      */
-    protected $modified_at;
+    private $modified_at;
 
     /**
      * @var integer
      */
-    protected $modified_by;
+    private $modified_by;
+
+    /**
+     * @var integer
+     */
+    private $published_at;
 
     /**
      * Method to set the value of field id
@@ -438,11 +442,31 @@ class Content extends Model
     }
 
     /**
+     * @return int
+     */
+    public function getPublishedAt()
+    {
+        return $this->published_at;
+    }
+
+    /**
+     * @param integer $published_at
+     * @return $this
+     */
+    public function setPublishedAt($published_at)
+    {
+        $this->published_at = $published_at;
+        return $this;
+    }
+
+    /**
      * Initialize method for model.
      */
     public function initialize()
     {
         $this->setSource('content');
+        $this->belongsTo('created_by', 'Core\Models\User', 'id', ['alias' => 'user', 'reusable' => true]);
+        $this->belongsTo('modified_by', 'Core\Models\User', 'id', ['alias' => 'user', 'reusable' => true]);
     }
 
     public function getSource()
@@ -450,4 +474,23 @@ class Content extends Model
         return 'content';
     }
 
+    public function beforeValidationOnCreate()
+    {
+        $this->setCreatedAt(time());
+        $this->setCreatedBy($this->getDI()->getShared('auth')->getUserId());
+    }
+
+    public function beforeValidation()
+    {
+        if (empty($this->getAlias())) {
+            $this->setAlias($this->getDI()->getShared('helper')->makeAlias($this->getTitle()));
+        }
+        $this->setPublishedAt(strtotime($this->getPublishedAt()));
+    }
+
+    public function beforeUpdate()
+    {
+        $this->setModifiedAt(time());
+        $this->setModifiedBy($this->getDI()->getShared('auth')->getUserId());
+    }
 }

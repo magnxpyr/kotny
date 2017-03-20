@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2016 Magnxpyr Network
+ * @copyright   2006 - 2017 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -34,6 +34,10 @@ class Controller extends \Engine\Widget\Controller
      */
     private function generateHtml()
     {
+        $model = $this->getParam('model');
+        if (!$model) {
+            return;
+        }
         $level = $this->getParam("level", 1);
         $colSize = $this->getParam('colSize');
         $actions = $this->getParam('actions');
@@ -52,37 +56,37 @@ class Controller extends \Engine\Widget\Controller
 
         echo '<ol class="sortable" id="' . $this->getParam('tableId', 'root_menu') . '">';
 
-        foreach ($this->getParam('model') as $m => $model) {
-            if ($model->level == $level) {
+        foreach ($model as $m => $value) {
+            if ($value->level == $level) {
                 echo "</li>\n";
-            } else if ($model->level > $level) {
+            } else if ($value->level > $level) {
                 echo "<ol>\n";
             } else {
                 echo "</li>\n";
 
-                for ($i = $level - $model->level; $i; $i--) {
+                for ($i = $level - $value->level; $i; $i--) {
                     echo "</ol>\n";
                     echo "</li>\n";
                 }
             }
 
-            echo "<li id='item_$model->id'><div class='list-item'>\n";
+            echo "<li id='item_$value->id'><div class='list-item'>\n";
 
             foreach ($this->getParam('data') as $key => $data) {
                 echo "<div class='col-xs-$colSize[$key]'>";
                 if ($key == 0) echo "<i class='fa fa-reorder'></i>";
-                echo $this->getValue($model, $data). "</div>";
+                echo $this->getValue($value, $data) . "</div>";
             }
             if ($this->getParam('actions')) {
                 $colSizeNext = 1;
                 if (isset($colSize[$key + 1])) $colSizeNext = $colSize[$key + 1];
                 echo "<div class='col-xs-$colSizeNext'>";
-                echo $this->tag->linkTo($actions['update'] . "/" . $model->getId(), '<i class="fa fa-edit"></i>');
-                $url = $actions['delete'] . "/" . $model->getId();
-                echo "<a href='#' class='ajaxDelete' data-url='$url' data-parent-id='#item_" . $model->getId(). "'><i class='fa fa-trash-o'></i></a></div></div>";
+                echo $this->tag->linkTo($actions['update'] . "/" . $value->getId(), '<i class="fa fa-edit"></i>');
+                $url = $actions['delete'] . "/" . $value->getId();
+                echo "<a href='#' class='ajaxDelete' data-url='$url' data-parent-id='#item_" . $value->getId() . "'><i class='fa fa-trash-o'></i></a></div></div>";
             }
 
-            $level = $model->level;
+            $level = $value->level;
         }
 
         for ($i = $level; $i; $i--) {

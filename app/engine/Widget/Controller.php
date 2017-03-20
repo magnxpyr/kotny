@@ -1,12 +1,13 @@
 <?php
 /**
- * @copyright   2006 - 2016 Magnxpyr Network
+ * @copyright   2006 - 2017 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
 namespace Engine\Widget;
+use Engine\Meta;
 
 /**
  * Class Controller
@@ -14,6 +15,8 @@ namespace Engine\Widget;
  */
 abstract class Controller extends \Phalcon\Mvc\Controller
 {
+    use Meta;
+    
     /**
      * Cache prefix.
      */

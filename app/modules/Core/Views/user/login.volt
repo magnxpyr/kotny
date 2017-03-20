@@ -14,6 +14,8 @@
                 <span class="glyphicon glyphicon-lock form-control-feedback"></span>
             </div>
 
+            {{ form.showRecaptcha() }}
+
             <div class="row">
                 <div class="col-xs-8">
                     <div class="checkbox checkbox-primary">

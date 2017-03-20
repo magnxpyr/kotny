@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2016 Magnxpyr Network
+ * @copyright   2006 - 2017 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -8,7 +8,7 @@
 
 namespace Core\Models;
 
-use Phalcon\Mvc\Model;
+use Engine\Mvc\Model;
 use Phalcon\Mvc\Model\EagerLoadingTrait;
 
 /**
@@ -17,17 +17,15 @@ use Phalcon\Mvc\Model\EagerLoadingTrait;
  */
 class ResourceAccess extends Model
 {
-    use EagerLoadingTrait;
-
     /**
      * @var integer
      */
-    protected $resource_id;
+    private $resource_id;
 
     /**
      * @var string
      */
-    protected $access_name;
+    private $access_name;
 
     /**
      * Method to set the value of field resource_id

@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2016 Magnxpyr Network
+ * @copyright   2006 - 2017 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -8,7 +8,12 @@
 
 namespace Core\Controllers;
 
+use Core\Forms\AdminModuleEditForm;
+use Core\Models\Module;
+use DataTables\DataTable;
 use Engine\Mvc\AdminController;
+use Phalcon\Mvc\View;
+use Phalcon\Paginator\Adapter\Model as Paginator;
 
 class AdminModuleController extends AdminController
 {
@@ -17,18 +22,18 @@ class AdminModuleController extends AdminController
      */
     public function indexAction()
     {
-        $this->setTitle('Menu Type');
+        $this->setTitle('Module');
 
         $numberPage = 1;
 
-        $menuType = MenuType::find();
+        $model = Module::find();
 
-        if (count($menuType) == 0) {
-            $this->flash->notice("The search did not find any menu");
+        if (count($model) == 0) {
+            $this->flash->notice("The search did not find any module");
         }
 
         $paginator = new Paginator([
-            "data" => $menuType,
+            "data" => $model,
             "limit"=> 10,
             "page" => $numberPage
         ]);
@@ -36,16 +41,16 @@ class AdminModuleController extends AdminController
         $this->view->setVar('page', $paginator->getPaginate());
     }
 
-    /**
-     * Displays the creation form
-     */
-    public function createAction()
+    public function searchAction()
     {
-        $this->setTitle('Create Menu');
-        $form = new AdminMenuTypeEditForm();
-        $this->view->setVar('form', $form);
-        $this->view->render('admin-menu-type', 'edit');
-        $this->view->setRenderLevel(View::LEVEL_ACTION_VIEW);
+        if (!$this->request->isAjax() || !$this->request->isPost()) {
+            return;
+        }
+        $builder = $this->modelsManager->createBuilder()
+            ->from('Core\Models\Module');
+
+        $dataTables = new DataTable();
+        $dataTables->fromBuilder($builder)->sendResponse();
     }
 
     /**
@@ -55,23 +60,20 @@ class AdminModuleController extends AdminController
      */
     public function editAction($id)
     {
-        $this->setTitle('Edit Menu');
-        $form = new AdminMenuTypeEditForm();
+        $this->setTitle('Edit Module');
+        $form = new AdminModuleEditForm();
         $this->view->setVar('form', $form);
         if (!$this->request->isPost()) {
-            $menuType = MenuType::findFirstById($id);
-            if (!$menuType) {
-                $this->flash->error("Menu was not found");
+            $model = Module::findFirstById($id);
+            if (!$model) {
+                $this->flash->error("Module was not found");
 
                 $this->dispatcher->forward([
                     "action" => "index"
                 ]);
                 return;
             }
-
-            $this->tag->setDefault("id", $menuType->getId());
-            $this->tag->setDefault("title", $menuType->getTitle());
-            $this->tag->setDefault("description", $menuType->getDescription());
+            $form->setEntity($model);
         }
     }
 
@@ -87,55 +89,54 @@ class AdminModuleController extends AdminController
             return;
         }
 
-        $form = new AdminMenuTypeEditForm();
+        $form = new AdminModuleEditForm();
         $id = $this->request->getPost('id');
         if (!empty($id)) {
-            $menu = MenuType::findFirstById($this->request->getPost('id'));
+            $model = Module::findFirstById($this->request->getPost('id'));
         } else {
-            $menu = new MenuType();
+            $model = new Module();
         }
 
-        $form->bind($this->request->getPost(), $menu);
+        $form->bind($_POST, $model);
         if (!$form->isValid()) {
             $this->flashErrors($form);
 
             $this->dispatcher->forward([
-                "action" => "new"
+                "action" => "edit",
+                "params" => [$id]
             ]);
             return;
         }
 
-        if (!$menu->save()) {
-            $this->flashErrors($menu);
+        if (!$model->save()) {
+            $this->flashErrors($model);
 
             $this->dispatcher->forward([
-                "action" => "new"
+                "action" => "edit",
+                "params" => [$id]
             ]);
             return;
         }
 
-        $this->flash->success("Menu was updated successfully");
+        $this->flash->success("Module was updated successfully");
 
-        $this->response->redirect('admin/core/menu-type/index')->send();
+        $this->response->redirect('admin/core/module/index')->send();
         return;
     }
 
     /**
-     * Deletes a menu
+     * Ajax action that deletes a module
      *
      * @param string $id
      */
     public function deleteAction($id)
     {
-        if (!$this->request->isAjax() || !$this->request->isPost()) {
-            return;
-        }
-        $menuType = MenuType::findFirstById($id);
-        if (!$menuType) {
+        $model = Module::findFirstById($id);
+        if (!$model) {
             return;
         }
 
-        if (!$menuType->delete()) {
+        if (!$model->delete()) {
             return;
         }
 

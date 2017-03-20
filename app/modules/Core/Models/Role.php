@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2016 Magnxpyr Network
+ * @copyright   2006 - 2017 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -8,7 +8,7 @@
 
 namespace Core\Models;
 
-use Phalcon\Mvc\Model;
+use Engine\Mvc\Model;
 use Phalcon\Mvc\Model\EagerLoadingTrait;
 
 /**
@@ -17,27 +17,25 @@ use Phalcon\Mvc\Model\EagerLoadingTrait;
  */
 class Role extends Model
 {
-    use EagerLoadingTrait;
+    /**
+     * @var integer
+     */
+    private $id;
 
     /**
      * @var integer
      */
-    protected $id;
-
-    /**
-     * @var integer
-     */
-    protected $parent_id;
+    private $parent_id;
 
     /**
      * @var string
      */
-    protected $name;
+    private $name;
 
     /**
      * @var string
      */
-    protected $description;
+    private $description;
 
     /**
      * Method to set the value of field id

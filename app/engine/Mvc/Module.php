@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2016 Magnxpyr Network
+ * @copyright   2006 - 2017 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -8,6 +8,7 @@
 
 namespace Engine\Mvc;
 
+use Engine\Meta;
 use Phalcon\DiInterface;
 use Phalcon\Mvc\ModuleDefinitionInterface;
 use Phalcon\Text;
@@ -16,7 +17,9 @@ use Phalcon\Text;
  * Class Module
  * @package Engine
  */
-abstract class Module implements ModuleDefinitionInterface {
+abstract class Module implements ModuleDefinitionInterface
+{
+    use Meta;
 
     /**
      * Registers an autoloader related to the module

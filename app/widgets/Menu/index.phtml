@@ -5,34 +5,76 @@
 $this->getContent();
 $level = 1;
 
+//echo '<div class="navbar-header">
+//			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+//				<span class="sr-only">Toggle navigation</span>
+//				<span class="icon-bar"></span>
+//				<span class="icon-bar"></span>
+//				<span class="icon-bar"></span>
+//			</button>
+//		</div>';
 echo '<ul class="nav navbar-nav pull-right">';
-foreach($menuElements as $elements) {
+$isActive = false;
+$uri = trim($this->router->getRewriteUri(), "/ ");
+foreach ($menuElements as $k => $elements) {
     if (!$this->acl->checkViewLevel($elements->viewLevel->getRoles())) continue;
 
-    if ($elements->path == 0) {
-        $link = $this->url->get($elements->path);
+    $active = "";
+    if ($elements->getPath() != "#" && substr($elements->getPath(), 0, 4) != "http") {
+        $path = $this->url->get($elements->getPath());
+        if (!$isActive && $uri == trim($elements->getPath(), "/ ")) {
+            $active = "active";
+            $isActive = true;
+        }
     } else {
-        $link = $elements->link;
+        $path = $elements->getPath();
     }
-    if($elements->level==$level)
-        echo "<li><a href='$link'>$elements->title</a>\n";
-    else if($elements->level>$level)
-        echo "<ul>\n";
-    else {
-        echo "</li>\n";
 
-        for ($i = $level - $elements->level; $i; $i--) {
-            echo "</ul>\n";
-            echo "</li>\n";
+    if ($elements->getLevel() <= $level) {
+        if ($elements->getLevel() < $level) {
+            echo "</li>";
+            for ($i = $level - $elements->getLevel(); $i; $i--) {
+                echo "</ul></li>";
+            }
+        }
+        if (isset($menuElements[$k+1]) && $menuElements[$k+1]->getParentId() == $elements->getId()) {
+            if ($elements->getLevel() == 1) {
+                echo "<li class=\"dropdown $active\"><a class=\"dropdown-toggle\" data-toggle=\"dropdown\" href='$path'>";
+                if (!empty($elements->getPrepend())) {
+                    echo "<i class=\"$elements->prepend\"></i>";
+                }
+                echo "$elements->title</a><ul class=\"dropdown-menu\">";
+            } else {
+                echo "<li class=' dropdown-submenu$active'><a href=\"$path\">";
+                if (!empty($elements->getPrepend())) {
+                    echo "<i class=\"$elements->prepend\"></i>";
+                }
+                echo "$elements->title</a><ul class=\"dropdown-menu\">";
+            }
+
+        } else {
+            echo "<li class=\"$active\"><a href='$path'>";
+            if (!empty($elements->getPrepend())) {
+                echo "<i class=\"$elements->prepend\"></i>";
+            }
+            echo "$elements->title</a>";
+        }
+    } elseif ($elements->level > $level) {
+        if (isset($menuElements[$k+1]) && $menuElements[$k+1]->getParentId() == $elements->getId()) {
+            echo "<li class='dropdown-submenu $active'><a href=\"$path\">";
+            if (!empty($elements->getPrepend())) {
+                echo "<i class=\"$elements->prepend\"></i>";
+            }
+            echo "$elements->title</a><ul class=\"dropdown-menu\">";
+        } else {
+            echo "<li class=\"$active\"><a href='$path'>";
+            if (!empty($elements->getPrepend())) {
+                echo "<i class=\"$elements->prepend\"></i>";
+            }
+            echo "$elements->title</a>";
         }
     }
 
     $level = $elements->level;
 }
-
-for ($i = $level; $i; $i--) {
-    echo "</li>\n";
-    echo "</ul>\n";
-}
-
 echo '</ul>';

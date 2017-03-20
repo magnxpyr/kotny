@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2016 Magnxpyr Network
+ * @copyright   2006 - 2017 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -8,10 +8,11 @@
 
 namespace Core\Models;
 
-use Phalcon\Mvc\Model;
-use Phalcon\Mvc\Model\Validator\Email;
-use Phalcon\Mvc\Model\Validator\Uniqueness;
-use Phalcon\Mvc\Model\EagerLoadingTrait;
+use Engine\Mvc\Model;
+use Phalcon\Mvc\Model\Resultset;
+use Phalcon\Validation;
+use Phalcon\Validation\Validator\Email;
+use Phalcon\Validation\Validator\Uniqueness;
 
 /**
  * Class User
@@ -19,87 +20,90 @@ use Phalcon\Mvc\Model\EagerLoadingTrait;
  */
 class User extends Model
 {
-    use EagerLoadingTrait;
+    /**
+     * @var integer
+     */
+    private $id;
+
+    /**
+     * @var string
+     */
+    private $username;
+
+    /**
+     * @var string
+     */
+    private $auth_token;
+
+    /**
+     * @var string
+     */
+    private $password;
+
+    /**
+     * @var string
+     */
+    private $gplus_id;
+
+    /**
+     * @var string
+     */
+    private $facebook_id;
+
+    /**
+     * @var string
+     */
+    private $gplus_name;
+
+    /**
+     * @var string
+     */
+    private $facebook_name;
+
+    /**
+     * @var string
+     */
+    private $gplus_data;
+
+    /**
+     * @var string
+     */
+    private $facebook_data;
+
+    /**
+     * @var string
+     */
+    private $reset_token;
 
     /**
      * @var integer
      */
-    protected $id;
+    private $role_id;
 
     /**
      * @var string
      */
-    protected $username;
+    private $email;
 
     /**
      * @var string
      */
-    protected $auth_token;
-
-    /**
-     * @var string
-     */
-    protected $password;
-
-    /**
-     * @var string
-     */
-    protected $gplus_id;
-
-    /**
-     * @var string
-     */
-    protected $facebook_id;
-
-    /**
-     * @var string
-     */
-    protected $gplus_name;
-
-    /**
-     * @var string
-     */
-    protected $facebook_name;
-
-    /**
-     * @var string
-     */
-    protected $gplus_data;
-
-    /**
-     * @var string
-     */
-    protected $facebook_data;
-
-    /**
-     * @var string
-     */
-    protected $reset_token;
+    private $name;
 
     /**
      * @var integer
      */
-    protected $role_id;
-
-    /**
-     * @var string
-     */
-    protected $email;
+    private $status;
 
     /**
      * @var integer
      */
-    protected $status;
+    private $created_at;
 
     /**
      * @var integer
      */
-    protected $created_at;
-
-    /**
-     * @var integer
-     */
-    protected $visited_at;
+    private $visited_at;
 
     /**
      * Method to set the value of field id
@@ -440,6 +444,25 @@ class User extends Model
     }
 
     /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     * @return $this
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    /**
      * Returns the value of field status
      *
      * @return integer
@@ -475,6 +498,8 @@ class User extends Model
     public function initialize()
     {
         $this->setSource('user');
+        $this->hasMany('id', 'Core\Models\Content', 'created_by', ['alias' => 'contentCreated', 'reusable' => true]);
+        $this->hasMany('id', 'Core\Models\Content', 'modified_by', ['alias' => 'contentModified', 'reusable' => true]);
         $this->hasMany('id', 'Core\Models\UserAuthTokens', 'user_id', ['alias' => 'userAuthTokens', 'reusable' => true]);
         $this->hasOne('id', 'Core\Models\UserEmailConfirmations', 'user_id', ['alias' => 'userEmailConfirmations', 'reusable' => true]);
         $this->hasOne('id', 'Core\Models\UserResetPasswords', 'user_id', ['alias' => 'userResetPasswords', 'reusable' => true]);
@@ -489,40 +514,37 @@ class User extends Model
         return 'user';
     }
 
+    public static function getCacheRoleIdKey($id)
+    {
+        return md5("model_user.role_id.$id");
+    }
+
     /**
      * Validations and business logic
      */
     public function validation()
     {
-        $this->validate(
-            new Email([
-                'field' => 'email',
-                'required' => true,
-                'message' => 'Email address is not valid'
-            ])
-        );
-        $this->validate(
-            new Uniqueness([
-                'field' => 'email',
-                'message' => 'Email already exists'
-            ])
-        );
-        $this->validate(
-            new Uniqueness([
-                'field' => 'username',
-                'message' => 'Username already exists'
-            ])
-        );
-        if ($this->validationHasFailed() == true) {
-            return false;
-        }
+        $validator = new Validation();
+        $validator->add('email', new Email([
+            'required' => true,
+            'message' => $this->t->_('Email address is not valid')
+        ]));
+        $validator->add('email', new Uniqueness([
+            'message' => $this->t->_('Email already exists')
+        ]));
+        $validator->add('username', new Uniqueness([
+            'message' => $this->t->_('Username already exists')
+        ]));
+        return $this->validate($validator);
     }
 
     /**
      * Set visited at before any update
      */
-    public function beforeUpdate() {
+    public function beforeUpdate()
+    {
         $this->setVisitedAt(time());
+        $this->cache->delete(self::getCacheRoleIdKey($this->getRoleId()));
     }
 
     /**
@@ -530,7 +552,7 @@ class User extends Model
      */
     public function afterCreate()
     {
-        if($this->getStatus() != 0) {
+        if ($this->getStatus() != 0) {
             return;
         }
         $confirmation = new UserEmailConfirmations();
@@ -542,16 +564,16 @@ class User extends Model
      * Get role id and cache it for future use
      *
      * @param $id
-     * @return Model|Model\Resultset|int
+     * @return Resultset|int
      */
     public static function getRoleById($id)
     {
         $role = self::findFirst([
             'conditions' => 'id = ?1',
-            'bind'       => [1 => $id],
-            'columns'    => ['role_id'],
-            'cache'      => [
-                'key'      => md5("model_user.role_id.$id"),
+            'bind' => [1 => $id],
+            'columns' => ['role_id'],
+            'cache' => [
+                'key' => self::getCacheRoleIdKey($id),
                 'lifetime' => 3600
             ]
         ]);

@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2016 Magnxpyr Network
+ * @copyright   2006 - 2017 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -16,6 +16,7 @@ use Core\Forms\ResetPasswordForm;
 use Core\Models\User;
 use Core\Models\UserEmailConfirmations;
 use Core\Models\UserResetPasswords;
+use Engine\Mvc\Auth;
 use Engine\Mvc\Controller;
 
 /**
@@ -35,6 +36,7 @@ class UserController extends Controller
     public function loginAction()
     {
         $form = new LoginForm();
+        $form->setRecaptcha(true);
         try {
             $this->auth->login($form);
         } catch (\Exception $e) {
@@ -81,7 +83,7 @@ class UserController extends Controller
         }
         $form = new RegisterForm();
         if ($this->request->isPost()) {
-            if($form->isValid($this->request->getPost())) {
+            if($form->isValid($_POST)) {
                 $username = $this->request->getPost('username', 'alphanum');
                 $email = $this->request->getPost('email', 'email');
                 $password = $this->request->getPost('password', 'string');
@@ -95,7 +97,7 @@ class UserController extends Controller
                 $user->setEmail($email);
                 $user->setRoleId(1);
                 $user->setStatus(0);
-                $user->setResetToken($this->security->generateToken());
+                $user->setResetToken($this->security->getRandom()->hex(Auth::TOKEN_BYTES));
                 $user->setCreatedAt(time());
                 if (!$user->save()) {
                     $this->flashErrors($user);
@@ -138,10 +140,11 @@ class UserController extends Controller
                 if($user) {
                     if($user->getStatus() > 0) {
                         $this->flash->notice('Your account is already active');
-                        return $this->dispatcher->forward([
+                        $this->dispatcher->forward([
                             'controller' => 'user',
                             'action' => 'login'
                         ]);
+                        return;
                     }
                     if (!$user->userEmailConfirmations) {
                         $confirmation = new UserEmailConfirmations();
@@ -153,10 +156,11 @@ class UserController extends Controller
                     }
                 }
                 $this->flash->success('Email sent. Please follow the instructions to activate your account');
-                return $this->dispatcher->forward([
+                $this->dispatcher->forward([
                     'controller' => 'index',
                     'action' => 'index'
                 ]);
+                return;
             } else {
                 $this->flashErrors($form);
             }
@@ -202,10 +206,11 @@ class UserController extends Controller
         $confirmation->delete();
 
         $this->flash->success('Your email was successfully confirmed. Please login to manage your account');
-        return $this->dispatcher->forward([
+        $this->dispatcher->forward([
             'controller' => 'user',
             'action' => 'login'
         ]);
+        return;
     }
 
     /**
@@ -234,10 +239,11 @@ class UserController extends Controller
                     }
                 }
                 $this->flash->success('Email sent. Please follow the instructions to change your password');
-                return $this->dispatcher->forward([
+                $this->dispatcher->forward([
                     'controller' => 'index',
                     'action' => 'index'
                 ]);
+                return;
             } else {
                 $this->flashErrors($form);
             }
@@ -269,10 +275,11 @@ class UserController extends Controller
 
             $resetPassword->delete();
 
-            return $this->dispatcher->forward([
+            $this->dispatcher->forward([
                 'controller' => 'user',
                 'action' => 'resetPassword'
             ]);
+            return;
         }
     }
 
@@ -282,10 +289,11 @@ class UserController extends Controller
     public function resetPasswordAction()
     {
         if (!$this->auth->isUserSignedIn()) {
-            return $this->dispatcher->forward([
+            $this->dispatcher->forward([
                 'controller' => 'user',
                 'action' => 'login'
             ]);
+            return;
         }
 
         $form = new ResetPasswordForm();
@@ -305,17 +313,19 @@ class UserController extends Controller
                 // Set a new password
                 if (!$user->save()) {
                     $this->flashErrors($user);
-                    return $this->dispatcher->forward([
+                    $this->dispatcher->forward([
                         'controller' => 'index',
                         'action' => 'index'
                     ]);
+                    return;
                 }
 
                 $this->flashSession->success($this->t->_('Password changed successfully'));
-                return $this->dispatcher->forward([
+                $this->dispatcher->forward([
                     'controller' => 'index',
                     'action' => 'index'
                 ]);
+                return;
             } else {
                 $this->flashErrors($form);
             }

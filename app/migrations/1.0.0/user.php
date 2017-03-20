@@ -31,10 +31,15 @@ class UserMigration_100 extends Migration
                     'size' => 255,
                     'after' => 'username'
                 ]),
+                new Column('name', [
+                    'type' => Column::TYPE_VARCHAR,
+                    'size' => 255,
+                    'after' => 'email'
+                ]),
                 new Column('auth_token', [
                     'type' => Column::TYPE_VARCHAR,
                     'size' => 32,
-                    'after' => 'email'
+                    'after' => 'name'
                 ]),
                 new Column('password', [
                     'type' => Column::TYPE_VARCHAR,
@@ -80,7 +85,7 @@ class UserMigration_100 extends Migration
                     'type' => 'TINYINT',
                     'notNull' => true,
                     'size' => 2,
-                    'default' => 1,
+                    'default' => 2,
                     'after' => 'reset_token'
                 ]),
                 new Column('status', [ // 0-Inactive, 1-Active, 2-Suspended, 3-Blocked

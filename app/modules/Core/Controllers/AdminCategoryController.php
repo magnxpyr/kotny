@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2016 Magnxpyr Network
+ * @copyright   2006 - 2017 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -11,7 +11,6 @@ namespace Core\Controllers;
 use Core\Forms\AdminCategoryEditForm;
 use Core\Models\Category;
 use Engine\Mvc\AdminController;
-use Engine\Utils;
 use Phalcon\Mvc\Model\EagerLoading\Loader;
 use Phalcon\Mvc\View;
 
@@ -25,9 +24,8 @@ class AdminCategoryController extends AdminController
         $this->assets->collection('footer-js')->addJs('vendor/jquery-ui/extra/jquery.mjs.nestedSortable.js');
         $this->setTitle('Categories');
 
-        $model = Loader::fromResultset(Category::find([
-            'order' => 'lft'
-        ]), 'viewLevel');
+        $category = Category::find(['order' => 'lft']);
+        $model = Loader::fromResultset($category, 'viewLevel');
 
         if (count($model) == 0) {
             $this->flash->notice("The search did not find any categories");
@@ -58,11 +56,13 @@ class AdminCategoryController extends AdminController
      */
     public function editAction($id)
     {
+        $form = new AdminCategoryEditForm();
+        $this->view->setVar('form', $form);
         if (!$this->request->isPost()) {
             $this->setTitle('Edit Category');
-            $category = Category::findFirstById($id);
+            $model = Category::findFirstById($id);
 
-            if (!$category) {
+            if (!$model) {
                 $this->flash->error("Category was not found");
 
                 $this->dispatcher->forward([
@@ -70,17 +70,7 @@ class AdminCategoryController extends AdminController
                 ]);
                 return;
             }
-
-            $form = new AdminCategoryEditForm();
-            $this->view->setVar('form', $form);
-
-            $this->tag->setDefault("id", $category->getId());
-            $this->tag->setDefault("title", $category->getTitle());
-            $this->tag->setDefault("alias", $category->getAlias());
-            $this->tag->setDefault("status", $category->getStatus());
-            $this->tag->setDefault("view_level", $category->getViewLevel());
-            $this->tag->setDefault("metadata", $category->getMetadata());
-            $this->tag->setDefault("description", $category->getDescription());
+            $form->setEntity($model);
         }
     }
 
@@ -104,12 +94,13 @@ class AdminCategoryController extends AdminController
             $model = new Category();
         }
 
-        $form->bind($this->request->getPost(), $model);
+        $form->bind($_POST, $model);
         if (!$form->isValid()) {
             $this->flashErrors($form);
 
             $this->dispatcher->forward([
-                "action" => "new"
+                "action" => "edit",
+                "params" => [$id]
             ]);
             return;
         }
@@ -118,7 +109,8 @@ class AdminCategoryController extends AdminController
             $this->flashErrors($model);
 
             $this->dispatcher->forward([
-                "action" => "new"
+                "action" => "edit",
+                "params" => [$id]
             ]);
             return;
         }
@@ -151,7 +143,7 @@ class AdminCategoryController extends AdminController
 
     public function saveTreeAction()
     {
-        if (!$this->request->getPost() || !$this->request->isAjax()) {
+        if (!$this->request->isPost() || !$this->request->isAjax()) {
             return;
         }
 

@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2016 Magnxpyr Network
+ * @copyright   2006 - 2017 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -16,7 +16,7 @@ define('MEDIA_PATH', PUBLIC_PATH . 'media/');
 
 // Check phalcon framework installation.
 if (!extension_loaded('phalcon')) {
-    printf('Install Phalcon framework %s', '> 2.0.x');
+    printf('Install Phalcon framework %s', '> 3.0.x');
     exit(1);
 }
 

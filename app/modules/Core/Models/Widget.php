@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2016 Magnxpyr Network
+ * @copyright   2006 - 2017 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -8,7 +8,7 @@
 
 namespace Core\Models;
 
-use Phalcon\Mvc\Model;
+use Engine\Mvc\Model;
 
 /**
  * Class Widget
@@ -16,51 +16,50 @@ use Phalcon\Mvc\Model;
  */
 class Widget extends Model
 {
+    /**
+     * @var integer
+     */
+    private $id;
+
+    /**
+     * @var string
+     */
+    private $name;
+
+    /**
+     * @var string
+     */
+    private $title;
+
+    /**
+     * @var string
+     */
+    private $params;
+
+    /**
+     * @var string
+     */
+    private $description;
+
+    /**
+     * @var string
+     */
+    private $version;
+
+    /**
+     * @var string
+     */
+    private $author;
+
+    /**
+     * @var string
+     */
+    private $website;
 
     /**
      * @var integer
      */
-    protected $id;
-
-    /**
-     * @var string
-     */
-    protected $name;
-
-    /**
-     * @var string
-     */
-    protected $title;
-
-    /**
-     * @var string
-     */
-    protected $params;
-
-    /**
-     * @var string
-     */
-    protected $description;
-
-    /**
-     * @var string
-     */
-    protected $version;
-
-    /**
-     * @var string
-     */
-    protected $author;
-
-    /**
-     * @var string
-     */
-    protected $website;
-
-    /**
-     * @var integer
-     */
-    protected $status;
+    private $status;
 
     /**
      * Method to set the value of field id

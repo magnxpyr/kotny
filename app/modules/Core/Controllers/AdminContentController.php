@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2016 Magnxpyr Network
+ * @copyright   2006 - 2017 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -8,32 +8,54 @@
 
 namespace Core\Controllers;
 
+use Core\Forms\AdminContentEditForm;
+use Core\Models\Content;
+use DataTables\DataTable;
 use Engine\Mvc\AdminController;
+use Phalcon\Mvc\View;
+use Phalcon\Paginator\Adapter\Model as Paginator;
 
 class AdminContentController extends AdminController
 {
+    public function initialize()
+    {
+        parent::initialize();
+
+        $this->assets->collection('footer-js')->addJs("vendor/tinymce/tinymce.min.js");
+        $this->assets->collection('footer-js')->addJs("vendor/tinymce/jquery.tinymce.min.js");
+    }
+
     /**
      * Index action
      */
     public function indexAction()
     {
-        $this->setTitle('Menu Type');
+        $this->setTitle('Articles');
+    }
 
-        $numberPage = 1;
+    public function searchAction()
+    {
+        $builder = $this->modelsManager->createBuilder()
+            ->columns('c.id, c.title, cy.title as category, v.name as viewLevel, c.featured, u.username, c.created_at, c.status, c.hits')
+            ->addFrom('Core\Models\Content', 'c')
+            ->addFrom('Core\Models\Category', 'cy')
+            ->addFrom('Core\Models\User', 'u')
+            ->addFrom('Core\Models\ViewLevel', 'v')
+            ->where('c.category = cy.id')
+            ->andWhere('c.view_level = v.id')
+            ->andWhere('c.created_by = u.id');
 
-        $menuType = MenuType::find();
+//        $builder = $this->modelsManager->createQuery("SELECT c.id, c.title, cy.title as category, v.name as viewLevel, c.featured, u.username, c.created_at, c.status, c.hits
+//        FROM \Core\Models\Content c, \Core\Models\Category cy, \Core\Models\User u, \Core\Models\ViewLevel v WHERE c.category = cy.id
+//        and c.view_level = v.id and c.created_by = u.id")->execute();
 
-        if (count($menuType) == 0) {
-            $this->flash->notice("The search did not find any menu");
-        }
+        $columns = ['c.id', 'c.title', ['cy.title', 'alias' => 'category'], ['v.name', 'alias' => 'viewLevel'],
+            'c.featured', 'u.username', 'c.created_at', 'c.status', 'c.hits'];
 
-        $paginator = new Paginator([
-            "data" => $menuType,
-            "limit"=> 10,
-            "page" => $numberPage
-        ]);
-
-        $this->view->setVar('page', $paginator->getPaginate());
+        $dataTables = new DataTable();
+        $dataTables->fromBuilder($builder, $columns)->sendResponse();
+//        $dataTables->fromResultSet($builder, $columns)->sendResponse();
+//        $dataTables->fromArray($builder)->sendResponse();
     }
 
     /**
@@ -41,10 +63,10 @@ class AdminContentController extends AdminController
      */
     public function createAction()
     {
-        $this->setTitle('Create Menu');
-        $form = new AdminMenuTypeEditForm();
+        $this->setTitle('Create Article');
+        $form = new AdminContentEditForm();
         $this->view->setVar('form', $form);
-        $this->view->render('admin-menu-type', 'edit');
+        $this->view->render('admin-content', 'edit');
         $this->view->setRenderLevel(View::LEVEL_ACTION_VIEW);
     }
 
@@ -55,23 +77,21 @@ class AdminContentController extends AdminController
      */
     public function editAction($id)
     {
-        $this->setTitle('Edit Menu');
-        $form = new AdminMenuTypeEditForm();
+        $this->setTitle('Edit Article');
+        $form = new AdminContentEditForm();
         $this->view->setVar('form', $form);
         if (!$this->request->isPost()) {
-            $menuType = MenuType::findFirstById($id);
-            if (!$menuType) {
-                $this->flash->error("Menu was not found");
+            $model = Content::findFirstById($id);
+            if (!$model) {
+                $this->flash->error("Article was not found");
 
                 $this->dispatcher->forward([
                     "action" => "index"
                 ]);
                 return;
             }
-
-            $this->tag->setDefault("id", $menuType->getId());
-            $this->tag->setDefault("title", $menuType->getTitle());
-            $this->tag->setDefault("description", $menuType->getDescription());
+            
+            $form->setEntity($model);
         }
     }
 
@@ -87,20 +107,21 @@ class AdminContentController extends AdminController
             return;
         }
 
-        $form = new AdminMenuTypeEditForm();
+        $form = new AdminContentEditForm();
         $id = $this->request->getPost('id');
         if (!empty($id)) {
-            $menu = MenuType::findFirstById($this->request->getPost('id'));
+            $menu = Content::findFirstById($this->request->getPost('id'));
         } else {
-            $menu = new MenuType();
+            $menu = new Content();
         }
 
-        $form->bind($this->request->getPost(), $menu);
+        $form->bind($_POST, $menu);
         if (!$form->isValid()) {
             $this->flashErrors($form);
 
             $this->dispatcher->forward([
-                "action" => "new"
+                "action" => "edit",
+                "params" => [$id]
             ]);
             return;
         }
@@ -109,14 +130,15 @@ class AdminContentController extends AdminController
             $this->flashErrors($menu);
 
             $this->dispatcher->forward([
-                "action" => "new"
+                "action" => "edit",
+                "params" => [$id]
             ]);
             return;
         }
 
-        $this->flash->success("Menu was updated successfully");
+        $this->flash->success("Article was updated successfully");
 
-        $this->response->redirect('admin/core/menu-type/index')->send();
+        $this->response->redirect('admin/core/content/index')->send();
         return;
     }
 
@@ -127,15 +149,12 @@ class AdminContentController extends AdminController
      */
     public function deleteAction($id)
     {
-        if (!$this->request->isAjax() || !$this->request->isPost()) {
-            return;
-        }
-        $menuType = MenuType::findFirstById($id);
-        if (!$menuType) {
+        $model = Content::findFirstById($id);
+        if (!$model) {
             return;
         }
 
-        if (!$menuType->delete()) {
+        if (!$model->delete()) {
             return;
         }
 

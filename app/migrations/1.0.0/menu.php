@@ -1,6 +1,6 @@
 <?php 
 /**
- * @copyright   2006 - 2016 Magnxpyr Network
+ * @copyright   2006 - 2017 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -34,12 +34,6 @@ class MenuMigration_100 extends Migration
                         'notNull' => true,
                         'after' => 'id'
                     ]),
-                    new Column('type', [ //module,link
-                        'type' => Column::TYPE_VARCHAR,
-                        'size' => 24,
-                        'notNull' => true,
-                        'after' => 'menu_type_id'
-                    ]),
                     new Column('title', [
                         'type' => Column::TYPE_VARCHAR,
                         'size' => 255,
@@ -50,11 +44,6 @@ class MenuMigration_100 extends Migration
                         'type' => Column::TYPE_VARCHAR,
                         'size' => 255,
                         'after' => 'title'
-                    ]),
-                    new Column('link', [ //url
-                        'type' => Column::TYPE_VARCHAR,
-                        'size' => 255,
-                        'after' => 'path'
                     ]),
                     new Column('status', [ //0-inactive,1-active,2-trashed
                         'type' => Column::TYPE_INTEGER,

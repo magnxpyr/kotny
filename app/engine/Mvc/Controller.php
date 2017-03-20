@@ -1,12 +1,13 @@
 <?php
 /**
- * @copyright   2006 - 2016 Magnxpyr Network
+ * @copyright   2006 - 2017 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
 namespace Engine\Mvc;
+use Engine\Meta;
 use Phalcon\Assets\Filters\Cssmin;
 use Phalcon\Assets\Filters\Jsmin;
 
@@ -16,17 +17,30 @@ use Phalcon\Assets\Filters\Jsmin;
  */
 abstract class Controller extends \Phalcon\Mvc\Controller
 {
+    use Meta;
+    
     /**
      * Initializes the controller
      * @return void
      */
     protected function initialize()
     {
-        $this->view->setVar('title', '');
         if(!$this->request->isAjax()) {
+            $this->setMetaDefaults();
             $this->setupAssets();
-            $this->setTitle(null);
         }
+    }
+
+    protected function setMetaDefaults()
+    {
+        $this->view->setVar('token', $this->tokenManager->getToken());
+        $this->view->setVar('title', '');
+        $this->view->setVar('metaShowAuthor', $this->config->app->meta->showAuthor);
+        $this->view->setVar('metaDescription', $this->config->app->meta->description);
+        $this->view->setVar('metaAuthor', '');
+        $this->view->setVar('metaKeywords', $this->config->app->meta->keywords);
+        $this->view->setVar('metaContentRights', $this->config->app->meta->contentRights);
+        $this->view->setVar('metaRobots', $this->config->app->meta->robots);
     }
 
     /**
@@ -36,7 +50,6 @@ abstract class Controller extends \Phalcon\Mvc\Controller
     protected function setTitle($title, $headerOnly = false)
     {
         if($title === null) {
-            $this->view->setVar('title', '');
             return;
         }
         switch($this->config->app->siteNameLocation) {
@@ -91,6 +104,7 @@ abstract class Controller extends \Phalcon\Mvc\Controller
             ->setTargetPath(PUBLIC_PATH . 'assets/default/js/header.min.js')
             ->setTargetUri('assets/default/js/header.min.js')
             ->addJs('vendor/jquery/jquery-1.11.3.min.js')
+            ->addJs('assets/common/js/mg.js')
             ->addJs('vendor/jquery-ui/jquery-ui.min.js')
             ->addJs('vendor/bootstrap/js/bootstrap.min.js')
             ->addJs('vendor/jquery/extra/jquery.slimscroll.min.js')
@@ -109,8 +123,7 @@ abstract class Controller extends \Phalcon\Mvc\Controller
     public function returnJSON($response)
     {
         $this->view->disable();
-        $this->response->setContentType('application/json', 'UTF-8');
-        $this->response->setContent(json_encode($response));
+        $this->response->setJsonContent($response);
         $this->response->send();
     }
 }

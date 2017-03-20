@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2016 Magnxpyr Network
+ * @copyright   2006 - 2017 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -63,19 +63,16 @@ class AdminWidgetController extends AdminController
         $form = new AdminWidgetEditForm();
         $this->view->setVar('form', $form);
         if (!$this->request->isPost()) {
-            $menuType = Widget::findFirstById($id);
-            if (!$menuType) {
-                $this->flash->error("Menu was not found");
+            $model = Widget::findFirstById($id);
+            if (!$model) {
+                $this->flash->error("Widget was not found");
 
                 $this->dispatcher->forward([
                     "action" => "index"
                 ]);
                 return;
             }
-
-            $this->tag->setDefault("id", $menuType->getId());
-            $this->tag->setDefault("status", $menuType->getStatus());
-            $this->tag->setDefault("description", $menuType->getDescription());
+            $form->setEntity($model);
         }
     }
 
@@ -94,26 +91,28 @@ class AdminWidgetController extends AdminController
         $form = new AdminWidgetEditForm();
         $id = $this->request->getPost('id');
         if (!empty($id)) {
-            $menu = Widget::findFirstById($this->request->getPost('id'));
+            $model = Widget::findFirstById($this->request->getPost('id'));
         } else {
-            $menu = new Widget();
+            $model = new Widget();
         }
 
-        $form->bind($this->request->getPost(), $menu);
+        $form->bind($_POST, $model);
         if (!$form->isValid()) {
             $this->flashErrors($form);
 
             $this->dispatcher->forward([
-                "action" => "new"
+                "action" => "edit",
+                "params" => [$id]
             ]);
             return;
         }
 
-        if (!$menu->save()) {
-            $this->flashErrors($menu);
+        if (!$model->save()) {
+            $this->flashErrors($model);
 
             $this->dispatcher->forward([
-                "action" => "new"
+                "action" => "edit",
+                "params" => [$id]
             ]);
             return;
         }
@@ -125,21 +124,18 @@ class AdminWidgetController extends AdminController
     }
 
     /**
-     * Deletes a widget
+     * Ajax action that deletes a widget
      *
      * @param string $id
      */
     public function deleteAction($id)
     {
-        if (!$this->request->isAjax() || !$this->request->isPost()) {
-            return;
-        }
-        $menuType = Widget::findFirstById($id);
-        if (!$menuType) {
+        $modelType = Widget::findFirstById($id);
+        if (!$modelType) {
             return;
         }
 
-        if (!$menuType->delete()) {
+        if (!$modelType->delete()) {
             return;
         }
 

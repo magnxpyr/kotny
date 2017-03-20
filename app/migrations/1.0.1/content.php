@@ -1,6 +1,6 @@
 <?php 
 /**
- * @copyright   2006 - 2016 Magnxpyr Network
+ * @copyright   2006 - 2017 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -29,7 +29,6 @@ class ContentMigration_101 extends Migration
                     ]),
                     new Column('title', [
                         'type' => Column::TYPE_VARCHAR,
-                        'notNull' => true,
                         'size' => 255,
                         'after' => 'id'
                     ]),
@@ -89,11 +88,17 @@ class ContentMigration_101 extends Migration
                         'size' => 2,
                         'after' => 'status'
                     ]),
+                    new Column('published_at', [
+                        'type' => Column::TYPE_INTEGER,
+                        'notNull' => true,
+                        'size' => 11,
+                        'after' => 'view_level'
+                    ]),
                     new Column('created_at', [
                         'type' => Column::TYPE_INTEGER,
                         'notNull' => true,
                         'size' => 11,
-                        'after' => 'rgt'
+                        'after' => 'published_at'
                     ]),
                     new Column('created_by', [
                         'type' => Column::TYPE_INTEGER,

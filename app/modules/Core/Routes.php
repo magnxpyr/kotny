@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2016 Magnxpyr Network
+ * @copyright   2006 - 2017 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -22,23 +22,47 @@ class Routes {
         $router->add('/', [
             'controller' => 'index',
             'action' => 'index'
-        ])->setName('core-ca');
+        ])->setName('core-home');
 
-        $router->add('/:controller', [
-            'controller' => 1,
-            'action' => 'index'
-        ])->setName('core-ca');
+//        $router->add('/:controller', [
+//            'controller' => 1,
+//            'action' => 'index'
+//        ])->setName('core-ca');
+//
+//        $router->add('/:controller/:action', [
+//            'controller' => 1,
+//            'action' => 2,
+//        ])->setName('core-ca');
+//
+//        $router->add('/:controller/:action/:params', [
+//            'controller' => 1,
+//            'action' => 2,
+//            'params' => 3,
+//        ])->setName('core-cap');
 
-        $router->add('/:controller/:action', [
-            'controller' => 1,
-            'action' => 2,
-        ])->setName('core-ca');
+        // Article
+        $router->add('/([a-z]+)/([0-9]+)-([a-zA-Z0-9\-]+)', [
+            'controller' => 'content',
+            'action' => 'article',
+            'category' => 1,
+            'articleId' => 2,
+            'articleAlias' => 3
+        ])->setName('core-article');
 
-        $router->add('/:controller/:action/:params', [
-            'controller' => 1,
-            'action' => 2,
-            'params' => 3,
-        ])->setName('core-cap');
+        // Category
+        // Category
+        $router->add('/([a-z]+)', [
+            'controller' => 'content',
+            'action' => 'category',
+            'category' => 1
+        ])->setName('core-category');
+
+        $router->add('/([a-z]+)/([0-9]+)', [
+            'controller' => 'content',
+            'action' => 'category',
+            'category' => 1,
+            'page' => 2
+        ])->setName('core-categoryWithPage');
 
         $router->add('/:module/:controller/:action/:params', [
             'module' => 1,
@@ -62,13 +86,12 @@ class Routes {
         ))->convert('controller', function($controller) {
             return "admin-$controller";
         })->setName('admin-mcap');
-/*
-        $router->add('/:username', [
+
+        // User
+        $router->add('/user/([a-zA-Z0-9\-\.]+)', [
             'module' => 'core',
             'controller' => 'user',
-            'action' => 'index',
-            'username' => 1
+            'action' => 1,
         ])->setName('user-home');
-*/
     }
 }

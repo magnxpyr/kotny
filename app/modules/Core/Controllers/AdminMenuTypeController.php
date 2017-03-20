@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2016 Magnxpyr Network
+ * @copyright   2006 - 2017 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -77,9 +77,7 @@ class AdminMenuTypeController extends AdminController
                 return;
             }
 
-            $this->tag->setDefault("id", $menuType->getId());
-            $this->tag->setDefault("title", $menuType->getTitle());
-            $this->tag->setDefault("description", $menuType->getDescription());
+            $form->setEntity($menuType);
         }
     }
 
@@ -103,12 +101,13 @@ class AdminMenuTypeController extends AdminController
             $menu = new MenuType();
         }
 
-        $form->bind($this->request->getPost(), $menu);
+        $form->bind($_POST, $menu);
         if (!$form->isValid()) {
             $this->flashErrors($form);
 
             $this->dispatcher->forward([
-                "action" => "new"
+                "action" => "edit",
+                "params" => [$id]
             ]);
             return;
         }
@@ -117,7 +116,8 @@ class AdminMenuTypeController extends AdminController
             $this->flashErrors($menu);
 
             $this->dispatcher->forward([
-                "action" => "new"
+                "action" => "edit",
+                "params" => [$id]
             ]);
             return;
         }

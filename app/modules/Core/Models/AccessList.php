@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2016 Magnxpyr Network
+ * @copyright   2006 - 2017 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -8,7 +8,7 @@
 
 namespace Core\Models;
 
-use Phalcon\Mvc\Model;
+use Engine\Mvc\Model;
 use Phalcon\Mvc\Model\EagerLoadingTrait;
 
 /**
@@ -17,32 +17,30 @@ use Phalcon\Mvc\Model\EagerLoadingTrait;
  */
 class AccessList extends Model
 {
-    use EagerLoadingTrait;
+    /**
+     * @var integer
+     */
+    private $id;
 
     /**
      * @var integer
      */
-    protected $id;
+    private $role_id;
 
     /**
      * @var integer
      */
-    protected $role_id;
-
-    /**
-     * @var integer
-     */
-    protected $resource_id;
+    private $resource_id;
 
     /**
      * @var string
      */
-    protected $access_name;
+    private $access_name;
 
     /**
      * @var integer
      */
-    protected $status;
+    private $status;
 
     /**
      * Method to set the value of field id

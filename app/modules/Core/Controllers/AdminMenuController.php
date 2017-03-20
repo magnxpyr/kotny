@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2016 Magnxpyr Network
+ * @copyright   2006 - 2017 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -115,6 +115,8 @@ class AdminMenuController extends AdminController
      */
     public function editAction($id)
     {
+        $form = new AdminMenuEditForm();
+        $this->view->setVar('form', $form);
         if (!$this->request->isPost()) {
             $this->setTitle('Edit Menu Item');
             $menu = Menu::findFirstById($id);
@@ -128,17 +130,7 @@ class AdminMenuController extends AdminController
                 return;
             }
 
-            $form = new AdminMenuEditForm();
-            $this->view->setVar('form', $form);
-
-            $this->tag->setDefault("id", $menu->getId());
-            $this->tag->setDefault("menu_type_id", $menu->getMenuTypeId());
-            $this->tag->setDefault("type", $menu->getType());
-            $this->tag->setDefault("title", $menu->getTitle());
-            $this->tag->setDefault("path", $menu->getPath());
-            $this->tag->setDefault("link", $menu->getLink());
-            $this->tag->setDefault("status", $menu->getStatus());
-            $this->tag->setDefault("view_level", $menu->getViewLevel());
+            $form->setEntity($menu);
         }
     }
 
@@ -162,12 +154,13 @@ class AdminMenuController extends AdminController
             $menu = new Menu();
         }
 
-        $form->bind($this->request->getPost(), $menu);
+        $form->bind($_POST, $menu);
         if (!$form->isValid()) {
             $this->flashErrors($form);
 
             $this->dispatcher->forward([
-                "action" => "new"
+                "action" => "edit",
+                "params" => [$id]
             ]);
             return;
         }
@@ -176,12 +169,13 @@ class AdminMenuController extends AdminController
             $this->flashErrors($menu);
 
             $this->dispatcher->forward([
-                "action" => "new"
+                "action" => "edit",
+                "params" => [$id]
             ]);
             return;
         }
 
-        $this->flash->success("Menu was updated successfully");
+        $this->flashSession->success("Menu was updated successfully");
 
         $this->response->redirect('admin/core/menu/index/' . $menu->getMenuTypeId())->send();
         return;
@@ -212,7 +206,7 @@ class AdminMenuController extends AdminController
 
     public function saveTreeAction()
     {
-        if (!$this->request->getPost() || !$this->request->isAjax()) {
+        if (!$_POST || !$this->request->isAjax()) {
             return;
         }
 
@@ -224,6 +218,8 @@ class AdminMenuController extends AdminController
                 if ($model) {
                     if ($el['parent_id']) {
                         $model->setParentId($el['parent_id']);
+                    } else {
+                        $model->setParentId(0);
                     }
                     $model->setLevel($el['depth']);
                     $model->setLft($el['left']);

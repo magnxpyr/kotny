@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2016 Magnxpyr Network
+ * @copyright   2006 - 2017 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -72,13 +72,7 @@ class AdminUserController extends AdminController
                 ]);
                 return;
             }
-
-            $this->tag->setDefault("id", $model->getId());
-            $this->tag->setDefault("username", $model->getUsername());
-            $this->tag->setDefault("password", $model->getPassword());
-            $this->tag->setDefault("email", $model->getEmail());
-            $this->tag->setDefault("role_id", $model->getRoleId());
-            $this->tag->setDefault("status", $model->getStatus());
+            $form->setEntity($model);
         }
     }
 
@@ -102,12 +96,13 @@ class AdminUserController extends AdminController
             $menu = new User();
         }
 
-        $form->bind($this->request->getPost(), $menu);
+        $form->bind($_POST, $menu);
         if (!$form->isValid()) {
             $this->flashErrors($form);
 
             $this->dispatcher->forward([
-                "action" => "new"
+                "action" => "edit",
+                "params" => [$id]
             ]);
             return;
         }
@@ -116,7 +111,8 @@ class AdminUserController extends AdminController
             $this->flashErrors($menu);
 
             $this->dispatcher->forward([
-                "action" => "new"
+                "action" => "edit",
+                "params" => [$id]
             ]);
             return;
         }

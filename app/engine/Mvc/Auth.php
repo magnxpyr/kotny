@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2016 Magnxpyr Network
+ * @copyright   2006 - 2017 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -10,6 +10,7 @@ namespace Engine\Mvc;
 
 use Core\Models\UserAuthTokens;
 use Core\Models\User;
+use Engine\Meta;
 use Engine\Mvc\Connectors\GoogleConnector;
 use Engine\Mvc\Connectors\FacebookConnector;
 use Phalcon\Mvc\User\Component;
@@ -22,6 +23,15 @@ use Phalcon\Mvc\User\Component;
  */
 class Auth extends Component
 {
+    use Meta;
+
+    const THROTTLING_CACHE_KEY = "THROTTLING";
+    const MAX_LOGIN_TRIES = 5;
+    const THROTTLING_CACHE_LIMIT = 300;
+    const WORK_FACTOR = 12;
+    const SELECTOR_BYTES = 8;
+    const TOKEN_BYTES = 32;
+    
     /**
      * Cookie settings from config
      * @var \stdClass
@@ -53,9 +63,11 @@ class Auth extends Component
                 return $this->loginWithRememberMe();
             }
         } else {
-            if ($form->isValid($this->request->getPost())) {
+            $username = $this->request->getPost('username', 'alphanum');
+            $this->logger->debug("$username trying to login");
+            if ($form->isValid($_POST)) {
                 $this->check([
-                    'username' => $this->request->getPost('username', 'alphanum'),
+                    'username' => $username,
                     'password' => $this->request->getPost('password', 'string'),
                     'remember' => $this->request->getPost('remember', 'int')
                 ]);
@@ -76,30 +88,39 @@ class Auth extends Component
      */
     public function loginWithRememberMe($redirect = true)
     {
-        $cookie = explode(':', $this->cookies->get($this->cookie->name)->getValue());
-        $auth = UserAuthTokens::findFirstBySelector($cookie[0]);
-        if ($auth) {
-            $auth = UserAuthTokens::findFirstBySelector($cookie[0])->load('user');
-        }
-        if ($auth) {
-            // fist check cookie valid and then look for user
-            if ($this->security->hash_equals($auth->getToken(), hash('sha256', trim($cookie[1])))) {
-                if ($auth->getExpires() > time() ) {
-                    // Get user details to set a new session
-                    $this->checkUserFlags($auth->user);
-                    $this->setSession($auth->user);
-                    $this->setRememberMe(null, $auth);
-                    // $this->saveSuccessLogin($user);
+        if ($this->cookies->has($this->cookie->name)) {
+            $cookie = explode(':', $this->cookies->get($this->cookie->name)->getValue());
+            if (count($cookie) == 2) {
+                $model = $this->modelsManager->createBuilder()
+                    ->columns('auth.*, user.*')
+                    ->addFrom('Core\Models\UserAuthTokens', 'auth')
+                    ->addFrom('Core\Models\User', 'user')
+                    ->andWhere('auth.user_id = user.id')
+                    ->andWhere('auth.selector = :id:', ['id' => $cookie[0]])
+                    ->getQuery()
+                    ->getSingleResult();
 
-                    if($redirect) {
-                        return $this->redirectReturnUrl();
+                if ($model) {
+                    // fist check cookie valid and then look for user
+                    if ($this->security->checkHash(trim($cookie[1]), $model->auth->getToken()) && $model->auth->getExpires() > time()) {
+                        // Get user details to set a new session
+                        $this->checkUserFlags($model->user);
+                        $this->setSession($model->user);
+                        $this->setRememberMe(null, $model->auth);
+                         $this->saveSuccessLogin($model->user->getUsername());
+
+                        if ($redirect) {
+                            return $this->redirectReturnUrl();
+                        }
+                        return;
                     }
+                    $model->auth->delete();
+                } else {
+                    $this->cookies->get($this->cookie->name)->delete();
                 }
             }
-            $auth->delete();
         }
-        $this->cookies->get($this->cookie->name)->delete();
-        if($redirect) {
+        if ($redirect) {
             return $this->redirectReturnUrl();
         }
     }
@@ -114,15 +135,17 @@ class Auth extends Component
     {
         $user = User::findFirstByUsername($credentials['username']);
         if (!$user) {
-            //    $this->registerUserThrottling(null);
+            $this->registerUserThrottling($credentials['username']);
+            $this->logger->error($credentials['username'] . ": username or password is invalid");
             throw new Exception($this->t->_('Username or password is invalid'));
         }
         if (!$this->security->checkHash($credentials['password'], $user->getPassword())) {
-            //    $this->registerUserThrottling($user->getId());
+            $this->registerUserThrottling($credentials['username']);
+            $this->logger->error($credentials['username'] . ": username or password is invalid");
             throw new Exception($this->t->_('Username or password is invalid'));
         }
         $this->checkUserFlags($user);
-        //    $this->saveSuccessLogin($user);
+        $this->saveSuccessLogin($user->getUsername());
         if (isset($credentials['remember'])) {
             $this->setRememberMe($user);
         }
@@ -137,14 +160,14 @@ class Auth extends Component
      */
     public function setRememberMe($user = null, $remember = null)
     {
-        $selector = $this->security->generateToken(8);
-        $token = $this->security->generateToken();
+        $selector = $this->security->getRandom()->hex(self::SELECTOR_BYTES);
+        $token = $this->security->getRandom()->hex(self::TOKEN_BYTES);;
         if($remember === null) {
             $remember = new UserAuthTokens();
             $remember->setUserId($user->getId());
         }
         $remember->setSelector($selector);
-        $remember->setToken(hash('sha256', $token));
+        $remember->setToken($this->security->hash($token));
         $remember->setExpires($this->cookie->expire);
         if ($remember->save()) {
             $this->cookies->set(
@@ -179,8 +202,11 @@ class Auth extends Component
             return $this->response->redirect($facebook->getLoginUrl($scope), true)->send();
         }
 
-        $email = isset($facebookUser['email']) ? $facebookUser['email'] : $this->security->generateToken(8) . '@mg.com';
-        $user = User::findFirst(['email = ?1 OR facebook_id= ?2',[1 => $email, 2 => $facebookUser['facebook_id']]]);
+        $email = isset($facebookUser['email']) ? $facebookUser['email'] : $this->security->getRandom()->hex(self::SELECTOR_BYTES) . '@mg.com';
+        $user = User::findFirst([
+            'email = :email: OR facebook_id = :id:',
+            'bind' => ['email' => $email, 'id' => $facebookUser['id']]
+        ]);
         if ($user) {
             $this->checkUserFlags($user);
             $this->setSession($user);
@@ -190,7 +216,7 @@ class Auth extends Component
                 $user->setFacebookData(serialize($facebookUser));
                 $user->save();
             }
-            //    $this->saveSuccessLogin($user);
+            $this->saveSuccessLogin($user->getUsername());
             return $this->redirectReturnUrl();
         } else {
             $user = $this->newUser()
@@ -233,11 +259,12 @@ class Auth extends Component
                 $user->setGplusData(serialize($response['userinfo']));
                 $user->save();
             }
-        //    $this->saveSuccessLogin($user);
+            $this->saveSuccessLogin($user->getUsername());
             return $this->redirectReturnUrl();
         } else {
             $user = $this->newUser()
                 ->setEmail($email)
+                ->setName($name)
                 ->setGplusId($gplusId)
                 ->setGplusName($name)
                 ->setGplusData(serialize($response['userinfo']));
@@ -253,11 +280,11 @@ class Auth extends Component
     protected function newUser()
     {
         $user = new User();
-        $user->setUsername($this->security->generateToken(8));
+        $user->setUsername($this->security->getRandom()->hex(self::SELECTOR_BYTES));
         $user->setRoleId(1);
         $user->setStatus(1);
         $user->setCreatedAt(time());
-        $user->setPassword($this->security->hash($this->security->generateToken(8)));
+        $user->setPassword($this->security->hash($this->security->getRandom()->hex(self::TOKEN_BYTES)));
         return $user;
     }
 
@@ -272,7 +299,6 @@ class Auth extends Component
     {
         if ($user->save()) {
             $this->setSession($user);
-        //    $this->saveSuccessLogin($user);
             return $this->redirectReturnUrl();
         } else {
             foreach ($user->getMessages() as $message) {
@@ -283,56 +309,28 @@ class Auth extends Component
     }
 
     /**
-     * Creates the remember me environment settings the related cookies and generating tokens
-     *
-     * @throws \Engine\Mvc\Exception
-     * @param \Core\Models\User $user
+     * Reset user throttling limit
+     * @param string $userName
      */
-    public function saveSuccessLogin($user)
+    private function saveSuccessLogin($userName)
     {
-        $successLogin = new UserSuccessLogins();
-        $successLogin->setUserId($user->getId());
-        $successLogin->setIpAddress($this->request->getClientAddress());
-        $successLogin->setUserAgent($this->request->getUserAgent());
-        if (!$successLogin->save()) {
-            $messages = $successLogin->getMessages();
-            throw new Exception($messages[0]);
-        }
+        $this->cache->delete($this->getThrottlingCacheKey($userName));
+        $this->logger->debug("$userName throttling level removed");
     }
 
     /**
      * Implements login throttling
      * Reduces the effectiveness of brute force attacks
      *
-     * @param int $user_id
+     * @param string $userName
      */
-    public function registerUserThrottling($user_id)
+    private function registerUserThrottling($userName)
     {
-        $failedLogin = new UserFailedLogins();
-        $failedLogin->setUserId($user_id == null ? new \Phalcon\Db\RawValue('NULL') : $user_id);
-        $failedLogin->setIpAddress($this->request->getClientAddress());
-        $failedLogin->setAttempted(time());
-        $failedLogin->save();
-        $attempts = UserFailedLogins::count([
-            'ip_address = ?0 AND attempted >= ?1',
-            'bind' => [
-                $this->request->getClientAddress(),
-                time() - 3600 * 6
-            ]
-        ]);
-        switch ($attempts) {
-            case 1:
-            case 2:
-                // no delay
-                break;
-            case 3:
-            case 4:
-                sleep(2);
-                break;
-            default:
-                sleep(4);
-                break;
-        }
+        $throttlingCacheKey = $this->getThrottlingCacheKey($userName);
+        $throttlingLevel = $this->cache->get($throttlingCacheKey);
+        $throttlingLevel = $throttlingLevel != null ? $throttlingLevel + 1 : 1;
+        $this->cache->save($throttlingCacheKey, $throttlingLevel, self::THROTTLING_CACHE_LIMIT);
+        $this->logger->debug("$userName throttling level: $throttlingLevel");
     }
 
     /**
@@ -432,10 +430,13 @@ class Auth extends Component
     public function remove()
     {
         $this->setReturnUrl();
-        $fbAppId = $this->config->connectors->facebook->appId; //fb id
+        $fbAppId = $this->config->api->facebook->appId; //fb id
         if ($this->cookies->has($this->cookie->name)) {
             $cookie = explode(':', $this->cookies->get($this->cookie->name));
-            UserAuthTokens::findFirstBySelector($cookie[0])->delete();
+            $userAuthTokens = UserAuthTokens::findFirstBySelector($cookie[0]);
+            if ($userAuthTokens) {
+                $userAuthTokens->delete();
+            }
             $this->cookies->delete($this->cookie->name);
         }
 
@@ -525,8 +526,37 @@ class Auth extends Component
             $this->session->remove('returnUrl');
         } else {
             $returnUrl = $this->url->get();
-            print_r($returnUrl);
         }
         return $this->response->redirect($returnUrl != '/' ? $returnUrl : '', true)->send();
+    }
+
+
+    /**
+     * @param $userName
+     * @return string Login try cache key
+     */
+    private function getThrottlingCacheKey($userName)
+    {
+        //Just get the headers if we can or else use the SERVER global
+        if ( function_exists( 'apache_request_headers' ) ) {
+            $headers = apache_request_headers();
+        } else {
+            $headers = $_SERVER;
+        }
+
+        //Get the forwarded IP if it exists
+        if (array_key_exists('X-Forwarded-For', $headers) &&
+            (filter_var($headers['X-Forwarded-For'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) ||
+                filter_var($headers['X-Forwarded-For'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6))) {
+            $ip = $headers['X-Forwarded-For'];
+        } elseif (array_key_exists('HTTP_X_FORWARDED_FOR', $headers) &&
+            (filter_var($headers['HTTP_X_FORWARDED_FOR'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) ||
+                filter_var($headers['X-HTTP_X_FORWARDED_FOR'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6))) {
+            $ip = $headers['HTTP_X_FORWARDED_FOR'];
+        } else {
+            $ip = filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4);
+        }
+
+        return self::THROTTLING_CACHE_KEY . "-$ip-$userName";
     }
 }

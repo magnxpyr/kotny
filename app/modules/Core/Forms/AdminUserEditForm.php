@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2016 Magnxpyr Network
+ * @copyright   2006 - 2017 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -27,6 +27,8 @@ class AdminUserEditForm extends Form
      */
     public function initialize()
     {
+        parent::initialize();
+        
         // Id
         $id = new Hidden('id');
         $id->setFilters('int');
@@ -56,6 +58,14 @@ class AdminUserEditForm extends Form
                 'email' => $this->t->_('%field% is required', ['field' => $this->t->_('Email')])
             ])
         ]);
+        $this->add($email);
+
+        // Name
+        $email = new Text('name', [
+            'class' => 'form-control'
+        ]);
+        $email->setLabel($this->t->_('Name'));
+        $email->setFilters('string');
         $this->add($email);
 
         // Password

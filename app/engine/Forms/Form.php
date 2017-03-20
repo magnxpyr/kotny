@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2016 Magnxpyr Network
+ * @copyright   2006 - 2017 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -8,6 +8,9 @@
  */
 
 namespace Engine\Forms;
+use Engine\Meta;
+use Phalcon\Forms\Element\Hidden;
+use Phalcon\Validation\Validator\Identical;
 
 /**
  * Class Form
@@ -15,6 +18,62 @@ namespace Engine\Forms;
  */
 class Form extends \Phalcon\Forms\Form
 {
+    use Meta;
+
+    private $recaptcha;
+
+    private $showRecaptcha;
+
+    /**
+     * @param bool $recaptcha
+     * @param bool $showRecaptcha
+     */
+    public function setRecaptcha($recaptcha, $showRecaptcha = false)
+    {
+        $this->recaptcha = $recaptcha;
+        $this->showRecaptcha = $showRecaptcha;
+
+        if ($recaptcha) {
+            $this->assets->collection('footer-js')->addJs("https://www.google.com/recaptcha/api.js", false);
+        }
+    }
+
+    /**
+     * Render reCaptcha form where is called
+     */
+    public function showRecaptcha()
+    {
+        echo "<div class=\"g-recaptcha\" data-sitekey=\"" . $this->config->api->google->recaptcha->siteKey . "\"></div>";
+    }
+
+    /**
+     * Returns the default value for field 'csrf'
+     */
+    public function getCsrf()
+    {
+        return $this->tokenManager->getToken();
+    }
+    
+    public function initialize()
+    {
+        if (!$this->tokenManager->doesUserHaveToken()) {
+            $this->tokenManager->generateToken();
+        }
+
+        // CSRF
+        $csrf = new Hidden('csrf');
+        $csrf->addValidator(new Identical([
+            'value' => $this->tokenManager->getToken(),
+            'message' => $this->t->_('CSRF validation failed')
+        ]));
+        $csrf->clear();
+        $this->add($csrf);
+    }
+
+    public function setValue($field, $value) {
+        $this->_entity->$field = $value;
+    }
+
     /**
      * Render label and input
      *
@@ -24,7 +83,11 @@ class Form extends \Phalcon\Forms\Form
      */
     public function renderDecorated($name, $attributes = [])
     {
-        $element  = $this->get($name);
+        $element = $this->get($name);
+
+        if ($element->getAttribute("timestamp")) {
+            $element->getForm()->setValue($name, date('Y-m-d', $element->getValue()));
+        }
 
         // Get any generated messages for the current element
         $messages = $this->getMessagesFor($element->getName());
@@ -52,7 +115,7 @@ class Form extends \Phalcon\Forms\Form
             $group .= 'class="form-group" ';
         }
 
-        $label ='';
+        $label = '';
         if (isset($attributes['label'])) {
             foreach ($attributes['label'] as $key => $value) {
                 $label .= "$key=\"$value\"";
@@ -73,9 +136,13 @@ class Form extends \Phalcon\Forms\Form
             $input .= 'class="input-group" ';
         }
 
+        if ($element->getAttribute("placeholder")) {
+            $input .= 'placeholder="' . $element->getAttribute("placeholder") . '"';
+        }
+
         $html .= '<div '. $group. '>';
         $html .= '<label for="'. $element->getName(). '" '. $label. '>'. $element->getLabel(). '</label>';
-        $html .= '<div '. $input. '>'. $element. '</div>';
+        $html .= '<div ' . $input . '>' . $element . '</div>';
         $html .= '</div>';
         return $html;
     }
@@ -111,6 +178,9 @@ class Form extends \Phalcon\Forms\Form
             $html .= $this->renderDecorated($elemName, $fieldAttribute);
         }
 
+        if ($this->showRecaptcha) {
+            $html .= "<div class=\"g-recaptcha\" data-sitekey=\"" . $this->config->api->google->recaptcha->siteKey . "\"></div>";
+        }
         $html .= '</form>';
         return $html;
     }

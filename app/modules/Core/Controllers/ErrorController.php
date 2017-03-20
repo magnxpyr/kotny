@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2016 Magnxpyr Network
+ * @copyright   2006 - 2017 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -29,6 +29,17 @@ class ErrorController extends Controller
     public function show404Action()
     {
         $this->response->setStatusCode(404, 'Page Not Found');
+
+        if ($this->request->isAjax()) {
+            $obj = new \stdClass();
+            $obj->success = false;
+            $obj->html = "Page not found";
+
+            $this->view->disable();
+            $this->response->setJsonContent($obj);
+            $this->response->send();
+            return false;
+        }
     }
 
     /**

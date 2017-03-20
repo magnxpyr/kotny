@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2016 Magnxpyr Network
+ * @copyright   2006 - 2017 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -8,6 +8,7 @@
 
 namespace Engine\Mvc;
 
+use Engine\Meta;
 use Phalcon\Mvc\Model;
 use Phalcon\Mvc\User\Component;
 use Phalcon\Text;
@@ -18,6 +19,8 @@ use Phalcon\Text;
  */
 class Helper extends Component
 {
+    use Meta;
+    
     private $userRoles = [
         0 => 'All',
         1 => 'Guest',
@@ -118,13 +121,22 @@ class Helper extends Component
     }
 
     /**
+     * @param string $string
+     * @return string
+     */
+    public function makeAlias($string)
+    {
+        return strtolower(str_replace(" ", "-", $string));
+    }
+
+    /**
      * Check if is an admin page
      * @return bool
      */
     public function isBackend()
     {
         $isBackend = false;
-        if (strpos($this->router->getMatchedRoute()->getName(), 'admin') !== false)
+        if ($this->router->getMatchedRoute() != null && strpos($this->router->getMatchedRoute()->getName(), 'admin') !== false)
             $isBackend = true;
 
         return $isBackend;
@@ -153,5 +165,15 @@ class Helper extends Component
     public function uncamelize($str)
     {
         return str_replace('_', '-', Text::uncamelize($str));
+    }
+
+    /**
+     * Decode html entity
+     * @param $str
+     * @return mixed
+     */
+    public function htmlDecode($str)
+    {
+        return html_entity_decode($str);
     }
 }

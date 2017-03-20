@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2016 Magnxpyr Network
+ * @copyright   2006 - 2017 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -30,6 +30,8 @@ class RegisterForm extends Form
      */
     public function initialize()
     {
+        parent::initialize();
+        
         // Username
         $username = new Text('username', [
             'placeholder' => $this->t->_('Username'),

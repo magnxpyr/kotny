@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2016 Magnxpyr Network
+ * @copyright   2006 - 2017 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -105,7 +105,7 @@ class AdminViewLevelController extends AdminController
         }
 
         $roles = [];
-        $post = $this->request->getPost();
+        $post = $_POST;
         foreach ($post['role'] as $role) {
             $post["role$role"] = $role;
             $roles[] = (int)$role;
@@ -117,7 +117,8 @@ class AdminViewLevelController extends AdminController
             $this->flashErrors($form);
 
             $this->dispatcher->forward([
-                "action" => "new"
+                "action" => "edit",
+                "params" => [$id]
             ]);
             return;
         }
@@ -128,7 +129,8 @@ class AdminViewLevelController extends AdminController
             $this->flashErrors($menu);
 
             $this->dispatcher->forward([
-                "action" => "new"
+                "action" => "edit",
+                "params" => [$id]
             ]);
             return;
         }

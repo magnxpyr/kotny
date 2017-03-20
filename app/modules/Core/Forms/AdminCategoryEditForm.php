@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2016 Magnxpyr Network
+ * @copyright   2006 - 2017 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -27,6 +27,8 @@ class AdminCategoryEditForm extends Form
      */
     public function initialize()
     {
+        parent::initialize();
+        
         // Id
         $id = new Hidden('id');
         $id->setFilters('int');
@@ -51,11 +53,7 @@ class AdminCategoryEditForm extends Form
         ]);
         $alias->setLabel($this->t->_('Alias'));
         $alias->setFilters('string');
-        $alias->addValidator(
-            new PresenceOf([
-                'alias' => $this->t->_('%field% is required', ['field' => $this->t->_('Alias')])
-            ])
-        );
+        $alias->setAttribute('placeholder', $this->t->_("Generated from title"));
         $this->add($alias);
 
         // Status

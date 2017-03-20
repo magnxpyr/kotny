@@ -2,12 +2,10 @@
     "name": "magnxpyr/cms",
     "version": "0.1.0",
     "license": "BSD-3-Clause",
-    "title": "Magnxpyr CMS",
-    "description": "Open Source Content Management System (CMS) written with Phalcon PHP Framework 2.0.x.",
+    "description": "Open Source CMS written with Phalcon PHP Framework 3.0.x.",
     "type": "project",
     "keywords": [
         "phalcon",
-        "modules",
         "modular",
         "magnxpyr",
         "php",
@@ -29,15 +27,16 @@
         "issues": "https://github.com/magnxpyr/cms/issues"
     },
     "require": {
-        "php": ">=5.4",
-        "ext-phalcon": "~2.0"
+        "php": ">=5.5",
+        "ext-phalcon": "~3.0"
     },
     "require-dev": {
-        "phalcon/incubator": "dev-master",
-        "m1ome/phalcon-datatables" : "dev-master",
+        "phalcon/incubator": "3.0.*",
+        "magnxpyr/phalcon-datatables" : "1.*",
         "swiftmailer/swiftmailer": "5.4.*",
-        "facebook/php-sdk-v4" : "4.0.*",
-        "google/apiclient": "1.1.2"
+        "facebook/graph-sdk" : "5.4.*",
+        "google/apiclient": "2.0.*",
+        "guillermomartinez/filemanager-php": "0.1.*"
     },
     "config": {
         "vendor-dir": "app/vendor"

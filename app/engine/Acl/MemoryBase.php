@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2016 Magnxpyr Network
+ * @copyright   2006 - 2017 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -9,6 +9,7 @@
 namespace Engine\Acl;
 
 use Engine\Behavior\AclBehavior;
+use Engine\Meta;
 use Phalcon\Acl\Adapter\Memory as AclMemory;
 
 /**
@@ -17,7 +18,8 @@ use Phalcon\Acl\Adapter\Memory as AclMemory;
  */
 class MemoryBase extends AclMemory
 {
-    use AclBehavior;
+    use Meta,
+        AclBehavior;
 
     /**
      * Check if current user has access to view

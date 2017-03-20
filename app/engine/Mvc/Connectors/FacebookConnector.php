@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2016 Magnxpyr Network
+ * @copyright   2006 - 2017 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -8,10 +8,10 @@
 
 namespace Engine\Mvc\Connectors;
 
-use Facebook\FacebookSession;
-use Facebook\FacebookRequest;
-use Facebook\FacebookRequestException;
-use Facebook\FacebookRedirectLoginHelper;
+use Engine\Meta;
+use Facebook\Exceptions\FacebookResponseException;
+use Facebook\Exceptions\FacebookSDKException;
+use Facebook\Facebook;
 use Phalcon\Di\Injectable;
 
 /**
@@ -20,20 +20,23 @@ use Phalcon\Di\Injectable;
  */
 class FacebookConnector extends Injectable
 {
+    use Meta;
+
+    private $fb;
     private $fbSession;
-    private $helper;
-    private $loginURL;
+    private $fbhelper;
 
     /**
      * Setup connector
      */
     public function __construct()
     {
-        $this->loginURL = $this->helper->getUri('/user/login-with-facebook');
-        FacebookSession::setDefaultApplication(
-            $this->config->connectors->facebook->appId,
-            $this->config->connectors->facebook->secret
-        );
+        $this->fb = new Facebook([
+            'app_id' => $this->config->api->facebook->appId,
+            'app_secret' => $this->config->api->facebook->secret,
+            'default_graph_version' => 'v2.8'
+        ]);
+        $this->fbhelper = $this->fb->getRedirectLoginHelper();
     }
 
     /**
@@ -42,8 +45,7 @@ class FacebookConnector extends Injectable
      */
     public function getLoginUrl($scope = [])
     {
-        $this->helper = new FacebookRedirectLoginHelper($this->loginURL);
-        return $this->helper->getLoginUrl($scope);
+        return $this->fbhelper->getLoginUrl($this->helper->getUri('/user/login-with-facebook'), $scope);
     }
 
     /**
@@ -53,18 +55,35 @@ class FacebookConnector extends Injectable
     public function getUser()
     {
         try {
-            $this->helper  = new FacebookRedirectLoginHelper($this->loginURL);
-            $this->fbSession = $this->helper->getSessionFromRedirect();
-        } catch (FacebookRequestException $e) {
+            $this->fbSession = $this->fbhelper->getAccessToken();
+        } catch (FacebookResponseException $e) {
+            // When Graph returns an error
+//            echo 'Graph returned an error: ' . $e->getMessage();
+            $this->flashSession->error($e->getMessage());
+        } catch (FacebookSDKException $e) {
+            // When validation fails or other local issues
+//            echo 'Facebook SDK returned an error: ' . $e->getMessage();
             $this->flashSession->error($e->getMessage());
         } catch (\Exception $e) {
             $this->flashSession->error($e->getMessage());
         }
         if ($this->fbSession) {
-            $request  = new FacebookRequest($this->fbSession, 'GET', '/me');
-            $response = $request->execute();
-            $fb_user  = $response->getGraphObject()->toArray();
-            return $fb_user;
+            $this->fb->setDefaultAccessToken($this->fbSession);
+            try {
+                $response = $this->fb->get('/me');
+                $userNode = $response->getGraphUser()->asArray();
+                return $userNode;
+            } catch (FacebookResponseException $e) {
+                // When Graph returns an error
+//            echo 'Graph returned an error: ' . $e->getMessage();
+                $this->flashSession->error($e->getMessage());
+            } catch (FacebookSDKException $e) {
+                // When validation fails or other local issues
+//            echo 'Facebook SDK returned an error: ' . $e->getMessage();
+                $this->flashSession->error($e->getMessage());
+            } catch (\Exception $e) {
+                $this->flashSession->error($e->getMessage());
+            }
         }
         return false;
     }

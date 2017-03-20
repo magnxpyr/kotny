@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2016 Magnxpyr Network
+ * @copyright   2006 - 2017 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -8,7 +8,7 @@
 
 namespace Core\Models;
 
-use Phalcon\Mvc\Model;
+use Engine\Mvc\Model;
 use Phalcon\Mvc\Model\EagerLoadingTrait;
 
 /**
@@ -17,8 +17,6 @@ use Phalcon\Mvc\Model\EagerLoadingTrait;
  */
 class UserResetPasswords extends Model
 {
-    use EagerLoadingTrait;
-
     /**
      * Temporary variable to store raw token
      * @var string
@@ -28,22 +26,22 @@ class UserResetPasswords extends Model
     /**
      * @var integer
      */
-    protected $id;
+    private $id;
 
     /**
      * @var integer
      */
-    protected $user_id;
+    private $user_id;
 
     /**
      * @var string
      */
-    protected $token;
+    private $token;
 
     /**
      * @var integer
      */
-    protected $expires;
+    private $expires;
 
     /**
      * Method to set the value of field id

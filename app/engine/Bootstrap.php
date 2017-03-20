@@ -1,32 +1,117 @@
 <?php
 /**
- * @copyright   2006 - 2016 Magnxpyr Network
+ * @copyright   2006 - 2017 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  * @package     Engine
  */
 
+use Engine\TokenManager;
 use Phalcon\Events\Event;
 use Phalcon\Dispatcher;
 
 /**
  * Class Bootstrap
+ * @var \Engine\Mvc\Helper $helper
  */
 class Bootstrap
 {
+    private $di;
+
+    public function __construct()
+    {
+        // The FactoryDefault Dependency Injector automatically register the right services providing a full stack framework
+        $this->di = new \Phalcon\DI\FactoryDefault();
+    }
+
     /**
      * Initialize and run application
      */
     public function run()
     {
+        $this->initConfig();
+
+        $config = $this->getConfig();
+
+        // Getting a request instance
+        $request = new Phalcon\Http\Request();
+        $this->di->setShared('request', $request);
+
+        // Register helper
+        $this->di->setShared('helper', function() {
+            return new \Engine\Mvc\Helper();
+        });
+
+        // Generate urls
+        $url = new Phalcon\Mvc\Url();
+        $url->setBaseUri($this->getConfig()->app->baseUri);
+        $url->setBasePath(ROOT_PATH);
+        $this->di->setShared('url', $url);
+
+        $this->initView();
+        $this->initView(true);
+
+        $this->di->setShared('cookies', function() {
+            $cookies = new \Phalcon\Http\Response\Cookies();
+            $cookies->useEncryption(true);
+            return $cookies;
+        });
+
+        // Start the session from file
+        $session = new \Phalcon\Session\Adapter\Files();
+        $session->start();
+        $this->di->setShared('session', $session);
+
+        // Connect to db
+        $db = new \Phalcon\Db\Adapter\Pdo\Mysql([
+            'host' => $config->database->host,
+            'username' => $config->database->username,
+            'password' => $config->database->password,
+            'dbname' => $config->database->dbname
+        ]);
+        $this->di->setShared('db', $db);
+
+        $response = new \Phalcon\Http\Response();
+        $this->di->setShared('response', $response);
+
+        $this->initCache();
+        $this->initSecurity();
+        $this->initEventManager();
+        
+        // Register assets that will be loaded in every page
+        $this->di->setShared('assets', function() {
+            return new \Engine\Assets\Manager();
+        });
+
+        $escaper = new \Phalcon\Escaper();
+        $this->di->setShared('escaper', $escaper);
+
+        $this->di->setShared('filter', function() use ($escaper) {
+            $filter = new \Phalcon\Filter();
+            $filter->add('escapeHtml', function ($value) use ($escaper) {
+                return $escaper->escapeHtml($value);
+            });
+
+            return $filter;
+        });
+
+
+        $this->di->setShared('logger', function() {
+            return new \Phalcon\Logger\Adapter\File(ROOT_PATH . 'logs/' . date('d-M-Y') . '.log');
+        });
+
+        $this->initMail();
+        $this->initFlash();
+        $this->dispatch();
+    }
+
+    private function initConfig()
+    {
         // Define internal variables
         define('DEFAULT_THEME', 'default');
-        define('THEMES_PATH', '../../../themes/');
+        define('THEMES_PATH', APP_PATH . 'themes/');
         define('MODULES_PATH', APP_PATH . 'modules/');
-
-        // The FactoryDefault Dependency Injector automatically register the right services providing a full stack framework
-        $di = new \Phalcon\DI\FactoryDefault();
 
         // Load config file
         $config = require_once APP_PATH . 'config/config.php';
@@ -38,7 +123,7 @@ class Bootstrap
 
         date_default_timezone_set($config['app']['timezone']);
 
-        define('CACHE_PATH', $config['app']['cacheDir']);
+        define('CACHE_PATH', ROOT_PATH . 'cache/');
         define('DEV', $config['app']['development']);
 
         // set cookies time
@@ -50,7 +135,7 @@ class Bootstrap
         // Registering the registry
         $registry = new \Phalcon\Registry();
         $registry->modules = $modulesList;
-        $di->setShared('registry', $registry);
+        $this->di->setShared('registry', $registry);
 
         // Load loader
         require_once APP_PATH . 'engine/Loader.php';
@@ -60,11 +145,8 @@ class Bootstrap
         unset($modulesConfig['routes']);
         $config = new \Phalcon\Config(array_merge_recursive($config, $modulesConfig));
         $loader->init($config->loader->namespaces);
-        $di->setShared('config', $config);
+        $this->di->setShared('config', $config);
 
-        // Getting a request instance
-        $request = new Phalcon\Http\Request();
-        $di->setShared('request', $request);
 
         // Register routers with default behavior
         // Set 'false' to disable default behavior. After that define all routes or you get 404
@@ -80,130 +162,11 @@ class Bootstrap
             $route = new $routeClass;
             $route->init($router);
         }
-        $di->setShared('router', $router);
+        $this->di->setShared('router', $router);
+    }
 
-        // Register helper
-        $di->setShared('helper', function() {
-            return new \Engine\Mvc\Helper();
-        });
-
-        // Generate urls
-        $url = new Phalcon\Mvc\Url();
-        $url->setBaseUri($config->app->baseUri);
-        $url->setBasePath(ROOT_PATH);
-        $di->setShared('url', $url);
-
-        // Setting up the view component
-        $di->setShared('view', function() use ($config, $di) {
-            $view = new \Phalcon\Mvc\View();
-            $view->setLayoutsDir(THEMES_PATH . DEFAULT_THEME . '/layouts/');
-            $view->setPartialsDir(THEMES_PATH . DEFAULT_THEME . '/partials/');
-            $view->setMainView(THEMES_PATH . DEFAULT_THEME . '/index');
-            $view->setLayout(DEFAULT_THEME);
-
-            $volt = new \Phalcon\Mvc\View\Engine\Volt($view, $di);
-            if(DEV) {
-                // Prevent caching annoyances
-                $voltOptions['compileAlways'] = true;
-            }
-            $voltOptions['compiledPath'] = $config->app->cacheDir . 'volt/';
-            $voltOptions['compiledSeparator'] = '_';
-            $volt->setOptions($voltOptions);
-            $compiler = $volt->getCompiler();
-            // add a function
-            $compiler->addFunction(
-                'f',
-                function ($resolvedArgs, $exprArgs) {
-                    return 'function($model){ return ' . trim($resolvedArgs,"'\"") .';}';
-                }
-            );
-            $phtml = new \Phalcon\Mvc\View\Engine\Php($view, $di);
-
-            $view->registerEngines([
-                '.volt' => $volt,
-                '.phtml' => $phtml
-            ]);
-            return $view;
-        });
-
-        // Setting up the widget view component
-        $di->set('viewWidget', function() use ($config, $di) {
-            $view = new \Phalcon\Mvc\View();
-            $view->setLayoutsDir(THEMES_PATH . DEFAULT_THEME . '/layouts/');
-            $view->setLayout('widget');
-/*
-            // Disable several levels
-            $view->disableLevel(array(
-                \Phalcon\Mvc\View::LEVEL_MAIN_LAYOUT => true,
-                \Phalcon\Mvc\View::LEVEL_BEFORE_TEMPLATE => true,
-                \Phalcon\Mvc\View::LEVEL_AFTER_TEMPLATE  => true
-            ));
-*/
-            $volt = new \Phalcon\Mvc\View\Engine\Volt($view, $di);
-            if(DEV) {
-                // Prevent caching annoyances
-                $voltOptions['compileAlways'] = true;
-            }
-            $voltOptions['compiledPath'] = $config->app->cacheDir . 'volt/';
-            $voltOptions['compiledSeparator'] = 'widget_';
-            $volt->setOptions($voltOptions);
-            $compiler = $volt->getCompiler();
-            // add a function
-            $compiler->addFunction(
-                'f',
-                function ($resolvedArgs, $exprArgs) {
-                    return 'function($model){ return ' . trim($resolvedArgs,"'\"") .';}';
-                }
-            );
-            $phtml = new \Phalcon\Mvc\View\Engine\Php($view, $di);
-
-            $view->registerEngines([
-                '.volt' => $volt,
-                '.phtml' => $phtml
-            ]);
-            return $view;
-        });
-
-        $di->setShared('widget', function() {
-            return new Engine\Widget\Widget();
-        });
-
-        // Start the session from file
-        $session = new \Phalcon\Session\Adapter\Files();
-        $session->start();
-        $di->setShared('session', $session);
-
-        // Set auth in di
-        $di->setShared('auth', function() {
-            return new Engine\Mvc\Auth();
-        });
-
-
-        // Connect to db
-        $db = new \Phalcon\Db\Adapter\Pdo\Mysql([
-            'host' => $config->database->host,
-            'username' => $config->database->username,
-            'password' => $config->database->password,
-            'dbname' => $config->database->dbname
-        ]);
-        $di->setShared('db', $db);
-
-        // Register ACL to DI
-        $di->setShared('acl', function () use ($config, $db, $di) {
-            switch($config->app->aclAdapter) {
-                case 'memory':
-                    $acl = new \Engine\Acl\Memory();
-                    return $acl->getAcl();
-                case 'database':
-                    $acl = new \Engine\Acl\Database();
-                    return $acl->getAcl();
-            }
-        });
-
-        $response = new \Phalcon\Http\Response();
-        $di->setShared('response', $response);
-
-
+    private function initEventManager()
+    {
         // Obtain the standard eventsManager from the DI
         $eventsManager = new \Phalcon\Events\Manager();
 
@@ -221,50 +184,106 @@ class Bootstrap
         //Bind the EventsManager to the Dispatcher
         $dispatcher->setEventsManager($eventsManager);
 
-        $di->setShared('dispatcher', $dispatcher);
+        $this->di->setShared('dispatcher', $dispatcher);
+    }
+
+    /**
+     * @param $widget bool
+     */
+    private function initView($widget = false)
+    {
+        $view = new \Phalcon\Mvc\View();
+        $view->setLayoutsDir(THEMES_PATH . DEFAULT_THEME . '/layouts/');
+
+        if ($widget) {
+            $view->setLayout('widget');
+        } else {
+            $view->setPartialsDir(THEMES_PATH . DEFAULT_THEME . '/partials/');
+            $view->setMainView(THEMES_PATH . DEFAULT_THEME . '/index');
+            $view->setLayout(DEFAULT_THEME);
+        }
+
+        $volt = new \Phalcon\Mvc\View\Engine\Volt($view, $this->di);
+        if(DEV) {
+            // Prevent caching annoyances
+            $voltOptions['compileAlways'] = true;
+        }
+        $voltOptions['compiledPath'] = CACHE_PATH . 'volt/';
+        $voltOptions['compiledSeparator'] = $widget ? 'widget_' : '_';
+        $volt->setOptions($voltOptions);
+        $compiler = $volt->getCompiler();
+        // add a function
+        $compiler->addFunction(
+            'f',
+            function ($resolvedArgs, $exprArgs) {
+                return 'function($model){ return ' . trim($resolvedArgs,"'\"") .';}';
+            }
+        );
+        $phtml = new \Phalcon\Mvc\View\Engine\Php($view, $this->di);
+
+        $view->registerEngines([
+            '.volt' => $volt,
+            '.phtml' => $phtml
+        ]);
+
+        if ($widget) {
+            $this->di->setShared('viewWidget', $view);
+
+            $this->di->setShared('widget', function() {
+                return new Engine\Widget\Widget();
+            });
+        } else {
+            $this->di->setShared('view', $view);
+        }
+    }
+
+    private function initSecurity()
+    {
+        $config = $this->getConfig();
+
+        $this->di->setShared('auth', function() {
+            return new Engine\Mvc\Auth();
+        });
+
+        $tokenManager = new TokenManager();
+        $this->di->setShared('tokenManager', $tokenManager);
 
         // Set up crypt service
-        $di->setShared('crypt', function() use ($config) {
+        $this->di->setShared('crypt', function() use ($config) {
             $crypt = new \Phalcon\Crypt();
             $crypt->setKey($config->app->cryptKey);
             return $crypt;
         });
 
         //  Set security options
-        $di->setShared('security', function() {
-            $security = new \Engine\Security();
-            $security->setRandomBytes(32);
-            $security->setWorkFactor(12);
+        $this->di->setShared('security', function() {
+            $security = new \Phalcon\Security();
+            $security->setRandomBytes(\Engine\Mvc\Auth::TOKEN_BYTES);
+            $security->setWorkFactor(\Engine\Mvc\Auth::WORK_FACTOR);
+            $security->setDefaultHash(Phalcon\Security::CRYPT_DEFAULT);
             return $security;
         });
 
+        $acl = null;
+        switch($config->app->aclAdapter) {
+            case 'memory':
+                $acl = new \Engine\Acl\Memory();
+                break;
+            case 'database':
+                $acl = new \Engine\Acl\Database();
+                break;
+        }
 
-        // Set cache
-        $cacheFrontend = new \Phalcon\Cache\Frontend\Data([
-            "lifetime" => 172800,
-            "prefix" => '_',
-        ]);
-
-        $cache = new \Phalcon\Cache\Backend\File($cacheFrontend, [
-            "cacheDir" => $config->app->cacheDir . "backend/",
-            "lifetime" => 172800
-        ]);
-
-        $di->setShared('cache', $cache);
-        $di->setShared('modelsCache', $cache);
-
-        // If the configuration specify the use of metadata adapter use it or use memory otherwise
-        $di->setShared('modelsMetadata', function () {
-            return new \Phalcon\Mvc\Model\MetaData\Memory();
-        });
-
-        // Register assets that will be loaded in every page
-        $di->setShared('assets', function() {
-            return new \Phalcon\Assets\Manager();
-        });
-
+        // Register ACL to DI
+        $this->di->setShared('acl', $acl->getAcl());
+    }
+    
+    private function initMail()
+    {
+        $config = $this->getConfig();
+        
         // Register mail service
-        $di->set('mail', function() use ($config) {
+        $this->di->set('mail', function() use ($config) {
             $settings = [
                 'from' => $config->mail->from->toArray(),
                 'driver' => $config->mail->driver,
@@ -280,7 +299,10 @@ class Bootstrap
             }
             return new \Phalcon\Mailer\Manager($settings);
         });
+    }
 
+    private function initFlash()
+    {
         // Register the flash service with custom CSS classes
         $flash = [
             'success' => 'alert alert-success alert-dismissible',
@@ -289,40 +311,89 @@ class Bootstrap
             'error'   => 'alert alert-danger alert-dismissible'
         ];
 
-        $di->setShared('flash', function() use ($flash) {
+        $this->di->setShared('flash', function() use ($flash) {
             return new \Phalcon\Flash\Direct($flash);
         });
 
-        $di->setShared('flashSession', function() use ($flash) {
+        $this->di->setShared('flashSession', function() use ($flash) {
             return new \Phalcon\Flash\Session($flash);
         });
+    }
+
+    private function initCache()
+    {
+        $config = $this->getConfig();
+        
+        // Set cache
+        $cacheFrontend = new \Phalcon\Cache\Frontend\Data([
+            "lifetime" => 172800,
+            "prefix" => '_',
+        ]);
+
+        $cache = null;
+        switch ($config->app->cache->adapter) {
+            case 'file':
+                $cache = new \Phalcon\Cache\Backend\File($cacheFrontend, [
+                    "cacheDir" => CACHE_PATH . 'backend/'
+                ]);
+                break;
+            case 'memcache':
+                $cache = new \Phalcon\Cache\Backend\Memcache(
+                    $cacheFrontend, [
+                    "host" => $config->app->cache->host,
+                    "port" => $config->app->cache->port,
+                ]);
+                break;
+            case 'memcached':
+                $cache = new \Phalcon\Cache\Backend\Libmemcached(
+                    $cacheFrontend, [
+                    "host" => $config->app->cache->host,
+                    "port" => $config->app->cache->port,
+                ]);
+                break;
+        }
+
+        $this->di->setShared('cache', $cache);
+        $this->di->setShared('modelsCache', $cache);
+
+        // If the configuration specify the use of metadata adapter use it or use memory otherwise
+        $this->di->setShared('modelsMetadata', function () {
+            return new \Phalcon\Mvc\Model\MetaData\Memory();
+        });
+    }
+
+    private function dispatch()
+    {
+        $config = $this->getConfig();
+        $request = $this->di->getShared('request');
 
         if (DEV) {
             // Load development options
-            new \Engine\Development($di);
+            new \Engine\Development($this->di);
         }
 
         // Handle the request
-        $application = new \Phalcon\Mvc\Application($di);
+        $application = new \Phalcon\Mvc\Application($this->di);
         $application->registerModules($config->modules->toArray());
-        $application->setDI($di);
-        if ($request->isAjax()) {
-            $return = new \stdClass();
-            $return->html = $application->view->getContent();
-            if ($application->view->bodyClass) {
-                $return->bodyClass = $application->view->bodyClass;
-            }
-            $return->success = true;
+        $application->setDI($this->di);
 
-            $headers = $response->getHeaders()->toArray();
-            if (isset($headers[404]) || isset($headers[503])) {
-                $return->success = false;
-            }
-            $application->response->setContentType('application/json', 'UTF-8');
-            $application->response->setContent(json_encode($return));
+        if ($request->isAjax() && $request->getHeader("X-CSRF-Token") != $this->di->getShared('tokenManager')->getToken()) {
+            $obj = new \stdClass();
+            $obj->success = false;
+            $obj->html = "Invalid CSRF Token";
+
+            $application->response->setJsonContent($obj);
+            $application->response->setStatusCode(503);
+            $application->response->send();
+            return false;
         }
 
         // Render
         echo $application->handle()->getContent();
+    }
+
+    private function getConfig()
+    {
+        return $this->di->getShared('config');
     }
 }

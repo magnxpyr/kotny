@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2016 Magnxpyr Network
+ * @copyright   2006 - 2017 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -8,138 +8,87 @@
 
 namespace Core\Controllers;
 
+use Core\Models\Content;
 use Engine\Mvc\Controller;
+use Phalcon\Paginator\Adapter\QueryBuilder as PaginatorQueryBuilder;
 
+/**
+ * Class ContentController
+ * @package Core\Controllers
+ */
 class ContentController extends Controller
 {
     /**
      * Index action
      */
-    public function indexAction()
+    public function categoryAction($category, $page)
     {
-        $this->setTitle('Menu Type');
-
-        $numberPage = 1;
-
-        $menuType = MenuType::find();
-
-        if (count($menuType) == 0) {
-            $this->flash->notice("The search did not find any menu");
-        }
-
-        $paginator = new Paginator([
-            "data" => $menuType,
-            "limit"=> 10,
-            "page" => $numberPage
-        ]);
-
-        $this->view->setVar('page', $paginator->getPaginate());
-    }
-
-    /**
-     * Displays the creation form
-     */
-    public function createAction()
-    {
-        $this->setTitle('Create Menu');
-        $form = new AdminMenuTypeEditForm();
-        $this->view->setVar('form', $form);
-        $this->view->render('admin-menu-type', 'edit');
-        $this->view->setRenderLevel(View::LEVEL_ACTION_VIEW);
-    }
-
-    /**
-     * Edits a menu
-     *
-     * @param int $id
-     */
-    public function editAction($id)
-    {
-        $this->setTitle('Edit Menu');
-        $form = new AdminMenuTypeEditForm();
-        $this->view->setVar('form', $form);
-        if (!$this->request->isPost()) {
-            $menuType = MenuType::findFirstById($id);
-            if (!$menuType) {
-                $this->flash->error("Menu was not found");
-
-                $this->dispatcher->forward([
-                    "action" => "index"
-                ]);
-                return;
+        $builder = $this->modelsManager->createBuilder()
+            ->columns('c.*, cat.*, u.*')
+            ->addFrom('Core\Models\Content', 'c')
+            ->addFrom('Core\Models\Category', 'cat')
+            ->addFrom('Core\Models\User', 'u')
+            ->andWhere('c.category = cat.id')
+            ->andWhere('c.created_by = u.id')
+            ->orderBy('c.created_at DESC');
+            if ($category) {
+                $builder->andWhere('cat.alias = :category:', ['category' => $category]);
             }
 
-            $this->tag->setDefault("id", $menuType->getId());
-            $this->tag->setDefault("title", $menuType->getTitle());
-            $this->tag->setDefault("description", $menuType->getDescription());
-        }
+        $paginator = new PaginatorQueryBuilder([
+            "builder"  => $builder,
+            "limit" => 10,
+            "page"  => $page ? $page : 1
+        ]);
+
+        $this->view->setVar('model', $paginator->getPaginate());
+        $this->view->setVar('category', $category);
     }
 
-    /**
-     * Saves a menu edited
-     */
-    public function saveAction()
+    public function articleAction($catAlias, $articleId, $articleAlias)
     {
-        if (!$this->request->isPost()) {
+        $this->view->setVar('metaAuthor', '');
+        $this->view->setVar('metaDescription', $this->config->app->meta->description);
+        $this->view->setVar('metaKeywords', $this->config->app->meta->keywords);
+
+        $model = $this->modelsManager->createBuilder()
+            ->columns('c.*, cat.*, u.*, viewLevel.*')
+            ->addFrom('Core\Models\Content', 'c')
+            ->addFrom('Core\Models\Category', 'cat')
+            ->addFrom('Core\Models\User', 'u')
+            ->addFrom('Core\Models\ViewLevel', 'viewLevel')
+            ->andWhere('c.category = cat.id')
+            ->andWhere('c.created_by = u.id')
+            ->andWhere('c.view_level = viewLevel.id')
+            ->andWhere('c.id = :id:', ['id' => $articleId])
+            ->getQuery()
+            ->getSingleResult();
+
+        // if empty show 404
+        if (!$model || $model->c->getAlias() != $articleAlias || $model->cat->getAlias() != $catAlias ||
+            !$this->acl->checkViewLevel($model->viewLevel->getRoles())) {
             $this->dispatcher->forward([
-                "action" => "index"
+                'controller' => 'error',
+                'action' => '404'
             ]);
             return;
         }
 
-        $form = new AdminMenuTypeEditForm();
-        $id = $this->request->getPost('id');
-        if (!empty($id)) {
-            $menu = MenuType::findFirstById($this->request->getPost('id'));
-        } else {
-            $menu = new MenuType();
+        $this->setTitle($model->c->title);
+
+        if (!empty($model->u->name)) {
+            $this->view->setVar('metaAuthor', $model->u->name);
+        }
+        if (!empty($model->c->meta)) {
+            $this->view->setVar('metaKeywords', $model->c->meta);
         }
 
-        $form->bind($this->request->getPost(), $menu);
-        if (!$form->isValid()) {
-            $this->flashErrors($form);
+        /**
+         * @var Content $content
+         */
+        $content = $model->c;
+        $content->setHits($content->getHits() + 1)->save();
 
-            $this->dispatcher->forward([
-                "action" => "new"
-            ]);
-            return;
-        }
-
-        if (!$menu->save()) {
-            $this->flashErrors($menu);
-
-            $this->dispatcher->forward([
-                "action" => "new"
-            ]);
-            return;
-        }
-
-        $this->flash->success("Menu was updated successfully");
-
-        $this->response->redirect('admin/core/menu-type/index')->send();
-        return;
-    }
-
-    /**
-     * Deletes a menu
-     *
-     * @param string $id
-     */
-    public function deleteAction($id)
-    {
-        if (!$this->request->isAjax() || !$this->request->isPost()) {
-            return;
-        }
-        $menuType = MenuType::findFirstById($id);
-        if (!$menuType) {
-            return;
-        }
-
-        if (!$menuType->delete()) {
-            return;
-        }
-
-        $this->returnJSON(['success' => true]);
-        return;
+        $this->view->setVar('model', $model);
     }
 }

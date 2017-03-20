@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2016 Magnxpyr Network
+ * @copyright   2006 - 2017 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -8,7 +8,7 @@
 
 namespace Core\Models;
 
-use Phalcon\Mvc\Model;
+use Engine\Mvc\Model;
 use Phalcon\Mvc\Model\EagerLoadingTrait;
 
 /**
@@ -17,67 +17,60 @@ use Phalcon\Mvc\Model\EagerLoadingTrait;
  */
 class Menu extends Model
 {
-    use EagerLoadingTrait;
+    /**
+     * @var integer
+     */
+    private $id;
 
     /**
      * @var integer
      */
-    protected $id;
-
-    /**
-     * @var integer
-     */
-    protected $menu_type_id;
+    private $menu_type_id;
 
     /**
      * @var string
      */
-    protected $type;
+    private $prepend;
 
     /**
      * @var string
      */
-    protected $title;
+    private $title;
 
     /**
      * @var string
      */
-    protected $path;
-
+    private $path;
+    
     /**
-     * @var string
+     * @var integer
      */
-    protected $link;
+    private $status;
 
     /**
      * @var integer
      */
-    protected $status;
+    private $parent_id;
 
     /**
      * @var integer
      */
-    protected $parent_id;
+    private $level;
 
     /**
      * @var integer
      */
-    protected $level;
+    private $lft;
 
     /**
      * @var integer
      */
-    protected $lft;
+    private $rgt;
 
     /**
      * @var integer
      */
-    protected $rgt;
-
-    /**
-     * @var integer
-     */
-    protected $view_level;
+    private $view_level;
 
     /**
      * Method to set the value of field id
@@ -106,16 +99,21 @@ class Menu extends Model
     }
 
     /**
-     * Method to set the value of field type
-     *
-     * @param string $type
-     * @return $this
+     * @return string
      */
-    public function setType($type)
+    public function getPrepend()
     {
-        $this->type = $type;
+        return $this->prepend;
+    }
 
-        return $this;
+    /**
+     * Prepend an html object before the title
+     * 
+     * @param string $prepend
+     */
+    public function setPrepend($prepend)
+    {
+        $this->prepend = $prepend;
     }
 
     /**
@@ -140,19 +138,6 @@ class Menu extends Model
     public function setPath($path)
     {
         $this->path = $path;
-
-        return $this;
-    }
-
-    /**
-     * Method to set the value of field link
-     *
-     * @param string $link
-     * @return $this
-     */
-    public function setLink($link)
-    {
-        $this->link = $link;
 
         return $this;
     }
@@ -256,16 +241,6 @@ class Menu extends Model
     }
 
     /**
-     * Returns the value of field type
-     *
-     * @return string
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
-
-    /**
      * Returns the value of field title
      *
      * @return string
@@ -283,16 +258,6 @@ class Menu extends Model
     public function getPath()
     {
         return $this->path;
-    }
-
-    /**
-     * Returns the value of field link
-     *
-     * @return string
-     */
-    public function getLink()
-    {
-        return $this->link;
     }
 
     /**

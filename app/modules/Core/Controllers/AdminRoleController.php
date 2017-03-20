@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2016 Magnxpyr Network
+ * @copyright   2006 - 2017 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -71,11 +71,7 @@ class AdminRoleController extends AdminController
                 ]);
                 return;
             }
-
-            $this->tag->setDefault("id", $model->getId());
-            $this->tag->setDefault("name", $model->getName());
-            $this->tag->setDefault("parent_id", $model->getParentId());
-            $this->tag->setDefault("description", $model->getDescription());
+            $form->setEntity($model);
         }
     }
 
@@ -99,12 +95,13 @@ class AdminRoleController extends AdminController
             $menu = new Role();
         }
 
-        $form->bind($this->request->getPost(), $menu);
+        $form->bind($_POST, $menu);
         if (!$form->isValid()) {
             $this->flashErrors($form);
 
             $this->dispatcher->forward([
-                "action" => "new"
+                "action" => "edit",
+                "params" => [$id]
             ]);
             return;
         }
@@ -113,7 +110,8 @@ class AdminRoleController extends AdminController
             $this->flashErrors($menu);
 
             $this->dispatcher->forward([
-                "action" => "new"
+                "action" => "edit",
+                "params" => [$id]
             ]);
             return;
         }

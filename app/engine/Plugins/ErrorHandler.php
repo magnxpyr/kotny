@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2016 Magnxpyr Network
+ * @copyright   2006 - 2017 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -8,6 +8,7 @@
 
 namespace Engine\Plugins;
 
+use Engine\Meta;
 use Phalcon\Mvc\Dispatcher\Exception;
 use Phalcon\Mvc\User\Plugin;
 
@@ -17,6 +18,8 @@ use Phalcon\Mvc\User\Plugin;
  */
 class ErrorHandler extends Plugin
 {
+    use Meta;
+    
     /**
      * This action is executed before execute any action in the application
      * If a page is not found throws an error

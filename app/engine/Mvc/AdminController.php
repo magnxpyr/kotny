@@ -1,12 +1,15 @@
 <?php
 /**
- * @copyright   2006 - 2016 Magnxpyr Network
+ * @copyright   2006 - 2017 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
 namespace Engine\Mvc;
+
+use Core\Models\Menu;
+use Phalcon\Mvc\Model\EagerLoading\Loader;
 
 /**
  * Base Admin Controller
@@ -20,7 +23,7 @@ abstract class AdminController extends Controller
      */
     protected function initialize()
     {
-        $this->view->setVar('title', '');
+        $this->setMetaDefaults();
         if ($this->request->isAjax()) {
             return;
         }
@@ -43,7 +46,7 @@ abstract class AdminController extends Controller
             ->addCss('vendor/jquery-ui/jquery-ui.min.css')
             ->addCss('vendor/jquery/extra/DataTables/datatables.min.css')
             ->addCss('assets/mg_admin/css/AdminLTE.min.css')
-            ->addCss('assets/mg_admin/css/skins/skin-purple.min.css')
+            ->addCss('assets/mg_admin/css/skins/skin-blue.min.css')
             ->addCss('assets/default/css/pdw.css')
             ->addCss('assets/mg_admin/css/style.css')
             ->join(true)
@@ -56,11 +59,14 @@ abstract class AdminController extends Controller
             ->setTargetPath(PUBLIC_PATH . 'assets/mg_admin/js/header.min.js')
             ->setTargetUri('assets/mg_admin/js/header.min.js')
             ->addJs('vendor/jquery/jquery-1.11.3.min.js')
+            ->addJs('assets/common/js/mg.js')
             ->addJs('vendor/jquery-ui/jquery-ui.min.js')
             ->addJs('vendor/js/js.cookie.js')
             ->addJs('vendor/bootstrap/js/bootstrap.min.js')
             ->addJs('vendor/jquery/extra/jquery.slimscroll.min.js')
+            ->addJs('vendor/js/moment.js')
             ->addJs('vendor/jquery/extra/DataTables/datatables.min.js')
+            ->addJs('vendor/jquery/extra/DataTables/datetime.js')
             ->addJs('assets/mg_admin/js/app.js')
             ->addJs('assets/default/js/pdw.js')
             ->addJs('assets/mg_admin/js/mg.js')
@@ -75,118 +81,122 @@ abstract class AdminController extends Controller
      */
     protected function setupNavigation()
     {
-        $navigation = [
-            'admin' => [
-                'href' => 'admin',
-                'title' => 'Dashboard',
-                'prepend' => '<i class="fa fa-dashboard"></i>'
-            ],
-            'tools' => [
-                'title' => 'Web Tools',
-                'prepend' => '<i class="fa fa-list-alt"></i>',
-                'items' => [ // type - dropdown
-                    'modules' => [
-                        'title' => 'Modules',
-                        'href' => 'admin/tools/modules/index',
-                        'prepend' => '<i class="fa fa-circle-o"></i>'
-                    ],
-                    'controllers' => [
-                        'title' => 'Controllers',
-                        'href' => 'admin/tools/controllers/index',
-                        'prepend' => '<i class="fa fa-circle-o"></i>'
-                    ],
-                    'models' => [
-                        'title' => 'Models',
-                        'href' => 'admin/tools/models/index',
-                        'prepend' => '<i class="fa fa-circle-o"></i>'
-                    ],
-                    'migrations' => [
-                        'title' => 'Migrations',
-                        'href' => 'admin/tools/migrations/index',
-                        'prepend' => '<i class="fa fa-circle-o"></i>'
-                    ],
-                    'scaffold' => [
-                        'title' => 'Scaffold',
-                        'href' => 'admin/tools/scaffold/index',
-                        'prepend' => '<i class="fa fa-circle-o"></i>'
-                    ]
-                ]
-            ],
-            'user_roles' => [
-                'title' => 'Users & Roles',
-                'prepend' => '<i class="fa fa-group"></i>',
-                'items' => [
-                    'user' => [
-                        'title' => 'Users',
-                        'href' => 'admin/core/user/index',
-                        'prepend' => '<i class="fa fa-user"></i>'
-                    ]
-                ]
-            ],
-            'menus' => [
-                'title' => 'Menu Types',
-                'prepend' => '<i class="fa fa-th-list"></i>',
-                'items' => [
-                    'menu-type' => [
-                        'title' => 'Menus',
-                        'href' => 'admin/core/menu-type/index',
-                        'prepend' => '<i class="fa fa-circle-o"></i>'
-                    ],
-                    'menu-items' => [
-                        'title' => 'Menu Items',
-                        'href' => 'admin/core/menu/index',
-                        'prepend' => '<i class="fa fa-circle-o"></i>'
-                    ]
-                ]
-            ]
-        ];
+        $isActive = false;
+        $breadcrumb = [];
+        $ids = ['currentId' => 0, 'previousId' => 0, 'parentId' => 0];
+        $content = ['html' => '', 'breadcrumb' => ''];
+        $count = 0;
 
-        $html = $this->renderItems($navigation);
-        return $html;
+        $uri = trim($this->router->getRewriteUri(), "/ ");
+
+        $menuElements = Loader::fromResultset(Menu::find([
+            'conditions' => 'menu_type_id = 0',
+            'order' => 'lft'
+        ]), 'viewLevel');
+        $level = 1;
+
+        foreach ($menuElements as $elements) {
+            if (!$this->acl->checkViewLevel($elements->viewLevel->getRoles())) continue;
+
+            $active = "";
+            if (!$isActive) {
+                $this->generateBreadcrumbs($elements, $breadcrumb, $ids, $count);
+            }
+            if ($elements->getPath() != "#" && substr($elements->getPath(), 0, 4) != "http") {
+                $path = $this->url->get($elements->getPath());
+                if (!$isActive && $uri == trim($elements->getPath(), "/ ")) {
+                    $active = "active";
+                    $isActive = true;
+                }
+            } else {
+                $path = $elements->getPath();
+            }
+
+            if ($elements->getLevel() <= $level) {
+                if ($elements->getLevel() < $level) {
+                    $content['html'] .= "</li>\n";
+                    for ($i = $level - $elements->getLevel(); $i; $i--) {
+                        $content['html'] .= "</ul></li>";
+                    }
+                }
+                $content['html'] .= "<li class=\"treeview $active\"><a href='$path'>";
+                if (!empty($elements->getPrepend())) {
+                    $content['html'] .= "<i class=\"$elements->prepend\"></i>";
+                }
+                $content['html'] .= "<span>$elements->title</span></a>";
+            } elseif ($elements->level > $level) {
+                $content['html'] .= "<ul class=\"treeview-menu $active\"><li class='$active'><a href=\"$path\">";
+                if (!empty($elements->getPrepend())) {
+                    $content['html'] .= "<i class=\"$elements->prepend\"></i>";
+                }
+                $content['html'] .= "<span>$elements->title</span></a>";
+            }
+
+            $level = $elements->level;
+        }
+
+        $cb = count($breadcrumb) - 1;
+        foreach ($breadcrumb as $k => $b) {
+            $content['breadcrumb'] .= "<li>";
+            if ($cb != $k)
+                $content['breadcrumb'] .= "<a href=\"" . $b["link"] . "\">";
+            if ($k == 0)
+                $content['breadcrumb'] .= "<i class=\"" . $b["prepend"] . "\">";
+            $content['breadcrumb'] .= "</i> " . $b['title'] . "</a></li>";
+        }
+
+        return $content;
     }
 
     /**
-     * Render Navigation Items
-     * @param array $items
-     * @param int $isActive
-     * @return array
+     * @param $elements
+     * @param $breadcrumb
+     * @param $ids
+     * @param $count
      */
-    protected function renderItems($items, $isActive = 0)
+    private function generateBreadcrumbs($elements, &$breadcrumb, &$ids, &$count)
     {
-        $content = ['html' => '', 'breadcrumb' => '', 'active' => $isActive];
-        if ($this->router->getMatchedRoute()->getName() == 'admin-tools') {
-            $controller = $this->router->getControllerName();
+        if ($elements->level == 1) {
+            $count = 0;
+            $breadcrumb = [];
+            $this->setBreadcrumb($breadcrumb, $count, $elements);
+            $ids = ['currentId' => $elements->getId(), 'previousId' => $elements->getParentId(), 'parentId' => $elements->getParentId()];
         } else {
-            $controller = str_replace('admin-', '', $this->router->getControllerName());
-        }
-        $route = 'admin/'.$this->router->getModuleName().'/'.$controller;
-        foreach ($items as $item) {
-            if (!empty($item['items'])) {
-                $result = $this->renderItems($item['items'], $content['active']);
-                if($result['active'] == 2)  {
-                    $content['breadcrumb'] .= "<li>".$item['prepend'].' '.$item['title']."</li>".$result['breadcrumb'];
-                }
-                $active = $result['active'] == 2 ? 'active' : '';
-                $content['html'] .= "<li class=\"treeview $active\">";
-                $content['html'] .= sprintf("<a href=\"#\">%s</i><span>%s</span><i class=\"fa fa-angle-left pull-right\"></i></a>", $item['prepend'], $item['title']);
-                $content['html'] .= "<ul class=\"treeview-menu\">";
-                $content['active'] = $result['active'];
-                $content['html'] .= $result['html'];
-                $content['html'] .= "</ul></li>";
+            if ($ids['currentId'] == $elements->getParentId() || $ids['previousId'] == $elements->getParentId()) {
+                if ($ids['parentId'] != $elements->getParentId())
+                    $count++;
+                $this->setBreadcrumb($breadcrumb, $count, $elements);
+                $ids = ['currentId' => $elements->getId(), 'previousId' => $ids['currentId'], 'parentId' => $elements->getParentId()];
             } else {
-                if($content['active'] < 2 && isset($item['href'])) {
-                    $content['active'] = strpos($item['href'], $route) !== false ? 1 : 0;
+                $found = false;
+                foreach ($breadcrumb as $k => $v) {
+                    if ($v['id'] == $elements->getParentId()) {
+                        $found = true;
+                    } elseif ($found) {
+                        unset($breadcrumb[$k]);
+                    }
                 }
-                if($content['active'] == 1) {
-                    $content['html'] .= '<li class="active">';
-                    $content['breadcrumb'] .= '<li class="active">'.$item['title'].'</li>';
-                    $content['active'] = 2;
-                } else {
-                    $content['html'] .= '<li>';
+                if ($found) {
+                    $count = count($breadcrumb);
+                    $this->setBreadcrumb($breadcrumb, $count, $elements);
+                    $ids = ['currentId' => $elements->getId(), 'previousId' => $ids['currentId'], 'parentId' => $elements->getParentId()];
                 }
-                $content['html'] .= sprintf("<a href=\"%s\">%s<span>%s</span></a></li>", $this->url->get($item['href']), $item['prepend'], $item['title']);
             }
         }
-        return $content;
+    }
+
+    /**
+     * @param $breadcrumb
+     * @param $count
+     * @param $elements
+     */
+    private function setBreadcrumb(&$breadcrumb, $count, $elements)
+    {
+        $breadcrumb[$count] = [
+            'id' => $elements->getId(),
+            'title' => $elements->getTitle(),
+            'prepend' => $elements->getPrepend(),
+            'link' => $this->url->get($elements->getPath()),
+        ];
     }
 }

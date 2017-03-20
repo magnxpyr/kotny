@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2016 Magnxpyr Network
+ * @copyright   2006 - 2017 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -8,6 +8,7 @@
 
 namespace Engine\Mvc\Connectors;
 
+use Engine\Meta;
 use Engine\Utils;
 use Phalcon\Di\Injectable;
 
@@ -17,6 +18,8 @@ use Phalcon\Di\Injectable;
  */
 class GoogleConnector extends Injectable
 {
+    use Meta;
+    
     /**
      * API for the needed information
      * @var array
@@ -72,10 +75,10 @@ class GoogleConnector extends Injectable
         $client = new \Google_Client();
         $client->setScopes($this->scopes);
         $client->setApplicationName($this->config->app->siteName);
-        $client->setClientId($this->config->connectors->google->clientId);
-        $client->setClientSecret($this->config->connectors->google->clientSecret);
+        $client->setClientId($this->config->api->google->oauth->clientId);
+        $client->setClientSecret($this->config->api->google->oauth->clientSecret);
         $client->setRedirectUri($this->helper->getUri('user/login-with-google'));
-        $client->setDeveloperKey($this->config->connectors->google->developerKey);
+        $client->setDeveloperKey($this->config->api->google->oauth->developerKey);
 
         return $client;
     }

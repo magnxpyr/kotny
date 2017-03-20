@@ -13,19 +13,8 @@
             url("admin/core/menu/save"),
             [
                 'form': ['id': 'menuForm'],
-                'label': ['class': 'control-label col-sm-2'],
-                'field': [
-                    'path': ['group': ['id':'path-group']],
-                    'link': ['group': ['id':'link-group', 'style': 'display: none']]
-                ]
+                'label': ['class': 'control-label col-sm-2']
             ]
         ) }}
     </div>
 </div>
-{%
-do assets.addInlineJs('
-    $("#type").change(function() {
-        $("#path-group").toggle();
-        $("#link-group").toggle();
-    });')
-%}

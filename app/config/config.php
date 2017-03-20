@@ -2,11 +2,11 @@
 
 return [
     'database' => [
-        'adapter'   => 'Mysql',
-        'host'      => 'localhost',
-        'username'  => '',
-        'password'  => '',
-        'dbname'    => '',
+        'adapter' => 'Mysql',
+        'host' => 'localhost',
+        'username' => '',
+        'password' => '',
+        'dbname' => '',
     ],
     'app' => [
         'offline' => false,
@@ -17,7 +17,18 @@ return [
         'cryptKey' => '721a79281f408416', // Use your own 8 bits key!
         'development' => true,
         'aclAdapter' => 'memory', // database, memory
-        'cacheDir' => ROOT_PATH . 'cache/',
+        'cache' => [
+            'adapter' => 'file', // file, memcache, memcached
+            'host' => '',
+            "port" => '',
+        ],
+        'meta' => [
+            'description' => '',
+            'keywords' => '',
+            'robots' => '', // 'Index, Follow', 'No index, follow', 'Index, no follow', 'No index, no follow'
+            'contentRights' => '',
+            'showAuthor' => false
+        ],
         'cookie' => [
             'name' => 'mgRm',
             'path' => '/',
@@ -26,15 +37,21 @@ return [
             'expire' => 86400 * 30
         ]
     ],
-    'connectors' => [
+    'api' => [
         'facebook' => [
             'appId' => '',
             'secret' => ''
         ],
         'google' => [
-            'clientId' => '',
-            'clientSecret' => '',
-            'developerKey' => '' //api_key
+            'oauth' => [
+                'clientId' => '',
+                'clientSecret' => '',
+                'developerKey' => '' //api_key
+            ],
+            'recaptcha' => [
+                'siteKey' => '',
+                'secretKey' => ''
+            ]
         ]
     ],
     'mail' => [
@@ -45,11 +62,11 @@ return [
         ],
         'sendmail' => '/usr/sbin/sendmail -bs',
         'smtp' => [
-            'host'       => 'smtp.gmail.com',
-            'port'       => 465,
+            'host' => 'smtp.gmail.com',
+            'port' => 465,
             'encryption' => 'ssl',
-            'username'   => 'example@gmail.com',
-            'password'   => 'your_password',
+            'username' => 'example@gmail.com',
+            'password' => 'your_password',
         ],
     ],
     'tools' => APP_PATH . 'config/tools.php'

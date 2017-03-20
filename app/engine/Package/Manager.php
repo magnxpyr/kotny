@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2016 Magnxpyr Network
+ * @copyright   2006 - 2017 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -10,6 +10,7 @@ namespace Engine\Package;
 
 use Engine\Behavior\DiBehavior;
 use Engine\Acl\Database;
+use Engine\Meta;
 
 /**
  * Class Manager
@@ -17,7 +18,8 @@ use Engine\Acl\Database;
  */
 class Manager
 {
-    use DiBehavior;
+    use Meta,
+        DiBehavior;
 
     const
         /**
@@ -46,15 +48,21 @@ class Manager
         PACKAGE_TYPE_LIBRARY = 'library';
 
     /**
-     * Install Module
+     * @var
      */
-    public function installModule()
+    private $acl;
+
+    /**
+     * Install Module
+     * @param $module
+     */
+    public function installModule($module)
     {
-        $acl = new Database();
+        $this->acl = new Database();
 
-        $controllersPath = APP_PATH . "modules/Core/Controllers";
+        $controllersPath = MODULES_PATH . "$module/Controllers";
 
-        $roles = $acl->getRoles();
+        $roles = $this->acl->getRoles();
         // remove admin from roles since already has access on everything
         if(($key = array_search('admin', $roles)) !== false) {
             unset($roles[$key]);
@@ -70,35 +78,29 @@ class Manager
             $resourceName = str_replace('Controller', '', $className);
             $resourceName = 'module:core/' . $this->getDI()->get('helper')->uncamelize($resourceName);
 
-            $class = "Core\\Controllers\\$className";
+            $class = "$module\\Controllers\\$className";
             $class = new $class();
-            $behaviors = $class->behaviors();
-            if (!empty($behaviors)) {
-                if (isset($behaviors['access']['only'])) {
-                    $acl->addResource($resourceName, $behaviors['access']['only']);
-                } else {
-                    $actions = $this->getResourceAccess($class);
-                    $acl->addResource($resourceName, $actions);
-                }
-                if (isset($behaviors['access']['rules'])) {
-                    foreach ($behaviors['access']['rules'] as $rule) {
-                        if ($rule['roles'][0] == '*') {
-                            $rule['roles'] = $roles;
-                        }
-                        foreach ($rule['roles'] as $role) {
-                            if ($rule['allow']) {
-                                $acl->allow($role, $resourceName, $rule['actions']);
-                            } else {
-                                $acl->deny($role, $resourceName, $rule['actions']);
-                            }
-                        }
-                    }
-                }
-            } else {
-                $actions = $this->getResourceAccess($class);
-                $acl->addResource($resourceName, $actions);
-            }
+
+            $actions = $this->getResourceAccess($class);
+            $this->acl->addResource($resourceName, $actions);
         }
+
+        $resources = require_once MODULES_PATH . "$module/Acl.php";
+
+        if (isset($resources['allow'])) {
+            $this->buildAcl($resources['allow'], $module, true);
+        }
+        if (isset($resources['deny'])) {
+            $this->buildAcl($resources['deny'], $module, false);
+        }
+    }
+
+    /**
+     * Uninstall a module
+     * @param $module
+     */
+    public function uninstallModule($module) {
+
     }
 
     /**
@@ -106,7 +108,7 @@ class Manager
      * @param string|\StdClass $class
      * @return array
      */
-    public function getResourceAccess($class) {
+    private function getResourceAccess($class) {
         $functions = get_class_methods($class);
         $actions = ['*'];
         foreach ($functions as $function) {
@@ -116,5 +118,27 @@ class Manager
         }
 
         return $actions;
+    }
+
+    /**
+     * Build Acl Object
+     * @param $resources
+     * @param $module
+     * @param $allow
+     */
+    private function buildAcl($resources, $module, $allow) {
+        $module = strtolower($module);
+        foreach ($resources as $role => $resource) {
+            foreach ($resource as $controller => $actions) {
+                $this->acl->addResource("module:$module/$controller", $actions);
+                foreach ($actions as $action) {
+                    if ($allow) {
+                        $this->acl->allow($role, "module:$module/$controller", $action);
+                    } else {
+                        $this->acl->deny($role, "module:$module/$controller", $action);
+                    }
+                }
+            }
+        }
     }
 }

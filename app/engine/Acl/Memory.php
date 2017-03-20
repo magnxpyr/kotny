@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2016 Magnxpyr Network
+ * @copyright   2006 - 2017 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -9,13 +9,15 @@
 namespace Engine\Acl;
 
 use Engine\Behavior\AclBehavior;
+use Engine\Meta;
 use Phalcon\Acl;
 use Phalcon\Acl\Adapter\Memory as AclMemory;
 use Phalcon\Di;
 
 class Memory
 {
-    use AclBehavior;
+    use Meta,
+        AclBehavior;
 
     /**
      * Get acl system.
@@ -54,9 +56,8 @@ class Memory
                         $this->buildAcl($resources['allow'], $module, $roleIds, true);
                     }
                     if (isset($resources['deny'])) {
-                        $this->buildAcl($resources['allow'], $module, $roleIds, false);
+                        $this->buildAcl($resources['deny'], $module, $roleIds, false);
                     }
-
                 }
                 $this->acl->allow((string)$roleIds['admin'], '*', '*');
                 $cache->save($this->cacheKey, $this->acl, $this->cacheExpire);

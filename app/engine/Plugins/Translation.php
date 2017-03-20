@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2016 Magnxpyr Network
+ * @copyright   2006 - 2017 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -8,6 +8,7 @@
 
 namespace Engine\Plugins;
 
+use Engine\Meta;
 use Phalcon\Mvc\User\Plugin;
 
 /**
@@ -16,6 +17,8 @@ use Phalcon\Mvc\User\Plugin;
  */
 class Translation extends Plugin
 {
+    use Meta;
+    
     /**
      * Check if user has access
      *

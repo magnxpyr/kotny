@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2016 Magnxpyr Network
+ * @copyright   2006 - 2017 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -9,6 +9,7 @@
 namespace Engine\Plugins;
 
 use Engine\Acl\Database;
+use Engine\Meta;
 use Engine\Package\Manager;
 use Phalcon\Mvc\User\Plugin;
 use Phalcon\Acl;
@@ -19,6 +20,8 @@ use Phalcon\Acl;
  */
 class AclHandler extends Plugin
 {
+    use Meta;
+    
     /**
      * Check if user has access
      *
@@ -32,16 +35,16 @@ class AclHandler extends Plugin
         if ($this->auth->hasRememberMe() && !$this->auth->isUserSignedIn()) {
             $this->auth->loginWithRememberMe(false);
         }
-/*
-        $acl = new Database();
-        $acl->addResource('*', '*');
-        $acl->allow('admin', '*', '*');
-        die;
 
-        $manager = new Manager();
-        $manager->installModule();
-*/
+//        $acl = new Database();
+//        $acl->addResource('*', '*');
+//        $acl->allow('admin', '*', '*');
+//        die;
 
+//        $manager = new Manager();
+//        $manager->installModule('Core');
+        
+        
         //Check whether the "auth" variable exists in session to define the active role
         $role = $this->auth->getUserRole();
 
@@ -51,7 +54,7 @@ class AclHandler extends Plugin
         $action = $dispatcher->getActionName();
 
         //Check if the Role have access to the controller (resource)
-        $allowed = $this->acl->isAllowed((string)$role, "module:$module/$controller", $action);
+        $allowed = $this->di->getShared('acl')->isAllowed((string)$role, "module:$module/$controller", $action);
 
         if ($allowed != Acl::ALLOW) {
             $this->dispatcher->setModuleName('core');

@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2016 Magnxpyr Network
+ * @copyright   2006 - 2017 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -8,7 +8,7 @@
 
 namespace Core\Models;
 
-use Phalcon\Mvc\Model;
+use Engine\Mvc\Model;
 use Phalcon\Mvc\Model\EagerLoadingTrait;
 
 /**
@@ -17,87 +17,85 @@ use Phalcon\Mvc\Model\EagerLoadingTrait;
  */
 class Category extends Model
 {
-    use EagerLoadingTrait;
-
     /**
      * @var integer
      */
-    protected $id;
+    private $id;
 
     /**
      * @var string
      */
-    protected $title;
+    private $title;
 
     /**
      * @var string
      */
-    protected $alias;
+    private $alias;
 
     /**
      * @var string
      */
-    protected $description;
+    private $description;
 
     /**
      * @var string
      */
-    protected $metadata;
+    private $metadata;
 
     /**
      * @var integer
      */
-    protected $hits;
+    private $hits;
 
     /**
      * @var integer
      */
-    protected $status;
+    private $status;
 
     /**
      * @var integer
      */
-    protected $view_level;
+    private $view_level;
 
     /**
      * @var integer
      */
-    protected $parent_id;
+    private $parent_id;
 
     /**
      * @var integer
      */
-    protected $level;
+    private $level;
 
     /**
      * @var integer
      */
-    protected $lft;
+    private $lft;
 
     /**
      * @var integer
      */
-    protected $rgt;
+    private $rgt;
 
     /**
      * @var integer
      */
-    protected $created_at;
+    private $created_at;
 
     /**
      * @var integer
      */
-    protected $created_by;
+    private $created_by;
 
     /**
      * @var integer
      */
-    protected $modified_at;
+    private $modified_at;
 
     /**
      * @var integer
      */
-    protected $modified_by;
+    private $modified_by;
 
     /**
      * Method to set the value of field id
@@ -486,6 +484,9 @@ class Category extends Model
      */
     public function beforeValidation()
     {
+        if (empty($this->getAlias())) {
+            $this->setAlias($this->getDI()->getShared('helper')->makeAlias($this->getTitle()));
+        }
         if(empty($this->id)) {
             $this
                 ->setCreatedAt(time())

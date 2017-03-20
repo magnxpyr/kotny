@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2016 Magnxpyr Network
+ * @copyright   2006 - 2017 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -8,37 +8,35 @@
 
 namespace Core\Models;
 
-use Phalcon\Mvc\Model;
+use Engine\Mvc\Model;
 use Phalcon\Mvc\Model\EagerLoadingTrait;
 
 class UserAuthTokens extends Model
 {
-    use EagerLoadingTrait;
+    /**
+     * @var integer
+     */
+    private $id;
+
+    /**
+     * @var string
+     */
+    private $selector;
+
+    /**
+     * @var string
+     */
+    private $token;
 
     /**
      * @var integer
      */
-    protected $id;
+    private $user_id;
 
     /**
      * @var string
      */
-    protected $selector;
-
-    /**
-     * @var string
-     */
-    protected $token;
-
-    /**
-     * @var integer
-     */
-    protected $user_id;
-
-    /**
-     * @var string
-     */
-    protected $expires;
+    private $expires;
 
     /**
      * Method to set the value of field id
