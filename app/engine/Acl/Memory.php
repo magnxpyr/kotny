@@ -9,15 +9,12 @@
 namespace Engine\Acl;
 
 use Engine\Behavior\AclBehavior;
-use Engine\Meta;
 use Phalcon\Acl;
 use Phalcon\Acl\Adapter\Memory as AclMemory;
-use Phalcon\Di;
 
 class Memory
 {
-    use Meta,
-        AclBehavior;
+    use AclBehavior;
 
     /**
      * Get acl system.
@@ -51,6 +48,7 @@ class Memory
 
                 $modules = $this->getDI()->get("registry")->modules;
                 foreach ($modules as $module) {
+                    $module = $module->name;
                     $resources = require_once MODULES_PATH . $module . "/Acl.php";
                     if (isset($resources['allow'])) {
                         $this->buildAcl($resources['allow'], $module, $roleIds, true);

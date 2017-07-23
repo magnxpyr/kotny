@@ -8,6 +8,7 @@
 
 namespace Engine\Behavior;
 
+use Engine\Meta;
 use Phalcon\DI;
 
 /**
@@ -16,11 +17,13 @@ use Phalcon\DI;
  */
 trait DiBehavior
 {
+    use Meta;
+
     /**
      * Dependency injection container.
-     * @var DI
+     * @var DI|Meta
      */
-    private $di;
+    public $di;
 
     /**
      * Set DI.
@@ -33,8 +36,8 @@ trait DiBehavior
     }
 
     /**
-     * Get DI.
-     * @return DI
+     * Set DI.
+     * @return DI|Meta
      */
     public function getDI()
     {

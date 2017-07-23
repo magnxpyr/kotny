@@ -6,21 +6,21 @@
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
-namespace Core\Forms;
+namespace Module\Core\Forms;
 
+use Engine\Forms\Element\Captcha;
+use Engine\Forms\Validator\ReCaptcha;
 use Phalcon\Forms\Element\Check;
-use Phalcon\Forms\Element\Hidden;
 use Phalcon\Forms\Element\Password;
 use Phalcon\Forms\Element\Submit;
 use Phalcon\Forms\Element\Text;
 use Engine\Forms\Form;
 use Phalcon\Validation\Validator\PresenceOf;
 use Phalcon\Validation\Validator\Alpha;
-use Phalcon\Validation\Validator\Identical;
 
 /**
  * Class LoginForm
- * @package Core\Forms
+ * @package Module\Core\Forms
  */
 class LoginForm extends Form
 {
@@ -59,6 +59,17 @@ class LoginForm extends Form
             ])
         ]);
         $this->add($password);
+
+        // Captcha
+        if ($this->auth->isUserRequestThrottled()) {
+            $captcha = new Captcha('captcha');
+            $captcha->addValidators([
+                new ReCaptcha([
+                    'message' => $this->t->_('Invalid captcha')
+                ])
+            ]);
+            $this->add($captcha);
+        }
 
         // Remember
         $remember = new Check('remember', [

@@ -6,14 +6,14 @@
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
-namespace Core\Models;
+namespace Module\Core\Models;
 
 use Engine\Mvc\Model;
 use Phalcon\Mvc\Model\EagerLoadingTrait;
 
 /**
  * Class Menu
- * @package Core\Models
+ * @package Module\Core\Models
  */
 class Menu extends Model
 {
@@ -326,8 +326,8 @@ class Menu extends Model
     public function initialize()
     {
         $this->setSource('menu');
-        $this->belongsTo('menu_type_id', 'Core\Models\MenuType', 'id', ['alias' => 'menuType', 'reusable' => true]);
-        $this->hasOne('view_level', 'Core\Models\ViewLevel', 'id', ['alias' => 'viewLevel', 'reusable' => true]);
+        $this->belongsTo('menu_type_id', 'Module\Core\Models\MenuType', 'id', ['alias' => 'menuType', 'reusable' => true]);
+        $this->hasOne('view_level', 'Module\Core\Models\ViewLevel', 'id', ['alias' => 'viewLevel', 'reusable' => true]);
     //    $this->addBehavior(new Model\Behavior\NestedSet(['rootAttribute' => 'parent_id']));
     }
 

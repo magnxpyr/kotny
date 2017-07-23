@@ -59,7 +59,7 @@ class AclHandler extends Plugin
         if ($allowed != Acl::ALLOW) {
             $this->dispatcher->setModuleName('core');
             $this->dispatcher->forward([
-                'namespace' => 'Core\Controllers',
+                'namespace' => 'Module\Core\Controllers',
                 'module' => 'core',
                 'controller' => 'error',
                 'action' => 'show404'

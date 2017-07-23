@@ -18,12 +18,12 @@
   +------------------------------------------------------------------------+
 */
 
-namespace Tools\Builder;
+namespace Module\Tools\Builder;
 
-use Tools\Builder\Version\Item as VersionItem;
-use Tools\Builder\Mvc\Model\Migration as ModelMigration;
-use Tools\Builder\Component;
-use Tools\Helpers\Tools;
+use Module\Tools\Builder\Version\Item as VersionItem;
+use Module\Tools\Builder\Mvc\Model\Migration as ModelMigration;
+use Module\Tools\Builder\Component;
+use Module\Tools\Helpers\Tools;
 
 /**
  * Migrations Class
@@ -48,6 +48,10 @@ class Migrations
         $originalVersion = $options['originalVersion'];
         $force = $options['force'];
         $config = $options['config'];
+
+        if (empty($migrationsDir)) {
+            throw new \Exception("Migration dir can't be empty");
+        }
 
         if ($migrationsDir && !file_exists($migrationsDir)) {
             mkdir($migrationsDir, 0777, true);
@@ -74,20 +78,23 @@ class Migrations
                 }
             }
 
-            if (count($versions) == 0) {
-                $version = new VersionItem('1.0.0');
-            } else {
-                $version = VersionItem::maximum($versions);
-                $version = $version->addMinor(1);
-            }
+            $date = new \DateTime('now', new \DateTimeZone('UTC'));
+            $version = $date->format('YmdHis');
+
+//            if (count($versions) == 0) {
+//                $version = new VersionItem('1.0.0');
+//            } else {
+//                $version = VersionItem::maximum($versions);
+//                $version = $version->addMinor(1);
+//            }
         }
 
-        if (!file_exists($migrationsDir.'/'.$version)) {
-            if(!@mkdir($migrationsDir.'/'.$version)) {
-                throw new \Exception("Cannot create migration version directory");
-            }
-            @chmod($migrationsDir.'/'.$version, 0777);
-        }
+//        if (!file_exists($migrationsDir.'/'.$version)) {
+//            if(!@mkdir($migrationsDir.'/'.$version)) {
+//                throw new \Exception("Cannot create Migrations version directory");
+//            }
+//            @chmod($migrationsDir.'/'.$version, 0777);
+//        }
 
         if (isset($config->database)) {
             ModelMigration::setup($config->database);
@@ -96,17 +103,23 @@ class Migrations
         }
 
         ModelMigration::setSkipAutoIncrement($options['no-ai']);
-        ModelMigration::setMigrationPath($migrationsDir.'/'.$version);
+//        ModelMigration::setMigrationPath($migrationsDir.'/'.$version);
+        ModelMigration::setMigrationPath($migrationsDir);
         if ($tableName == 'all') {
             $migrations = ModelMigration::generateAll($version, $exportData);
             foreach ($migrations as $tableName => $migration) {
-                file_put_contents($migrationsDir.'/'.$version.'/'.$tableName.'.php', '<?php'.PHP_EOL.Tools::getCopyright().PHP_EOL.PHP_EOL.$migration);
-                @chmod($migrationsDir.'/'.$version.'/'.$tableName.'.php', 0777);
+//                file_put_contents($migrationsDir.'/'.$version.'/'.$tableName.'.php', '<?php'.PHP_EOL.Tools::getCopyright().PHP_EOL.PHP_EOL.$Migrations);
+//                @chmod($migrationsDir.'/'.$version.'/'.$tableName.'.php', 0777);
+
+                file_put_contents($migrationsDir.'/'.$version.'_'.$tableName.'.php', '<?php'.PHP_EOL.Tools::getCopyright().PHP_EOL.PHP_EOL.$migration);
+                @chmod($migrationsDir.'/'.$version.'_'.$tableName.'.php', 0777);
             }
         } else {
             $migration = ModelMigration::generate($version, $tableName, $exportData);
-            file_put_contents($migrationsDir.'/'.$version.'/'.$tableName.'.php', '<?php '.PHP_EOL.Tools::getCopyright().PHP_EOL.PHP_EOL.$migration);
-            @chmod($migrationsDir.'/'.$version.'/'.$tableName.'.php', 0777);
+            file_put_contents($migrationsDir.'/'.$version.'_'.$tableName.'.php', '<?php '.PHP_EOL.Tools::getCopyright().PHP_EOL.PHP_EOL.$migration);
+            @chmod($migrationsDir.'/'.$version.'_'.$tableName.'.php', 0777);
+//            file_put_contents($migrationsDir.'/'.$version.'/'.$tableName.'.php', '<?php '.PHP_EOL.Tools::getCopyright().PHP_EOL.PHP_EOL.$Migrations);
+//            @chmod($migrationsDir.'/'.$version.'/'.$tableName.'.php', 0777);
         }
     }
 
@@ -118,7 +131,7 @@ class Migrations
      */
     public static function run(array $options)
     {
-        $path = $options['migrationsDir'] . DIRECTORY_SEPARATOR . 'migration-version';
+        $path = $options['migrationsDir'] . DIRECTORY_SEPARATOR . 'Migrations-version';
         $migrationsDir = $options['migrationsDir'];
         $config = $options['config'];
         $version = null;

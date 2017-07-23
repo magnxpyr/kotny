@@ -6,9 +6,9 @@
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
-namespace Core\Forms;
+namespace Module\Core\Forms;
 
-use Core\Models\Role;
+use Module\Core\Models\Role;
 use Phalcon\Forms\Element\Hidden;
 use Phalcon\Forms\Element\Password;
 use Phalcon\Forms\Element\Select;
@@ -18,7 +18,7 @@ use Phalcon\Validation\Validator\PresenceOf;
 
 /**
  * Class AdminUserEditForm
- * @package Core\Forms
+ * @package Module\Core\Forms
  */
 class AdminUserEditForm extends Form
 {

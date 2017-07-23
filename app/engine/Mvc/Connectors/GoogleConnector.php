@@ -14,7 +14,7 @@ use Phalcon\Di\Injectable;
 
 /**
  * Class GoogleConnector
- * @package Phalcon\UserPlugin\Connectors
+ * @package Engine\Mvc\Connectors
  */
 class GoogleConnector extends Injectable
 {

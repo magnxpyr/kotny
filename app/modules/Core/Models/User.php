@@ -6,7 +6,7 @@
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
-namespace Core\Models;
+namespace Module\Core\Models;
 
 use Engine\Mvc\Model;
 use Phalcon\Mvc\Model\Resultset;
@@ -16,10 +16,14 @@ use Phalcon\Validation\Validator\Uniqueness;
 
 /**
  * Class User
- * @package Core\Models
+ * @package Module\Core\Models
  */
 class User extends Model
 {
+    const STATUS_INACTIVE = 0;
+    const STATUS_ACTIVE = 1;
+    const STATUS_BLOCKED = 2;
+
     /**
      * @var integer
      */
@@ -498,11 +502,11 @@ class User extends Model
     public function initialize()
     {
         $this->setSource('user');
-        $this->hasMany('id', 'Core\Models\Content', 'created_by', ['alias' => 'contentCreated', 'reusable' => true]);
-        $this->hasMany('id', 'Core\Models\Content', 'modified_by', ['alias' => 'contentModified', 'reusable' => true]);
-        $this->hasMany('id', 'Core\Models\UserAuthTokens', 'user_id', ['alias' => 'userAuthTokens', 'reusable' => true]);
-        $this->hasOne('id', 'Core\Models\UserEmailConfirmations', 'user_id', ['alias' => 'userEmailConfirmations', 'reusable' => true]);
-        $this->hasOne('id', 'Core\Models\UserResetPasswords', 'user_id', ['alias' => 'userResetPasswords', 'reusable' => true]);
+        $this->hasMany('id', 'Module\Core\Models\Content', 'created_by', ['alias' => 'contentCreated', 'reusable' => true]);
+        $this->hasMany('id', 'Module\Core\Models\Content', 'modified_by', ['alias' => 'contentModified', 'reusable' => true]);
+        $this->hasMany('id', 'Module\Core\Models\UserAuthTokens', 'user_id', ['alias' => 'userAuthTokens', 'reusable' => true]);
+        $this->hasOne('id', 'Module\Core\Models\UserEmailConfirmations', 'user_id', ['alias' => 'userEmailConfirmations', 'reusable' => true]);
+        $this->hasOne('id', 'Module\Core\Models\UserResetPasswords', 'user_id', ['alias' => 'userResetPasswords', 'reusable' => true]);
     }
 
     /**

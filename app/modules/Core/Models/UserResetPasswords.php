@@ -6,14 +6,14 @@
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
-namespace Core\Models;
+namespace Module\Core\Models;
 
 use Engine\Mvc\Model;
 use Phalcon\Mvc\Model\EagerLoadingTrait;
 
 /**
  * Class UserResetPasswords
- * @package Core\Models
+ * @package Module\Core\Models
  */
 class UserResetPasswords extends Model
 {
@@ -141,7 +141,7 @@ class UserResetPasswords extends Model
     public function initialize()
     {
         $this->setSource('user_reset_passwords');
-        $this->belongsTo('user_id', 'Core\Models\User', 'id', ['alias' => 'user', 'reusable' => true]);
+        $this->belongsTo('user_id', 'Module\Core\Models\User', 'id', ['alias' => 'user', 'reusable' => true]);
     }
 
     public function getSource()

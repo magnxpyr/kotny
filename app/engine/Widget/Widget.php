@@ -7,6 +7,7 @@
  */
 
 namespace Engine\Widget;
+
 use Engine\Meta;
 use Phalcon\Mvc\View;
 
@@ -35,6 +36,11 @@ class Widget
         } else {
             $widgetName = $widget;
             $action = 'index';
+        }
+
+        // Render widget only if is active
+        if (!\Module\Core\Models\Widget::isActive($widget)) {
+            return;
         }
 
         $controllerClass = "\\Widget\\$widgetName\\Controller";

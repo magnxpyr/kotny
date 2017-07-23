@@ -1,7 +1,10 @@
-cache
 /app/config/development/
+/app/vendor/
+cache
+logs
 .idea
-phalcon.iml
+cms.iml
+composer.lock
 public/assets/mg_admin/js/header.min.js
 public/assets/default/js/header.min.js
 public/assets/default/css/header.min.css

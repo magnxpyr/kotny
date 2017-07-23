@@ -18,33 +18,7 @@ use Phalcon\Validation\Validator\Identical;
  */
 class Form extends \Phalcon\Forms\Form
 {
-    use Meta;
-
-    private $recaptcha;
-
-    private $showRecaptcha;
-
-    /**
-     * @param bool $recaptcha
-     * @param bool $showRecaptcha
-     */
-    public function setRecaptcha($recaptcha, $showRecaptcha = false)
-    {
-        $this->recaptcha = $recaptcha;
-        $this->showRecaptcha = $showRecaptcha;
-
-        if ($recaptcha) {
-            $this->assets->collection('footer-js')->addJs("https://www.google.com/recaptcha/api.js", false);
-        }
-    }
-
-    /**
-     * Render reCaptcha form where is called
-     */
-    public function showRecaptcha()
-    {
-        echo "<div class=\"g-recaptcha\" data-sitekey=\"" . $this->config->api->google->recaptcha->siteKey . "\"></div>";
-    }
+    use Meta;    
 
     /**
      * Returns the default value for field 'csrf'
@@ -73,6 +47,23 @@ class Form extends \Phalcon\Forms\Form
     public function setValue($field, $value) {
         $this->_entity->$field = $value;
     }
+
+
+    /**
+     * Renders a specific item in the form if the item exists
+     *
+     *
+     * @param string $name
+     * @param array $attributes
+     * @return string
+     */
+    public function render($name, $attributes = null)
+    {
+        if ($this->has($name)) {
+            return parent::render($name, $attributes);
+        }
+    }
+
 
     /**
      * Render label and input
@@ -177,10 +168,7 @@ class Form extends \Phalcon\Forms\Form
             // render the element
             $html .= $this->renderDecorated($elemName, $fieldAttribute);
         }
-
-        if ($this->showRecaptcha) {
-            $html .= "<div class=\"g-recaptcha\" data-sitekey=\"" . $this->config->api->google->recaptcha->siteKey . "\"></div>";
-        }
+        
         $html .= '</form>';
         return $html;
     }

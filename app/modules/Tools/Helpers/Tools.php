@@ -6,11 +6,11 @@
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
-namespace Tools\Helpers;
+namespace Module\Tools\Helpers;
 
 use Phalcon\Config;
 use Phalcon\Di;
-use Tools\Controllers\ControllerBase;
+use Module\Tools\Controllers\ControllerBase;
 
 class Tools extends ControllerBase {
 

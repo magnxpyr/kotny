@@ -10,7 +10,16 @@ namespace Engine\Package;
 
 use Engine\Behavior\DiBehavior;
 use Engine\Acl\Database;
-use Engine\Meta;
+use Engine\Mvc\Exception;
+use Engine\Mvc\Helper;
+use Module\Core\Models\Module;
+use Module\Core\Models\Migration as MigrationModel;
+use Module\Core\Models\User;
+use Module\Core\Models\Widget;
+use Phalcon\Config\Adapter\Json;
+use Phalcon\Db;
+use Phalcon\Db\Column;
+use Phalcon\Logger;
 
 /**
  * Class Manager
@@ -18,55 +27,218 @@ use Engine\Meta;
  */
 class Manager
 {
-    use Meta,
-        DiBehavior;
+    use DiBehavior;
 
-    const
-        /**
-         * Module package.
-         */
-        PACKAGE_TYPE_MODULE = 'module',
-
-        /**
-         * Plugin package.
-         */
-        PACKAGE_TYPE_PLUGIN = 'plugin',
-
-        /**
-         * Theme package.
-         */
-        PACKAGE_TYPE_THEME = 'theme',
-
-        /**
-         * Widget package.
-         */
-        PACKAGE_TYPE_WIDGET = 'widget',
-
-        /**
-         * Library package.
-         */
-        PACKAGE_TYPE_LIBRARY = 'library';
-
+    const MIGRATION_FILE_NAME_PATTERN = '/^\d+_([\w_]+).php$/i';
+    
     /**
-     * @var
+     * @var Database
      */
     private $acl;
+    /**
+     * @var Logger
+     */
+    private $logger;
+    /**
+     * @var Helper
+     */
+    private $helper;
+    /**
+     * @var Db\Adapter\Pdo
+     */
+    private $db;
+    /**
+     * @var \Phalcon\Cache\Backend
+     */
+    private $cache;
+
+    /**
+     * Manager constructor.
+     * Make sure acl changes are always on Database
+     */
+    public function __construct()
+    {
+        $di = $this->getDI();
+        $this->acl = $di->get('acl');
+        $this->logger = $di->get('logger');
+        $this->helper = $di->get('helper');
+        $this->db = $di->get('db');
+        $this->cache = $di->get('cache');
+    }
+
+    /**
+     * Unzip file, detect package type and install
+     * @param $fileName
+     * @throws Exception
+     */
+    public function installPackage($fileName)
+    {
+        $zip = new \ZipArchive();
+        $tmpDir = TEMP_PATH . md5($fileName) . '/';
+        if ($zip->open(TEMP_PATH . $fileName) === true) {
+            $zip->extractTo($tmpDir);
+            $zip->close();
+            unlink(TEMP_PATH . $fileName);
+        } else {
+            throw new Exception("Failed to open archive $fileName");
+        }
+
+        $package = null;
+        $dirs = scandir($tmpDir);
+        foreach ($dirs as $dir) {
+            if ($dir == '.' || $dir == '..') {
+                continue;
+            }
+            if (file_exists("$tmpDir$dir/package.json")) {
+                $package = $tmpDir . $dir;
+                break;
+            }
+        }
+
+        if ($package == null) {
+            throw new Exception("Error while installing package $fileName: package.json not found");
+        }
+
+        $config = new Json("$package/package.json");
+        switch ($config->type) {
+            case PackageType::MODULE:
+                if ($this->moveDir($tmpDir, MODULES_PATH, $config->package)) {
+                    $this->installModule($config->package);
+                }
+                break;
+            case PackageType::WIDGET:
+                if ($this->moveDir($tmpDir, WIDGETS_PATH, $config->package)) {
+                    $this->installWidget($config->package);
+                }
+                break;
+        }
+    }
+
+    /**
+     * Remove package based on type and package id
+     * @param $packageType PackageType|int
+     * @param $packageId int
+     */
+    public function removePackage($packageType, $packageId)
+    {
+        switch ($packageType) {
+            case PackageType::MODULE:
+                $this->removeModule($packageId);
+                break;
+            case PackageType::WIDGET:
+                $this->removeWidget($packageId);
+                break;
+        }
+    }
+
+    /**
+     * @param $module
+     * @return null|Json
+     */
+    private function getModuleConfig($module)
+    {
+        $package = MODULES_PATH . "$module/package.json";
+        if (file_exists($package)) {
+            return new Json($package);
+        }
+        return null;
+    }
 
     /**
      * Install Module
-     * @param $module
+     * @param $moduleName
+     * @throws Exception
      */
-    public function installModule($module)
+    public function installModule($moduleName)
     {
-        $this->acl = new Database();
-
-        $controllersPath = MODULES_PATH . "$module/Controllers";
+        $this->logger->debug("Installing module: $moduleName");
+        $controllersPath = MODULES_PATH . "$moduleName/Controllers";
 
         $roles = $this->acl->getRoles();
         // remove admin from roles since already has access on everything
-        if(($key = array_search('admin', $roles)) !== false) {
+        if (($key = array_search('admin', $roles)) !== false) {
             unset($roles[$key]);
         }
+
+        if (is_dir($controllersPath)) {
+            $files = scandir($controllersPath);
+            foreach ($files as $file) {
+                if ($file == '.' || $file == '..') {
+                    continue;
+                }
+                $className = str_replace('.php', '', $file);
+
+                $resourceName = str_replace('Controller', '', $className);
+                $resourceName = 'module:core/' . $this->di->helper->uncamelize($resourceName);
+
+                $controllerClass = "Module\\$moduleName\\Controllers\\$className";
+                $controller = new $controllerClass();
+
+                $actions = $this->getResourceAccess($controller);
+                $this->acl->addResource($resourceName, $actions);
+            }
+        }
+
+        $aclPath = MODULES_PATH . "$moduleName/Acl.php";
+        if (file_exists($aclPath)) {
+            $resources = require_once $aclPath;
+
+            if (isset($resources['allow'])) {
+                $this->buildAcl($resources['allow'], $moduleName, true);
+            }
+            if (isset($resources['deny'])) {
+                $this->buildAcl($resources['deny'], $moduleName, false);
+            }
+        }
+
+        $config = $this->getModuleConfig($moduleName);
+
+        $model = new Module();
+        $model->setName($moduleName);
+        $model->setVersion($config->version);
+        $model->setAuthor($config->author);
+        $model->setWebsite($config->website);
+        $model->setStatus(User::STATUS_ACTIVE);
+        $model->setDescription($config->description);
+
+        if (!$model->save()) {
+            throw new Exception("Unable to save module to database");
+        }
+
+        try {
+            $this->migrate(Migration::UP, PackageType::MODULE, $moduleName, $model->getId());
+        } catch (Exception $exception) {
+            $migration = MigrationModel::findFirst([
+                'conditions' => 'package_type = ?1 and package_id = ?1',
+                'bind' => [1 => PackageType::MODULE, 2 => $model->getId()],
+                'bindTypes' => [Column::BIND_PARAM_STR, Column::BIND_PARAM_INT],
+            ]);
+            if (!$migration) {
+                $model->delete();
+            }
+            throw new Exception("Widget migration failed");
+        }
+
+        $this->logger->debug("Widget $moduleName installed successfully");
+    }
+
+    /**
+     * Uninstall a module
+     * @param int $moduleId
+     */
+    public function removeModule($moduleId)
+    {
+        $this->logger->debug("Removing module with id: $moduleId");
+        /**
+         * @var $model Module
+         */
+        $model = Module::findFirstById($moduleId);
+        if (!$model) {
+            $this->logger->debug("Module with id: $moduleId not found");
+            return;
+        }
+
+        $controllersPath = MODULES_PATH . $model->getName() . "/Controllers";
 
         $files = scandir($controllersPath);
         foreach ($files as $file) {
@@ -76,31 +248,114 @@ class Manager
             $className = str_replace('.php', '', $file);
 
             $resourceName = str_replace('Controller', '', $className);
-            $resourceName = 'module:core/' . $this->getDI()->get('helper')->uncamelize($resourceName);
-
-            $class = "$module\\Controllers\\$className";
-            $class = new $class();
-
-            $actions = $this->getResourceAccess($class);
-            $this->acl->addResource($resourceName, $actions);
+            $resourceName = 'module:core/' . $this->di->helper->uncamelize($resourceName);
+            
+            $this->acl->dropResourceAccess($resourceName);
         }
 
-        $resources = require_once MODULES_PATH . "$module/Acl.php";
-
-        if (isset($resources['allow'])) {
-            $this->buildAcl($resources['allow'], $module, true);
-        }
-        if (isset($resources['deny'])) {
-            $this->buildAcl($resources['deny'], $module, false);
-        }
+        $this->migrate(Migration::DOWN, PackageType::MODULE, $model->getName(), $model->getId());
+        $model->delete();
+        $this->cache->delete(Module::getCacheActiveModules());
+        $this->logger->debug("Module " . $model->getName() . " with id $moduleId removed successfully");
     }
 
     /**
-     * Uninstall a module
-     * @param $module
+     * @param $widget
+     * @return null|Json
      */
-    public function uninstallModule($module) {
+    private function getWidgetConfig($widget)
+    {
+        $package = WIDGETS_PATH . "$widget/package.json";
+        if (file_exists($package)) {
+            return new Json($package);
+        }
+        return null;
+    }
 
+    /**
+     * Install widget
+     * @param $widgetName
+     * @throws Exception
+     */
+    public function installWidget($widgetName)
+    {
+        $this->logger->debug("Installing widget $widgetName");
+        $config = $this->getWidgetConfig($widgetName);
+
+        $model = new Widget();
+        $model->setName($widgetName);
+        $model->setVersion($config->version);
+        $model->setAuthor($config->author);
+        $model->setWebsite($config->website);
+        $model->setStatus(User::STATUS_ACTIVE);
+        $model->setDescription($config->description);
+
+        if (!$model->save()) {
+            throw new Exception("Unable to save widget to database");
+        }
+
+        try {
+            $this->migrate(Migration::UP, PackageType::WIDGET, $widgetName, $model->getId());
+        } catch (Exception $exception) {
+            $migration = MigrationModel::findFirst([
+                'conditions' => 'package_type = ?1 and package_id = ?1',
+                'bind' => [1 => PackageType::WIDGET, 2 => $model->getId()],
+                'bindTypes' => [Column::BIND_PARAM_STR, Column::BIND_PARAM_INT],
+            ]);
+            if (!$migration) {
+                $model->delete();
+            }
+            throw new Exception("Widget migration failed");
+        }
+
+        $this->logger->debug("Widget $widgetName installed successfully");
+    }
+
+    /**
+     * @param $widgetId
+     * @throws Exception
+     */
+    public function removeWidget($widgetId)
+    {
+        $this->logger->debug("Removing module with id: $widgetId");
+        /**
+         * @var $model Widget
+         */
+        $model = Widget::findFirstById($widgetId);
+        if (!$model) {
+            throw new Exception("Widget with id: $widgetId not found");
+        }
+
+        $this->migrate(Migration::DOWN, PackageType::WIDGET, $model->getName(), $model->getId());
+
+        $model->delete();
+        $this->cache->delete(Widget::getCacheActiveWidgets());
+        $this->helper->removeDir(WIDGETS_PATH . $model->getName());
+        $this->logger->debug("Widget " . $model->getName() . " with id $widgetId removed successfully");
+    }
+
+    /**
+     * @param $from
+     * @param $to
+     * @param $packageName
+     * @param bool|true $overwrite
+     * @return bool
+     * @throws Exception
+     */
+    private function moveDir($from, $to, $packageName, $overwrite = true) {
+        if (is_dir($to . $packageName)) {
+            if ($overwrite) {
+                $this->helper->removeDir($to);
+            } else {
+                throw new Exception("Package already exist");
+            }
+        }
+        if (!rename($from . $packageName, $to . $packageName)) {
+            $this->helper->removeDir($from);
+            throw new Exception("Failed installing package $packageName: package can't be moved to the respective path");
+        }
+        rmdir($from);
+        return true;
     }
 
     /**
@@ -108,7 +363,8 @@ class Manager
      * @param string|\StdClass $class
      * @return array
      */
-    private function getResourceAccess($class) {
+    private function getResourceAccess($class)
+    {
         $functions = get_class_methods($class);
         $actions = ['*'];
         foreach ($functions as $function) {
@@ -126,7 +382,8 @@ class Manager
      * @param $module
      * @param $allow
      */
-    private function buildAcl($resources, $module, $allow) {
+    private function buildAcl($resources, $module, $allow)
+    {
         $module = strtolower($module);
         foreach ($resources as $role => $resource) {
             foreach ($resource as $controller => $actions) {
@@ -140,5 +397,240 @@ class Manager
                 }
             }
         }
+    }
+
+    /**
+     * @param Migration|string $direction
+     * @param PackageType|string $packageType
+     * @param $packageName
+     * @param $packageId
+     * @param string|null $version
+     * @throws Exception
+     */
+    public function migrate($direction, $packageType, $packageName, $packageId, $version = null)
+    {
+        $migrations = $this->getMigrations($packageType, $packageName);
+        $versions = $this->getVersionLog($packageId, $packageType);
+
+        if (empty($versions) && empty($migrations)) {
+            return;
+        }
+        if (null === $version) {
+            $version = max(array_merge($versions, array_keys($migrations)));
+            $version = (int)$version;
+        } else {
+            if (0 != $version && !isset($migrations[$version])) {
+                throw new Exception("$version is not a valid version");
+            }
+        }
+        krsort($migrations);
+        if ($direction === Migration::DOWN) {
+            foreach ($migrations as $key => $migration) {
+                $key = (int) $key;
+                if ($key < $version) {
+                    break;
+                }
+                if (in_array($key, $versions)) {
+                    $this->executeMigration($migration, Migration::DOWN, $key, $packageType, $packageId);
+                }
+            }
+        } else {
+            foreach ($migrations as $key => $migration) {
+                $key = (int) $key;
+                if ($key > $version) {
+                    break;
+                }
+                if (!in_array($key, $versions)) {
+                    $this->executeMigration($migration, Migration::UP, $key, $packageType, $packageId);
+                }
+            }
+        }
+    }
+
+    /**
+     * Executes the specified Migrations on this environment
+     * @param Migration $migration
+     * @param Migration|string $direction
+     * @param $version
+     * @param $packageType
+     * @param $packageId
+     */
+    public function executeMigration(Migration $migration, $direction = Migration::UP, $version, $packageType, $packageId)
+    {
+        $startTime = time();
+        // begin the transaction
+        $this->db->begin();
+
+        // Run the Migrations
+        if (method_exists($migration, $direction)) {
+            $migration->{$direction}();
+        }
+        // commit the transaction
+        if ($this->db->commit()) {
+            // Record it in the database
+            $this->migrated($migration, $direction, $version, $packageType, $packageId, $startTime);
+        } else {
+            $this->db->rollback();
+        }
+    }
+
+    /**
+     * Gets an array of the database migrations, indexed by Migrations name (aka version) and sorted in ascending order
+     * @param $packageType
+     * @param $packageName
+     * @return array
+     * @throws Exception
+     */
+    public function getMigrations($packageType, $packageName)
+    {
+        $phpFiles = $this->getMigrationFiles($packageType, $packageName);
+        // filter the files to only get the ones that match our naming scheme
+        $fileNames = [];
+        $versions = [];
+        foreach ($phpFiles as $filePath) {
+            $version = $this->getVersionFromFileName(basename($filePath));
+            if (isset($versions[$version])) {
+                throw new Exception("Duplicate Migrations - '$filePath' has the same version as '" . $version . "'");
+            }
+            // convert the filename to a class name
+            $class = $this->mapFileNameToClassName(basename($filePath));
+            if (isset($fileNames[$class])) {
+                throw new Exception("Migration '" . basename($filePath) . "' has the same name as '" . $fileNames[$class] . "'");
+            }
+            $fileNames[$class] = basename($filePath);
+            // load the Migrations file
+            /** @noinspection PhpIncludeInspection */
+            require_once $filePath;
+            if (!class_exists($class)) {
+                throw new Exception("Could not find class '$class' in file '$filePath'");
+            }
+            // instantiate it
+            $migration = new $class();
+            if (!($migration instanceof Migration)) {
+                throw new Exception("The class '$class' in file '$filePath' must extend \\Engine\\Package\\Migration");
+            }
+            $versions[(int)$version] = $migration;
+        }
+        ksort($versions);
+
+        return $versions;
+    }
+
+    /**
+     * Returns a list of Migrations files found in the provided Migrations paths.
+     *
+     * @param $packageType
+     * @param $packageName
+     * @return array
+     */
+    private function getMigrationFiles($packageType, $packageName)
+    {
+        $path = null;
+        switch ($packageType) {
+            case PackageType::WIDGET:
+                $path = WIDGETS_PATH . $packageName;
+                break;
+            case PackageType::MODULE:
+                $path = MODULES_PATH . $packageName;
+        }
+
+        if ($path == null) {
+            return [];
+        }
+
+        $files = glob($path . DIRECTORY_SEPARATOR . 'Migrations' . DIRECTORY_SEPARATOR . '*.php');
+
+        return $files;
+    }
+
+    /**
+     * Get the version from the beginning of a file name.
+     *
+     * @param string $fileName File Name
+     * @return string
+     */
+    private function getVersionFromFileName($fileName)
+    {
+        $matches = [];
+        preg_match('/^[0-9]+/', basename($fileName), $matches);
+        return $matches[0];
+    }
+
+    /**
+     * Turn file names like '12345678901234_create_user_table.php' into class
+     * names like 'CreateUserTable'.
+     *
+     * @param string $fileName File Name
+     * @return string
+     */
+    private function mapFileNameToClassName($fileName)
+    {
+        $matches = array();
+        if (preg_match(static::MIGRATION_FILE_NAME_PATTERN, $fileName, $matches)) {
+            $fileName = $matches[1];
+        }
+        return str_replace(' ', '', ucwords(str_replace('_', ' ', $fileName)));
+    }
+
+    public function getVersionLog($packageId, $packageType)
+    {
+        $rows = MigrationModel::find([
+            'conditions' => 'package_type = ?1 and package_id = ?2',
+            'bind' => [1 => $packageType, 2 => (int)$packageId],
+            'bindTypes' => [Column::BIND_PARAM_STR, Column::BIND_PARAM_INT],
+            'order' => 'version ASC'
+        ])->toArray();
+
+        $result = [];
+        foreach($rows as $version) {
+            /** @var $version MigrationModel */
+            $result[$version['version']] = $version['version'];
+        }
+        return $result;
+    }
+
+    public function getCurrentVersion($packageId, $packageType, $versions = null)
+    {
+        if ($versions == null) {
+            $versions = $this->getVersionLog($packageId, $packageType);
+        }
+        $version = 0;
+        if (!empty($versions)) {
+            $version = end($versions);
+        }
+        return $version;
+    }
+
+    /**
+     * @param Migration $migration
+     * @param Migration|string $direction
+     * @param string $version
+     * @param PackageType $packageType
+     * @param integer $packageId
+     * @param integer $startTime
+     * @return $this
+     */
+    public function migrated(Migration $migration, $direction, $version, $packageType, $packageId, $startTime)
+    {
+        if ($direction == Migration::UP) {
+            // up
+            $model = new MigrationModel();
+            $model->setName(get_class($migration));
+            $model->setVersion($version);
+            $model->setPackageId((int)$packageId);
+            $model->setPackageType($packageType);
+            $model->setStartTime($startTime);
+            $model->setEndTime(time());
+            $model->save();
+        } else {
+            // down
+            MigrationModel::findFirst([
+                'conditions' => 'version = ?1 and package_type = ?2 and package_id = ?3',
+                'bind' => [1 => $version, 2 => $packageType, 3 => (int)$packageId],
+                'bindTypes' => [Column::BIND_PARAM_STR, Column::BIND_PARAM_STR, Column::BIND_PARAM_INT],
+                'order' => 'version ASC'
+            ])->delete();
+        }
+        return $this;
     }
 }

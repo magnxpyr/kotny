@@ -16,10 +16,10 @@
   |          Eduar Carvajal <eduar@phalconphp.com>                         |
   +------------------------------------------------------------------------+
 */
-namespace Tools\Controllers;
+namespace Module\Tools\Controllers;
 
-use Tools\Builder\Migrations;
-use Tools\Helpers\Tools;
+use Module\Tools\Builder\Migrations;
+use Module\Tools\Helpers\Tools;
 
 /**
  * Class MigrationsController
@@ -36,7 +36,7 @@ class AdminMigrationsController extends ControllerBase
         $migrationsDir = Tools::getMigrationsPath();
         if (!file_exists($migrationsDir)) {
             if(!@mkdir($migrationsDir)) {
-                throw new \Exception("Unable to create migration directory on ".Tools::getMigrationsPath());
+                throw new \Exception("Unable to create Migrations directory on ".Tools::getMigrationsPath());
             }
             @chmod($migrationsDir, 0777);
         }
@@ -104,7 +104,7 @@ class AdminMigrationsController extends ControllerBase
                     'no-ai' => $noAi
                 ));
 
-                $this->flash->success("The migration was generated successfully");
+                $this->flash->success("The Migrations was generated successfully");
             } catch (\Exception $e) {
              $this->flash->error($e->getMessage());
             }
@@ -138,7 +138,7 @@ class AdminMigrationsController extends ControllerBase
                     'force' => $force
                 ));
 
-                $this->flash->success("The migration was executed successfully");
+                $this->flash->success("The Migrations was executed successfully");
             } catch (\Exception $e) {
                 $this->flash->error($e->getMessage());
             }

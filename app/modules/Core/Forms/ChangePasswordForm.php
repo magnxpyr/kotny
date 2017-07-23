@@ -6,7 +6,7 @@
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
-namespace Core\Forms;
+namespace Module\Core\Forms;
 
 use Engine\Forms\Form;
 use Phalcon\Forms\Element\Password;
@@ -16,7 +16,7 @@ use Phalcon\Validation\Validator\Confirmation;
 
 /**
  * Class ChangePasswordForm
- * @package Core\Forms
+ * @package Module\Core\Forms
  */
 class ChangePasswordForm extends Form
 {

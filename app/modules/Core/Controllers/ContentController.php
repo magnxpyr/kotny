@@ -6,15 +6,15 @@
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
-namespace Core\Controllers;
+namespace Module\Core\Controllers;
 
-use Core\Models\Content;
+use Module\Core\Models\Content;
 use Engine\Mvc\Controller;
 use Phalcon\Paginator\Adapter\QueryBuilder as PaginatorQueryBuilder;
 
 /**
  * Class ContentController
- * @package Core\Controllers
+ * @package Module\Core\Controllers
  */
 class ContentController extends Controller
 {
@@ -25,9 +25,9 @@ class ContentController extends Controller
     {
         $builder = $this->modelsManager->createBuilder()
             ->columns('c.*, cat.*, u.*')
-            ->addFrom('Core\Models\Content', 'c')
-            ->addFrom('Core\Models\Category', 'cat')
-            ->addFrom('Core\Models\User', 'u')
+            ->addFrom('Module\Core\Models\Content', 'c')
+            ->addFrom('Module\Core\Models\Category', 'cat')
+            ->addFrom('Module\Core\Models\User', 'u')
             ->andWhere('c.category = cat.id')
             ->andWhere('c.created_by = u.id')
             ->orderBy('c.created_at DESC');
@@ -53,10 +53,10 @@ class ContentController extends Controller
 
         $model = $this->modelsManager->createBuilder()
             ->columns('c.*, cat.*, u.*, viewLevel.*')
-            ->addFrom('Core\Models\Content', 'c')
-            ->addFrom('Core\Models\Category', 'cat')
-            ->addFrom('Core\Models\User', 'u')
-            ->addFrom('Core\Models\ViewLevel', 'viewLevel')
+            ->addFrom('Module\Core\Models\Content', 'c')
+            ->addFrom('Module\Core\Models\Category', 'cat')
+            ->addFrom('Module\Core\Models\User', 'u')
+            ->addFrom('Module\Core\Models\ViewLevel', 'viewLevel')
             ->andWhere('c.category = cat.id')
             ->andWhere('c.created_by = u.id')
             ->andWhere('c.view_level = viewLevel.id')

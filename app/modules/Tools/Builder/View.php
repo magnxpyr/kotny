@@ -6,10 +6,10 @@
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
-namespace Tools\Builder;
+namespace Module\Tools\Builder;
 
 use Phalcon\Text;
-use Tools\Helpers\Tools;
+use Module\Tools\Helpers\Tools;
 
 /**
  * Class View

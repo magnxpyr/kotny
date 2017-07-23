@@ -6,16 +6,20 @@
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
-namespace Core\Models;
+namespace Module\Core\Models;
 
 use Engine\Mvc\Model;
 
 /**
  * Class Content
- * @package Core\Models
+ * @package Module\Core\Models
  */
 class Content extends Model
 {
+    const STATUS_UNPUBLISHED = 0,
+        STATUS_PUBLISHED = 1,
+        STATUS_TRASHED = 2;
+
     /**
      * @var integer
      */
@@ -465,8 +469,8 @@ class Content extends Model
     public function initialize()
     {
         $this->setSource('content');
-        $this->belongsTo('created_by', 'Core\Models\User', 'id', ['alias' => 'user', 'reusable' => true]);
-        $this->belongsTo('modified_by', 'Core\Models\User', 'id', ['alias' => 'user', 'reusable' => true]);
+        $this->belongsTo('created_by', 'Module\Core\Models\User', 'id', ['alias' => 'user', 'reusable' => true]);
+        $this->belongsTo('modified_by', 'Module\Core\Models\User', 'id', ['alias' => 'user', 'reusable' => true]);
     }
 
     public function getSource()

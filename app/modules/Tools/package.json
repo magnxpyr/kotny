@@ -1,0 +1,9 @@
+{
+  "package": "Tools",
+  "type": "module",
+  "version": "1.0.0",
+  "author": "Magnxpyr Network",
+  "website": "http://www.magnxpyr.com",
+  "description": "Development tools module",
+  "licence": "BSD"
+}

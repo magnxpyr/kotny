@@ -1,13 +1,12 @@
 <?php
 /**
- * Created by IntelliJ IDEA.
- * User: gatz
- * Date: 05.10.2016
- * Time: 22:06
+ * @copyright   2006 - 2017 Magnxpyr Network
+ * @license     New BSD License; see LICENSE
+ * @link        http://www.magnxpyr.com
+ * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
-namespace Core\Forms;
-
+namespace Module\Core\Forms;
 
 use Engine\Forms\Form;
 use Phalcon\Forms\Element\Hidden;
@@ -15,6 +14,10 @@ use Phalcon\Forms\Element\Select;
 use Phalcon\Forms\Element\TextArea;
 use Phalcon\Validation\Validator\PresenceOf;
 
+/**
+ * Class AdminModuleEditForm
+ * @package Module\Core\Forms
+ */
 class AdminModuleEditForm extends Form
 {
     /**

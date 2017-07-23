@@ -1,0 +1,9 @@
+{
+  "package": "Menu",
+  "type": "widget",
+  "version": "1.0.0",
+  "author": "Magnxpyr Network",
+  "website": "http://www.magnxpyr.com",
+  "description": "Menu widget",
+  "licence": "BSD"
+}

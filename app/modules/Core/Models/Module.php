@@ -6,13 +6,13 @@
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
-namespace Core\Models;
+namespace Module\Core\Models;
 
 use Engine\Mvc\Model;
 
 /**
  * Class Module
- * @package Core\Models
+ * @package Module\Core\Models
  */
 class Module extends Model
 {
@@ -25,11 +25,6 @@ class Module extends Model
      * @var string
      */
     private $name;
-
-    /**
-     * @var string
-     */
-    private $title;
 
     /**
      * @var string
@@ -78,19 +73,6 @@ class Module extends Model
     public function setName($name)
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-    /**
-     * Method to set the value of field title
-     *
-     * @param string $title
-     * @return $this
-     */
-    public function setTitle($title)
-    {
-        $this->title = $title;
 
         return $this;
     }
@@ -181,16 +163,6 @@ class Module extends Model
     }
 
     /**
-     * Returns the value of field title
-     *
-     * @return string
-     */
-    public function getTitle()
-    {
-        return $this->title;
-    }
-
-    /**
      * Returns the value of field description
      *
      * @return string
@@ -246,11 +218,34 @@ class Module extends Model
     public function initialize()
     {
         $this->setSource('module');
+        $this->hasMany('id', 'Module\Core\Models\Migration', 'package_id', ['alias' => 'migration', 'reusable' => true]);
     }
 
     public function getSource()
     {
         return 'module';
+    }
+
+    public static function getCacheActiveModules()
+    {
+        return md5("model_user.active_modules");
+    }
+
+    /**
+     * Get active widgets
+     * @return \Phalcon\Mvc\Model
+     */
+    public static function getActiveModules()
+    {
+        return self::find([
+            'conditions' => 'status = ?1',
+            'bind' => [1 => 1],
+            'columns' => ['name'],
+            'cache' => [
+                'key' => self::getCacheActiveModules(),
+                'lifetime' => 3600
+            ]
+        ]);
     }
 
 }

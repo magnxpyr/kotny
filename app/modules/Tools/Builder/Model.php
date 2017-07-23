@@ -23,11 +23,11 @@
  * @authors     Stefan Chiriac <stefan@magnxpyr.com>
  */
 
-namespace Tools\Builder;
+namespace Module\Tools\Builder;
 
 use Phalcon\Db\Column;
 use Phalcon\Text;
-use Tools\Helpers\Tools;
+use Module\Tools\Helpers\Tools;
 
 /**
  * Class Model

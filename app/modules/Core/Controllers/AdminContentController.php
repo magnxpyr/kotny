@@ -6,10 +6,10 @@
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
-namespace Core\Controllers;
+namespace Module\Core\Controllers;
 
-use Core\Forms\AdminContentEditForm;
-use Core\Models\Content;
+use Module\Core\Forms\AdminContentEditForm;
+use Module\Core\Models\Content;
 use DataTables\DataTable;
 use Engine\Mvc\AdminController;
 use Phalcon\Mvc\View;
@@ -37,16 +37,16 @@ class AdminContentController extends AdminController
     {
         $builder = $this->modelsManager->createBuilder()
             ->columns('c.id, c.title, cy.title as category, v.name as viewLevel, c.featured, u.username, c.created_at, c.status, c.hits')
-            ->addFrom('Core\Models\Content', 'c')
-            ->addFrom('Core\Models\Category', 'cy')
-            ->addFrom('Core\Models\User', 'u')
-            ->addFrom('Core\Models\ViewLevel', 'v')
+            ->addFrom('Module\Core\Models\Content', 'c')
+            ->addFrom('Module\Core\Models\Category', 'cy')
+            ->addFrom('Module\Core\Models\User', 'u')
+            ->addFrom('Module\Core\Models\ViewLevel', 'v')
             ->where('c.category = cy.id')
             ->andWhere('c.view_level = v.id')
             ->andWhere('c.created_by = u.id');
 
 //        $builder = $this->modelsManager->createQuery("SELECT c.id, c.title, cy.title as category, v.name as viewLevel, c.featured, u.username, c.created_at, c.status, c.hits
-//        FROM \Core\Models\Content c, \Core\Models\Category cy, \Core\Models\User u, \Core\Models\ViewLevel v WHERE c.category = cy.id
+//        FROM \Module\Core\Models\Content c, \Module\Core\Models\Category cy, \Module\Core\Models\User u, \Module\Core\Models\ViewLevel v WHERE c.category = cy.id
 //        and c.view_level = v.id and c.created_by = u.id")->execute();
 
         $columns = ['c.id', 'c.title', ['cy.title', 'alias' => 'category'], ['v.name', 'alias' => 'viewLevel'],

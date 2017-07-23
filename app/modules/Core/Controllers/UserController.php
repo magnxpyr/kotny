@@ -6,22 +6,22 @@
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
-namespace Core\Controllers;
+namespace Module\Core\Controllers;
 
-use Core\Forms\ConfirmEmailForm;
-use Core\Forms\ForgotPasswordForm;
-use Core\Forms\LoginForm;
-use Core\Forms\RegisterForm;
-use Core\Forms\ResetPasswordForm;
-use Core\Models\User;
-use Core\Models\UserEmailConfirmations;
-use Core\Models\UserResetPasswords;
+use Module\Core\Forms\ConfirmEmailForm;
+use Module\Core\Forms\ForgotPasswordForm;
+use Module\Core\Forms\LoginForm;
+use Module\Core\Forms\RegisterForm;
+use Module\Core\Forms\ResetPasswordForm;
+use Module\Core\Models\User;
+use Module\Core\Models\UserEmailConfirmations;
+use Module\Core\Models\UserResetPasswords;
 use Engine\Mvc\Auth;
 use Engine\Mvc\Controller;
 
 /**
  * Class UserController
- * @package Core\Controllers
+ * @package Module\Core\Controllers
  */
 class UserController extends Controller
 {
@@ -36,7 +36,6 @@ class UserController extends Controller
     public function loginAction()
     {
         $form = new LoginForm();
-        $form->setRecaptcha(true);
         try {
             $this->auth->login($form);
         } catch (\Exception $e) {

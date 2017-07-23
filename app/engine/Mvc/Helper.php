@@ -9,6 +9,8 @@
 namespace Engine\Mvc;
 
 use Engine\Meta;
+use Module\Core\Models\Content;
+use Module\Core\Models\User;
 use Phalcon\Mvc\Model;
 use Phalcon\Mvc\User\Component;
 use Phalcon\Text;
@@ -29,15 +31,15 @@ class Helper extends Component
     ];
 
     private $userStatuses = [
-        1 => 'Active',
-        0 => 'Inactive',
-        2 => 'Blocked'
+        User::STATUS_ACTIVE => 'Active',
+        User::STATUS_INACTIVE => 'Inactive',
+        User::STATUS_BLOCKED => 'Blocked'
     ];
 
     private $articleStatuses = [
-        1 => 'Published',
-        0 => 'Unpublished',
-        2 => 'Trashed'
+        Content::STATUS_PUBLISHED => 'Published',
+        Content::STATUS_UNPUBLISHED => 'Unpublished',
+        Content::STATUS_TRASHED => 'Trashed'
     ];
 
     /**
@@ -175,5 +177,17 @@ class Helper extends Component
     public function htmlDecode($str)
     {
         return html_entity_decode($str);
+    }
+
+    /**
+     * @param $dir
+     * @return bool
+     */
+    public function removeDir($dir) {
+        $files = array_diff(scandir($dir), array('.','..'));
+        foreach ($files as $file) {
+            is_dir("$dir/$file") ? $this->removeDir("$dir/$file") : unlink("$dir/$file");
+        }
+        return rmdir($dir);
     }
 }

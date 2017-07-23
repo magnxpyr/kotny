@@ -6,10 +6,10 @@
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
-namespace Core\Controllers;
+namespace Module\Core\Controllers;
 
-use Core\Forms\AdminCategoryEditForm;
-use Core\Models\Category;
+use Module\Core\Forms\AdminCategoryEditForm;
+use Module\Core\Models\Category;
 use Engine\Mvc\AdminController;
 use Phalcon\Mvc\Model\EagerLoading\Loader;
 use Phalcon\Mvc\View;

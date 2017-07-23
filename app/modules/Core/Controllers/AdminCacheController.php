@@ -6,7 +6,7 @@
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
-namespace Core\Controllers;
+namespace Module\Core\Controllers;
 
 use DataTables\DataTable;
 use Engine\Mvc\AdminController;

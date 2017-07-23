@@ -52,7 +52,9 @@
 
         <!-- Main content -->
         <section class="content">
-            {{ flashSession.output() }}
+            <div id="flash-area">
+                {{ flashSession.output() }}
+            </div>
             {{ content() }}
         </section><!-- /.content -->
     </div><!-- /.content-wrapper -->

@@ -16,7 +16,7 @@ use Phalcon\Di\Injectable;
 
 /**
  * Class FacebookConnector
- * @package Phalcon\UserPlugin\Connectors
+ * @package Engine\Mvc\Connectors
  */
 class FacebookConnector extends Injectable
 {

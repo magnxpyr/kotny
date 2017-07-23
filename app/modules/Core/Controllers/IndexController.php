@@ -6,14 +6,13 @@
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
-namespace Core\Controllers;
+namespace Module\Core\Controllers;
 
 use Engine\Mvc\Controller;
-use Phalcon\Mvc\View;
 
 /**
  * Class IndexController
- * @package Core\Controllers
+ * @package Module\Core\Controllers
  */
 class IndexController extends Controller
 {

@@ -22,7 +22,7 @@
                 'url': url('admin/core/widget/search'),
                 'actions': [
                     'update': url('admin/core/widget/edit'),
-                    'delete': url('admin/core/widget/delete')
+                    'delete': url('admin/core/package-manager/remove-package/widget')
                 ],
                 'tableId': 'table'
             ],

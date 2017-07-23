@@ -6,14 +6,14 @@
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
-namespace Core\Models;
+namespace Module\Core\Models;
 
 use Engine\Mvc\Model;
 use Phalcon\Mvc\Model\EagerLoadingTrait;
 
 /**
  * Class MenuType
- * @package Core\Models
+ * @package Module\Core\Models
  */
 class MenuType extends Model
 {
@@ -112,7 +112,7 @@ class MenuType extends Model
     public function initialize()
     {
         $this->setSource('menu_type');
-        $this->hasMany('id', 'Core\Models\Menu', 'menu_type_id', ['alias' => 'menu', 'reusable' => true]);
+        $this->hasMany('id', 'Module\Core\Models\Menu', 'menu_type_id', ['alias' => 'menu', 'reusable' => true]);
     }
 
     public function getSource()

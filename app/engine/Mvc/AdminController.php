@@ -8,7 +8,7 @@
 
 namespace Engine\Mvc;
 
-use Core\Models\Menu;
+use Module\Core\Models\Menu;
 use Phalcon\Mvc\Model\EagerLoading\Loader;
 
 /**

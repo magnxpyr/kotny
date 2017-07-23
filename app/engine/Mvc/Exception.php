@@ -7,7 +7,8 @@
  */
 
 namespace Engine\Mvc;
-use Engine\Meta;
+use Engine\Behavior\DiBehavior;
+use Throwable;
 
 /**
  * Class Exception
@@ -15,5 +16,11 @@ use Engine\Meta;
  */
 class Exception extends \Exception
 {
-    use Meta;
+    use DiBehavior;
+
+    public function __construct($message = "", $code = 0, Throwable $previous = null)
+    {
+        parent::__construct($message, $code, $previous);
+        $this->getDi()->get('logger')->error($message);
+    }
 }

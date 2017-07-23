@@ -6,7 +6,7 @@
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
-namespace Core\Forms;
+namespace Module\Core\Forms;
 
 use Phalcon\Forms\Element\Hidden;
 use Phalcon\Forms\Element\Text;
@@ -16,7 +16,7 @@ use Phalcon\Validation\Validator\PresenceOf;
 
 /**
  * Class AdminMenuTypeCreateForm
- * @package Core\Forms
+ * @package Module\Core\Forms
  */
 class AdminMenuTypeEditForm extends Form
 {

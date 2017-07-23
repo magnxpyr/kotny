@@ -8,8 +8,6 @@
  */
 
 use Engine\TokenManager;
-use Phalcon\Events\Event;
-use Phalcon\Dispatcher;
 
 /**
  * Class Bootstrap
@@ -18,6 +16,7 @@ use Phalcon\Dispatcher;
 class Bootstrap
 {
     private $di;
+    private $modules;
 
     public function __construct()
     {
@@ -39,7 +38,7 @@ class Bootstrap
         $this->di->setShared('request', $request);
 
         // Register helper
-        $this->di->setShared('helper', function() {
+        $this->di->setShared('helper', function () {
             return new \Engine\Mvc\Helper();
         });
 
@@ -52,7 +51,7 @@ class Bootstrap
         $this->initView();
         $this->initView(true);
 
-        $this->di->setShared('cookies', function() {
+        $this->di->setShared('cookies', function () {
             $cookies = new \Phalcon\Http\Response\Cookies();
             $cookies->useEncryption(true);
             return $cookies;
@@ -63,31 +62,25 @@ class Bootstrap
         $session->start();
         $this->di->setShared('session', $session);
 
-        // Connect to db
-        $db = new \Phalcon\Db\Adapter\Pdo\Mysql([
-            'host' => $config->database->host,
-            'username' => $config->database->username,
-            'password' => $config->database->password,
-            'dbname' => $config->database->dbname
-        ]);
-        $this->di->setShared('db', $db);
-
         $response = new \Phalcon\Http\Response();
         $this->di->setShared('response', $response);
 
-        $this->initCache();
         $this->initSecurity();
         $this->initEventManager();
-        
+
         // Register assets that will be loaded in every page
-        $this->di->setShared('assets', function() {
+        $this->di->setShared('assets', function () {
             return new \Engine\Assets\Manager();
+        });
+
+        $this->di->setShared('packageManager', function () {
+            return new \Engine\Package\Manager();
         });
 
         $escaper = new \Phalcon\Escaper();
         $this->di->setShared('escaper', $escaper);
 
-        $this->di->setShared('filter', function() use ($escaper) {
+        $this->di->setShared('filter', function () use ($escaper) {
             $filter = new \Phalcon\Filter();
             $filter->add('escapeHtml', function ($value) use ($escaper) {
                 return $escaper->escapeHtml($value);
@@ -97,7 +90,7 @@ class Bootstrap
         });
 
 
-        $this->di->setShared('logger', function() {
+        $this->di->setShared('logger', function () {
             return new \Phalcon\Logger\Adapter\File(ROOT_PATH . 'logs/' . date('d-M-Y') . '.log');
         });
 
@@ -112,6 +105,8 @@ class Bootstrap
         define('DEFAULT_THEME', 'default');
         define('THEMES_PATH', APP_PATH . 'themes/');
         define('MODULES_PATH', APP_PATH . 'modules/');
+        define('WIDGETS_PATH', APP_PATH . 'widgets/');
+        define('TEMP_PATH', ROOT_PATH . 'cache/tmp/');
 
         // Load config file
         $config = require_once APP_PATH . 'config/config.php';
@@ -129,24 +124,34 @@ class Bootstrap
         // set cookies time
         $config['app']['cookie']['expire'] = time() + $config['app']['cookie']['expire'];
 
+        // Connect to db
+        $db = new \Phalcon\Db\Adapter\Pdo\Mysql([
+            'host' => $config['database']['host'],
+            'username' => $config['database']['username'],
+            'password' => $config['database']['password'],
+            'dbname' => $config['database']['dbname']
+        ]);
+        $this->di->setShared('db', $db);
+
+        $this->di->setShared('config', new \Phalcon\Config($config));
+
+        $this->initCache();
+
+        // Load loader
+        require_once APP_PATH . 'engine/Loader.php';
+        $loader = new \Engine\Loader();
+        $loader->init();
+
         // Load modules
-        $modulesList = require_once APP_PATH . 'config/modules.php';
+        $modulesList = \Module\Core\Models\Module::getActiveModules();
 
         // Registering the registry
         $registry = new \Phalcon\Registry();
         $registry->modules = $modulesList;
         $this->di->setShared('registry', $registry);
 
-        // Load loader
-        require_once APP_PATH . 'engine/Loader.php';
-        $loader = new \Engine\Loader();
         $modulesConfig = $loader->modulesConfig($modulesList);
-        $modulesRoutes = $modulesConfig['routes'];
-        unset($modulesConfig['routes']);
-        $config = new \Phalcon\Config(array_merge_recursive($config, $modulesConfig));
-        $loader->init($config->loader->namespaces);
-        $this->di->setShared('config', $config);
-
+        $this->modules = $modulesConfig['modules'];
 
         // Register routers with default behavior
         // Set 'false' to disable default behavior. After that define all routes or you get 404
@@ -158,7 +163,7 @@ class Bootstrap
             'action' => 'index'
         ]);
 
-        foreach($modulesRoutes as $routeClass) {
+        foreach ($modulesConfig['routes'] as $routeClass) {
             $route = new $routeClass;
             $route->init($router);
         }
@@ -177,7 +182,7 @@ class Bootstrap
         $eventsManager->attach('dispatch', new \Engine\Plugins\AclHandler());
         $eventsManager->attach('dispatch', new \Engine\Plugins\ErrorHandler());
         $eventsManager->attach('dispatch', new \Engine\Plugins\Translation());
-        $eventsManager->attach('dispatch:beforeDispatchLoop', function(\Phalcon\Events\Event $event, \Phalcon\Dispatcher $dispatcher) {
+        $eventsManager->attach('dispatch:beforeDispatchLoop', function (\Phalcon\Events\Event $event, \Phalcon\Dispatcher $dispatcher) {
             $dispatcher->setActionName(lcfirst(\Phalcon\Text::camelize($dispatcher->getActionName())));
         });
 
@@ -204,7 +209,7 @@ class Bootstrap
         }
 
         $volt = new \Phalcon\Mvc\View\Engine\Volt($view, $this->di);
-        if(DEV) {
+        if (DEV) {
             // Prevent caching annoyances
             $voltOptions['compileAlways'] = true;
         }
@@ -216,7 +221,7 @@ class Bootstrap
         $compiler->addFunction(
             'f',
             function ($resolvedArgs, $exprArgs) {
-                return 'function($model){ return ' . trim($resolvedArgs,"'\"") .';}';
+                return 'function($model){ return ' . trim($resolvedArgs, "'\"") . ';}';
             }
         );
         $phtml = new \Phalcon\Mvc\View\Engine\Php($view, $this->di);
@@ -229,7 +234,7 @@ class Bootstrap
         if ($widget) {
             $this->di->setShared('viewWidget', $view);
 
-            $this->di->setShared('widget', function() {
+            $this->di->setShared('widget', function () {
                 return new Engine\Widget\Widget();
             });
         } else {
@@ -241,7 +246,7 @@ class Bootstrap
     {
         $config = $this->getConfig();
 
-        $this->di->setShared('auth', function() {
+        $this->di->setShared('auth', function () {
             return new Engine\Mvc\Auth();
         });
 
@@ -249,14 +254,14 @@ class Bootstrap
         $this->di->setShared('tokenManager', $tokenManager);
 
         // Set up crypt service
-        $this->di->setShared('crypt', function() use ($config) {
+        $this->di->setShared('crypt', function () use ($config) {
             $crypt = new \Phalcon\Crypt();
             $crypt->setKey($config->app->cryptKey);
             return $crypt;
         });
 
         //  Set security options
-        $this->di->setShared('security', function() {
+        $this->di->setShared('security', function () {
             $security = new \Phalcon\Security();
             $security->setRandomBytes(\Engine\Mvc\Auth::TOKEN_BYTES);
             $security->setWorkFactor(\Engine\Mvc\Auth::WORK_FACTOR);
@@ -265,7 +270,7 @@ class Bootstrap
         });
 
         $acl = null;
-        switch($config->app->aclAdapter) {
+        switch ($config->app->aclAdapter) {
             case 'memory':
                 $acl = new \Engine\Acl\Memory();
                 break;
@@ -277,19 +282,19 @@ class Bootstrap
         // Register ACL to DI
         $this->di->setShared('acl', $acl->getAcl());
     }
-    
+
     private function initMail()
     {
         $config = $this->getConfig();
-        
+
         // Register mail service
-        $this->di->set('mail', function() use ($config) {
+        $this->di->set('mail', function () use ($config) {
             $settings = [
                 'from' => $config->mail->from->toArray(),
                 'driver' => $config->mail->driver,
                 'viewsDir' => APP_PATH . 'themes/' . DEFAULT_THEME . '/emails/'
             ];
-            switch($config->mail->driver) {
+            switch ($config->mail->driver) {
                 case 'sendmail':
                     $settings['sendmail'] = $config->mail->sendmail;
                     break;
@@ -306,16 +311,16 @@ class Bootstrap
         // Register the flash service with custom CSS classes
         $flash = [
             'success' => 'alert alert-success alert-dismissible',
-            'notice'  => 'alert alert-info alert-dismissible',
+            'notice' => 'alert alert-info alert-dismissible',
             'warning' => 'alert alert-warning alert-dismissible',
-            'error'   => 'alert alert-danger alert-dismissible'
+            'error' => 'alert alert-danger alert-dismissible'
         ];
 
-        $this->di->setShared('flash', function() use ($flash) {
+        $this->di->setShared('flash', function () use ($flash) {
             return new \Phalcon\Flash\Direct($flash);
         });
 
-        $this->di->setShared('flashSession', function() use ($flash) {
+        $this->di->setShared('flashSession', function () use ($flash) {
             return new \Phalcon\Flash\Session($flash);
         });
     }
@@ -323,7 +328,7 @@ class Bootstrap
     private function initCache()
     {
         $config = $this->getConfig();
-        
+
         // Set cache
         $cacheFrontend = new \Phalcon\Cache\Frontend\Data([
             "lifetime" => 172800,
@@ -364,7 +369,6 @@ class Bootstrap
 
     private function dispatch()
     {
-        $config = $this->getConfig();
         $request = $this->di->getShared('request');
 
         if (DEV) {
@@ -374,7 +378,7 @@ class Bootstrap
 
         // Handle the request
         $application = new \Phalcon\Mvc\Application($this->di);
-        $application->registerModules($config->modules->toArray());
+        $application->registerModules($this->modules);
         $application->setDI($this->di);
 
         if ($request->isAjax() && $request->getHeader("X-CSRF-Token") != $this->di->getShared('tokenManager')->getToken()) {
@@ -389,7 +393,22 @@ class Bootstrap
         }
 
         // Render
-        echo $application->handle()->getContent();
+        try {
+            echo $application->handle()->getContent();
+        } catch (\Exception $e) {
+            if (DEV) {
+                throw $e;
+            } else {
+                $this->di->getShared('logger')->error('Page error: ', $e->getMessage());
+                $application->response->redirect([
+                    'for' => 'core-default',
+                    'module' => 'core',
+                    'controller' => 'error',
+                    'action' => 'show404'
+                ]);
+                $application->response->send();
+            }
+        }
     }
 
     private function getConfig()

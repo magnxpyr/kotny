@@ -23,13 +23,13 @@
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
-namespace Tools\Builder;
+namespace Module\Tools\Builder;
 
 use Phalcon\Text;
-use Tools\Builder\Model as ModelBuilder;
+use Module\Tools\Builder\Model as ModelBuilder;
 use Phalcon\DI\FactoryDefault;
 use Phalcon\Db\Column;
-use Tools\Helpers\Tools;
+use Module\Tools\Helpers\Tools;
 
 /**
  * Class Scaffold

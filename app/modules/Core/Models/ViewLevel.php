@@ -6,13 +6,13 @@
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
-namespace Core\Models;
+namespace Module\Core\Models;
 
 use Engine\Mvc\Model;
 
 /**
  * Class ViewLevel
- * @package Core\Models
+ * @package Module\Core\Models
  */
 class ViewLevel extends Model
 {

@@ -6,14 +6,14 @@
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
-namespace Core\Models;
+namespace Module\Core\Models;
 
 use Engine\Mvc\Model;
 use Phalcon\Mvc\Model\EagerLoadingTrait;
 
 /**
  * Class ResourceAccess
- * @package Core\Models
+ * @package Module\Core\Models
  */
 class ResourceAccess extends Model
 {
@@ -79,7 +79,7 @@ class ResourceAccess extends Model
     public function initialize()
     {
         $this->setSource('resource_access');
-        $this->belongsTo('resource_id', 'Core\Models\Resource', 'id', ['alias' => 'resource', 'reusable' => true]);
+        $this->belongsTo('resource_id', 'Module\Core\Models\Resource', 'id', ['alias' => 'resource', 'reusable' => true]);
     }
 
     public function getSource()

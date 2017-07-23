@@ -17,7 +17,7 @@
   +------------------------------------------------------------------------+
 */
 
-namespace Tools\Builder;
+namespace Module\Tools\Builder;
 
 /**
  * Tools\Builder\Component
