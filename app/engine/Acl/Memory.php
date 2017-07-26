@@ -27,11 +27,12 @@ class Memory extends AclMemory
             $this->cacheExpire = 1;
         }
         if (!$this->acl) {
+            /** @var \Phalcon\Cache\Backend $cache */
             $cache = $this->getDI()->get('cache');
             if ($cache->exists($this->getCacheKey(), $this->getCacheExpire())) {
                 $this->acl = $cache->get($this->getCacheKey());
             } else {
-                $this->acl = new MemoryBase();
+                $this->acl = new BaseMemory();
                 $this->acl->setDefaultAction(Acl::DENY);
 
                 $roles = require_once APP_PATH . 'config/roles.php';
@@ -57,7 +58,7 @@ class Memory extends AclMemory
                 $this->acl->allow('admin', '*', '*');
                 $cache->save($this->getCacheKey(), $this->acl, $this->getCacheExpire());
             }
-            $this->acl->adapter = self::class;
+            $this->acl->adapter = new Database();
         }
         return $this->acl;
     }

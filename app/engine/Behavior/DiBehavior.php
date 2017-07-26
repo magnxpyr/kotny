@@ -25,7 +25,7 @@ trait DiBehavior
      */
     private $di;
     /**
-     * @var \Engine\Acl\MemoryBase
+     * @var \Engine\Acl\BaseMemory
      */
     private $acl;
     /**

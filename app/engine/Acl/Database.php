@@ -65,7 +65,7 @@ class Database extends Adapter implements AdapterInterface
             if ($cache->exists($this->getCacheKey(), $this->getCacheExpire())) {
                 $acl = $cache->get($this->cacheKey);
             } else {
-                $acl = new MemoryBase();
+                $acl = new BaseMemory();
                 $acl->setDefaultAction(PhalconAcl::DENY);
                 // Prepare Roles.
                 $roles = Role::find();
@@ -79,6 +79,7 @@ class Database extends Adapter implements AdapterInterface
                 // Looking for all controllers inside modules and get actions.
                 $resources = Resource::with('resourceAccess');
                 foreach ($resources as $resource) {
+                    /** @var $resource \Module\Core\Models\Resource */
                     if ($resource->getName() == '*') continue;
 
                     $actions = [];
@@ -101,7 +102,7 @@ class Database extends Adapter implements AdapterInterface
                 $cache->save($this->getCacheKey(), $acl, $this->getCacheExpire());
             }
             $this->acl = $acl;
-            $this->acl->adapter = self::class;
+            $this->acl->adapter = new Database();
         }
         return $this->acl;
     }

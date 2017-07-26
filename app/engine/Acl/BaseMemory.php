@@ -9,19 +9,18 @@
 namespace Engine\Acl;
 
 use Engine\Behavior\AclBehavior;
-use Engine\Meta;
 use Phalcon\Acl\Adapter\Memory as AclMemory;
 
 /**
- * Class MemoryBase
+ * Class BaseMemory
  * @package Engine\Acl
  */
-class MemoryBase extends AclMemory
+class BaseMemory extends AclMemory
 {
     use AclBehavior;
 
     /**
-     * @var \Phalcon\Acl\Adapter $acl->adapter
+     * @var \Engine\Acl\Database
      */
     public $adapter;
 

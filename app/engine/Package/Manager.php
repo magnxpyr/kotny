@@ -219,20 +219,14 @@ class Manager
             $resourceName = str_replace('Controller', '', $className);
             $resourceName = 'module:core/' . $this->helper->uncamelize($resourceName);
 
-            if ($this->config->app->aclAdapter == AclHandler::MEMORY) {
-                $controllerClass = "Module\\" . $model->getName() . "\\Controllers\\$className";
-                $controller = new $controllerClass();
-                $actions = $this->getResourceAccess($controller);
-                $this->acl->adapter->dropResourceAccess($resourceName, $actions);
-            } else {
-                $this->acl->dropResourceAccess($resourceName);
-            }
+            $this->acl->adapter->dropResourceAccess($resourceName);
         }
 
         $this->migrate(Migration::DOWN, PackageType::MODULE, $model->getName(), $model->getId());
         $model->delete();
         $this->cache->delete(Module::getCacheActiveModules());
         $this->cache->delete($this->acl->getCacheKey());
+        $this->helper->removeDir(MODULES_PATH . $model->getName());
         $this->logger->debug("Module " . $model->getName() . " with id $moduleId removed successfully");
     }
 

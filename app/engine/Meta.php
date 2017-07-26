@@ -15,7 +15,7 @@ namespace Engine;
  * @property \Engine\Mvc\Helper $helper
  * @property \Engine\TokenManager $tokenManager
  * @property \Engine\Mvc\Auth $auth
- * @property \Engine\Acl\MemoryBase $acl
+ * @property \Engine\Acl\BaseMemory $acl
  * @property \Engine\Package\Manager $packageManager
  * @property \Engine\Widget\Widget $widget
  * @property \Phalcon\Mailer\Manager $mail
