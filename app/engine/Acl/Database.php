@@ -309,9 +309,13 @@ class Database extends Adapter implements AdapterInterface
     public function dropResourceAccess($resourceName, $accessList = null)
     {
         $resource = Resource::findFirstByName($resourceName);
-        AccessList::findByResourceId($resource->getId())->delete();
-        ResourceAccess::findByResourceId($resource->getId())->delete();
-        $resource->delete();
+        if ($resource) {
+            $access = AccessList::findByResourceId($resource->getId());
+            $resource = ResourceAccess::findByResourceId($resource->getId());
+            if ($access) $access->delete();
+            if ($resource) $resource->delete();
+            $resource->delete();
+        }
     }
 
     /**

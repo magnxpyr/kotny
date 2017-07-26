@@ -11,7 +11,6 @@ namespace Engine\Mvc;
 use Engine\Meta;
 use Module\Core\Models\Content;
 use Module\Core\Models\User;
-use Phalcon\Mvc\Model;
 use Phalcon\Mvc\User\Component;
 use Phalcon\Text;
 
@@ -22,13 +21,6 @@ use Phalcon\Text;
 class Helper extends Component
 {
     use Meta;
-    
-    private $userRoles = [
-        0 => 'All',
-        1 => 'Guest',
-        2 => 'User',
-        3 => 'Admin'
-    ];
 
     private $userStatuses = [
         User::STATUS_ACTIVE => 'Active',
@@ -41,25 +33,6 @@ class Helper extends Component
         Content::STATUS_UNPUBLISHED => 'Unpublished',
         Content::STATUS_TRASHED => 'Trashed'
     ];
-
-    /**
-     * Get user role by id
-     * @param $id
-     * @return mixed
-     */
-    public function getUserRole($id)
-    {
-        return $this->userRoles[$id];
-    }
-
-    /**
-     * Get possible permission roles for users
-     * @return array
-     */
-    public function getUserRoles()
-    {
-        return $this->userRoles;
-    }
 
     /**
      * Get user status by id
@@ -188,6 +161,12 @@ class Helper extends Component
         foreach ($files as $file) {
             is_dir("$dir/$file") ? $this->removeDir("$dir/$file") : unlink("$dir/$file");
         }
-        return rmdir($dir);
+        try {
+            $removed = rmdir($dir);
+        } catch (Exception $e) {
+            $this->logger->error("Can't remove directory " . $dir);
+            $removed = false;
+        }
+        return $removed;
     }
 }
