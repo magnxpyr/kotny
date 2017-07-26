@@ -22,11 +22,6 @@ abstract class Migration
 {
     use DiBehavior;
 
-    /**
-     * @var Db\Adapter
-     */
-    public $db;
-
     const
         UP = "up",
         DOWN = "down";
@@ -34,7 +29,6 @@ abstract class Migration
     final public function __construct()
     {
         $this->getDI();
-        $this->db = $this->di->get('db');
     }
 
     public function up() {}

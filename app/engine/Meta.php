@@ -20,7 +20,7 @@ namespace Engine;
  * @property \Engine\Widget\Widget $widget
  * @property \Phalcon\Mailer\Manager $mail
  * @property \Phalcon\Config $config
- * @property \Phalcon\Logger\Adapter\File $logger
+ * @property \Phalcon\Logger\Adapter $logger
  * @property \Phalcon\Cache\Backend $cache
  * @property \Phalcon\Translate\Adapter\NativeArray $t
  */

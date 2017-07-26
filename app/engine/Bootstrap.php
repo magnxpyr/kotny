@@ -42,6 +42,10 @@ class Bootstrap
             return new \Engine\Mvc\Helper();
         });
 
+        $this->di->setShared('logger', function () {
+            return new \Phalcon\Logger\Adapter\File(ROOT_PATH . 'logs/' . date('d-M-Y') . '.log');
+        });
+
         // Generate urls
         $url = new Phalcon\Mvc\Url();
         $url->setBaseUri($this->getConfig()->app->baseUri);
@@ -87,11 +91,6 @@ class Bootstrap
             });
 
             return $filter;
-        });
-
-
-        $this->di->setShared('logger', function () {
-            return new \Phalcon\Logger\Adapter\File(ROOT_PATH . 'logs/' . date('d-M-Y') . '.log');
         });
 
         $this->initMail();

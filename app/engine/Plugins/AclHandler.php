@@ -8,9 +8,7 @@
 
 namespace Engine\Plugins;
 
-use Engine\Acl\Database;
 use Engine\Meta;
-use Engine\Package\Manager;
 use Phalcon\Mvc\User\Plugin;
 use Phalcon\Acl;
 
@@ -21,6 +19,9 @@ use Phalcon\Acl;
 class AclHandler extends Plugin
 {
     use Meta;
+
+    const MEMORY = "memory";
+    const DATABASE = "database";
     
     /**
      * Check if user has access
@@ -47,6 +48,9 @@ class AclHandler extends Plugin
         
         //Check whether the "auth" variable exists in session to define the active role
         $role = $this->auth->getUserRole();
+        if ($this->config->app->aclAdapter == AclHandler::MEMORY) {
+            $role = $this->acl->getRoleByKey($role);
+        }
 
         //Take the active resources from the dispatcher
         $module = $dispatcher->getModuleName();
@@ -54,7 +58,7 @@ class AclHandler extends Plugin
         $action = $dispatcher->getActionName();
 
         //Check if the Role have access to the controller (resource)
-        $allowed = $this->di->getShared('acl')->isAllowed((string)$role, "module:$module/$controller", $action);
+        $allowed = $this->acl->isAllowed((string)$role, "module:$module/$controller", $action);
 
         if ($allowed != Acl::ALLOW) {
             $this->dispatcher->setModuleName('core');

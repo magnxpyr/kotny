@@ -62,7 +62,7 @@ class Database extends Adapter implements AdapterInterface
         }
         if (!$this->acl) {
             $cache = $this->getDI()->get('cache');
-            if ($cache->exists($this->cacheKey, $this->cacheExpire)) {
+            if ($cache->exists($this->getCacheKey(), $this->getCacheExpire())) {
                 $acl = $cache->get($this->cacheKey);
             } else {
                 $acl = new MemoryBase();
@@ -98,9 +98,10 @@ class Database extends Adapter implements AdapterInterface
                     }
 
                 }
-                $cache->save($this->cacheKey, $acl, $this->cacheExpire);
+                $cache->save($this->getCacheKey(), $acl, $this->getCacheExpire());
             }
             $this->acl = $acl;
+            $this->acl->adapter = self::class;
         }
         return $this->acl;
     }

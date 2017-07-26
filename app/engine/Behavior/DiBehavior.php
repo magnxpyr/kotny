@@ -23,7 +23,31 @@ trait DiBehavior
      * Dependency injection container.
      * @var DI|Meta
      */
-    public $di;
+    private $di;
+    /**
+     * @var \Engine\Acl\MemoryBase
+     */
+    private $acl;
+    /**
+     * @var \Phalcon\Logger\Adapter
+     */
+    private $logger;
+    /**
+     * @var \Engine\Mvc\Helper
+     */
+    protected $helper;
+    /**
+     * @var \Phalcon\Db\Adapter\Pdo
+     */
+    private $db;
+    /**
+     * @var \Phalcon\Cache\Backend
+     */
+    private $cache;
+    /**
+     * @var \Phalcon\Config
+     */
+    private $config;
 
     /**
      * Set DI.
@@ -44,6 +68,15 @@ trait DiBehavior
         if ($this->di == null) {
             $di = Di::getDefault();
             $this->setDI($di);
+
+            if ($di->has('acl')) {
+                $this->acl = $di->get('acl');
+            }
+            $this->logger = $di->get('logger');
+            $this->helper = $di->get('helper');
+            $this->db = $di->get('db');
+            $this->cache = $di->get('cache');
+            $this->config = $di->get('config');
         }
         return $this->di;
     }

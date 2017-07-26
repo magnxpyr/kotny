@@ -41,7 +41,7 @@ class Loader extends \Phalcon\Loader
                     $routes[] = "Module\\$module\\Routes";
                 }
 
-                $modules[Text::uncamelize($module)] = array(
+                $modules[Text::uncamelize($module, "-")] = array(
                     'className' => "Module\\$module\\Module",
                     'path' => APP_PATH . "modules/$module/Module.php"
                 );

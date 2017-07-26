@@ -9,17 +9,14 @@
 namespace Engine\Package;
 
 use Engine\Behavior\DiBehavior;
-use Engine\Acl\Database;
 use Engine\Mvc\Exception;
-use Engine\Mvc\Helper;
+use Engine\Plugins\AclHandler;
 use Module\Core\Models\Module;
 use Module\Core\Models\Migration as MigrationModel;
 use Module\Core\Models\User;
 use Module\Core\Models\Widget;
 use Phalcon\Config\Adapter\Json;
-use Phalcon\Db;
 use Phalcon\Db\Column;
-use Phalcon\Logger;
 
 /**
  * Class Manager
@@ -30,40 +27,10 @@ class Manager
     use DiBehavior;
 
     const MIGRATION_FILE_NAME_PATTERN = '/^\d+_([\w_]+).php$/i';
-    
-    /**
-     * @var Database
-     */
-    private $acl;
-    /**
-     * @var Logger
-     */
-    private $logger;
-    /**
-     * @var Helper
-     */
-    private $helper;
-    /**
-     * @var Db\Adapter\Pdo
-     */
-    private $db;
-    /**
-     * @var \Phalcon\Cache\Backend
-     */
-    private $cache;
 
-    /**
-     * Manager constructor.
-     * Make sure acl changes are always on Database
-     */
     public function __construct()
     {
-        $di = $this->getDI();
-        $this->acl = $di->get('acl');
-        $this->logger = $di->get('logger');
-        $this->helper = $di->get('helper');
-        $this->db = $di->get('db');
-        $this->cache = $di->get('cache');
+        $this->getDI();
     }
 
     /**
@@ -169,13 +136,13 @@ class Manager
                 $className = str_replace('.php', '', $file);
 
                 $resourceName = str_replace('Controller', '', $className);
-                $resourceName = 'module:core/' . $this->di->helper->uncamelize($resourceName);
+                $resourceName = 'module:core/' . $this->helper->uncamelize($resourceName);
 
                 $controllerClass = "Module\\$moduleName\\Controllers\\$className";
                 $controller = new $controllerClass();
 
                 $actions = $this->getResourceAccess($controller);
-                $this->acl->addResource($resourceName, $actions);
+                $this->acl->adapter->addResource($resourceName, $actions);
             }
         }
 
@@ -215,11 +182,13 @@ class Manager
             ]);
             if (!$migration) {
                 $model->delete();
+                // clean acl db
             }
-            throw new Exception("Widget migration failed");
+            throw new Exception("Module migration failed");
         }
 
-        $this->logger->debug("Widget $moduleName installed successfully");
+        $this->cache->delete($this->acl->getCacheKey());
+        $this->logger->debug("Module $moduleName installed successfully");
     }
 
     /**
@@ -248,14 +217,22 @@ class Manager
             $className = str_replace('.php', '', $file);
 
             $resourceName = str_replace('Controller', '', $className);
-            $resourceName = 'module:core/' . $this->di->helper->uncamelize($resourceName);
-            
-            $this->acl->dropResourceAccess($resourceName);
+            $resourceName = 'module:core/' . $this->helper->uncamelize($resourceName);
+
+            if ($this->config->app->aclAdapter == AclHandler::MEMORY) {
+                $controllerClass = "Module\\" . $model->getName() . "\\Controllers\\$className";
+                $controller = new $controllerClass();
+                $actions = $this->getResourceAccess($controller);
+                $this->acl->adapter->dropResourceAccess($resourceName, $actions);
+            } else {
+                $this->acl->dropResourceAccess($resourceName);
+            }
         }
 
         $this->migrate(Migration::DOWN, PackageType::MODULE, $model->getName(), $model->getId());
         $model->delete();
         $this->cache->delete(Module::getCacheActiveModules());
+        $this->cache->delete($this->acl->getCacheKey());
         $this->logger->debug("Module " . $model->getName() . " with id $moduleId removed successfully");
     }
 
@@ -308,6 +285,7 @@ class Manager
             throw new Exception("Widget migration failed");
         }
 
+        $this->cache->delete($this->acl->getCacheKey());
         $this->logger->debug("Widget $widgetName installed successfully");
     }
 
@@ -330,6 +308,7 @@ class Manager
 
         $model->delete();
         $this->cache->delete(Widget::getCacheActiveWidgets());
+        $this->cache->delete($this->acl->getCacheKey());
         $this->helper->removeDir(WIDGETS_PATH . $model->getName());
         $this->logger->debug("Widget " . $model->getName() . " with id $widgetId removed successfully");
     }
@@ -345,7 +324,7 @@ class Manager
     private function moveDir($from, $to, $packageName, $overwrite = true) {
         if (is_dir($to . $packageName)) {
             if ($overwrite) {
-                $this->helper->removeDir($to);
+                $this->helper->removeDir($to . $packageName);
             } else {
                 throw new Exception("Package already exist");
             }
@@ -387,12 +366,12 @@ class Manager
         $module = strtolower($module);
         foreach ($resources as $role => $resource) {
             foreach ($resource as $controller => $actions) {
-                $this->acl->addResource("module:$module/$controller", $actions);
+                $this->acl->adapter->addResource("module:$module/$controller", $actions);
                 foreach ($actions as $action) {
                     if ($allow) {
-                        $this->acl->allow($role, "module:$module/$controller", $action);
+                        $this->acl->adapter->allow($role, "module:$module/$controller", $action);
                     } else {
-                        $this->acl->deny($role, "module:$module/$controller", $action);
+                        $this->acl->adapter->deny($role, "module:$module/$controller", $action);
                     }
                 }
             }

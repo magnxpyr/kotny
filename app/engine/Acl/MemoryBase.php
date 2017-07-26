@@ -18,8 +18,12 @@ use Phalcon\Acl\Adapter\Memory as AclMemory;
  */
 class MemoryBase extends AclMemory
 {
-    use Meta,
-        AclBehavior;
+    use AclBehavior;
+
+    /**
+     * @var \Phalcon\Acl\Adapter $acl->adapter
+     */
+    public $adapter;
 
     /**
      * Check if current user has access to view
@@ -34,5 +38,15 @@ class MemoryBase extends AclMemory
             $allow = true;
 
         return $allow;
+    }
+
+    public function getRoleByKey($id) {
+        $roles = $this->getDI()->get('acl')->getRoles();
+        foreach ($roles as $key => $role) {
+            if ((int)$id == $key + 1) {
+                return $role->getName();
+            }
+        }
+        return 'guest';
     }
 }
