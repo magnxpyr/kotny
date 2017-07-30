@@ -4,7 +4,6 @@
         <div class="col-sm-6">
             <ul class="nav nav-pills">
                 <li><button type="submit" form="packageManagerForm" class="btn btn-sm btn-block btn-success"><i class="fa fa-edit"></i> Install</button></li>
-                <li><button onclick="location.href='{{ url("admin/core/package-manager/index") }}'" class="btn btn-sm btn-block btn-danger"><i class='fa fa-remove'></i> Cancel</button></li>
             </ul>
         </div>
     </div>
