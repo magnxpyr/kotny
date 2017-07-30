@@ -8,8 +8,8 @@
 
 namespace Engine\Mvc;
 
-use Core\Models\UserAuthTokens;
-use Core\Models\User;
+use Module\Core\Models\UserAuthTokens;
+use Module\Core\Models\User;
 use Engine\Meta;
 use Engine\Mvc\Connectors\GoogleConnector;
 use Engine\Mvc\Connectors\FacebookConnector;
@@ -49,7 +49,7 @@ class Auth extends Component
     /**
      * Login user - normal way
      *
-     * @param  \Core\Forms\LoginForm $form
+     * @param  \Module\Core\Forms\LoginForm $form
      * @return \Phalcon\Http\ResponseInterface
      */
     public function login($form)
@@ -93,8 +93,8 @@ class Auth extends Component
             if (count($cookie) == 2) {
                 $model = $this->modelsManager->createBuilder()
                     ->columns('auth.*, user.*')
-                    ->addFrom('Core\Models\UserAuthTokens', 'auth')
-                    ->addFrom('Core\Models\User', 'user')
+                    ->addFrom('Module\Core\Models\UserAuthTokens', 'auth')
+                    ->addFrom('Module\Core\Models\User', 'user')
                     ->andWhere('auth.user_id = user.id')
                     ->andWhere('auth.selector = :id:', ['id' => $cookie[0]])
                     ->getQuery()
@@ -155,8 +155,8 @@ class Auth extends Component
     /**
      * Creates the remember me environment settings, the related cookies and generating tokens
      *
-     * @param \Core\Models\User $user
-     * @param \Core\Models\UserAuthTokens $remember
+     * @param \Module\Core\Models\User $user
+     * @param \Module\Core\Models\UserAuthTokens $remember
      */
     public function setRememberMe($user = null, $remember = null)
     {
@@ -275,7 +275,7 @@ class Auth extends Component
     /**
      * New user
      *
-     * @return \Core\Models\User
+     * @return \Module\Core\Models\User
      */
     protected function newUser()
     {
@@ -291,7 +291,7 @@ class Auth extends Component
     /**
      * Create new user to DB
      *
-     * @param \Core\Models\User $user
+     * @param \Module\Core\Models\User $user
      * @return \Phalcon\Http\Response|\Phalcon\Http\ResponseInterface
      * @throws \Engine\Mvc\Exception
      */
@@ -376,7 +376,7 @@ class Auth extends Component
     /**
      * Checks if the user is inactive/suspended/banned
      *
-     * @param \Core\Models\User $user
+     * @param \Module\Core\Models\User $user
      * @throws \Engine\Mvc\Exception
      */
     public function checkUserFlags($user)
@@ -452,7 +452,7 @@ class Auth extends Component
      * Authenticate a user by his id
      *
      * @param int $id
-     * @param \Core\Models\User|null $user
+     * @param \Module\Core\Models\User|null $user
      * @throws \Engine\Mvc\Exception
      * @return boolean
      */
@@ -488,7 +488,7 @@ class Auth extends Component
     /**
      * Get the entity related to user in the active identity
      * @throws \Engine\Mvc\Exception
-     * @return \Core\Models\User
+     * @return \Module\Core\Models\User
      */
     public function getUser()
     {
@@ -530,12 +530,11 @@ class Auth extends Component
         return $this->response->redirect($returnUrl != '/' ? $returnUrl : '', true)->send();
     }
 
-
     /**
-     * @param $userName
-     * @return string Login try cache key
+     * Try to get real ip from headers
+     * @return string
      */
-    private function getThrottlingCacheKey($userName)
+    public function getRealIp()
     {
         //Just get the headers if we can or else use the SERVER global
         if ( function_exists( 'apache_request_headers' ) ) {
@@ -556,7 +555,32 @@ class Auth extends Component
         } else {
             $ip = filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4);
         }
+        
+        return $ip;
+    }
 
-        return self::THROTTLING_CACHE_KEY . "-$ip-$userName";
+    /**
+     * Check if the requested post user is throttled
+     * @return bool
+     */
+    public function isUserRequestThrottled()
+    {
+        $throttlingCacheKey = $this->getThrottlingCacheKey($this->request->getPost('username', 'alphanum'));
+        $throttlingLevel = $this->cache->get($throttlingCacheKey);
+        $throttlingLevel = $throttlingLevel != null ? $throttlingLevel : 0;
+        if ($throttlingLevel >= self::MAX_LOGIN_TRIES) {
+            return true;
+        }
+        return false;
+    }
+
+
+    /**
+     * @param $userName
+     * @return string Login try cache key
+     */
+    private function getThrottlingCacheKey($userName)
+    {
+        return self::THROTTLING_CACHE_KEY . "-" . $this->getRealIp() . "-$userName";
     }
 }

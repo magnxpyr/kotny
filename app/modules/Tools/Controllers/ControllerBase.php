@@ -17,10 +17,10 @@
   +------------------------------------------------------------------------+
 */
 
-namespace Tools\Controllers;
+namespace Module\Tools\Controllers;
 
 use Engine\Mvc\AdminController;
-use Tools\Helpers\Tools;
+use Module\Tools\Helpers\Tools;
 
 /**
  * Class ControllerBase

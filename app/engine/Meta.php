@@ -15,11 +15,12 @@ namespace Engine;
  * @property \Engine\Mvc\Helper $helper
  * @property \Engine\TokenManager $tokenManager
  * @property \Engine\Mvc\Auth $auth
- * @property \Engine\Acl\MemoryBase $acl
- * @property \Phalcon\Mailer\Manager $mail
+ * @property \Engine\Acl\BaseMemory $acl
+ * @property \Engine\Package\Manager $packageManager
  * @property \Engine\Widget\Widget $widget
+ * @property \Phalcon\Mailer\Manager $mail
  * @property \Phalcon\Config $config
- * @property \Phalcon\Logger\Adapter\File $logger
+ * @property \Phalcon\Logger\Adapter $logger
  * @property \Phalcon\Cache\Backend $cache
  * @property \Phalcon\Translate\Adapter\NativeArray $t
  */

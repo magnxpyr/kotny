@@ -6,13 +6,13 @@
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
-namespace Core\Models;
+namespace Module\Core\Models;
 
 use Engine\Mvc\Model;
 
 /**
  * Class Widget
- * @package Core\Models
+ * @package Module\Core\Models
  */
 class Widget extends Model
 {
@@ -25,11 +25,6 @@ class Widget extends Model
      * @var string
      */
     private $name;
-
-    /**
-     * @var string
-     */
-    private $title;
 
     /**
      * @var string
@@ -83,19 +78,6 @@ class Widget extends Model
     public function setName($name)
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-    /**
-     * Method to set the value of field title
-     *
-     * @param string $title
-     * @return $this
-     */
-    public function setTitle($title)
-    {
-        $this->title = $title;
 
         return $this;
     }
@@ -197,17 +179,7 @@ class Widget extends Model
     {
         return $this->name;
     }
-
-    /**
-     * Returns the value of field title
-     *
-     * @return string
-     */
-    public function getTitle()
-    {
-        return $this->title;
-    }
-
+    
     /**
      * Returns the value of field params
      *
@@ -274,11 +246,48 @@ class Widget extends Model
     public function initialize()
     {
         $this->setSource('widget');
+        $this->hasMany('id', 'Module\Core\Models\Migration', 'package_id', ['alias' => 'migration', 'reusable' => true]);
     }
 
     public function getSource()
     {
         return 'widget';
+    }
+
+    public static function getCacheActiveWidgets()
+    {
+        return md5("model_widget.active");
+    }
+
+    /**
+     * Get active widgets
+     * @return \Phalcon\Mvc\Model
+     */
+    public static function getActiveWidgets()
+    {
+        return self::find([
+            'conditions' => 'status = ?1',
+            'bind' => [1 => 1],
+            'columns' => ['name'],
+            'cache' => [
+                'key' => self::getCacheActiveWidgets(),
+                'lifetime' => 3600
+            ]
+        ]);
+    }
+
+    /**
+     * @param $name
+     * @return bool
+     */
+    public static function isActive($name)
+    {
+        foreach (self::getActiveWidgets() as $widget) {
+            if ($widget->name == $name) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

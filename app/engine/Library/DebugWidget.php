@@ -23,15 +23,7 @@ class DebugWidget implements InjectionAwareInterface {
 	protected $_viewsRendered = array();
 	protected $_serviceNames = array();
 
-	public function __construct(
-		$di,
-		$serviceNames =
-			array(
-				'db' => array('db'),
-			//	'dispatch' => array('dispatcher'),
-				'view' => array('view')
-			)
-	) {
+	public function __construct($di, $serviceNames = ['db' => ['db'], 'view' => ['view']]) {
 		$this->_di = $di;
 		$this->startTime = microtime(true);
 		$this->_profiler = new Profiler();

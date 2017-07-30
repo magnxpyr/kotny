@@ -1,9 +1,9 @@
 <?php
 /**
- * Created by IntelliJ IDEA.
- * User: gatz
- * Date: 10.12.2016
- * Time: 22:06
+ * @copyright   2006 - 2017 Magnxpyr Network
+ * @license     New BSD License; see LICENSE
+ * @link        http://www.magnxpyr.com
+ * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
 namespace Widget\Content;
@@ -18,9 +18,9 @@ class Controller extends \Engine\Widget\Controller
     {
         $model = $this->modelsManager->createBuilder()
             ->columns('c.*, cat.*, u.*')
-            ->addFrom('Core\Models\Content', 'c')
-            ->addFrom('Core\Models\Category', 'cat')
-            ->addFrom('Core\Models\User', 'u')
+            ->addFrom('Module\Core\Models\Content', 'c')
+            ->addFrom('Module\Core\Models\Category', 'cat')
+            ->addFrom('Module\Core\Models\User', 'u')
             ->andWhere('c.category = cat.id')
             ->andWhere('c.created_by = u.id')
             ->orderBy('c.created_at DESC')

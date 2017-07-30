@@ -6,14 +6,14 @@
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
-namespace Core\Controllers;
+namespace Module\Core\Controllers;
 
 use Engine\Mvc\Controller;
 use Phalcon\Mvc\View;
 
 /**
  * Class ErrorController
- * @package Core\Controllers
+ * @package Module\Core\Controllers
  */
 class ErrorController extends Controller
 {

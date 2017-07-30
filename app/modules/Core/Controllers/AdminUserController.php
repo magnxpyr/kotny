@@ -6,11 +6,11 @@
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
-namespace Core\Controllers;
+namespace Module\Core\Controllers;
 
-use Core\Forms\AdminUserEditForm;
+use Module\Core\Forms\AdminUserEditForm;
 use DataTables\DataTable;
-use Core\Models\User;
+use Module\Core\Models\User;
 use Engine\Mvc\AdminController;
 use Phalcon\Mvc\View;
 use Phalcon\Paginator\Pager;
@@ -32,8 +32,8 @@ class AdminUserController extends AdminController
         }
         $builder = $this->modelsManager->createBuilder()
             ->columns('u.id, u.username, u.email, r.name, u.status')
-            ->addFrom('Core\Models\User', 'u')
-            ->addFrom('Core\Models\Role', 'r')
+            ->addFrom('Module\Core\Models\User', 'u')
+            ->addFrom('Module\Core\Models\Role', 'r')
             ->where('u.role_id = r.id');
 
         $dataTables = new DataTable();

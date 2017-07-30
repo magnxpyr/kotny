@@ -9,17 +9,20 @@
 namespace Engine\Acl;
 
 use Engine\Behavior\AclBehavior;
-use Engine\Meta;
 use Phalcon\Acl\Adapter\Memory as AclMemory;
 
 /**
- * Class MemoryBase
+ * Class BaseMemory
  * @package Engine\Acl
  */
-class MemoryBase extends AclMemory
+class BaseMemory extends AclMemory
 {
-    use Meta,
-        AclBehavior;
+    use AclBehavior;
+
+    /**
+     * @var \Engine\Acl\Database
+     */
+    public $adapter;
 
     /**
      * Check if current user has access to view
@@ -34,5 +37,15 @@ class MemoryBase extends AclMemory
             $allow = true;
 
         return $allow;
+    }
+
+    public function getRoleByKey($id) {
+        $roles = $this->getDI()->get('acl')->getRoles();
+        foreach ($roles as $key => $role) {
+            if ((int)$id == $key + 1) {
+                return $role->getName();
+            }
+        }
+        return 'guest';
     }
 }

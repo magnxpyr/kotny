@@ -6,14 +6,14 @@
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
-namespace Core\Models;
+namespace Module\Core\Models;
 
 use Engine\Mvc\Model;
 use Phalcon\Mvc\Model\EagerLoadingTrait;
 
 /**
  * Class Role
- * @package Core\Models
+ * @package Module\Core\Models
  */
 class Role extends Model
 {
@@ -135,7 +135,7 @@ class Role extends Model
     public function initialize()
     {
         $this->setSource('role');
-        $this->hasMany('id', 'Core\Models\AccessList', 'role_id', ['alias' => 'accessList', 'reusable' => true]);
+        $this->hasMany('id', 'Module\Core\Models\AccessList', 'role_id', ['alias' => 'accessList', 'reusable' => true]);
     }
 
     public function getSource()

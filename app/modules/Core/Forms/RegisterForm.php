@@ -6,9 +6,9 @@
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
-namespace Core\Forms;
+namespace Module\Core\Forms;
 
-use Core\Models\User;
+use Module\Core\Models\User;
 use Phalcon\Forms\Element\Check;
 use Phalcon\Forms\Element\Submit;
 use Engine\Forms\Form;
@@ -21,7 +21,7 @@ use Phalcon\Validation\Validator\Uniqueness;
 
 /**
  * Class RegisterForm
- * @package Core\Forms
+ * @package Module\Core\Forms
  */
 class RegisterForm extends Form
 {

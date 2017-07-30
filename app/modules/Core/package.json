@@ -1,0 +1,9 @@
+{
+  "package": "Core",
+  "type": "module",
+  "version": "1.0.0",
+  "author": "Magnxpyr Network",
+  "website": "http://www.magnxpyr.com",
+  "description": "Core module",
+  "licence": "BSD"
+}

@@ -8,6 +8,7 @@
 
 namespace Engine\Behavior;
 
+use Engine\Meta;
 use Phalcon\DI;
 
 /**
@@ -16,11 +17,37 @@ use Phalcon\DI;
  */
 trait DiBehavior
 {
+    use Meta;
+
     /**
      * Dependency injection container.
-     * @var DI
+     * @var DI|Meta
      */
     private $di;
+    /**
+     * @var \Engine\Acl\BaseMemory
+     */
+    private $acl;
+    /**
+     * @var \Phalcon\Logger\Adapter
+     */
+    private $logger;
+    /**
+     * @var \Engine\Mvc\Helper
+     */
+    protected $helper;
+    /**
+     * @var \Phalcon\Db\Adapter\Pdo
+     */
+    private $db;
+    /**
+     * @var \Phalcon\Cache\Backend
+     */
+    private $cache;
+    /**
+     * @var \Phalcon\Config
+     */
+    private $config;
 
     /**
      * Set DI.
@@ -33,14 +60,23 @@ trait DiBehavior
     }
 
     /**
-     * Get DI.
-     * @return DI
+     * Set DI.
+     * @return DI|Meta
      */
     public function getDI()
     {
         if ($this->di == null) {
             $di = Di::getDefault();
             $this->setDI($di);
+
+            if ($di->has('acl')) {
+                $this->acl = $di->get('acl');
+            }
+            $this->logger = $di->get('logger');
+            $this->helper = $di->get('helper');
+            $this->db = $di->get('db');
+            $this->cache = $di->get('cache');
+            $this->config = $di->get('config');
         }
         return $this->di;
     }

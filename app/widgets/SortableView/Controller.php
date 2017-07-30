@@ -8,9 +8,6 @@
 
 namespace Widget\SortableView;
 
-use Core\Models\Menu;
-use Phalcon\Db\Column;
-
 /**
  * Class Controller
  * @package Widget\GridView

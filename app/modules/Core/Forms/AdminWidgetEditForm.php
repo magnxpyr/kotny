@@ -6,7 +6,7 @@
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
-namespace Core\Forms;
+namespace Module\Core\Forms;
 
 use Engine\Forms\Form;
 use Phalcon\Forms\Element\Hidden;
@@ -14,6 +14,10 @@ use Phalcon\Forms\Element\Select;
 use Phalcon\Forms\Element\TextArea;
 use Phalcon\Validation\Validator\PresenceOf;
 
+/**
+ * Class AdminWidgetEditForm
+ * @package Module\Core\Forms
+ */
 class AdminWidgetEditForm extends Form
 {
     /**

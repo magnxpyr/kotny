@@ -22,7 +22,7 @@
                 'url': url('admin/core/module/search'),
                 'actions': [
                     'update': url('admin/core/module/edit'),
-                    'delete': url('admin/core/module/delete')
+                    'delete': url('admin/core/package-manager/remove-package/module')
                 ],
                 'tableId': 'table'
             ],

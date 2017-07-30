@@ -17,7 +17,7 @@
   +------------------------------------------------------------------------+
 */
 
-namespace Tools\Builder\Version;
+namespace Module\Tools\Builder\Version;
 
 /**
  * Tools\Builder\Version

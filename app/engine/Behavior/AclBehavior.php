@@ -20,17 +20,29 @@ trait AclBehavior
      * Acl cache key.
      * @var string
      */
-    protected $cacheKey = "acl_data";
+    private $cacheKey = "acl_data";
 
     /**
      * Acl cache lifetime
      * @var int
      */
-    protected $cacheExpire = 2592000; // 30 days cache.
+    private $cacheExpire = 2592000;
 
     /**
-     * Acl adapter.
-     * @var \Phalcon\Acl\Adapter\Memory
+     * @return string
      */
-    protected $acl;
+    public function getCacheKey()
+    {
+        return $this->cacheKey;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCacheExpire()
+    {
+        return $this->cacheExpire;
+    } // 30 days cache.
+
+
 }

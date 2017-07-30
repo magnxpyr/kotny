@@ -6,9 +6,9 @@
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
-namespace Tools\Builder;
+namespace Module\Tools\Builder;
 
-use Tools\Helpers\Tools;
+use Module\Tools\Helpers\Tools;
 
 /**
  * Class Module

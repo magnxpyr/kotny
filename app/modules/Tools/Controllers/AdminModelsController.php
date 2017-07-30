@@ -6,11 +6,11 @@
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
-namespace Tools\Controllers;
+namespace Module\Tools\Controllers;
 
-use Tools\Builder\AllModels;
-use Tools\Builder\Model;
-use Tools\Helpers\Tools;
+use Module\Tools\Builder\AllModels;
+use Module\Tools\Builder\Model;
+use Module\Tools\Helpers\Tools;
 
 /**
  * Class ModelsController

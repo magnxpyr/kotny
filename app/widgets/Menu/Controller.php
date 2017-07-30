@@ -8,7 +8,7 @@
 
 namespace Widget\Menu;
 
-use Core\Models\Menu;
+use Module\Core\Models\Menu;
 use Phalcon\Db\Column;
 use Phalcon\Mvc\Model\EagerLoading\Loader;
 

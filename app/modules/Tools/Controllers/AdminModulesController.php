@@ -6,10 +6,10 @@
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
-namespace Tools\Controllers;
+namespace Module\Tools\Controllers;
 
-use Tools\Helpers\Tools;
-use Tools\Builder\Module;
+use Module\Tools\Helpers\Tools;
+use Module\Tools\Builder\Module;
 
 /**
  * Class ModulesController

@@ -6,10 +6,10 @@
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
-namespace Core\Forms;
+namespace Module\Core\Forms;
 
-use Core\Models\MenuType;
-use Core\Models\ViewLevel;
+use Module\Core\Models\MenuType;
+use Module\Core\Models\ViewLevel;
 use Phalcon\Forms\Element\Hidden;
 use Phalcon\Forms\Element\Select;
 use Phalcon\Forms\Element\Text;
@@ -19,7 +19,7 @@ use Phalcon\Validation\Validator\PresenceOf;
 
 /**
  * Class AdminMenuEditForm
- * @package Core\Forms
+ * @package Module\Core\Forms
  */
 class AdminMenuEditForm extends Form
 {

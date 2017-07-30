@@ -6,39 +6,25 @@
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
-namespace Core\Controllers;
+namespace Module\Core\Controllers;
 
-use Core\Forms\AdminModuleEditForm;
-use Core\Models\Module;
+use Engine\Meta;
+use Module\Core\Forms\AdminModuleEditForm;
+use Module\Core\Models\Module;
 use DataTables\DataTable;
 use Engine\Mvc\AdminController;
 use Phalcon\Mvc\View;
-use Phalcon\Paginator\Adapter\Model as Paginator;
 
 class AdminModuleController extends AdminController
 {
+    use Meta;
+
     /**
      * Index action
      */
     public function indexAction()
     {
-        $this->setTitle('Module');
-
-        $numberPage = 1;
-
-        $model = Module::find();
-
-        if (count($model) == 0) {
-            $this->flash->notice("The search did not find any module");
-        }
-
-        $paginator = new Paginator([
-            "data" => $model,
-            "limit"=> 10,
-            "page" => $numberPage
-        ]);
-
-        $this->view->setVar('page', $paginator->getPaginate());
+        $this->setTitle("Module");
     }
 
     public function searchAction()
@@ -46,11 +32,26 @@ class AdminModuleController extends AdminController
         if (!$this->request->isAjax() || !$this->request->isPost()) {
             return;
         }
-        $builder = $this->modelsManager->createBuilder()
-            ->from('Core\Models\Module');
+
+        $modules = [];
+        foreach (array_diff(scandir(MODULES_PATH), ['..', '.']) as $dir) {
+            if (is_dir(MODULES_PATH . "/" . $dir)) {
+                $model = new Module();
+                $model->setName($dir);
+                $modules[$dir] = $model->toArray();
+            }
+        }
+
+        $model = Module::find()->toArray();
+
+        foreach ($model as $item) {
+            if (isset($modules[$item['name']])) {
+                $modules[$item['name']] = $item;
+            }
+        }
 
         $dataTables = new DataTable();
-        $dataTables->fromBuilder($builder)->sendResponse();
+        $dataTables->fromArray($modules)->sendResponse();
     }
 
     /**
@@ -118,6 +119,8 @@ class AdminModuleController extends AdminController
             return;
         }
 
+        $this->cache->delete(Module::getCacheActiveModules());
+
         $this->flash->success("Module was updated successfully");
 
         $this->response->redirect('admin/core/module/index')->send();
@@ -139,6 +142,8 @@ class AdminModuleController extends AdminController
         if (!$model->delete()) {
             return;
         }
+
+        $this->cache->delete(Module::getCacheActiveModules());
 
         $this->returnJSON(['success' => true]);
         return;

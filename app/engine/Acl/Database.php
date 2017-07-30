@@ -8,19 +8,16 @@
 
 namespace Engine\Acl;
 
-use Core\Models\AccessList;
-use Core\Models\Resource;
-use Core\Models\ResourceAccess;
-use Core\Models\Role;
+use Module\Core\Models\AccessList;
+use Module\Core\Models\Resource;
+use Module\Core\Models\ResourceAccess;
+use Module\Core\Models\Role;
 use Engine\Behavior\AclBehavior;
-use Engine\Meta;
 use Engine\Mvc\Exception;
 use Phalcon\Acl;
 use Phalcon\Acl\Adapter\Memory as AclMemory;
 use Phalcon\Acl\Role as AclRole;
 use Phalcon\Acl as PhalconAcl;
-use Phalcon\Db;
-use Phalcon\DI;
 use Phalcon\Acl\Adapter;
 use Phalcon\Acl\AdapterInterface;
 
@@ -31,8 +28,7 @@ use Phalcon\Acl\AdapterInterface;
  */
 class Database extends Adapter implements AdapterInterface
 {
-    use AclBehavior,
-        Meta;
+    use AclBehavior;
 
     /**
      * Sets the default access level (Phalcon\Acl::ALLOW or Phalcon\Acl::DENY) for no arguments provided in isAllowed action if there exists func for accessKey
@@ -66,10 +62,10 @@ class Database extends Adapter implements AdapterInterface
         }
         if (!$this->acl) {
             $cache = $this->getDI()->get('cache');
-            if ($cache->exists($this->cacheKey, $this->cacheExpire)) {
+            if ($cache->exists($this->getCacheKey(), $this->getCacheExpire())) {
                 $acl = $cache->get($this->cacheKey);
             } else {
-                $acl = new MemoryBase();
+                $acl = new BaseMemory();
                 $acl->setDefaultAction(PhalconAcl::DENY);
                 // Prepare Roles.
                 $roles = Role::find();
@@ -83,6 +79,7 @@ class Database extends Adapter implements AdapterInterface
                 // Looking for all controllers inside modules and get actions.
                 $resources = Resource::with('resourceAccess');
                 foreach ($resources as $resource) {
+                    /** @var $resource \Module\Core\Models\Resource */
                     if ($resource->getName() == '*') continue;
 
                     $actions = [];
@@ -102,9 +99,10 @@ class Database extends Adapter implements AdapterInterface
                     }
 
                 }
-                $cache->save($this->cacheKey, $acl, $this->cacheExpire);
+                $cache->save($this->getCacheKey(), $acl, $this->getCacheExpire());
             }
             $this->acl = $acl;
+            $this->acl->adapter = new Database();
         }
         return $this->acl;
     }
@@ -308,8 +306,16 @@ class Database extends Adapter implements AdapterInterface
      * @param string       $resourceName
      * @param array|string $accessList
      */
-    public function dropResourceAccess($resourceName, $accessList)
+    public function dropResourceAccess($resourceName, $accessList = null)
     {
+        $resource = Resource::findFirstByName($resourceName);
+        if ($resource) {
+            $access = AccessList::findByResourceId($resource->getId());
+            $resource = ResourceAccess::findByResourceId($resource->getId());
+            if ($access) $access->delete();
+            if ($resource) $resource->delete();
+            $resource->delete();
+        }
     }
 
     /**
@@ -371,15 +377,43 @@ class Database extends Adapter implements AdapterInterface
      * $acl->isAllowed('guests', '*', 'edit');
      * </code>
      *
-     * @param string $role
-     * @param string $resource
-     * @param string $access
+     * @param string $roleName
+     * @param string $resourceName
+     * @param string $accessName
      *
      * @return bool
      */
-    public function isAllowed($role, $resource, $access, array $parameters = null)
+    public function isAllowed($roleName, $resourceName, $accessName, array $parameters = null)
     {
+        if ($roleName == '*') {
+            $roleId = $roleName;
+        } else {
+            $roleId = Role::findFirstByName($roleName)->getId();
+        }
+        $resourceId = Resource::findFirstByName($resourceName)->getId();
 
+        /**
+         * Check if the access is valid in the resource
+         */
+        $resourceAccess = ResourceAccess::findFirst([
+            'conditions' => 'resource_id = ?1 AND access_name = ?2',
+            'bind' => [1 => $resourceId, 2 => $accessName]
+        ]);
+        if (!$resourceAccess) {
+            throw new Exception(
+                "Access '" . $accessName . "' does not exist in resource '" . $resourceName . "' in ACL"
+            );
+        }
+
+        $accessList = AccessList::findFirst([
+            'conditions' => 'role_id = ?1 AND resource_id = ?2 AND access_name = ?3',
+            'bind' => [1 => $roleId, 2 => $resourceId, 3 => $accessName]
+        ]);
+
+        if (!$accessList) {
+            return false;
+        }
+        return true;
     }
 
     /**

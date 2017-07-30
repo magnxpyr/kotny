@@ -16,13 +16,14 @@ use Phalcon\Text;
  */
 class Loader extends \Phalcon\Loader
 {
-    public function init($namespaces) {
+    public function init() {
         // Phalcon loader
-        $this->registerNamespaces(array_merge($namespaces->toArray(), array(
+        $this->registerNamespaces([
             'Phalcon' => APP_PATH . 'vendor/phalcon/incubator/Library/Phalcon/',
             'Engine' => APP_PATH . 'engine/',
-            'Widget' => APP_PATH . 'widgets/'
-        )));
+            'Widget' => APP_PATH . 'widgets/',
+            'Module' => APP_PATH . 'modules/'
+        ]);
         $this->register();
 
         // Composer loader
@@ -30,31 +31,24 @@ class Loader extends \Phalcon\Loader
     }
 
     public function modulesConfig($modules_list) {
-        $namespaces = array();
-        $modules = array();
-        $routes = array();
+        $modules = [];
+        $routes = [];
         if (!empty($modules_list)) {
             foreach ($modules_list as $module) {
-                $namespaces[$module] = APP_PATH . "modules/$module";
-                $modulePath = APP_PATH . "modules/$module/Module.php";
+                $module = $module->name;
                 $routePath = APP_PATH . "modules/$module/Routes.php";
                 if(file_exists($routePath)) {
-                    $routes[] = "$module\\Routes";
+                    $routes[] = "Module\\$module\\Routes";
                 }
-                /*
-                if(!file_exists($module_path)) {
-                    $module_path = APP_PATH . 'engine/Module.php';
-                }
-                */
-                $modules[Text::uncamelize($module)] = array(
-                    'className' => "$module\\Module",
-                    'path' => $modulePath
+
+                $modules[Text::uncamelize($module, "-")] = array(
+                    'className' => "Module\\$module\\Module",
+                    'path' => APP_PATH . "modules/$module/Module.php"
                 );
             }
         }
 
         $modules_array = array(
-            'loader' => array('namespaces' => $namespaces),
             'modules' => $modules,
             'routes' => $routes
         );

@@ -6,7 +6,7 @@
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
-namespace Core\Forms;
+namespace Module\Core\Forms;
 
 use Phalcon\Forms\Element\Check;
 use Phalcon\Forms\Element\Hidden;
@@ -16,7 +16,7 @@ use Phalcon\Validation\Validator\PresenceOf;
 
 /**
  * Class AdminViewLevelEditForm
- * @package Core\Forms
+ * @package Module\Core\Forms
  */
 class AdminViewLevelEditForm extends Form
 {

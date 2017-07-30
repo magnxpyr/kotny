@@ -6,10 +6,10 @@
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
-namespace Core\Forms;
+namespace Module\Core\Forms;
 
-use Core\Models\Category;
-use Core\Models\ViewLevel;
+use Module\Core\Models\Category;
+use Module\Core\Models\ViewLevel;
 use Engine\Forms\Form;
 use Phalcon\Forms\Element\Check;
 use Phalcon\Forms\Element\Date;
@@ -21,7 +21,7 @@ use Phalcon\Validation\Validator\PresenceOf;
 
 /**
  * Class AdminContentEditForm
- * @package Core\Forms
+ * @package Module\Core\Forms
  */
 class AdminContentEditForm extends Form
 {

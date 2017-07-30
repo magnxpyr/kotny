@@ -9,7 +9,7 @@
             </button>
             <a class="navbar-brand" href="#">magnxpyr</a>
         </div>
-        <div class="navbar-collapse collapse out" id=".navbar-collapse">
+        <div class="navbar-collapse collapse out" id="navbar-collapse">
             {{ widget.render('Menu', ['id': 1]) }}
         </div>
     </div>
@@ -22,7 +22,9 @@
     {#</section>#}
     {#{% endif %}#}
 
-    {{ flashSession.output() }}
+    <div id="flash-area">
+        {{ flashSession.output() }}
+    </div>
     {{ content() }}
     <hr>
     <footer>

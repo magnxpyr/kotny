@@ -6,13 +6,13 @@
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
-namespace Core\Controllers;
+namespace Module\Core\Controllers;
 
-use Core\Forms\AdminMenuTypeEditForm;
+use Module\Core\Forms\AdminMenuTypeEditForm;
 use Phalcon\Mvc\View;
 use Phalcon\Paginator\Adapter\Model as Paginator;
 use Engine\Mvc\AdminController;
-use Core\Models\MenuType;
+use Module\Core\Models\MenuType;
 
 /**
  * Class AdminMenuController

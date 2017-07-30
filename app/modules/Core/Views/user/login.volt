@@ -14,7 +14,9 @@
                 <span class="glyphicon glyphicon-lock form-control-feedback"></span>
             </div>
 
-            {{ form.showRecaptcha() }}
+            <div class="form-group">
+                {{ form.render('captcha') }}
+            </div>
 
             <div class="row">
                 <div class="col-xs-8">

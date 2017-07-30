@@ -6,7 +6,7 @@
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
-namespace Core;
+namespace Module\Core;
 
 class Module extends \Engine\Mvc\Module {
 

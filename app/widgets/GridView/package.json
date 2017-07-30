@@ -1,0 +1,9 @@
+{
+  "package": "GridView",
+  "type": "widget",
+  "version": "1.0.0",
+  "author": "Magnxpyr Network",
+  "website": "http://www.magnxpyr.com",
+  "description": "GridView widget",
+  "licence": "BSD"
+}

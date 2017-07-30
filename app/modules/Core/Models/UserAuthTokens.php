@@ -6,7 +6,7 @@
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
-namespace Core\Models;
+namespace Module\Core\Models;
 
 use Engine\Mvc\Model;
 use Phalcon\Mvc\Model\EagerLoadingTrait;
@@ -154,7 +154,7 @@ class UserAuthTokens extends Model
     public function initialize()
     {
         $this->setSource('user_auth_tokens');
-        $this->belongsTo('user_id', 'Core\Models\User', 'id', ['alias' => 'user', 'reusable' => true]);
+        $this->belongsTo('user_id', 'Module\Core\Models\User', 'id', ['alias' => 'user', 'reusable' => true]);
     }
 
     public function getSource()

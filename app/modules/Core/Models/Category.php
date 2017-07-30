@@ -6,14 +6,14 @@
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
-namespace Core\Models;
+namespace Module\Core\Models;
 
 use Engine\Mvc\Model;
 use Phalcon\Mvc\Model\EagerLoadingTrait;
 
 /**
  * Class Category
- * @package Core\Models
+ * @package Module\Core\Models
  */
 class Category extends Model
 {
@@ -471,7 +471,7 @@ class Category extends Model
     public function initialize()
     {
         $this->setSource('category');
-        $this->hasOne('view_level', 'Core\Models\ViewLevel', 'id', ['alias' => 'viewLevel', 'reusable' => true]);
+        $this->hasOne('view_level', 'Module\Core\Models\ViewLevel', 'id', ['alias' => 'viewLevel', 'reusable' => true]);
     }
 
     public function getSource()

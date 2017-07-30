@@ -9,6 +9,8 @@
 namespace Engine\Mvc;
 
 use Engine\Meta;
+use Module\Core\Models\Content;
+use Module\Core\Models\User;
 use Phalcon\Mvc\User\Component;
 use Phalcon\Text;
 
@@ -19,44 +21,18 @@ use Phalcon\Text;
 class Helper extends Component
 {
     use Meta;
-    
-    private $userRoles = [
-        0 => 'All',
-        1 => 'Guest',
-        2 => 'User',
-        3 => 'Admin'
-    ];
 
     private $userStatuses = [
-        1 => 'Active',
-        0 => 'Inactive',
-        2 => 'Blocked'
+        User::STATUS_ACTIVE => 'Active',
+        User::STATUS_INACTIVE => 'Inactive',
+        User::STATUS_BLOCKED => 'Blocked'
     ];
 
     private $articleStatuses = [
-        1 => 'Published',
-        0 => 'Unpublished',
-        2 => 'Trashed'
+        Content::STATUS_PUBLISHED => 'Published',
+        Content::STATUS_UNPUBLISHED => 'Unpublished',
+        Content::STATUS_TRASHED => 'Trashed'
     ];
-
-    /**
-     * Get user role by id
-     * @param $id
-     * @return mixed
-     */
-    public function getUserRole($id)
-    {
-        return $this->userRoles[$id];
-    }
-
-    /**
-     * Get possible permission roles for users
-     * @return array
-     */
-    public function getUserRoles()
-    {
-        return $this->userRoles;
-    }
 
     /**
      * Get user status by id
@@ -174,5 +150,23 @@ class Helper extends Component
     public function htmlDecode($str)
     {
         return html_entity_decode($str);
+    }
+
+    /**
+     * @param $dir
+     * @return bool
+     */
+    public function removeDir($dir) {
+        $files = array_diff(scandir($dir), array('.','..'));
+        foreach ($files as $file) {
+            is_dir("$dir/$file") ? $this->removeDir("$dir/$file") : unlink("$dir/$file");
+        }
+        try {
+            $removed = rmdir($dir);
+        } catch (Exception $e) {
+            $this->logger->error("Can't remove directory " . $dir);
+            $removed = false;
+        }
+        return $removed;
     }
 }

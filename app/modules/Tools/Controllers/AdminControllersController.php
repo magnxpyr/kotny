@@ -6,12 +6,12 @@
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
-namespace Tools\Controllers;
+namespace Module\Tools\Controllers;
 
-use Tools\Builder\Controller;
+use Module\Tools\Builder\Controller;
 use Phalcon\Tag;
-use Tools\Builder\View;
-use Tools\Helpers\Tools;
+use Module\Tools\Builder\View;
+use Module\Tools\Helpers\Tools;
 
 /**
  * Class ControllersController

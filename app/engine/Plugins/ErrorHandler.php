@@ -19,7 +19,7 @@ use Phalcon\Mvc\User\Plugin;
 class ErrorHandler extends Plugin
 {
     use Meta;
-    
+
     /**
      * This action is executed before execute any action in the application
      * If a page is not found throws an error
@@ -32,11 +32,17 @@ class ErrorHandler extends Plugin
      */
     public function beforeException($event, $dispatcher, $exception)
     {
+        if (DEV) {
+            throw $exception;
+        } else {
+            $this->logger->error('Page error: ', $exception);
+        }
+
         if ($exception instanceof Exception) {
             $dispatcher->forward(
                 [
                     'module' => 'core',
-                    'namespace' => 'Core\Controllers',
+                    'namespace' => 'Module\Core\Controllers',
                     'controller' => 'error',
                     'action' => 'show404'
                 ]
@@ -44,17 +50,11 @@ class ErrorHandler extends Plugin
             return false;
         }
 
-        if (DEV) {
-            throw $exception;
-        } else {
-        //    log the exception
-        }
-
         // Handle other exceptions.
         $dispatcher->forward(
             [
                 'module' => 'core',
-                'namespace' => 'Core\Controllers',
+                'namespace' => 'Module\Core\Controllers',
                 'controller' => 'error',
                 'action' => 'show503'
             ]

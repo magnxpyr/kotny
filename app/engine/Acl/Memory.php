@@ -9,15 +9,12 @@
 namespace Engine\Acl;
 
 use Engine\Behavior\AclBehavior;
-use Engine\Meta;
 use Phalcon\Acl;
 use Phalcon\Acl\Adapter\Memory as AclMemory;
-use Phalcon\Di;
 
-class Memory
+class Memory extends AclMemory
 {
-    use Meta,
-        AclBehavior;
+    use AclBehavior;
 
     /**
      * Get acl system.
@@ -30,38 +27,38 @@ class Memory
             $this->cacheExpire = 1;
         }
         if (!$this->acl) {
+            /** @var \Phalcon\Cache\Backend $cache */
             $cache = $this->getDI()->get('cache');
-            if ($cache->exists($this->cacheKey, $this->cacheExpire)) {
-                $this->acl = $cache->get($this->cacheKey);
+            if ($cache->exists($this->getCacheKey(), $this->getCacheExpire())) {
+                $this->acl = $cache->get($this->getCacheKey());
             } else {
-                $this->acl = new MemoryBase();
+                $this->acl = new BaseMemory();
                 $this->acl->setDefaultAction(Acl::DENY);
 
                 $roles = require_once APP_PATH . 'config/roles.php';
-                $roleIds = [];
                 foreach ($roles as $key => $role) {
                     if (is_array($role)) {
-                        $roleIds[$role[0]] = $key + 1;
-                        $this->acl->addRole(new Acl\Role((string)($key + 1), $role[0]), (string)$roleIds[$role[1]]);
+                        $this->acl->addRole(new Acl\Role($role[0], $role[0]), $role[1]);
                     } else {
-                        $roleIds[$role] = $key + 1;
-                        $this->acl->addRole(new Acl\Role((string)($key + 1), $role));
+                        $this->acl->addRole(new Acl\Role($role, $role));
                     }
                 }
 
                 $modules = $this->getDI()->get("registry")->modules;
                 foreach ($modules as $module) {
+                    $module = $module->name;
                     $resources = require_once MODULES_PATH . $module . "/Acl.php";
                     if (isset($resources['allow'])) {
-                        $this->buildAcl($resources['allow'], $module, $roleIds, true);
+                        $this->buildAcl($resources['allow'], $module, true);
                     }
                     if (isset($resources['deny'])) {
-                        $this->buildAcl($resources['deny'], $module, $roleIds, false);
+                        $this->buildAcl($resources['deny'], $module, false);
                     }
                 }
-                $this->acl->allow((string)$roleIds['admin'], '*', '*');
-                $cache->save($this->cacheKey, $this->acl, $this->cacheExpire);
+                $this->acl->allow('admin', '*', '*');
+                $cache->save($this->getCacheKey(), $this->acl, $this->getCacheExpire());
             }
+            $this->acl->adapter = new Database();
         }
         return $this->acl;
     }
@@ -70,18 +67,17 @@ class Memory
      * Build Acl Object
      * @param $resources
      * @param $module
-     * @param $roleIds
      * @param $allow
      */
-    private function buildAcl($resources, $module, $roleIds, $allow) {
+    private function buildAcl($resources, $module, $allow) {
         $module = strtolower($module);
         foreach ($resources as $role => $resource) {
             foreach ($resource as $controller => $actions) {
                 $this->acl->addResource(new Acl\Resource("module:$module/$controller"), $actions);
                 if ($allow) {
-                    $this->allowResources($actions, $role, $module, $controller, $roleIds);
+                    $this->allowResources($actions, $role, $module, $controller);
                 } else {
-                    $this->denyResources($actions, $role, $module, $controller, $roleIds);
+                    $this->denyResources($actions, $role, $module, $controller);
                 }
 
             }
@@ -94,15 +90,10 @@ class Memory
      * @param $role
      * @param $module
      * @param $controller
-     * @param $roleIds
      */
-    private function allowResources($actions, $role, $module, $controller, $roleIds) {
+    private function allowResources($actions, $role, $module, $controller) {
         foreach ($actions as $action) {
-            if ($role == '*') {
-                $this->acl->allow($role, "module:$module/$controller", $action);
-            } else {
-                $this->acl->allow($roleIds[$role], "module:$module/$controller", $action);
-            }
+            $this->acl->allow($role, "module:$module/$controller", $action);
         }
     }
 
@@ -112,15 +103,10 @@ class Memory
      * @param $role
      * @param $module
      * @param $controller
-     * @param $roleIds
      */
-    private function denyResources($actions, $role, $module, $controller, $roleIds) {
+    private function denyResources($actions, $role, $module, $controller) {
         foreach ($actions as $action) {
-            if ($role == '*') {
-                $this->acl->deny($role, "module:$module/$controller", $action);
-            } else {
-                $this->acl->deny($roleIds[$role], "module:$module/$controller", $action);
-            }
+            $this->acl->deny($role, "module:$module/$controller", $action);
         }
     }
 }

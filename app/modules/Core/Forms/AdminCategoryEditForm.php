@@ -6,9 +6,9 @@
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
-namespace Core\Forms;
+namespace Module\Core\Forms;
 
-use Core\Models\ViewLevel;
+use Module\Core\Models\ViewLevel;
 use Engine\Forms\Form;
 use Phalcon\Forms\Element\Hidden;
 use Phalcon\Forms\Element\Select;
@@ -18,7 +18,7 @@ use Phalcon\Validation\Validator\PresenceOf;
 
 /**
  * Class AdminCategoryEditForm
- * @package Core\Forms
+ * @package Module\Core\Forms
  */
 class AdminCategoryEditForm extends Form
 {

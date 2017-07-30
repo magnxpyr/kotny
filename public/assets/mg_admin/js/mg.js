@@ -78,8 +78,36 @@ $(function ($) {
             $.post(url, data, function(response) {
                 if(response.success) {
                     $(t).closest(parent).remove();
+                    ajaxSuccess(response);
+                } else {
+                    ajaxFailure(response);
                 }
             });
         }
     });
 });
+
+function handleResponse(response) {
+    if (response.success) {
+        ajaxSuccess(response);
+    } else {
+        ajaxFailure(response);
+    }
+}
+
+function ajaxSuccess(response) {
+    var message = "Success";
+    if (response.message) {
+        message = response.message;
+    }
+    $("#flash-area").html("<div class=\"alert alert-success alert-dismissible\">" + message + "</div>")
+}
+
+function ajaxFailure(response) {
+    var message = "Failure";
+    if (response.message) {
+        message = response.message;
+    }
+    $("#flash-area").html("<div class=\"alert alert-danger alert-dismissible\">" + message + "</div>")
+}
+

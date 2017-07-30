@@ -6,7 +6,7 @@
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
-namespace Tools;
+namespace Module\Tools;
 
 class Module extends \Engine\Mvc\Module {
 

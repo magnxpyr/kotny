@@ -1,44 +1,43 @@
 {
-    "name": "magnxpyr/cms",
-    "version": "0.1.0",
-    "license": "BSD-3-Clause",
-    "description": "Open Source CMS written with Phalcon PHP Framework 3.0.x.",
-    "type": "project",
-    "keywords": [
-        "phalcon",
-        "modular",
-        "magnxpyr",
-        "php",
-        "cms"
-    ],
-    "homepage": "http://www.magnxpyr.com/",
-    "authors": [
-        {
-            "name": "Magnxpyr Network",
-            "homepage": "http://www.magnxpyr.com"
-        },
-        {
-            "name": "Stefan Chiriac",
-            "homepage": "http://www.magnxpyr.com",
-            "email": "stefan@magnxpyr.com"
-        }
-    ],
-    "support": {
-        "issues": "https://github.com/magnxpyr/cms/issues"
+  "name": "magnxpyr/cms",
+  "version": "1.0.0",
+  "license": "BSD-3-Clause",
+  "description": "Open Source CMS written with Phalcon PHP Framework 3.0.x.",
+  "type": "project",
+  "keywords": [
+    "phalcon",
+    "modular",
+    "magnxpyr",
+    "php",
+    "cms"
+  ],
+  "homepage": "http://www.magnxpyr.com/",
+  "authors": [
+    {
+      "name": "Magnxpyr Network",
+      "homepage": "http://www.magnxpyr.com"
     },
-    "require": {
-        "php": ">=5.5",
-        "ext-phalcon": "~3.0"
-    },
-    "require-dev": {
-        "phalcon/incubator": "3.0.*",
-        "magnxpyr/phalcon-datatables" : "1.*",
-        "swiftmailer/swiftmailer": "5.4.*",
-        "facebook/graph-sdk" : "5.4.*",
-        "google/apiclient": "2.0.*",
-        "guillermomartinez/filemanager-php": "0.1.*"
-    },
-    "config": {
-        "vendor-dir": "app/vendor"
+    {
+      "name": "Stefan Chiriac",
+      "homepage": "http://www.magnxpyr.com",
+      "email": "stefan@magnxpyr.com"
     }
+  ],
+  "support": {
+    "issues": "https://github.com/magnxpyr/cms/issues"
+  },
+  "require": {
+    "php": ">=7.0",
+    "ext-phalcon": "~3.0",
+    "phalcon/incubator": "3.1.*",
+    "magnxpyr/phalcon-datatables": "1.*",
+    "swiftmailer/swiftmailer": "5.4.*",
+    "facebook/graph-sdk": "5.4.*",
+    "google/apiclient": "2.0.*",
+    "google/recaptcha": "~1.1",
+    "guillermomartinez/filemanager-php": "0.1.*"
+  },
+  "config": {
+    "vendor-dir": "app/vendor"
+  }
 }

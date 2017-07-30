@@ -6,17 +6,17 @@
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
-namespace Core\Controllers;
+namespace Module\Core\Controllers;
 
-use Core\Forms\AdminRoleEditForm;
+use Module\Core\Forms\AdminRoleEditForm;
 use DataTables\DataTable;
 use Engine\Mvc\AdminController;
 use Phalcon\Mvc\View;
-use Core\Models\Role;
+use Module\Core\Models\Role;
 
 /**
  * Class AdminRoleController
- * @package Core\Controllers
+ * @package Module\Core\Controllers
  */
 class AdminRoleController extends AdminController
 {
@@ -32,7 +32,7 @@ class AdminRoleController extends AdminController
     {
         if ($this->request->isAjax()) {
             $builder = $this->modelsManager->createBuilder()
-                ->from('Core\Models\Role');
+                ->from('Module\Core\Models\Role');
 
             $dataTables = new DataTable();
             $dataTables->fromBuilder($builder)->sendResponse();

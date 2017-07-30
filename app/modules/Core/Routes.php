@@ -6,7 +6,7 @@
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
-namespace Core;
+namespace Module\Core;
 
 /**
  * Class Routes
@@ -24,22 +24,6 @@ class Routes {
             'action' => 'index'
         ])->setName('core-home');
 
-//        $router->add('/:controller', [
-//            'controller' => 1,
-//            'action' => 'index'
-//        ])->setName('core-ca');
-//
-//        $router->add('/:controller/:action', [
-//            'controller' => 1,
-//            'action' => 2,
-//        ])->setName('core-ca');
-//
-//        $router->add('/:controller/:action/:params', [
-//            'controller' => 1,
-//            'action' => 2,
-//            'params' => 3,
-//        ])->setName('core-cap');
-
         // Article
         $router->add('/([a-z]+)/([0-9]+)-([a-zA-Z0-9\-]+)', [
             'controller' => 'content',
@@ -49,7 +33,6 @@ class Routes {
             'articleAlias' => 3
         ])->setName('core-article');
 
-        // Category
         // Category
         $router->add('/([a-z]+)', [
             'controller' => 'content',
@@ -62,21 +45,21 @@ class Routes {
             'action' => 'category',
             'category' => 1,
             'page' => 2
-        ])->setName('core-categoryWithPage');
+        ])->setName('core-category-pagination');
 
         $router->add('/:module/:controller/:action/:params', [
             'module' => 1,
             'controller' => 2,
             'action' => 3,
             'params' => 4,
-        ])->setName('default-mcap');
+        ])->setName('core-default');
 
         // Admin
         $router->add('/admin', array(
             'module' => 'core',
             'controller' => 'admin-index',
             'action' => 'index'
-        ))->setName('admin-home');
+        ))->setName('core-admin-home');
 
         $router->add('/admin/:module/:controller/:action/:params', array(
             'module' => 1,
@@ -85,13 +68,13 @@ class Routes {
             'params' => 4
         ))->convert('controller', function($controller) {
             return "admin-$controller";
-        })->setName('admin-mcap');
+        })->setName('core-admin-default');
 
         // User
         $router->add('/user/([a-zA-Z0-9\-\.]+)', [
             'module' => 'core',
             'controller' => 'user',
             'action' => 1,
-        ])->setName('user-home');
+        ])->setName('core-user-home');
     }
 }

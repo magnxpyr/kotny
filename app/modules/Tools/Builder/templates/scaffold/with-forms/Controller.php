@@ -37,8 +37,8 @@ class $className$Controller extends $controllerName$
         }
         $builder = $this->modelsManager->createBuilder()
             ->columns('u.id, u.username, u.email, r.name, u.status')
-            ->addFrom('Core\Models\User', 'u')
-            ->addFrom('Core\Models\Role', 'r')
+            ->addFrom('Module\Core\Models\User', 'u')
+            ->addFrom('Module\Core\Models\Role', 'r')
             ->where('u.role_id = r.id');
 
         $dataTables = new DataTable();

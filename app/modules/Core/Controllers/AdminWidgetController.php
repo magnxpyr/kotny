@@ -6,10 +6,10 @@
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
-namespace Core\Controllers;
+namespace Module\Core\Controllers;
 
-use Core\Forms\AdminWidgetEditForm;
-use Core\Models\Widget;
+use Module\Core\Forms\AdminWidgetEditForm;
+use Module\Core\Models\Widget;
 use DataTables\DataTable;
 use Engine\Mvc\AdminController;
 use Phalcon\Paginator\Adapter\Model as Paginator;
@@ -22,22 +22,6 @@ class AdminWidgetController extends AdminController
     public function indexAction()
     {
         $this->setTitle('Widget');
-
-        $numberPage = 1;
-
-        $model = Widget::find();
-
-        if (count($model) == 0) {
-            $this->flash->notice("The search did not find any widget");
-        }
-
-        $paginator = new Paginator([
-            "data" => $model,
-            "limit"=> 10,
-            "page" => $numberPage
-        ]);
-
-        $this->view->setVar('page', $paginator->getPaginate());
     }
 
     public function searchAction()
@@ -45,11 +29,26 @@ class AdminWidgetController extends AdminController
         if (!$this->request->isAjax() || !$this->request->isPost()) {
             return;
         }
-        $builder = $this->modelsManager->createBuilder()
-            ->from('Core\Models\Widget');
+
+        $modules = [];
+        foreach (array_diff(scandir(WIDGETS_PATH), ['..', '.']) as $dir) {
+            if (is_dir(WIDGETS_PATH . "/" . $dir)) {
+                $model = new Widget();
+                $model->setName($dir);
+                $modules[$dir] = $model->toArray();
+            }
+        }
+
+        $model = Widget::find()->toArray();
+
+        foreach ($model as $item) {
+            if (isset($modules[$item['name']])) {
+                $modules[$item['name']] = $item;
+            }
+        }
 
         $dataTables = new DataTable();
-        $dataTables->fromBuilder($builder)->sendResponse();
+        $dataTables->fromArray($modules)->sendResponse();
     }
 
     /**
@@ -117,29 +116,11 @@ class AdminWidgetController extends AdminController
             return;
         }
 
+        $this->cache->delete(Widget::getCacheActiveWidgets());
+
         $this->flash->success("Widget was updated successfully");
 
         $this->response->redirect('admin/core/widget/index')->send();
-        return;
-    }
-
-    /**
-     * Ajax action that deletes a widget
-     *
-     * @param string $id
-     */
-    public function deleteAction($id)
-    {
-        $modelType = Widget::findFirstById($id);
-        if (!$modelType) {
-            return;
-        }
-
-        if (!$modelType->delete()) {
-            return;
-        }
-
-        $this->returnJSON(['success' => true]);
         return;
     }
 }

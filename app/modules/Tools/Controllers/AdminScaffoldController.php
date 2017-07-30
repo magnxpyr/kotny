@@ -23,9 +23,9 @@
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
-namespace Tools\Controllers;
+namespace Module\Tools\Controllers;
 
-use Tools\Builder\Scaffold;
+use Module\Tools\Builder\Scaffold;
 
 /**
  * Class ScaffoldController

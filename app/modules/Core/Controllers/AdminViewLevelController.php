@@ -6,17 +6,17 @@
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
-namespace Core\Controllers;
+namespace Module\Core\Controllers;
 
-use Core\Forms\AdminViewLevelEditForm;
+use Module\Core\Forms\AdminViewLevelEditForm;
 use DataTables\DataTable;
 use Engine\Mvc\AdminController;
-use Core\Models\ViewLevel;
+use Module\Core\Models\ViewLevel;
 use Phalcon\Mvc\View;
 
 /**
  * Class AdminViewLevelController
- * @package Core\Controllers
+ * @package Module\Core\Controllers
  */
 class AdminViewLevelController extends AdminController
 {
@@ -34,7 +34,7 @@ class AdminViewLevelController extends AdminController
             return;
         }
         $builder = $this->modelsManager->createBuilder()
-            ->from('Core\Models\ViewLevel');
+            ->from('Module\Core\Models\ViewLevel');
 
         $dataTables = new DataTable();
         $dataTables->fromBuilder($builder)->sendResponse();

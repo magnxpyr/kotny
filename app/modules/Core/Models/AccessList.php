@@ -6,14 +6,14 @@
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
-namespace Core\Models;
+namespace Module\Core\Models;
 
 use Engine\Mvc\Model;
 use Phalcon\Mvc\Model\EagerLoadingTrait;
 
 /**
  * Class AccessList
- * @package Core\Models
+ * @package Module\Core\Models
  */
 class AccessList extends Model
 {
@@ -163,8 +163,8 @@ class AccessList extends Model
     public function initialize()
     {
         $this->setSource('access_list');
-        $this->belongsTo('resource_id', 'Core\Models\Resource', 'id', ['alias' => 'resource', 'reusable' => true]);
-        $this->belongsTo('role_id', 'Core\Models\Role', 'id', ['alias' => 'role', 'reusable' => true]);
+        $this->belongsTo('resource_id', 'Module\Core\Models\Resource', 'id', ['alias' => 'resource', 'reusable' => true]);
+        $this->belongsTo('role_id', 'Module\Core\Models\Role', 'id', ['alias' => 'role', 'reusable' => true]);
     }
 
     public function getSource()

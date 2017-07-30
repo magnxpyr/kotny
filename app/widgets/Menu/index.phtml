@@ -1,18 +1,10 @@
 <?php
 /**
- * @var array|\Core\Models\Menu $menuElements
+ * @var array|Module\Core\Models\Menu $menuElements
  */
 $this->getContent();
 $level = 1;
 
-//echo '<div class="navbar-header">
-//			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-//				<span class="sr-only">Toggle navigation</span>
-//				<span class="icon-bar"></span>
-//				<span class="icon-bar"></span>
-//				<span class="icon-bar"></span>
-//			</button>
-//		</div>';
 echo '<ul class="nav navbar-nav pull-right">';
 $isActive = false;
 $uri = trim($this->router->getRewriteUri(), "/ ");
