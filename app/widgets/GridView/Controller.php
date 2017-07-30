@@ -52,11 +52,11 @@ class Controller extends \Engine\Widget\Controller
      */
     private function getTableHtml()
     {
-        echo '<table id="'.$this->getParam('tableId').'" class="table table-striped table-bordered dataTable no-footer" width="100%"><thead><tr>';
+        echo '<button id="searchFilter" class="btn btn-sm btn-primary"><i class="fa fa-plus"></i>Search Filter</button>';
+        echo '<div class="searchContainer" style="display: none">' . $this->searchHtml . '</div><br>';
+        echo '<div class="table-responsive"></div><table id="'.$this->getParam('tableId').'" class="table table-striped table-bordered dataTable no-footer" width="100%"><thead><tr>';
         echo $this->headHtml;
-        echo '</tr><tr>';
-        echo $this->searchHtml;
-        echo '</tr></thead><tbody></tbody></table>';
+        echo '</tr></thead><tbody></tbody></table></div>';
     }
 
     /**
@@ -66,6 +66,12 @@ class Controller extends \Engine\Widget\Controller
     {
         $js = 'var table = $("#'.$this->getParam('tableId').'").DataTable({
             serverSide: true,
+            responsive: {
+                details: {
+                    type: "column",
+                    target: -1
+                }
+            },
             ajax: {
                 url: "' . $this->getParam('url') . '",
                 method: "POST",
@@ -90,6 +96,7 @@ class Controller extends \Engine\Widget\Controller
                 defaultContent: "",
                 orderable: false,
                 searchable: false,
+                className: "all",
                 render: function (data, type, row) {
                     return "';
 
@@ -103,29 +110,48 @@ class Controller extends \Engine\Widget\Controller
             $js .= '"}}';
         }
 
-        $js .= ']';
+        $js .= ',{ 
+                data: null,
+                defaultContent: "",
+                className: "control",
+                orderable: false,
+                searchable: false
+            }]';
 
         if ($this->getParam('options')) {
             $js .= "," . $this->getParam('options');
         }
 
+        $js .= ', columnDefs: [ {
+                    className: "control",
+                    orderable: false,
+                    targets:   -1
+                }';
+
         if ($this->getParam('columnDefs')) {
-            $js .= ',columnDefs: ' . $this->getParam('columnDefs');
+            $js .= ',' . trim($this->getParam('columnDefs'), '[]');
         }
+        $js .= ']';
 
         // Apply the search
         $js .= '});
+        
         table.columns().eq(0).each(function( colIdx ) {
-            $( "input", table.column( colIdx ).header() ).on( "keyup change", function () {
+            $("input[data-col=" + colIdx + "]", $(".searchContainer")).on( "keyup change", function () {
                 table
                     .column( colIdx )
                     .search( this.value, true, false )
                     .draw();
-            } );
-            $("input", table.column(colIdx).header()).on("click", function(e) {
+            });
+            $("input[data-col=" + colIdx + "]", $(".searchContainer")).on("click", function(e) {
                 e.stopPropagation();
             });
-        });';
+        });
+        
+        $("#searchFilter").click(function(){
+            $(".searchContainer").slideToggle();
+        })
+        ';
 
         $this->assets->addInlineJs($js);
     }
@@ -138,13 +164,16 @@ class Controller extends \Engine\Widget\Controller
         $this->headHtml .= '<th data-column-id="select-all-checkboxes"><input type="checkbox" name="select-all" value="1" id="select-all"></th>';
         $this->searchHtml .= '<th></th>';
         if (!empty($this->getParam('columns'))) {
-            foreach ($this->getParam('columns') as $column) {
+            foreach ($this->getParam('columns') as $key => $column) {
                 $this->headHtml .= '<th data-column-id="'.$column['data'].'">'.ucfirst(Text::camelize($column['data'])).'</th>';
+                $this->searchHtml .= '<th></th>';
 
                 if (!isset($column['searchable']) || $column['searchable']) {
-                    $this->searchHtml .= '<th class="dataTables_searchable" rowspan="1" colspan="1">
-                            <input type="text" placeholder="Search '.Text::camelize($column['data']).'">
-                        </th>';
+                    $this->searchHtml .= '
+                            <div class="col-md-4 col-sm-6">
+                                <input type="text" data-col="' . ($key + 1) . '" placeholder="Search '.Text::camelize($column['data']).'">
+                            </div>
+                        ';
                 } else {
                     $this->searchHtml .= '<th></th>';
                 }
@@ -154,7 +183,8 @@ class Controller extends \Engine\Widget\Controller
                 $this->js .=  '},';
             }
         }
-        $this->headHtml .= '<th data-column-id="actions">Actions</th>';
+        $this->headHtml .= '<th data-column-id="actions">Actions</th><th class="control" style="display: none;"></th>';
         $this->searchHtml .= '<th></th>';
+
     }
 }

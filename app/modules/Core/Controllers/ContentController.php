@@ -24,15 +24,15 @@ class ContentController extends Controller
     public function categoryAction($category, $page)
     {
         $builder = $this->modelsManager->createBuilder()
-            ->columns('c.*, cat.*, u.*')
-            ->addFrom('Core\Models\Content', 'c')
-            ->addFrom('Core\Models\Category', 'cat')
-            ->addFrom('Core\Models\User', 'u')
-            ->andWhere('c.category = cat.id')
-            ->andWhere('c.created_by = u.id')
-            ->orderBy('c.created_at DESC');
+            ->columns('content.*, category.*, user.*')
+            ->addFrom('Core\Models\Content', 'content')
+            ->addFrom('Core\Models\Category', 'category')
+            ->addFrom('Core\Models\User', 'user')
+            ->andWhere('content.category = category.id')
+            ->andWhere('content.created_by = user.id')
+            ->orderBy('content.created_at DESC');
             if ($category) {
-                $builder->andWhere('cat.alias = :category:', ['category' => $category]);
+                $builder->andWhere('category.alias = :category:', ['category' => $category]);
             }
 
         $paginator = new PaginatorQueryBuilder([
@@ -52,20 +52,20 @@ class ContentController extends Controller
         $this->view->setVar('metaKeywords', $this->config->app->meta->keywords);
 
         $model = $this->modelsManager->createBuilder()
-            ->columns('c.*, cat.*, u.*, viewLevel.*')
-            ->addFrom('Core\Models\Content', 'c')
-            ->addFrom('Core\Models\Category', 'cat')
-            ->addFrom('Core\Models\User', 'u')
+            ->columns('content.*, category.*, user.*, viewLevel.*')
+            ->addFrom('Core\Models\Content', 'content')
+            ->addFrom('Core\Models\Category', 'category')
+            ->addFrom('Core\Models\User', 'user')
             ->addFrom('Core\Models\ViewLevel', 'viewLevel')
-            ->andWhere('c.category = cat.id')
-            ->andWhere('c.created_by = u.id')
-            ->andWhere('c.view_level = viewLevel.id')
-            ->andWhere('c.id = :id:', ['id' => $articleId])
+            ->andWhere('content.category = category.id')
+            ->andWhere('content.created_by = user.id')
+            ->andWhere('content.view_level = viewLevel.id')
+            ->andWhere('content.id = :id:', ['id' => $articleId])
             ->getQuery()
             ->getSingleResult();
 
         // if empty show 404
-        if (!$model || $model->c->getAlias() != $articleAlias || $model->cat->getAlias() != $catAlias ||
+        if (!$model || $model->content->getAlias() != $articleAlias || $model->category->getAlias() != $catAlias ||
             !$this->acl->checkViewLevel($model->viewLevel->getRoles())) {
             $this->dispatcher->forward([
                 'controller' => 'error',
@@ -74,19 +74,19 @@ class ContentController extends Controller
             return;
         }
 
-        $this->setTitle($model->c->title);
+        $this->setTitle($model->content->title);
 
-        if (!empty($model->u->name)) {
+        if (!empty($model->user->name)) {
             $this->view->setVar('metaAuthor', $model->u->name);
         }
-        if (!empty($model->c->meta)) {
+        if (!empty($model->content->meta)) {
             $this->view->setVar('metaKeywords', $model->c->meta);
         }
 
         /**
          * @var Content $content
          */
-        $content = $model->c;
+        $content = $model->content;
         $content->setHits($content->getHits() + 1)->save();
 
         $this->view->setVar('model', $model);

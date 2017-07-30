@@ -9,7 +9,6 @@
 namespace Engine\Mvc;
 
 use Engine\Meta;
-use Phalcon\Mvc\Model;
 use Phalcon\Mvc\User\Component;
 use Phalcon\Text;
 

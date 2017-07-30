@@ -20,9 +20,6 @@ class AdminContentController extends AdminController
     public function initialize()
     {
         parent::initialize();
-
-        $this->assets->collection('footer-js')->addJs("vendor/tinymce/tinymce.min.js");
-        $this->assets->collection('footer-js')->addJs("vendor/tinymce/jquery.tinymce.min.js");
     }
 
     /**

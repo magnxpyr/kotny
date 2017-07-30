@@ -16,11 +16,11 @@
 </div>
 
 <div class="container">
-    {% if title %}
-    <section class="content-header">
-        {{ title }}
-    </section>
-    {% endif %}
+    {#{% if title %}#}
+    {#<section class="content-header">#}
+        {#{{ title }}#}
+    {#</section>#}
+    {#{% endif %}#}
 
     {{ flashSession.output() }}
     {{ content() }}

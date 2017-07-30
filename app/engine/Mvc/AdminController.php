@@ -40,38 +40,38 @@ abstract class AdminController extends Controller
      */
     protected function setupAssets()
     {
-        $this->assets->collection('header-css-min')
-            ->setTargetPath('assets/mg_admin/css/header.min.css')
-            ->setTargetUri('assets/mg_admin/css/header.min.css')
-            ->addCss('vendor/jquery-ui/jquery-ui.min.css')
-            ->addCss('vendor/jquery/extra/DataTables/datatables.min.css')
-            ->addCss('assets/mg_admin/css/AdminLTE.min.css')
-            ->addCss('assets/mg_admin/css/skins/skin-blue.min.css')
-            ->addCss('assets/default/css/pdw.css')
-            ->addCss('assets/mg_admin/css/style.css')
-            ->join(true)
-            ->addFilter(new \Phalcon\Assets\Filters\Cssmin());
-        $this->assets->collection('header-css')
-            ->addCss('vendor/bootstrap/css/bootstrap.min.css')
-            ->addCss('vendor/font-awesome/css/font-awesome.min.css');
+        $this->assets->collection('header-css-min');
+//            ->setTargetPath('assets/mg_admin/css/header.min.css')
+//            ->setTargetUri('assets/mg_admin/css/header.min.css')
+//            ->addCss('vendor/jquery-ui/jquery-ui.min.css')
+//            ->addCss('vendor/jquery/extra/DataTables/datatables.min.css')
+//            ->addCss('assets/mg_admin/css/AdminLTE.min.css')
+//            ->addCss('assets/mg_admin/css/skins/skin-blue.min.css')
+//            ->addCss('assets/default/css/pdw.css')
+//            ->addCss('assets/mg_admin/css/style.css')
+//            ->join(true)
+//            ->addFilter(new \Phalcon\Assets\Filters\Cssmin());
+        $this->assets->collection('header-css');
+//            ->addCss('vendor/bootstrap/css/bootstrap.min.css')
+//            ->addCss('vendor/font-awesome/css/font-awesome.min.css');
 
-        $this->assets->collection('footer-js-min')
-            ->setTargetPath(PUBLIC_PATH . 'assets/mg_admin/js/header.min.js')
-            ->setTargetUri('assets/mg_admin/js/header.min.js')
-            ->addJs('vendor/jquery/jquery-1.11.3.min.js')
-            ->addJs('assets/common/js/mg.js')
-            ->addJs('vendor/jquery-ui/jquery-ui.min.js')
-            ->addJs('vendor/js/js.cookie.js')
-            ->addJs('vendor/bootstrap/js/bootstrap.min.js')
-            ->addJs('vendor/jquery/extra/jquery.slimscroll.min.js')
-            ->addJs('vendor/js/moment.js')
-            ->addJs('vendor/jquery/extra/DataTables/datatables.min.js')
-            ->addJs('vendor/jquery/extra/DataTables/datetime.js')
-            ->addJs('assets/mg_admin/js/app.js')
-            ->addJs('assets/default/js/pdw.js')
-            ->addJs('assets/mg_admin/js/mg.js')
-            ->join(true)
-            ->addFilter(new \Phalcon\Assets\Filters\Jsmin());
+        $this->assets->collection('footer-js-min');
+//            ->setTargetPath(PUBLIC_PATH . 'assets/mg_admin/js/header.min.js')
+//            ->setTargetUri('assets/mg_admin/js/header.min.js')
+//            ->addJs('vendor/jquery/jquery-1.11.3.min.js')
+//            ->addJs('assets/common/js/mg.js')
+//            ->addJs('vendor/jquery-ui/jquery-ui.min.js')
+//            ->addJs('vendor/js/js.cookie.js')
+//            ->addJs('vendor/bootstrap/js/bootstrap.min.js')
+//            ->addJs('vendor/jquery/extra/jquery.slimscroll.min.js')
+//            ->addJs('vendor/js/moment.js')
+//            ->addJs('vendor/jquery/extra/DataTables/datatables.min.js')
+//            ->addJs('vendor/jquery/extra/DataTables/datetime.js')
+//            ->addJs('assets/mg_admin/js/app.js')
+//            ->addJs('assets/default/js/pdw.js')
+//            ->addJs('assets/mg_admin/js/mg.js')
+//            ->join(true)
+//            ->addFilter(new \Phalcon\Assets\Filters\Jsmin());
         $this->assets->collection('footer-js');
     }
 

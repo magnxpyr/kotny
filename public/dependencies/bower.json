@@ -1,0 +1,32 @@
+{
+  "name": "dependencies",
+  "description": "",
+  "main": "Gruntfile.js",
+  "authors": [
+    "Gina Chiriac"
+  ],
+  "license": "BSD",
+  "homepage": "https://github.com/magnxpyr/cms",
+  "dependencies": {
+    "bootstrap": "~3.3.7",
+    "font-awesome": "fontawesome#~4.7.0",
+    "filemanager-ui": "~0.1.5",
+    "tinymce": "~4.5.5",
+    "jquery": "~3.2.1",
+    "jquery-ui": "~1.12.1",
+    "js-cookie": "~2.1.4",
+    "datatables.net": "^1.10.15",
+    "datatables.net-bs": "^2.1.1",
+    "datatables.net-responsive": "^2.1.1",
+    "datatables.net-responsive-bs": "^2.1.1",
+    "datatables.net-rowreorder": "^1.2.0",
+    "datatables.net-rowreorder-bs": "^1.2.0",
+    "datatables.net-scroller": "^1.4.2",
+    "datatables.net-scroller-bs": "^1.4.2",
+    "datatables.net-select": "^1.2.2",
+    "datatables.net-select-bs": "^1.2.2"
+  },
+  "resolutions": {
+    "jquery": ">=1.10"
+  }
+}
