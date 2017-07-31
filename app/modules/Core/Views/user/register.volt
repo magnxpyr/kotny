@@ -23,6 +23,7 @@
                 {{ form.render('repeatPassword') }}
                 <span class="glyphicon glyphicon-log-in form-control-feedback"></span>
             </div>
+            {{ form.render('csrf') }}
             <div class="row">
                 <div class="col-xs-8">
                     By signing up you accept the terms and privacy policy.

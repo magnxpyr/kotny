@@ -378,7 +378,7 @@ class Bootstrap
         // Handle the request
         $application = new \Phalcon\Mvc\Application($this->di);
         $application->registerModules($this->modules);
-        $application->setDI($this->di);
+
 
         if ($request->isAjax() && $request->getHeader("X-CSRF-Token") != $this->di->getShared('tokenManager')->getToken()) {
             $obj = new \stdClass();
@@ -393,12 +393,12 @@ class Bootstrap
 
         // Render
         try {
-            echo $application->handle()->getContent();
+            $application->handle()->send();
         } catch (\Exception $e) {
             if (DEV) {
                 throw $e;
             } else {
-                $this->di->getShared('logger')->error('Page error: ', $e->getMessage());
+                $this->di->getShared('logger')->error('Page error: ' . $e->getMessage());
                 $application->response->redirect([
                     'for' => 'core-default',
                     'module' => 'core',

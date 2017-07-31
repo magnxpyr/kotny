@@ -281,8 +281,8 @@ class Auth extends Component
     {
         $user = new User();
         $user->setUsername($this->security->getRandom()->hex(self::SELECTOR_BYTES));
-        $user->setRoleId(1);
-        $user->setStatus(1);
+        $user->setRoleId(2); // user
+        $user->setStatus(1); // enable
         $user->setCreatedAt(time());
         $user->setPassword($this->security->hash($this->security->getRandom()->hex(self::TOKEN_BYTES)));
         return $user;
