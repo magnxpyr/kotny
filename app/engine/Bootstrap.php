@@ -207,26 +207,24 @@ class Bootstrap
             $view->setLayout(DEFAULT_THEME);
         }
 
-        $volt = new \Phalcon\Mvc\View\Engine\Volt($view, $this->di);
-        if (DEV) {
-            // Prevent caching annoyances
-            $voltOptions['compileAlways'] = true;
-        }
-        $voltOptions['compiledPath'] = CACHE_PATH . 'volt/';
-        $voltOptions['compiledSeparator'] = $widget ? 'widget_' : '_';
-        $volt->setOptions($voltOptions);
-        $compiler = $volt->getCompiler();
-        // add a function
-        $compiler->addFunction(
-            'f',
-            function ($resolvedArgs, $exprArgs) {
-                return 'function($model){ return ' . trim($resolvedArgs, "'\"") . ';}';
-            }
-        );
-
         $view->registerEngines([
-            '.phtml' => \Phalcon\Mvc\View\Engine\Php::class,
-            '.volt' => function () use ($volt) {
+            '.phtml' => function($view, $di) {
+                return new \Phalcon\Mvc\View\Engine\Php($view, $di);
+            },
+            '.volt' => function($view, $di) use ($widget) {
+                $volt = new \Phalcon\Mvc\View\Engine\Volt($view, $di);
+                if (DEV) {
+                    // Prevent caching annoyances
+                    $voltOptions['compileAlways'] = true;
+                }
+                $voltOptions['compiledPath'] = CACHE_PATH . 'volt/';
+                $voltOptions['compiledSeparator'] = $widget ? 'widget_' : '_';
+                $volt->setOptions($voltOptions);
+
+                // add a function
+                $volt->getCompiler()->addFunction('f', function ($resolvedArgs, $exprArgs) {
+                    return 'function($model){ return ' . trim($resolvedArgs, "'\"") . ';}';
+                });
                 return $volt;
             }
         ]);
