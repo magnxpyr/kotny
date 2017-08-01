@@ -223,11 +223,12 @@ class Bootstrap
                 return 'function($model){ return ' . trim($resolvedArgs, "'\"") . ';}';
             }
         );
-        $phtml = new \Phalcon\Mvc\View\Engine\Php($view, $this->di);
 
         $view->registerEngines([
-            '.volt' => $volt,
-            '.phtml' => $phtml
+            '.phtml' => \Phalcon\Mvc\View\Engine\Php::class,
+            '.volt' => function () use ($volt) {
+                return $volt;
+            }
         ]);
 
         if ($widget) {
