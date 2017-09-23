@@ -22,9 +22,39 @@ class Widget extends Model
     private $id;
 
     /**
+     * @var integer
+     */
+    private $package_id;
+
+    /**
      * @var string
      */
-    private $name;
+    private $title;
+
+    /**
+     * @var integer
+     */
+    private $ordering;
+
+    /**
+     * @var string
+     */
+    private $position;
+
+    /**
+     * @var integer
+     */
+    private $publish_up;
+
+    /**
+     * @var integer
+     */
+    private $publish_down;
+
+    /**
+     * @var integer
+     */
+    private $view_level;
 
     /**
      * @var string
@@ -32,24 +62,9 @@ class Widget extends Model
     private $params;
 
     /**
-     * @var string
+     * @var integer
      */
-    private $description;
-
-    /**
-     * @var string
-     */
-    private $version;
-
-    /**
-     * @var string
-     */
-    private $author;
-
-    /**
-     * @var string
-     */
-    private $website;
+    private $show_title;
 
     /**
      * @var integer
@@ -70,14 +85,92 @@ class Widget extends Model
     }
 
     /**
-     * Method to set the value of field name
+     * Method to set the value of field package_id
      *
-     * @param string $name
+     * @param integer $package_id
      * @return $this
      */
-    public function setName($name)
+    public function setPackageId($package_id)
     {
-        $this->name = $name;
+        $this->package_id = $package_id;
+
+        return $this;
+    }
+
+    /**
+     * Method to set the value of field title
+     *
+     * @param string $title
+     * @return $this
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
+
+        return $this;
+    }
+
+    /**
+     * Method to set the value of field ordering
+     *
+     * @param integer $ordering
+     * @return $this
+     */
+    public function setOrdering($ordering)
+    {
+        $this->ordering = $ordering;
+
+        return $this;
+    }
+
+    /**
+     * Method to set the value of field position
+     *
+     * @param string $position
+     * @return $this
+     */
+    public function setPosition($position)
+    {
+        $this->position = $position;
+
+        return $this;
+    }
+
+    /**
+     * Method to set the value of field publish_up
+     *
+     * @param integer $publish_up
+     * @return $this
+     */
+    public function setPublishUp($publish_up)
+    {
+        $this->publish_up = $publish_up;
+
+        return $this;
+    }
+
+    /**
+     * Method to set the value of field publish_down
+     *
+     * @param integer $publish_down
+     * @return $this
+     */
+    public function setPublishDown($publish_down)
+    {
+        $this->publish_down = $publish_down;
+
+        return $this;
+    }
+
+    /**
+     * Method to set the value of field view_level
+     *
+     * @param integer $view_level
+     * @return $this
+     */
+    public function setViewLevel($view_level)
+    {
+        $this->view_level = $view_level;
 
         return $this;
     }
@@ -96,53 +189,14 @@ class Widget extends Model
     }
 
     /**
-     * Method to set the value of field description
+     * Method to set the value of field show_title
      *
-     * @param string $description
+     * @param integer $show_title
      * @return $this
      */
-    public function setDescription($description)
+    public function setShowTitle($show_title)
     {
-        $this->description = $description;
-
-        return $this;
-    }
-
-    /**
-     * Method to set the value of field version
-     *
-     * @param string $version
-     * @return $this
-     */
-    public function setVersion($version)
-    {
-        $this->version = $version;
-
-        return $this;
-    }
-
-    /**
-     * Method to set the value of field author
-     *
-     * @param string $author
-     * @return $this
-     */
-    public function setAuthor($author)
-    {
-        $this->author = $author;
-
-        return $this;
-    }
-
-    /**
-     * Method to set the value of field website
-     *
-     * @param string $website
-     * @return $this
-     */
-    public function setWebsite($website)
-    {
-        $this->website = $website;
+        $this->show_title = $show_title;
 
         return $this;
     }
@@ -171,15 +225,75 @@ class Widget extends Model
     }
 
     /**
-     * Returns the value of field name
+     * Returns the value of field package_id
+     *
+     * @return integer
+     */
+    public function getPackageId()
+    {
+        return $this->package_id;
+    }
+
+    /**
+     * Returns the value of field title
      *
      * @return string
      */
-    public function getName()
+    public function getTitle()
     {
-        return $this->name;
+        return $this->title;
     }
-    
+
+    /**
+     * Returns the value of field ordering
+     *
+     * @return integer
+     */
+    public function getOrdering()
+    {
+        return $this->ordering;
+    }
+
+    /**
+     * Returns the value of field position
+     *
+     * @return string
+     */
+    public function getPosition()
+    {
+        return $this->position;
+    }
+
+    /**
+     * Returns the value of field publish_up
+     *
+     * @return integer
+     */
+    public function getPublishUp()
+    {
+        return $this->publish_up;
+    }
+
+    /**
+     * Returns the value of field publish_down
+     *
+     * @return integer
+     */
+    public function getPublishDown()
+    {
+        return $this->publish_down;
+    }
+
+    /**
+     * Returns the value of field view_level
+     *
+     * @return integer
+     */
+    public function getViewLevel()
+    {
+        return $this->view_level;
+    }
+
     /**
      * Returns the value of field params
      *
@@ -191,43 +305,13 @@ class Widget extends Model
     }
 
     /**
-     * Returns the value of field description
+     * Returns the value of field show_title
      *
-     * @return string
+     * @return integer
      */
-    public function getDescription()
+    public function getShowTitle()
     {
-        return $this->description;
-    }
-
-    /**
-     * Returns the value of field version
-     *
-     * @return string
-     */
-    public function getVersion()
-    {
-        return $this->version;
-    }
-
-    /**
-     * Returns the value of field author
-     *
-     * @return string
-     */
-    public function getAuthor()
-    {
-        return $this->author;
-    }
-
-    /**
-     * Returns the value of field website
-     *
-     * @return string
-     */
-    public function getWebsite()
-    {
-        return $this->website;
+        return $this->show_title;
     }
 
     /**
@@ -246,7 +330,8 @@ class Widget extends Model
     public function initialize()
     {
         $this->setSource('widget');
-        $this->hasMany('id', 'Module\Core\Models\Migration', 'package_id', ['alias' => 'migration', 'reusable' => true]);
+        $this->hasOne('view_level', 'Module\Core\Models\ViewLevel', 'id', ['alias' => 'viewLevel', 'reusable' => true]);
+        $this->belongsTo('package_id', 'Module\Core\Models\Package', 'id', ['alias' => 'package', 'reusable' => true]);
     }
 
     public function getSource()
@@ -254,40 +339,13 @@ class Widget extends Model
         return 'widget';
     }
 
-    public static function getCacheActiveWidgets()
+    public function beforeValidation()
     {
-        return md5("model_widget.active");
-    }
-
-    /**
-     * Get active widgets
-     * @return \Phalcon\Mvc\Model
-     */
-    public static function getActiveWidgets()
-    {
-        return self::find([
-            'conditions' => 'status = ?1',
-            'bind' => [1 => 1],
-            'columns' => ['name'],
-            'cache' => [
-                'key' => self::getCacheActiveWidgets(),
-                'lifetime' => 3600
-            ]
-        ]);
-    }
-
-    /**
-     * @param $name
-     * @return bool
-     */
-    public static function isActive($name)
-    {
-        foreach (self::getActiveWidgets() as $widget) {
-            if ($widget->name == $name) {
-                return true;
-            }
+        $this->setPublishUp($this->getDI()->getShared('helper')->timestampFromDate($this->getPublishUp()));
+        if (!empty($this->getPublishDown())) {
+            $this->setPublishDown($this->getDI()->getShared('helper')->timestampFromDate($this->getPublishDown()));
+        } else {
+            $this->setPublishDown(null);
         }
-        return false;
     }
-
 }

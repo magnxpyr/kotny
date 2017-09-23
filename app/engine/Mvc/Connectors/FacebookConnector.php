@@ -24,7 +24,7 @@ class FacebookConnector extends Injectable
 
     private $fb;
     private $fbSession;
-    private $fbhelper;
+    private $fbHelper;
 
     /**
      * Setup connector
@@ -36,7 +36,7 @@ class FacebookConnector extends Injectable
             'app_secret' => $this->config->api->facebook->secret,
             'default_graph_version' => 'v2.8'
         ]);
-        $this->fbhelper = $this->fb->getRedirectLoginHelper();
+        $this->fbHelper = $this->fb->getRedirectLoginHelper();
     }
 
     /**
@@ -45,24 +45,23 @@ class FacebookConnector extends Injectable
      */
     public function getLoginUrl($scope = [])
     {
-        return $this->fbhelper->getLoginUrl($this->helper->getUri('/user/login-with-facebook'), $scope);
+        return $this->fbHelper->getLoginUrl($this->helper->getUri('/user/login-with-facebook'), $scope);
     }
 
     /**
      * Get facebook user details
-     * @return boolean
+     * @return boolean|array
      */
     public function getUser()
     {
         try {
-            $this->fbSession = $this->fbhelper->getAccessToken();
+            $this->fbSession = $this->fbHelper->getAccessToken();
         } catch (FacebookResponseException $e) {
-            // When Graph returns an error
-//            echo 'Graph returned an error: ' . $e->getMessage();
+            $this->logger->error('Graph returned an error: ' . $e->getMessage());
             $this->flashSession->error($e->getMessage());
         } catch (FacebookSDKException $e) {
             // When validation fails or other local issues
-//            echo 'Facebook SDK returned an error: ' . $e->getMessage();
+            $this->logger->error('Facebook SDK returned an error: ' . $e->getMessage());
             $this->flashSession->error($e->getMessage());
         } catch (\Exception $e) {
             $this->flashSession->error($e->getMessage());
@@ -75,13 +74,14 @@ class FacebookConnector extends Injectable
                 return $userNode;
             } catch (FacebookResponseException $e) {
                 // When Graph returns an error
-//            echo 'Graph returned an error: ' . $e->getMessage();
+                $this->logger->error('Graph returned an error: ' . $e->getMessage());
                 $this->flashSession->error($e->getMessage());
             } catch (FacebookSDKException $e) {
                 // When validation fails or other local issues
-//            echo 'Facebook SDK returned an error: ' . $e->getMessage();
+                $this->logger->error('Facebook SDK returned an error: ' . $e->getMessage());
                 $this->flashSession->error($e->getMessage());
             } catch (\Exception $e) {
+                $this->logger->error('Facebook API returned an error: ' . $e->getMessage());
                 $this->flashSession->error($e->getMessage());
             }
         }

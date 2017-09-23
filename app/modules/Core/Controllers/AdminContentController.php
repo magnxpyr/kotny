@@ -45,17 +45,8 @@ class AdminContentController extends AdminController
             ->andWhere('c.view_level = v.id')
             ->andWhere('c.created_by = u.id');
 
-//        $builder = $this->modelsManager->createQuery("SELECT c.id, c.title, cy.title as category, v.name as viewLevel, c.featured, u.username, c.created_at, c.status, c.hits
-//        FROM \Module\Core\Models\Content c, \Module\Core\Models\Category cy, \Module\Core\Models\User u, \Module\Core\Models\ViewLevel v WHERE c.category = cy.id
-//        and c.view_level = v.id and c.created_by = u.id")->execute();
-
-        $columns = ['c.id', 'c.title', ['cy.title', 'alias' => 'category'], ['v.name', 'alias' => 'viewLevel'],
-            'c.featured', 'u.username', 'c.created_at', 'c.status', 'c.hits'];
-
         $dataTables = new DataTable();
-        $dataTables->fromBuilder($builder, $columns)->sendResponse();
-//        $dataTables->fromResultSet($builder, $columns)->sendResponse();
-//        $dataTables->fromArray($builder)->sendResponse();
+        $dataTables->fromBuilder($builder)->sendResponse();
     }
 
     /**

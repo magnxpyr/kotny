@@ -8,7 +8,6 @@
 
 use Phalcon\Db\Column;
 use Phalcon\Db\Index;
-use Phalcon\Db\Reference;
 use Engine\Package\Migration;
 
 class RoleMigration extends Migration
@@ -55,7 +54,7 @@ class RoleMigration extends Migration
                 ),
                 'options' => array(
                     'TABLE_TYPE' => 'BASE TABLE',
-                    'AUTO_INCREMENT' => '4',
+                    'AUTO_INCREMENT' => '1',
                     'ENGINE' => 'InnoDB',
                     'TABLE_COLLATION' => 'utf8_general_ci'
                 )

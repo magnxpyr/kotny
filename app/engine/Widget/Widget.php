@@ -8,54 +8,82 @@
 
 namespace Engine\Widget;
 
-use Engine\Meta;
-use Phalcon\Mvc\View;
+use Engine\Di\Injectable;
+use Module\Core\Models\Package;
+use Phalcon\Text;
 
 /**
  * Class Widget
  * @package Engine\Widget
  */
-class Widget
+class Widget extends Injectable
 {
-    use Meta;
-    
     /**
      * Render widget
      * $widget = widgetName
-     * $widget = [widgetName, action]
+     * $widget = [
+     *  'widget' => 'menu',
+     *  'controller' => 'controller',
+     *  'action' => 'index'
+     * ]
+     * 
+     * $options = [
+     *  'cacheKey' => 'widget-key',
+     *  'renderView' => 'index',
+     *  'cache' => true
+     * ]
      *
      * @param string|array $widget
-     * @param null|array $params
-     * @param null|array $options
+     * @param null|array $params - Params required to render the widget
+     * @param null|array $options - Extra widget control options
+     * @return string
      */
     public function render($widget, $params = null, $options = null)
     {
+        $this->logger->debug("Rendering widget: " . $this->helper->arrayToString($widget));
+
+        $controllerName = 'controller';
+        $action = 'index';
+
         if (is_array($widget)) {
-            $widgetName = $widget[0];
-            $action = $widget[1];
+            $widgetName = $widget['widget'];
+            if (isset($widget['controller'])) {
+                $controllerName = $widget['controller'];
+            }
+            if (isset($widget['action'])) {
+                $action = $widget['action'];
+            }
         } else {
             $widgetName = $widget;
-            $action = 'index';
+        }
+
+        $viewName = $action;
+        if (strpos($controllerName, 'admin') === 0 && !isset($widget['action'])) {
+            $viewName = "admin-$action";
         }
 
         // Render widget only if is active
-        if (!\Module\Core\Models\Widget::isActive($widget)) {
-            return;
+        if (!Package::isActiveWidget($widgetName)) {
+            $this->logger->debug("Widget is not active and won't be rendered; widget: $widgetName");
+            return null;
         }
 
-        $controllerClass = "\\Widget\\$widgetName\\Controller";
+        $controllerName = Text::camelize($controllerName);
 
-        /**
-         * @var \Engine\Widget\Controller $controller
-         */
+        $controllerClass = "\Widget\\$widgetName\Controllers\\$controllerName";
+        if (!class_exists($controllerClass)) {
+            $this->logger->debug("Widget class does not exist; widget: $widgetName, class: $controllerClass");
+            return null;
+        }
+
+        /** @var \Engine\Widget\Controller $controller */
         $controller = new $controllerClass();
         if ($options !== null && $options['cache']) {
-            if (!isset($params['cache_key'])) {
-                $options['cache_key'] = $controller->createCacheKey($widget, $params);
+            if (!isset($params['cacheKey'])) {
+                $options['cacheKey'] = $controller->createCacheKey($widget, $params);
             }
-            if ($controller->cache->exists($options['cache_key'], 300)) {
-                echo $controller->cache->get($options['cache_key']);;
-                return;
+            if ($controller->cache->exists($options['cacheKey'], 300)) {
+                return $controller->cache->get($options['cacheKey']);
             }
         }
 
@@ -67,19 +95,17 @@ class Widget
         }
         $controller->initialize();
         $controller->{"{$action}Action"}();
+        $html = null;
         if ($controller->getRenderView()) {
-            $controller->viewWidget->start();
-            $controller->viewWidget->setViewsDir(APP_PATH . "widgets/$widgetName/");
-            $controller->viewWidget->pick($action);
-            $controller->viewWidget->render('controller', $action);
-            $controller->viewWidget->finish();
+            $controller->viewWidget->setViewsDir(APP_PATH . "widgets/$widgetName/Views");
+            $controller->viewWidget->pick($viewName);
+            $controller->viewWidget->setMainView($viewName);
+            $html = $controller->viewWidget->getRender($controllerName, $action);
         }
 
-        $html = $controller->viewWidget->getContent();
-        if ($options !== null && $options['cache']) {
-            $controller->cache->save($options['cache_key'], $html, 300);
+        if ($html != null && $options !== null && $options['cache']) {
+            $controller->cache->save($options['cacheKey'], $html, 300);
         }
-        echo $html;
-        return;
+        return $html;
     }
 }

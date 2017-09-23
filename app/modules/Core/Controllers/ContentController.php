@@ -65,11 +65,11 @@ class ContentController extends Controller
             ->getSingleResult();
 
         // if empty show 404
-        if (!$model || $model->c->getAlias() != $articleAlias || $model->cat->getAlias() != $catAlias ||
-            !$this->acl->checkViewLevel($model->viewLevel->getRoles())) {
+        if (!$model || !$this->helper->isContentPublished($model->c) || $model->c->getAlias() != $articleAlias ||
+            $model->cat->getAlias() != $catAlias || !$this->acl->checkViewLevel($model->viewLevel->getRoles())) {
             $this->dispatcher->forward([
                 'controller' => 'error',
-                'action' => '404'
+                'action' => 'show404'
             ]);
             return;
         }

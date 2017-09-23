@@ -52,11 +52,11 @@ class UserEmailConfirmationsMigration extends Migration
                 ),
                 'indexes' => array(
                     new Index('PRIMARY', array('id')),
-                    new Index('UNIQUE', array('token'))
+                    new Index('UNIQUE', array('token'), 'UNIQUE')
                 ),
                 'options' => array(
                     'TABLE_TYPE' => 'BASE TABLE',
-                    'AUTO_INCREMENT' => '2',
+                    'AUTO_INCREMENT' => '1',
                     'ENGINE' => 'InnoDB',
                     'TABLE_COLLATION' => 'utf8_general_ci'
                 )

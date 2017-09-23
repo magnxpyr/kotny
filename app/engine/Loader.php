@@ -19,7 +19,6 @@ class Loader extends \Phalcon\Loader
     public function init() {
         // Phalcon loader
         $this->registerNamespaces([
-            'Phalcon' => APP_PATH . 'vendor/phalcon/incubator/Library/Phalcon/',
             'Engine' => APP_PATH . 'engine/',
             'Widget' => APP_PATH . 'widgets/',
             'Module' => APP_PATH . 'modules/'
@@ -41,17 +40,17 @@ class Loader extends \Phalcon\Loader
                     $routes[] = "Module\\$module\\Routes";
                 }
 
-                $modules[Text::uncamelize($module, "-")] = array(
-                    'className' => "Module\\$module\\Module",
-                    'path' => APP_PATH . "modules/$module/Module.php"
-                );
+                $modules[Text::uncamelize($module, "-")] = [
+                    'className' => "Engine\\Mvc\\Module",
+                    'path' => APP_PATH . "engine/Mvc/Module.php"
+                ];
             }
         }
 
-        $modules_array = array(
+        $modules_array = [
             'modules' => $modules,
             'routes' => $routes
-        );
+        ];
 
         return $modules_array;
     }

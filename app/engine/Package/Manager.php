@@ -10,11 +10,9 @@ namespace Engine\Package;
 
 use Engine\Behavior\DiBehavior;
 use Engine\Mvc\Exception;
-use Engine\Plugins\AclHandler;
-use Module\Core\Models\Module;
+use Module\Core\Models\Package;
 use Module\Core\Models\Migration as MigrationModel;
 use Module\Core\Models\User;
-use Module\Core\Models\Widget;
 use Phalcon\Config\Adapter\Json;
 use Phalcon\Db\Column;
 
@@ -160,8 +158,9 @@ class Manager
 
         $config = $this->getModuleConfig($moduleName);
 
-        $model = new Module();
+        $model = new Package();
         $model->setName($moduleName);
+        $model->setType(PackageType::MODULE);
         $model->setVersion($config->version);
         $model->setAuthor($config->author);
         $model->setWebsite($config->website);
@@ -201,7 +200,7 @@ class Manager
         /**
          * @var $model Module
          */
-        $model = Module::findFirstById($moduleId);
+        $model = Package::findFirstById($moduleId);
         if (!$model) {
             $this->logger->debug("Module with id: $moduleId not found");
             return;
@@ -224,7 +223,7 @@ class Manager
 
         $this->migrate(Migration::DOWN, PackageType::MODULE, $model->getName(), $model->getId());
         $model->delete();
-        $this->cache->delete(Module::getCacheActiveModules());
+        $this->cache->delete(Package::getCacheActiveModules());
         $this->cache->delete($this->acl->getCacheKey());
         $this->helper->removeDir(MODULES_PATH . $model->getName());
         $this->logger->debug("Module " . $model->getName() . " with id $moduleId removed successfully");
@@ -253,8 +252,9 @@ class Manager
         $this->logger->debug("Installing widget $widgetName");
         $config = $this->getWidgetConfig($widgetName);
 
-        $model = new Widget();
+        $model = new Package();
         $model->setName($widgetName);
+        $model->setType(PackageType::WIDGET);
         $model->setVersion($config->version);
         $model->setAuthor($config->author);
         $model->setWebsite($config->website);
@@ -289,11 +289,11 @@ class Manager
      */
     public function removeWidget($widgetId)
     {
-        $this->logger->debug("Removing module with id: $widgetId");
+        $this->logger->debug("Removing widget with id: $widgetId");
         /**
-         * @var $model Widget
+         * @var $model Package
          */
-        $model = Widget::findFirstById($widgetId);
+        $model = Package::findFirstById($widgetId);
         if (!$model) {
             throw new Exception("Widget with id: $widgetId not found");
         }
@@ -301,7 +301,7 @@ class Manager
         $this->migrate(Migration::DOWN, PackageType::WIDGET, $model->getName(), $model->getId());
 
         $model->delete();
-        $this->cache->delete(Widget::getCacheActiveWidgets());
+        $this->cache->delete(Package::getCacheActiveWidgets());
         $this->cache->delete($this->acl->getCacheKey());
         $this->helper->removeDir(WIDGETS_PATH . $model->getName());
         $this->logger->debug("Widget " . $model->getName() . " with id $widgetId removed successfully");

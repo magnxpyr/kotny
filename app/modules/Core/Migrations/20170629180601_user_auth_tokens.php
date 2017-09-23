@@ -8,7 +8,6 @@
 
 use Phalcon\Db\Column;
 use Phalcon\Db\Index;
-use Phalcon\Db\Reference;
 use Engine\Package\Migration;
 
 class UserAuthTokensMigration extends Migration
@@ -60,11 +59,11 @@ class UserAuthTokensMigration extends Migration
                 ),
                 'indexes' => array(
                     new Index('PRIMARY', array('id')),
-                    new Index('UNIQUE', array('selector'))
+                    new Index('UNIQUE', array('selector'), 'UNIQUE')
                 ),
                 'options' => array(
                     'TABLE_TYPE' => 'BASE TABLE',
-                    'AUTO_INCREMENT' => '74',
+                    'AUTO_INCREMENT' => '1',
                     'ENGINE' => 'InnoDB',
                     'TABLE_COLLATION' => 'utf8_general_ci'
                 )

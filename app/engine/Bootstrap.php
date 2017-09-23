@@ -31,8 +31,6 @@ class Bootstrap
     {
         $this->initConfig();
 
-        $config = $this->getConfig();
-
         // Getting a request instance
         $request = new Phalcon\Http\Request();
         $this->di->setShared('request', $request);
@@ -54,6 +52,7 @@ class Bootstrap
 
         $this->initView();
         $this->initView(true);
+        $this->initSimpleView();
 
         $this->di->setShared('cookies', function () {
             $cookies = new \Phalcon\Http\Response\Cookies();
@@ -91,6 +90,10 @@ class Bootstrap
             });
 
             return $filter;
+        });
+
+        $this->di->setShared('section', function () {
+            return new \Engine\Mvc\View\Section();
         });
 
         $this->initMail();
@@ -142,7 +145,7 @@ class Bootstrap
         $loader->init();
 
         // Load modules
-        $modulesList = \Module\Core\Models\Module::getActiveModules();
+        $modulesList = \Module\Core\Models\Package::getActiveModules();
 
         // Registering the registry
         $registry = new \Phalcon\Registry();
@@ -202,6 +205,7 @@ class Bootstrap
         if ($widget) {
             $view->setLayout('widget');
         } else {
+            $view->setBasePath(MODULES_PATH);
             $view->setPartialsDir(THEMES_PATH . DEFAULT_THEME . '/partials/');
             $view->setMainView(THEMES_PATH . DEFAULT_THEME . '/index');
             $view->setLayout(DEFAULT_THEME);
@@ -209,10 +213,10 @@ class Bootstrap
 
         $view->registerEngines([
             '.phtml' => function($view, $di) {
-                return new \Phalcon\Mvc\View\Engine\Php($view, $di);
+                return new \Engine\Mvc\View\Engine\Php($view, $di);
             },
             '.volt' => function($view, $di) use ($widget) {
-                $volt = new \Phalcon\Mvc\View\Engine\Volt($view, $di);
+                $volt = new \Engine\Mvc\View\Engine\Volt($view, $di);
                 if (DEV) {
                     // Prevent caching annoyances
                     $voltOptions['compileAlways'] = true;
@@ -220,11 +224,8 @@ class Bootstrap
                 $voltOptions['compiledPath'] = CACHE_PATH . 'volt/';
                 $voltOptions['compiledSeparator'] = $widget ? 'widget_' : '_';
                 $volt->setOptions($voltOptions);
+                $volt->initCompiler();
 
-                // add a function
-                $volt->getCompiler()->addFunction('f', function ($resolvedArgs, $exprArgs) {
-                    return 'function($model){ return ' . trim($resolvedArgs, "'\"") . ';}';
-                });
                 return $volt;
             }
         ]);
@@ -238,6 +239,12 @@ class Bootstrap
         } else {
             $this->di->setShared('view', $view);
         }
+    }
+    private function initSimpleView()
+    {
+        $view = new \Phalcon\Mvc\View\Simple();
+        $view->registerEngines($this->di->get('view')->getRegisteredEngines());
+        $this->di->setShared('viewSimple', $view);
     }
 
     private function initSecurity()
@@ -392,7 +399,7 @@ class Bootstrap
 
         // Render
         try {
-            $application->handle()->send();
+            echo $application->handle()->getContent();
         } catch (\Exception $e) {
             if (DEV) {
                 throw $e;

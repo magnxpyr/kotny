@@ -12,7 +12,6 @@ use Module\Core\Models\Category;
 use Module\Core\Models\ViewLevel;
 use Engine\Forms\Form;
 use Phalcon\Forms\Element\Check;
-use Phalcon\Forms\Element\Date;
 use Phalcon\Forms\Element\Hidden;
 use Phalcon\Forms\Element\Select;
 use Phalcon\Forms\Element\Text;
@@ -83,7 +82,7 @@ class AdminContentEditForm extends Form
         $metadata->setFilters('string');
         $this->add($metadata);
 
-        // User view level
+        // Categories
         $category = new Select('category',
             Category::find(),
             ['using' => ['id', 'title'], 'class' => 'form-control']
@@ -97,7 +96,7 @@ class AdminContentEditForm extends Form
         );
         $this->add($category);
 
-        // Status
+        // Featured
         $featured = new Check('featured');
         $featured->setLabel($this->t->_('Featured'));
         $featured->setFilters('int');
@@ -131,18 +130,25 @@ class AdminContentEditForm extends Form
         );
         $this->add($role);
 
-        $publishAt = new Date('published_at', [
+        $publishUp = new Text('publish_up', [
             'class' => 'form-control'
         ]);
-        $publishAt->setLabel($this->t->_('Publish date'));
-        $publishAt->setFilters('string');
-        $publishAt->setDefault(date('Y-m-d', time()));
-        $publishAt->setAttribute('timestamp', true);
-        $publishAt->addValidator(
+        $publishUp->setLabel($this->t->_('Publish date'));
+        $publishUp->setFilters('string');
+        $publishUp->setAttribute('timestamp', true);
+        $publishUp->addValidator(
             new PresenceOf([
                 'title' => $this->t->_('%field% is required', ['field' => $this->t->_('Publish date')])
             ])
         );
-        $this->add($publishAt);
+        $this->add($publishUp);
+
+        $publishDown = new Text('publish_down', [
+            'class' => 'form-control'
+        ]);
+        $publishDown->setLabel($this->t->_('End date'));
+        $publishDown->setFilters('string');
+        $publishDown->setAttribute('timestamp', true);
+        $this->add($publishDown);
     }
 }

@@ -12,15 +12,20 @@
     <meta name="robots" content={{ metaRobots }}>
     <meta name="rights" content={{ metaContentRights }}>
     <meta name="_token" content="{{ token }}">
+
     {{ get_title() }}
     {{ assets.outputCss("header-css") }}
     {{ assets.outputCss("header-css-min") }}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css"/>
     {{ assets.outputInlineCss() }}
+    {{ assets.outputViewCss() }}
 </head>
 <body class="skin-blue sidebar-mini fixed {{ sidebar_collapse }}">
 {{ content() }}
 {{ assets.outputJs("footer-js-min") }}
 {{ assets.outputJs("footer-js") }}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
 {{ assets.outputInlineJs() }}
+{{ assets.outputViewJs() }}
 </body>
 </html>

@@ -9,9 +9,12 @@
 namespace Module\Core\Forms;
 
 use Engine\Forms\Form;
+use Engine\Package\PackageType;
+use Module\Core\Models\Package;
+use Module\Core\Models\ViewLevel;
 use Phalcon\Forms\Element\Hidden;
 use Phalcon\Forms\Element\Select;
-use Phalcon\Forms\Element\TextArea;
+use Phalcon\Forms\Element\Text;
 use Phalcon\Validation\Validator\PresenceOf;
 
 /**
@@ -32,6 +35,109 @@ class AdminWidgetEditForm extends Form
         $id->setFilters('int');
         $this->add($id);
 
+        // Title
+        $title = new Text('title', [
+            'class' => 'form-control'
+        ]);
+        $title->setLabel($this->t->_('Title'));
+        $title->setFilters('string');
+        $title->addValidator(
+            new PresenceOf([
+                'message' => $this->t->_('%field% is required', ['field' => $this->t->_('Title')])
+            ])
+        );
+        $this->add($title);
+
+        // Packages
+        $package = new Select('package_id',
+            Package::find("type = '" . PackageType::WIDGET . "'"),
+            ['using' => ['id', 'name'], 'useEmpty' => true, 'class' => 'form-control']
+        );
+        $package->setLabel($this->t->_('Widget'));
+        $package->setFilters('int');
+        $package->addValidator(
+            new PresenceOf([
+                'message' => $this->t->_('%field% is required', ['field' => $this->t->_('Widget')])
+            ])
+        );
+        $this->add($package);
+
+        // Positions
+        $position = new Select('position',
+            $this->helper->getTemplateSections(),
+            ['class' => 'form-control']
+        );
+        $position->setLabel($this->t->_('Position'));
+        $position->setFilters('string');
+        $position->addValidator(
+            new PresenceOf([
+                'message' => $this->t->_('%field% is required', ['field' => $this->t->_('Position')])
+            ])
+        );
+        $this->add($position);
+
+        // Ordering
+        $order = new Select('ordering', [],
+            ['using' => ['ordering', 'title'], 'class' => 'form-control']
+        );
+        $order->setLabel($this->t->_('Order'));
+        $order->setFilters('int');
+        $order->addValidator(
+            new PresenceOf([
+                'message' => $this->t->_('%field% is required', ['field' => $this->t->_('Order')])
+            ])
+        );
+        $this->add($order);
+
+        // User view level
+        $role = new Select('view_level',
+            ViewLevel::find(),
+            ['using' => ['id', 'name'], 'class' => 'form-control']
+        );
+        $role->setLabel($this->t->_('View Level'));
+        $role->setFilters('int');
+        $role->addValidator(
+            new PresenceOf([
+                'view_level' => $this->t->_('%field% is required', ['field' => $this->t->_('View Level')])
+            ])
+        );
+        $this->add($role);
+
+        $publishUp = new Text('publish_up', [
+            'class' => 'form-control'
+        ]);
+        $publishUp->setLabel($this->t->_('Publish date'));
+        $publishUp->setFilters('string');
+        $publishUp->setAttribute('timestamp', true);
+        $publishUp->addValidator(
+            new PresenceOf([
+                'message' => $this->t->_('%field% is required', ['field' => $this->t->_('Publish date')])
+            ])
+        );
+        $this->add($publishUp);
+
+        $publishDown = new Text('publish_down', [
+            'class' => 'form-control'
+        ]);
+        $publishDown->setLabel($this->t->_('End date'));
+        $publishDown->setFilters('string');
+        $publishDown->setAttribute('timestamp', time());
+        $this->add($publishDown);
+
+        // Show title
+        $showTitle = new Select('show_title',
+            $this->helper->getShowFields(),
+            ['using' => ['id', 'name'], 'class' => 'form-control']
+        );
+        $showTitle->setLabel($this->t->_('Show title'));
+        $showTitle->setFilters('int');
+        $showTitle->addValidator(
+            new PresenceOf([
+                'message' => $this->t->_('%field% is required', ['field' => $this->t->_('Show title')])
+            ])
+        );
+        $this->add($showTitle);
+
         // Status
         $status = new Select('status',
             $this->helper->getArticleStatuses(),
@@ -41,19 +147,9 @@ class AdminWidgetEditForm extends Form
         $status->setFilters('int');
         $status->addValidator(
             new PresenceOf([
-                'status' => $this->t->_('%field% is required', ['field' => $this->t->_('Status')])
+                'message' => $this->t->_('%field% is required', ['field' => $this->t->_('Status')])
             ])
         );
         $this->add($status);
-
-        // Description
-        $description = new TextArea('description', [
-            'rows' => 5,
-            'cols' => 30,
-            'class' => 'form-control'
-        ]);
-        $description->setLabel($this->t->_('Description'));
-        $description->setFilters('string');
-        $this->add($description);
     }
 }

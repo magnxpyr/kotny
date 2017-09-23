@@ -18,7 +18,7 @@ use Phalcon\Forms\Element;
  */
 class Captcha extends Element
 {
-    use Meta, 
+    use Meta,
         DiBehavior;
 
     public function render($attributes = false)

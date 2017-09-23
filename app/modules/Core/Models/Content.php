@@ -98,7 +98,12 @@ class Content extends Model
     /**
      * @var integer
      */
-    private $published_at;
+    private $publish_up;
+
+    /**
+     * @var integer
+     */
+    private $publish_down;
 
     /**
      * Method to set the value of field id
@@ -448,18 +453,36 @@ class Content extends Model
     /**
      * @return int
      */
-    public function getPublishedAt()
+    public function getPublishUp()
     {
-        return $this->published_at;
+        return $this->publish_up;
     }
 
     /**
-     * @param integer $published_at
+     * @param integer $publish_up
      * @return $this
      */
-    public function setPublishedAt($published_at)
+    public function setPublishUp($publish_up)
     {
-        $this->published_at = $published_at;
+        $this->publish_up = $publish_up;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPublishDown()
+    {
+        return $this->publish_down;
+    }
+
+    /**
+     * @param integer $publish_down
+     * @return $this
+     */
+    public function setPublishDown($publish_down)
+    {
+        $this->publish_down = $publish_down;
         return $this;
     }
 
@@ -489,7 +512,13 @@ class Content extends Model
         if (empty($this->getAlias())) {
             $this->setAlias($this->getDI()->getShared('helper')->makeAlias($this->getTitle()));
         }
-        $this->setPublishedAt(strtotime($this->getPublishedAt()));
+
+        $this->setPublishUp($this->getDI()->getShared('helper')->timestampFromDate($this->getPublishUp()));
+        if (!empty($this->getPublishDown())) {
+            $this->setPublishDown($this->getDI()->getShared('helper')->timestampFromDate($this->getPublishDown()));
+        } else {
+            $this->setPublishDown(null);
+        }
     }
 
     public function beforeUpdate()

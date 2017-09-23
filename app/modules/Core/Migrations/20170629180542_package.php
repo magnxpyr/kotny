@@ -8,15 +8,14 @@
 
 use Phalcon\Db\Column;
 use Phalcon\Db\Index;
-use Phalcon\Db\Reference;
 use Engine\Package\Migration;
 
-class ModuleMigration extends Migration
+class PackageMigration extends Migration
 {
     public function up()
     {
         $this->morphTable(
-            'module',
+            'package',
             array(
                 'columns' => array(
                     new Column('id', array(
@@ -31,14 +30,21 @@ class ModuleMigration extends Migration
                     new Column('name', array(
                             'type' => Column::TYPE_VARCHAR,
                             'notNull' => true,
-                            'size' => 255,
+                            'size' => 100,
                             'after' => 'id'
+                        )
+                    ),
+                    new Column('type', array(
+                            'type' => Column::TYPE_VARCHAR,
+                            'notNull' => true,
+                            'size' => 10,
+                            'after' => 'name'
                         )
                     ),
                     new Column('description', array(
                             'type' => Column::TYPE_VARCHAR,
                             'size' => 255,
-                            'after' => 'name'
+                            'after' => 'type'
                         )
                     ),
                     new Column('version', array(
@@ -51,7 +57,7 @@ class ModuleMigration extends Migration
                     new Column('author', array(
                             'type' => Column::TYPE_VARCHAR,
                             'notNull' => true,
-                            'size' => 100,
+                            'size' => 255,
                             'after' => 'version'
                         )
                     ),
@@ -64,18 +70,19 @@ class ModuleMigration extends Migration
                     new Column('status', array(
                             'type' => Column::TYPE_INTEGER,
                             'notNull' => true,
-                            'size' => 4,
+                            'size' => 1,
                             'after' => 'website'
                         )
                     )
                 ),
                 'indexes' => array(
-                    new Index('PRIMARY', array('id')),
-                    new Index('UNIQUE', array('name')),
+                    new Index('PRIMARY', ['id']),
+                    new Index('UNIQUE', ['name', 'type'], 'UNIQUE'),
+                    new Index('type', ['type']),
                 ),
                 'options' => array(
                     'TABLE_TYPE' => 'BASE TABLE',
-                    'AUTO_INCREMENT' => '3',
+                    'AUTO_INCREMENT' => '1',
                     'ENGINE' => 'InnoDB',
                     'TABLE_COLLATION' => 'utf8_general_ci'
                 )

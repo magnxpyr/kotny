@@ -8,7 +8,6 @@
 
 use Phalcon\Db\Column;
 use Phalcon\Db\Index;
-use Phalcon\Db\Reference;
 use Engine\Package\Migration;
 
 class ResourceMigration extends Migration
@@ -38,11 +37,11 @@ class ResourceMigration extends Migration
                 ),
                 'indexes' => array(
                     new Index('PRIMARY', array('id')),
-                    new Index('UNIQUE', array('name'))
+                    new Index('UNIQUE', array('name'), 'UNIQUE')
                 ),
                 'options' => array(
                     'TABLE_TYPE' => 'BASE TABLE',
-                    'AUTO_INCREMENT' => '18',
+                    'AUTO_INCREMENT' => '1',
                     'ENGINE' => 'InnoDB',
                     'TABLE_COLLATION' => 'utf8_general_ci'
                 )

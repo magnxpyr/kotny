@@ -8,7 +8,6 @@
 
 use Phalcon\Db\Column;
 use Phalcon\Db\Index;
-use Phalcon\Db\Reference;
 use Engine\Package\Migration;
 
 class MigrationMigration extends Migration
@@ -72,8 +71,8 @@ class MigrationMigration extends Migration
                 ),
                 'indexes' => array(
                     new Index('PRIMARY', array('id')),
-                    new Index('UNIQUE', array('name')),
-                    new Index('INDEX', array('package_type', 'package_id'))
+                    new Index('name', array('name'), 'UNIQUE'),
+                    new Index('package', array('package_type', 'package_id'))
                 ),
                 'options' => array(
                     'TABLE_TYPE' => 'BASE TABLE',

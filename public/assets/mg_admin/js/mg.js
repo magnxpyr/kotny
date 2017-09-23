@@ -85,6 +85,9 @@ $(function ($) {
             });
         }
     });
+
+    $.fn.datetimepicker.defaults.format ='DD-MM-YYYY hh:mm';
+    $.fn.datetimepicker.defaults.showTodayButton = true;
 });
 
 function handleResponse(response) {
@@ -110,4 +113,6 @@ function ajaxFailure(response) {
     }
     $("#flash-area").html("<div class=\"alert alert-danger alert-dismissible\">" + message + "</div>")
 }
+
+
 

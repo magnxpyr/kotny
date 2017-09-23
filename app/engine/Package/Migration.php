@@ -10,15 +10,15 @@
 namespace Engine\Package;
 
 use Engine\Behavior\DiBehavior;
+use Engine\Di\Injectable;
 use Engine\Mvc\Exception;
 use Phalcon\Db\Exception as DbException;
-use Phalcon\Db;
 
 /**
  * Class Migration
  * @package Engine\Migration
  */
-abstract class Migration
+abstract class Migration extends Injectable
 {
     use DiBehavior;
 

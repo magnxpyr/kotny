@@ -6,15 +6,13 @@
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
-namespace Widget\GridView;
+namespace Widget\GridView\Controllers;
 
-use Module\Core\Models\Menu;
-use Phalcon\Db\Column;
 use Phalcon\Text;
 
 /**
  * Class Controller
- * @package Widget\GridView
+ * @package Widget\GridView\Controllers
  */
 class Controller extends \Engine\Widget\Controller
 {
@@ -71,9 +69,15 @@ class Controller extends \Engine\Widget\Controller
                 method: "POST",
                 deferRender: true,
                 headers: { "X-CSRF-Token": "' . $this->tokenManager->getToken() . '" }
-            },
-            order: [[1, "desc"]],
-            columns: [{
+            },';
+
+        if ($this->getParam('order')) {
+            $js .= 'order: '. $this->getParam('order') . ',';
+        } else {
+            $js .= 'order: [[1, "desc"]],';
+        }
+
+        $js .= 'columns: [{
                 data: null,
                 defaultContent: "",
                 orderable: false,

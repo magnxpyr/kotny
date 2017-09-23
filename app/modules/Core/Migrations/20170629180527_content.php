@@ -8,7 +8,6 @@
 
 use Phalcon\Db\Column;
 use Phalcon\Db\Index;
-use Phalcon\Db\Reference;
 use Engine\Package\Migration;
 
 class ContentMigration extends Migration
@@ -98,7 +97,13 @@ class ContentMigration extends Migration
                             'after' => 'status'
                         )
                     ),
-                    new Column('published_at', array(
+                    new Column('publish_up', array(
+                            'type' => Column::TYPE_INTEGER,
+                            'size' => 11,
+                            'after' => 'view_level'
+                        )
+                    ),
+                    new Column('publish_down', array(
                             'type' => Column::TYPE_INTEGER,
                             'size' => 11,
                             'after' => 'view_level'
@@ -134,12 +139,12 @@ class ContentMigration extends Migration
                 ),
                 'indexes' => array(
                     new Index('PRIMARY', array('id')),
-                    new Index('UNIQUE', array('alias')),
-                    new Index('INDEX', array('created_by'))
+                    new Index('UNIQUE', array('alias'), 'UNIQUE'),
+                    new Index('createdBy', array('created_by'))
                 ),
                 'options' => array(
                     'TABLE_TYPE' => 'BASE TABLE',
-                    'AUTO_INCREMENT' => '3',
+                    'AUTO_INCREMENT' => '1',
                     'ENGINE' => 'InnoDB',
                     'TABLE_COLLATION' => 'utf8_general_ci'
                 )

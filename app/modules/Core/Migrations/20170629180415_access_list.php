@@ -60,11 +60,11 @@ class AccessListMigration extends Migration
                 ),
                 'indexes' => array(
                     new Index('PRIMARY', array('id')),
-                    new Index('UNIQUE', array('role_id', 'resource_id', 'access_name'))
+                    new Index('UNIQUE', array('role_id', 'resource_id', 'access_name'), 'UNIQUE')
                 ),
                 'options' => array(
                     'TABLE_TYPE' => 'BASE TABLE',
-                    'AUTO_INCREMENT' => '16',
+                    'AUTO_INCREMENT' => '1',
                     'ENGINE' => 'InnoDB',
                     'TABLE_COLLATION' => 'utf8_general_ci'
                 )

@@ -132,7 +132,7 @@ class Database extends Adapter implements AdapterInterface
                 ->setDescription($role->getDescription())
                 ->create();
 
-            $this->db->execute(
+            $this->di->getDb()->execute(
                 'INSERT INTO access_list (role_id, resource_id, access_name, status) VALUES (?, ?, ?, ?)',
                 [$role->getName(), '*', '*', $this->_defaultAccess]
             );
@@ -380,7 +380,7 @@ class Database extends Adapter implements AdapterInterface
      * @param string $roleName
      * @param string $resourceName
      * @param string $accessName
-     *
+     * @param array $parameters
      * @return bool
      */
     public function isAllowed($roleName, $resourceName, $accessName, array $parameters = null)

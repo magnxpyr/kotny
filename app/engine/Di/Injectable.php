@@ -6,8 +6,15 @@
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
-namespace Module\Tools;
+namespace Engine\Di;
 
-class Module extends \Engine\Mvc\Module {
+use Engine\Meta;
 
+/**
+ * Class Injectable
+ * @package Engine\Di
+ */
+class Injectable extends \Phalcon\Di\Injectable
+{
+    use Meta;
 }

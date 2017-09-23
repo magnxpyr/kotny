@@ -10,7 +10,7 @@
             <a class="navbar-brand" href="#">magnxpyr</a>
         </div>
         <div class="navbar-collapse collapse out" id="navbar-collapse">
-            {{ widget.render('Menu', ['id': 1]) }}
+            {{ section.render("menu") }}
         </div>
     </div>
 </div>

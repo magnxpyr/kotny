@@ -1,8 +1,7 @@
-{{ content() }}
 <div class="box box-default">
     <div class="box-header with-border">
         <div class="row">
-            <div class="col-xs-6 col-md-6">
+            <div class="col-xs-12">
                 <ul class="nav nav-pills">
                     <li>
                         <button onclick="flushCache()" class="btn btn-sm btn-block btn-primary">
@@ -13,9 +12,6 @@
                         <i class="fa fa-close"></i> Flush volt cache</button>
                     </li>
                 </ul>
-            </div>
-            <div class="col-sm-offset-3 col-md-offset-3 col-sm-3 col-md-3">
-
             </div>
         </div>
     </div>
@@ -36,27 +32,4 @@
         ) }}
     </div>
 </div>
-
-{% block scripts %}
-<script>
-    function flushCache() {
-        $.ajax({
-            type: 'POST',
-            url: '{{ url('admin/core/cache/flush-cache') }}',
-            success: function (data) {
-                handleResponse(data);
-            }
-        })
-    }
-
-    function flushVoltCache() {
-        $.ajax({
-            type: 'POST',
-            url: '{{ url('admin/core/cache/flush-volt-cache') }}',
-            success: function (data) {
-                handleResponse(data);
-            }
-        })
-    }
-</script>
-{% endblock %}
+{% do addViewJs("admin-cache/index-scripts") %}

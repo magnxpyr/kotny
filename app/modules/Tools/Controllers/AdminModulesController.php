@@ -8,6 +8,8 @@
 
 namespace Module\Tools\Controllers;
 
+use Engine\Package\PackageType;
+use Module\Core\Models\Package;
 use Module\Tools\Helpers\Tools;
 use Module\Tools\Builder\Module;
 
@@ -48,13 +50,14 @@ class AdminModulesController extends ControllerBase
             try {
                 $component = array(
                     'name'      => $name,
+                    'type'      => PackageType::MODULE,
                     'directory' => $directory,
                     'namespace' => $namespace,
                     'routes'    => $routes,
                     'force'     => $force
                 );
 
-                $moduleBuilder = new Module($component);
+                $moduleBuilder = new Package($component);
                 $moduleBuilder->build();
 
                 $this->flash->success('Module "'.$name.'" was created successfully');

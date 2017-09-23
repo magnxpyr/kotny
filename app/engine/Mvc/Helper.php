@@ -8,6 +8,7 @@
 
 namespace Engine\Mvc;
 
+use DateTime;
 use Engine\Meta;
 use Module\Core\Models\Content;
 use Module\Core\Models\User;
@@ -22,6 +23,10 @@ class Helper extends Component
 {
     use Meta;
 
+    const DATE_FORMAT = 'd-m-Y H:i';
+
+    private $showField = ["No", "Yes"];
+
     private $userStatuses = [
         User::STATUS_ACTIVE => 'Active',
         User::STATUS_INACTIVE => 'Inactive',
@@ -33,6 +38,32 @@ class Helper extends Component
         Content::STATUS_UNPUBLISHED => 'Unpublished',
         Content::STATUS_TRASHED => 'Trashed'
     ];
+
+    private $templateSections = [
+        'menu' => 'menu', 'header' => 'header', 'heading-left' => 'heading-left', 'heading-mid' => 'heading-mid',
+        'heading-right' => 'heading-right', 'banner' => 'banner', 'sidebar-left' => 'sidebar-left',
+        'sidebar-right' => 'sidebar-right', 'footer' => 'footer', 'footer-left' => 'footer-left',
+        'footer-mid' => 'footer-mid', 'footer-right' => 'footer-right'
+    ];
+
+    /**
+     * Get status by id of a field if can be displayed
+     * @param $id
+     * @return mixed
+     */
+    public function getShowField($id)
+    {
+        return $this->showField[$id];
+    }
+
+    /**
+     * Get statuses for a field if can be displayed
+     * @return array
+     */
+    public function getShowFields()
+    {
+        return $this->showField;
+    }
 
     /**
      * Get user status by id
@@ -72,6 +103,11 @@ class Helper extends Component
         return $this->articleStatuses;
     }
 
+    public function getTemplateSections()
+    {
+        return $this->templateSections;
+    }
+
     /**
      * Return full url
      *
@@ -96,12 +132,25 @@ class Helper extends Component
     }
 
     /**
+     * Make alias from title
      * @param string $string
      * @return string
      */
     public function makeAlias($string)
     {
         return strtolower(str_replace(" ", "-", $string));
+    }
+
+    /**
+     * Check if article is published
+     * @param Content $model
+     * @return bool
+     */
+    public function isContentPublished($model) {
+        $time = time();
+        return $model != null && $model->getPublishUp() < $time &&
+            (($model->getPublishDown() != null && $model->getPublishDown() > $time) ||
+                $model->getPublishDown() == null);
     }
 
     /**
@@ -168,5 +217,25 @@ class Helper extends Component
             $removed = false;
         }
         return $removed;
+    }
+
+    public function timestampFromDate($str)
+    {
+        if (is_numeric($str)) return $str;
+        return !empty($str) ? DateTime::createFromFormat(self::DATE_FORMAT, $str)->getTimestamp() : null;
+    }
+
+    public function dateFromTimestamp($timestamp)
+    {
+        if (!is_numeric($timestamp)) return $timestamp;
+        return !empty($timestamp) ? date(self::DATE_FORMAT, $timestamp) : null;
+    }
+
+    public function arrayToString($array)
+    {
+        if (is_array($array)) {
+            return implode(", ", $array);
+        }
+       return null;
     }
 }

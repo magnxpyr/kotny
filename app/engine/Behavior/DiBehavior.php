@@ -10,6 +10,7 @@ namespace Engine\Behavior;
 
 use Engine\Meta;
 use Phalcon\DI;
+use Phalcon\DiInterface;
 
 /**
  * Dependency container trait.
@@ -24,43 +25,19 @@ trait DiBehavior
      * @var DI|Meta
      */
     private $di;
-    /**
-     * @var \Engine\Acl\BaseMemory
-     */
-    private $acl;
-    /**
-     * @var \Phalcon\Logger\Adapter
-     */
-    private $logger;
-    /**
-     * @var \Engine\Mvc\Helper
-     */
-    protected $helper;
-    /**
-     * @var \Phalcon\Db\Adapter\Pdo
-     */
-    private $db;
-    /**
-     * @var \Phalcon\Cache\Backend
-     */
-    private $cache;
-    /**
-     * @var \Phalcon\Config
-     */
-    private $config;
 
     /**
      * Set DI.
      * @param \Phalcon\DiInterface $di
      * @return void
      */
-    public function setDI($di)
+    public function setDI(DiInterface $di)
     {
         $this->di = $di;
     }
 
     /**
-     * Set DI.
+     * Set and return DI.
      * @return DI|Meta
      */
     public function getDI()
@@ -68,15 +45,6 @@ trait DiBehavior
         if ($this->di == null) {
             $di = Di::getDefault();
             $this->setDI($di);
-
-            if ($di->has('acl')) {
-                $this->acl = $di->get('acl');
-            }
-            $this->logger = $di->get('logger');
-            $this->helper = $di->get('helper');
-            $this->db = $di->get('db');
-            $this->cache = $di->get('cache');
-            $this->config = $di->get('config');
         }
         return $this->di;
     }
