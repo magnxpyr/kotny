@@ -8,7 +8,7 @@
 
 namespace Engine\Package;
 
-use Engine\Behavior\DiBehavior;
+use Engine\Di\Injectable;
 use Engine\Mvc\Exception;
 use Module\Core\Models\Package;
 use Module\Core\Models\Migration as MigrationModel;
@@ -20,10 +20,8 @@ use Phalcon\Db\Column;
  * Class Manager
  * @package Engine\Package
  */
-class Manager
+class Manager extends Injectable
 {
-    use DiBehavior;
-
     const MIGRATION_FILE_NAME_PATTERN = '/^\d+_([\w_]+).php$/i';
 
     public function __construct()
@@ -187,6 +185,7 @@ class Manager
         }
 
         $this->cache->delete($this->acl->getCacheKey());
+        $this->cache->delete(Package::getCacheActiveModules());
         $this->logger->debug("Module $moduleName installed successfully");
     }
 
@@ -280,6 +279,7 @@ class Manager
         }
 
         $this->cache->delete($this->acl->getCacheKey());
+        $this->cache->delete(Package::getCacheActiveWidgets());
         $this->logger->debug("Widget $widgetName installed successfully");
     }
 
