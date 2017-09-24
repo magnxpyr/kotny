@@ -13,6 +13,7 @@ use Engine\Meta;
 use Phalcon\Forms\Element\Hidden;
 use Phalcon\Forms\Element\Text;
 use Phalcon\Validation\Validator\Identical;
+use Phalcon\Validation\Validator\PresenceOf;
 
 /**
  * Class Form
@@ -67,6 +68,18 @@ class Form extends \Phalcon\Forms\Form
     public function render($name, $attributes = null)
     {
         if ($this->has($name)) {
+            $element = $this->get($name);
+            foreach ($element->getValidators() as $validator) {
+                if ($validator instanceof PresenceOf) {
+                    $attributes['required'] = 'required';
+                    break;
+                }
+            }
+
+            if ($element->getAttribute("timestamp") && $element instanceof Text && $element->getValue() != null) {
+                $element->getForm()->setValue($name, $this->helper->dateFromTimestamp($element->getValue()));
+            }
+
             return parent::render($name, $attributes);
         }
     }
@@ -94,23 +107,23 @@ class Form extends \Phalcon\Forms\Form
         }
 
         // Get any generated messages for the current element
-        $messages = $this->getMessagesFor($element->getName());
+//        $messages = $this->getMessagesFor($element->getName());
         $html = '';
-        if (count($messages)) {
-            // Print each element
-            $html .= '<div class="messages">';
-            foreach ($messages as $message) {
-                $html .= $this->flash->error($message);
-            }
-            $html .= '</div>';
-        }
+//        if (count($messages)) {
+//            // Print each element
+//            $html .= '<div class="messages">';
+//            foreach ($messages as $message) {
+//                $html .= $this->flash->error($message);
+//            }
+//            $html .= '</div>';
+//        }
 
         $group = '';
         if (isset($attributes['group'])) {
             if (isset($attributes['group']['class'])) {
                 $attributes['group']['class'] .= ' form-group ';
             } else {
-                $group .= 'class="form-group" ';
+                $attributes['group']['class'] = 'form-group ';
             }
             foreach ($attributes['group'] as $key => $value) {
                 $group .= "$key=\"$value\"";
@@ -127,6 +140,13 @@ class Form extends \Phalcon\Forms\Form
         }
 
         $input = '';
+        foreach ($element->getValidators() as $validator) {
+            if ($validator instanceof PresenceOf) {
+                $element->setAttribute('required', 'required');
+                break;
+            }
+        }
+
         if (isset($attributes['input'])) {
             if (isset($attributes['input']['class'])) {
                 $attributes['input']['class'] .= ' input-group';
