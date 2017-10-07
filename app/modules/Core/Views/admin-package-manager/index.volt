@@ -37,7 +37,11 @@
                 'url': url('admin/core/package-manager/search'),
                 'actions': [
                     'update': url('admin/core/package-manager/edit'),
-                    'delete': url('admin/core/package-manager/remove-package/module')
+                    'delete': url('admin/core/package-manager/remove-package'),
+                    'custom': [{
+                        'action': '<a href=\"'~url("admin/core/package-manager/install-package/")~'"+data.name+"/"+data.type+"\"><i class=\"fa fa-upload\"></i></a>',
+                        'conditional': 'data.status === null'
+                    }]
                 ],
                 'tableId': 'table'
             ],

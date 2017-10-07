@@ -213,9 +213,13 @@ class Helper extends Component
         try {
             $removed = rmdir($dir);
         } catch (Exception $e) {
-            $this->logger->error("Can't remove directory " . $dir);
             $removed = false;
+        } finally {
+            if (!$removed) {
+                $this->logger->error("Can't remove directory " . $dir);
+            }
         }
+
         return $removed;
     }
 

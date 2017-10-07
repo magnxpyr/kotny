@@ -18,4 +18,3 @@
         ) }}
     </div>
 </div>
-{% do addViewJs('admin-package-manager/edit-scripts') %}

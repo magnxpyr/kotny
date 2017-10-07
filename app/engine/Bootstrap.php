@@ -41,7 +41,7 @@ class Bootstrap
         });
 
         $this->di->setShared('logger', function () {
-            return new \Phalcon\Logger\Adapter\File(ROOT_PATH . 'logs/' . date('d-M-Y') . '.log');
+            return new \Phalcon\Logger\Adapter\File(ROOT_PATH . 'logs/' . date('Y-m-d') . '.log');
         });
 
         // Generate urls

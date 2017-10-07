@@ -80,29 +80,51 @@ class AdminPackageManagerController extends AdminController
      */
     public function installPackageAction($package, $packageType)
     {
-        switch ($packageType) {
-            case PackageType::MODULE:
-                $this->packageManager->installModule($package);
-                break;
-            case PackageType::WIDGET:
-                $this->packageManager->installWidget($package);
-                break;
+        try {
+            switch ($packageType) {
+                case PackageType::MODULE:
+                    $this->packageManager->installModule($package);
+                    break;
+                case PackageType::WIDGET:
+                    $this->packageManager->installWidget($package);
+                    break;
+            }
+            $this->flashSession->success("Package installed successfully");
+        } catch (Exception $e) {
+            $this->flashSession->error($e->getMessage());
         }
+
+        $this->dispatcher->forward([
+            "action" => "index"
+        ]);
     }
 
     /**
      * Ajax remove a package
      * @param $packageId int
-     * @param $packageType PackageType
      */
-    public function removePackageAction($packageType, $packageId)
+    public function removePackageAction($packageId)
     {
+        if (!$this->request->isAjax() || !$this->request->isPost()) {
+            return;
+        }
+
         try {
-            $this->packageManager->removePackage($packageType, $packageId);
-            $this->flashSession->success("Package removed successfully");
-            $this->returnJSON(['success' => true]);
+            if (empty($_POST['status']) && $_POST['name'] && $_POST['type']) {
+                $this->packageManager->removePackageFromDisk($_POST['name'], $_POST['type']);
+            } else {
+                $this->packageManager->removePackage($packageId);
+            }
+
+            $this->returnJSON([
+                'success' => true,
+                'message' => 'Package removed successfully'
+            ]);
         } catch (Exception $e) {
-            $this->flashSession->error($e->getMessage());
+            $this->returnJSON([
+                'success' => false,
+                'message' => $e->getMessage()
+            ]);
         }
     }
 
@@ -115,21 +137,27 @@ class AdminPackageManagerController extends AdminController
             return;
         }
 
+        $count = 0;
         $modules = [];
         foreach (array_diff(scandir(MODULES_PATH), ['..', '.']) as $dir) {
             if (is_dir(MODULES_PATH . "/" . $dir)) {
                 $model = new Package();
+                $model->setId("l$count");
                 $model->setName($dir);
                 $model->setType(PackageType::MODULE);
                 $modules[$dir] = $model->toArray();
+                $count++;
             }
         }
 
         foreach (array_diff(scandir(WIDGETS_PATH), ['..', '.']) as $dir) {
             if (is_dir(WIDGETS_PATH . "/" . $dir)) {
                 $model = new Package();
+                $model->setId("l$count");
                 $model->setName($dir);
+                $model->setType(PackageType::WIDGET);
                 $modules[$dir] = $model->toArray();
+                $count++;
             }
         }
 
