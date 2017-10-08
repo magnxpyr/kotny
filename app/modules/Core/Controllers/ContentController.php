@@ -19,7 +19,10 @@ use Phalcon\Paginator\Adapter\QueryBuilder as PaginatorQueryBuilder;
 class ContentController extends Controller
 {
     /**
-     * Index action
+     * Show articles from a category
+     *
+     * @param $category
+     * @param $page
      */
     public function categoryAction($category, $page)
     {
@@ -33,6 +36,8 @@ class ContentController extends Controller
             ->orderBy('c.created_at DESC');
             if ($category) {
                 $builder->andWhere('cat.alias = :category:', ['category' => $category]);
+            } else {
+                $category = "articles";
             }
 
         $paginator = new PaginatorQueryBuilder([
@@ -45,6 +50,13 @@ class ContentController extends Controller
         $this->view->setVar('category', $category);
     }
 
+    /**
+     * Show an article
+     *
+     * @param $catAlias string
+     * @param $articleId int
+     * @param $articleAlias string
+     */
     public function articleAction($catAlias, $articleId, $articleAlias)
     {
         $this->view->setVar('metaAuthor', '');

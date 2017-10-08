@@ -202,9 +202,7 @@ class Bootstrap
         $view = new \Phalcon\Mvc\View();
         $view->setLayoutsDir(THEMES_PATH . DEFAULT_THEME . '/layouts/');
 
-        if ($widget) {
-            $view->setLayout('widget');
-        } else {
+        if (!$widget) {
             $view->setBasePath(MODULES_PATH);
             $view->setPartialsDir(THEMES_PATH . DEFAULT_THEME . '/partials/');
             $view->setMainView(THEMES_PATH . DEFAULT_THEME . '/index');

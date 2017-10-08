@@ -1,4 +1,3 @@
-{{ content() }}
 <div class="jumbotron">
     <h1>{{ t._("Welcome") }} to Magnxpyr Network</h1>
     <p>Magnxpyr CMS is a revolutionary application to create fast applications for free.</p>

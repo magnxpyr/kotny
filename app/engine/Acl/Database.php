@@ -71,9 +71,9 @@ class Database extends Adapter implements AdapterInterface
                 $roles = Role::find();
                 foreach ($roles as $role) {
                     if ($role->getParentId() > 0) {
-                        $acl->addRole($role->getId(), $role->getParentId());
+                        $acl->addRole(new AclRole($role->getId(), $role->getName()), $role->getParentId());
                     } else {
-                        $acl->addRole($role->getId());
+                        $acl->addRole(new AclRole($role->getId(), $role->getName()));
                     }
                 }
                 // Looking for all controllers inside modules and get actions.

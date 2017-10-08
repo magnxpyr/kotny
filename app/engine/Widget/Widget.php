@@ -98,8 +98,9 @@ class Widget extends Injectable
         $html = null;
         if ($controller->getRenderView()) {
             $controller->viewWidget->setViewsDir(APP_PATH . "widgets/$widgetName/Views");
-            $controller->viewWidget->pick($viewName);
+            $controller->viewWidget->pick([$viewName]);
             $controller->viewWidget->setMainView($viewName);
+            $controller->viewWidget->setMainView('widget');
             $html = $controller->viewWidget->getRender($controllerName, $action);
         }
 

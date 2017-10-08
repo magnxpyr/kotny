@@ -42,13 +42,11 @@ class ContentMigration extends Migration
                     ),
                     new Column('introtext', array(
                             'type' => Column::TYPE_TEXT,
-                            'size' => 1,
                             'after' => 'alias'
                         )
                     ),
                     new Column('fulltext', array(
                             'type' => Column::TYPE_TEXT,
-                            'size' => 1,
                             'after' => 'introtext'
                         )
                     ),

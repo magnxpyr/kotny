@@ -7,10 +7,12 @@
     </div>
 </div>
 {% endfor %}
+{% if model.total_pages > 1 %}
+    {{ link_to("/" ~ category, "First") }}
+    {{ link_to("/" ~ category ~ "/" ~ model.before, "Previous") }}
+    {{ link_to("/" ~ category ~ "/" ~ model.next, "Next") }}
+    {{ link_to("/" ~ category ~ "/" ~ model.last, "Last") }}
+{% endif %}
 
-{{ link_to("/" ~ category, "First") }}
-{{ link_to("/" ~ category ~ "/" ~ model.before, "Previous") }}
-{{ link_to("/" ~ category ~ "/" ~ model.next, "Next") }}
-{{ link_to("/" ~ category ~ "/" ~ model.last, "Last") }}
 
 {#{{ widget.render('Content') }}#}

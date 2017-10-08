@@ -47,6 +47,20 @@ class Routes {
             'page' => 2
         ])->setName('core-category-pagination');
 
+        // Articles
+        $router->add('/articles/([0-9]+)', [
+            'controller' => 'content',
+            'action' => 'category',
+            'category' => null,
+            'page' => 1
+        ])->setName('core-articles');
+
+
+        $router->add('/articles', [
+            'controller' => 'content',
+            'action' => 'category',
+        ])->setName('core-articles');
+
         $router->add('/:module/:controller/:action/:params', [
             'module' => 1,
             'controller' => 2,
