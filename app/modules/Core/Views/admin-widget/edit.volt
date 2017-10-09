@@ -9,12 +9,20 @@
         </div>
     </div>
     <div class="box-body">
-        {{ form.renderForm(
-            url("admin/core/widget/save"),
-            [
-                'form': ['id': 'widgetForm'],
-                'label': ['class': 'control-label col-sm-2']
-            ]
-        ) }}
+        <form method="post" id="widgetForm" action="{{ url("admin/core/widget/save") }}">
+            {{ form.render('csrf') }}
+            {{ form.render('id') }}
+            {{ form.renderDecorated('title', ['label': ['class': 'control-label col-sm-2']]) }}
+            {{ form.renderDecorated('package_id', ['label': ['class': 'control-label col-sm-2']]) }}
+            {{ form.renderDecorated('position', ['label': ['class': 'control-label col-sm-2']]) }}
+            {{ form.renderDecorated('ordering', ['label': ['class': 'control-label col-sm-2']]) }}
+            {{ form.renderDecorated('view_level', ['label': ['class': 'control-label col-sm-2']]) }}
+            {{ form.renderDecorated('publish_up', ['label': ['class': 'control-label col-sm-2']]) }}
+            {{ form.renderDecorated('publish_down', ['label': ['class': 'control-label col-sm-2']]) }}
+            {{ form.renderDecorated('show_title', ['label': ['class': 'control-label col-sm-2']]) }}
+            {{ form.renderDecorated('status', ['label': ['class': 'control-label col-sm-2']]) }}
+            <div id="wrapper-admin-widget">{{ widgetContent }}</div>
+        </form>
     </div>
 </div>
+{% do addViewJs('admin-widget/edit-scripts') %}

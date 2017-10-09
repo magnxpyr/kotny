@@ -531,13 +531,13 @@ class User extends Model
         $validator = new Validation();
         $validator->add('email', new Email([
             'required' => true,
-            'message' => $this->t->_('Email address is not valid')
+            'message' => $this->getDI()->get('t')->_('Email address is not valid')
         ]));
         $validator->add('email', new Uniqueness([
-            'message' => $this->t->_('Email already exists')
+            'message' => $this->getDI()->get('t')->_('Email already exists')
         ]));
         $validator->add('username', new Uniqueness([
-            'message' => $this->t->_('Username already exists')
+            'message' => $this->getDI()->get('t')->_('Username already exists')
         ]));
         return $this->validate($validator);
     }

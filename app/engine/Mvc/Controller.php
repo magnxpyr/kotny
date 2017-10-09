@@ -23,7 +23,7 @@ abstract class  Controller extends \Phalcon\Mvc\Controller
      * Initializes the controller
      * @return void
      */
-    protected function initialize()
+    public function initialize()
     {
         if(!$this->request->isAjax()) {
             $this->setMetaDefaults();

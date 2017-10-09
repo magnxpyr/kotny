@@ -8,9 +8,12 @@
  */
 
 namespace Engine\Forms;
+
 use Engine\Meta;
 use Phalcon\Forms\Element\Hidden;
+use Phalcon\Forms\Element\Text;
 use Phalcon\Validation\Validator\Identical;
+use Phalcon\Validation\Validator\PresenceOf;
 
 /**
  * Class Form
@@ -18,7 +21,7 @@ use Phalcon\Validation\Validator\Identical;
  */
 class Form extends \Phalcon\Forms\Form
 {
-    use Meta;    
+    use Meta;
 
     /**
      * Returns the default value for field 'csrf'
@@ -44,8 +47,13 @@ class Form extends \Phalcon\Forms\Form
         $this->add($csrf);
     }
 
-    public function setValue($field, $value) {
-        $this->_entity->$field = $value;
+    public function setValue($field, $value = null) {
+        if ($this->_entity != null) {
+            $this->_entity->$field = $value;
+        }
+        if ($this->_data != null) {
+            $this->_data[$field] = $value;
+        }
     }
 
 
@@ -60,6 +68,18 @@ class Form extends \Phalcon\Forms\Form
     public function render($name, $attributes = null)
     {
         if ($this->has($name)) {
+            $element = $this->get($name);
+            foreach ($element->getValidators() as $validator) {
+                if ($validator instanceof PresenceOf) {
+                    $attributes['required'] = 'required';
+                    break;
+                }
+            }
+
+            if ($element->getAttribute("timestamp") && $element instanceof Text && $element->getValue() != null) {
+                $element->getForm()->setValue($name, $this->helper->dateFromTimestamp($element->getValue()));
+            }
+
             return parent::render($name, $attributes);
         }
     }
@@ -76,28 +96,34 @@ class Form extends \Phalcon\Forms\Form
     {
         $element = $this->get($name);
 
+        $inputDate = false;
         if ($element->getAttribute("timestamp")) {
-            $element->getForm()->setValue($name, date('Y-m-d', $element->getValue()));
+            if ($element instanceof Text) {
+                $inputDate = true;
+            }
+            if ($element->getValue() != null) {
+                $element->getForm()->setValue($name, $this->helper->dateFromTimestamp($element->getValue()));
+            }
         }
 
         // Get any generated messages for the current element
-        $messages = $this->getMessagesFor($element->getName());
+//        $messages = $this->getMessagesFor($element->getName());
         $html = '';
-        if (count($messages)) {
-            // Print each element
-            $html .= '<div class="messages">';
-            foreach ($messages as $message) {
-                $html .= $this->flash->error($message);
-            }
-            $html .= '</div>';
-        }
+//        if (count($messages)) {
+//            // Print each element
+//            $html .= '<div class="messages">';
+//            foreach ($messages as $message) {
+//                $html .= $this->flash->error($message);
+//            }
+//            $html .= '</div>';
+//        }
 
         $group = '';
         if (isset($attributes['group'])) {
             if (isset($attributes['group']['class'])) {
                 $attributes['group']['class'] .= ' form-group ';
             } else {
-                $group .= 'class="form-group" ';
+                $attributes['group']['class'] = 'form-group ';
             }
             foreach ($attributes['group'] as $key => $value) {
                 $group .= "$key=\"$value\"";
@@ -114,18 +140,37 @@ class Form extends \Phalcon\Forms\Form
         }
 
         $input = '';
+        foreach ($element->getValidators() as $validator) {
+            if ($validator instanceof PresenceOf) {
+                $element->setAttribute('required', 'required');
+                break;
+            }
+        }
+
         if (isset($attributes['input'])) {
             if (isset($attributes['input']['class'])) {
                 $attributes['input']['class'] .= ' input-group';
+                if ($inputDate) {
+                    $input .= ' date';
+                }
             } else {
-                $input .= 'class="input-group" ';
+                $input .= 'class="input-group';
+                if ($inputDate) {
+                    $input .= ' date';
+                }
+                $input .= '" ';
             }
             foreach ($attributes['input'] as $key => $value) {
                 $input .= "$key=\"$value\" ";
             }
         } else {
-            $input .= 'class="input-group" ';
+            $input .= 'class="input-group';
+            if ($inputDate) {
+                $input .= ' date';
+            }
+            $input .= '" ';
         }
+        $input .= ' id="wrapper-' . $element->getName() . '" ';
 
         if ($element->getAttribute("placeholder")) {
             $input .= 'placeholder="' . $element->getAttribute("placeholder") . '"';
@@ -133,7 +178,11 @@ class Form extends \Phalcon\Forms\Form
 
         $html .= '<div '. $group. '>';
         $html .= '<label for="'. $element->getName(). '" '. $label. '>'. $element->getLabel(). '</label>';
-        $html .= '<div ' . $input . '>' . $element . '</div>';
+        $html .= '<div ' . $input . '>' . $element;
+        if ($inputDate) {
+            $html .= '<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>';
+        }
+        $html .= '</div>';
         $html .= '</div>';
         return $html;
     }

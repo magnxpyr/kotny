@@ -6,15 +6,13 @@
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
-namespace Widget\GridView;
+namespace Widget\GridView\Controllers;
 
-use Module\Core\Models\Menu;
-use Phalcon\Db\Column;
 use Phalcon\Text;
 
 /**
  * Class Controller
- * @package Widget\GridView
+ * @package Widget\GridView\Controllers
  */
 class Controller extends \Engine\Widget\Controller
 {
@@ -77,17 +75,21 @@ class Controller extends \Engine\Widget\Controller
                 method: "POST",
                 deferRender: true,
                 headers: { "X-CSRF-Token": "' . $this->tokenManager->getToken() . '" }
-            },
-            order: [[1, "desc"]],
-            columns: [{
-                data: null,
-                defaultContent: "",
-                orderable: false,
-                searchable: false,
-                render: function (data, type, row) {
-                    return "<input type=\"checkbox\" name=\"id[]\" value=\"\">";
-                }
-            },'.$this->js;
+            },';
+
+        if ($this->getParam('order')) {
+            $js .= 'order: '. $this->getParam('order') . ',';
+        } else {
+            $js .= 'order: [[1, "desc"]],';
+        }
+
+        $js .= 'columns: [{
+            data: null,
+            defaultContent: "",
+            className: "select-checkbox",
+            orderable: false,
+            searchable: false
+        },'.$this->js;
 
         if ($this->getParam('actions')) {
             $js .= '
@@ -98,16 +100,34 @@ class Controller extends \Engine\Widget\Controller
                 searchable: false,
                 className: "all",
                 render: function (data, type, row) {
-                    return "';
+                console.log(data);
+                    var custom = "";
+                ';
+
+
+            if (isset($this->getParam('actions')['custom'])) {
+                foreach ($this->getParam('actions')['custom'] as $action) {
+                    if (isset($action['conditional'])) {
+                        $js .= 'if (' . $action['conditional'] . ') {';
+                    }
+                    $js .= 'custom += "<li>' . $action['action'] . '</li>"';
+                    if (isset($action['conditional'])) {
+                        $js .= '}';
+                    }
+                }
+            }
+
+            $js .= 'return "<ul class=\"datatable-action\">';
 
             if (isset($this->getParam('actions')['update'])) {
-                $js .= '<a href=\"'.$this->getParam('actions')['update'].'/"+data.DT_RowId+"\"><i class=\"fa fa-edit\"></i></a>';
+                $js .= '<li><a href=\"'.$this->getParam('actions')['update'].'/"+data.DT_RowId+"\"><i class=\"fa fa-edit\"></i></a></li>';
             }
             if (isset($this->getParam('actions')['delete'])) {
-                $js .= '<a href=\"#\" class=\"ajaxDelete\" data-url=\"'.$this->getParam('actions')['delete'].'/" + data.DT_RowId +
-                    "\" data-parent-id=\"#"+data.DT_RowId+"\"><i class=\"fa fa-trash-o\"></i></a>';
+                $js .= '<li><a href=\"#\" class=\"ajaxDelete\" data-url=\"'.$this->getParam('actions')['delete'].'/" + data.id +
+                    "\" data-parent-id=\"#"+data.id+"\"><i class=\"fa fa-trash-o\"></i></a></li>';
             }
-            $js .= '"}}';
+
+            $js .= '" + custom}}';
         }
 
         $js .= ',{ 
@@ -116,7 +136,11 @@ class Controller extends \Engine\Widget\Controller
                 className: "control",
                 orderable: false,
                 searchable: false
-            }]';
+            }],
+        select: {
+            style: "multi",
+            selector: "td:first-child"
+        }';
 
         if ($this->getParam('options')) {
             $js .= "," . $this->getParam('options');
@@ -137,21 +161,30 @@ class Controller extends \Engine\Widget\Controller
         $js .= '});
         
         table.columns().eq(0).each(function( colIdx ) {
-            $("input[data-col=" + colIdx + "]", $(".searchContainer")).on( "keyup change", function () {
-                table
+            $( "input[data-col=" + colIdx + "]", $(".searchContainer") ).on( "keyup change", function () {
+                if (colIdx !== 0) {table
                     .column( colIdx )
                     .search( this.value, true, false )
                     .draw();
+            } 
+            } );$("input[data-col=" +colIdx+ "]", $(".searchContainer")).on("click", function(e) {
+                if (colIdx !== 0) {e.stopPropagation();}
             });
-            $("input[data-col=" + colIdx + "]", $(".searchContainer")).on("click", function(e) {
-                e.stopPropagation();
-            });
+        });
+        
+        table.on("click", "th.select-checkbox", function() {
+            if ($("th.select-checkbox").hasClass("selected")) {
+                table.rows().deselect();
+                $("th.select-checkbox").removeClass("selected");
+            } else {
+                table.rows().select();
+                $("th.select-checkbox").addClass("selected");
+            }
         });
         
         $("#searchFilter").click(function(){
             $(".searchContainer").slideToggle();
-        })
-        ';
+        });';
 
         $this->assets->addInlineJs($js);
     }
@@ -161,7 +194,7 @@ class Controller extends \Engine\Widget\Controller
      */
     private function getHtml()
     {
-        $this->headHtml .= '<th data-column-id="select-all-checkboxes"><input type="checkbox" name="select-all" value="1" id="select-all"></th>';
+        $this->headHtml .= '<th></th>';
         $this->searchHtml .= '<th></th>';
         if (!empty($this->getParam('columns'))) {
             foreach ($this->getParam('columns') as $key => $column) {

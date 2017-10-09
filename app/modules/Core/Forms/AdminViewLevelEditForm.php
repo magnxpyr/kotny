@@ -8,6 +8,7 @@
 
 namespace Module\Core\Forms;
 
+use Module\Core\Models\Role;
 use Phalcon\Forms\Element\Check;
 use Phalcon\Forms\Element\Hidden;
 use Phalcon\Forms\Element\Text;
@@ -51,12 +52,12 @@ class AdminViewLevelEditForm extends Form
         $this->add($id);
 
         // Roles
-        foreach ($this->helper->acl->getRoles() as $role) {
-            $roles = new Check("role".$role->getName(), [
+        foreach (Role::find() as $role) {
+            $roles = new Check("role".$role->getId(), [
                 'name' => 'role[]',
-                'value' => $role->getName()
+                'value' => $role->getId()
             ]);
-            $roles->setLabel($role->getDescription());
+            $roles->setLabel($role->getName());
             $roles->setFilters('int');
             $this->add($roles);
         }

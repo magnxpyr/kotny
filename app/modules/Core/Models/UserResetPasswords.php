@@ -154,7 +154,7 @@ class UserResetPasswords extends Model
      */
     public function beforeValidation()
     {
-        $this->rawToken = $this->getDI()->getShared('security')->generateToken();
+        $this->rawToken = $this->getDI()->getShared('tokenManager')->generateToken();
         $this->setExpires(time() + 24 * 60);
         $this->setToken(hash('sha256', $this->rawToken));
     }

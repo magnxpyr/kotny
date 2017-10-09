@@ -212,6 +212,9 @@ abstract class Controller extends \Phalcon\Mvc\Controller
     {
         if ($this->getRenderView()) {
             $this->viewWidget = $this->di->get('viewWidget');
+            if ($this->getParam('title')) {
+                $this->viewWidget->setVar('widget', $this->getParam('widget'));
+            }
         }
     }
 }

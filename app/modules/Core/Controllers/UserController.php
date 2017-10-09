@@ -119,8 +119,8 @@ class UserController extends Controller
     public function logoutAction()
     {
         $this->view->disable();
-        $this->auth->remove();
         $this->flashSession->success($this->t->_('You have been logged out successfully'));
+        return $this->auth->remove();
     }
 
     /**
@@ -128,8 +128,9 @@ class UserController extends Controller
      */
     public function confirmEmailAction()
     {
+        $this->setTitle('Request email confirmation', true);
         $form = new ConfirmEmailForm();
-        $this->view->form = $form;
+        $this->view->setVar('form', $form);
 
         // If Post, user exist and not active, generate a new token
         if ($this->request->isPost()) {
@@ -171,14 +172,12 @@ class UserController extends Controller
         // if no code on url, we show the form
         $code = $this->request->get('code', 'alphanum');
         if(!$code) {
-            $this->setTitle('Request email confirmation');
             $this->flash->error($error);
             return;
         }
 
         $confirmation = UserEmailConfirmations::findFirstByToken(hash('sha256', $code));
         if (!$confirmation) {
-            $this->setTitle('Email confirmation failed');
             $this->flash->error($error);
             return;
         }
@@ -186,7 +185,6 @@ class UserController extends Controller
         // if token expired, error
         if($confirmation->getExpires() < time()) {
             $confirmation->delete();
-            $this->setTitle('Email confirmation failed');
             $this->flash->error($error);
             return;
         }
@@ -196,7 +194,6 @@ class UserController extends Controller
 
         if (!$confirmation->user->save()) {
             $this->flashErrors($confirmation->user);
-            $this->setTitle('Email confirmation failed');
             $this->view->status = 0;
             return;
         }

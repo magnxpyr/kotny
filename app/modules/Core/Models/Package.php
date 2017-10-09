@@ -9,12 +9,13 @@
 namespace Module\Core\Models;
 
 use Engine\Mvc\Model;
+use Engine\Package\PackageType;
 
 /**
  * Class Module
  * @package Module\Core\Models
  */
-class Module extends Model
+class Package extends Model
 {
     /**
      * @var integer
@@ -25,6 +26,11 @@ class Module extends Model
      * @var string
      */
     private $name;
+
+    /**
+     * @var PackageType|string
+     */
+    private $type;
 
     /**
      * @var string
@@ -73,6 +79,19 @@ class Module extends Model
     public function setName($name)
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * Method to set the value of field type
+     *
+     * @param PackageType|string $type
+     * @return $this
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
 
         return $this;
     }
@@ -163,6 +182,16 @@ class Module extends Model
     }
 
     /**
+     * Returns the value of field name
+     *
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
      * Returns the value of field description
      *
      * @return string
@@ -217,18 +246,19 @@ class Module extends Model
      */
     public function initialize()
     {
-        $this->setSource('module');
+        $this->setSource('package');
         $this->hasMany('id', 'Module\Core\Models\Migration', 'package_id', ['alias' => 'migration', 'reusable' => true]);
+        $this->hasMany('id', 'Module\Core\Models\Widget', 'package_id', ['alias' => 'widget', 'reusable' => true]);
     }
 
     public function getSource()
     {
-        return 'module';
+        return 'package';
     }
 
     public static function getCacheActiveModules()
     {
-        return md5("model_user.active_modules");
+        return md5("model_package.active_module");
     }
 
     /**
@@ -238,8 +268,8 @@ class Module extends Model
     public static function getActiveModules()
     {
         return self::find([
-            'conditions' => 'status = ?1',
-            'bind' => [1 => 1],
+            'conditions' => 'status = ?1 and type = ?2',
+            'bind' => [1 => 1, 2 => PackageType::MODULE],
             'columns' => ['name'],
             'cache' => [
                 'key' => self::getCacheActiveModules(),
@@ -248,4 +278,61 @@ class Module extends Model
         ]);
     }
 
+    public static function getCacheActivePackages()
+    {
+        return md5("model_package.active_package");
+    }
+
+    /**
+     * Get active widgets
+     * @return \Phalcon\Mvc\Model
+     */
+    public static function getActivePackages()
+    {
+        return self::find([
+            'conditions' => 'status = ?1',
+            'bind' => [1 => 1],
+            'columns' => ['name'],
+            'cache' => [
+                'key' => self::getCacheActivePackages(),
+                'lifetime' => 3600
+            ]
+        ]);
+    }
+
+    public static function getCacheActiveWidgets()
+    {
+        return md5("model_package.active_widget");
+    }
+
+    /**
+     * Get active widgets
+     * @return \Phalcon\Mvc\Model
+     */
+    public static function getActiveWidgets()
+    {
+        return self::find([
+            'conditions' => 'status = ?1 and type = ?2',
+            'bind' => [1 => 1, 2 => PackageType::WIDGET],
+            'columns' => ['name'],
+            'cache' => [
+                'key' => self::getCacheActiveWidgets(),
+                'lifetime' => 3600
+            ]
+        ]);
+    }
+
+    /**
+     * @param $name
+     * @return bool
+     */
+    public static function isActiveWidget($name)
+    {
+        foreach (self::getActiveWidgets() as $widget) {
+            if ($widget->name == $name) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

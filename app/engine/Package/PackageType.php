@@ -1,13 +1,15 @@
 <?php
 /**
- * Created by IntelliJ IDEA.
- * User: gatz
- * Date: 29.04.2017
- * Time: 23:41
+ * @copyright   2006 - 2017 Magnxpyr Network
+ * @license     New BSD License; see LICENSE
+ * @link        http://www.magnxpyr.com
+ * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
 namespace Engine\Package;
 
+
+use ReflectionClass;
 
 class PackageType
 {
@@ -18,23 +20,29 @@ class PackageType
         MODULE = 'module',
 
         /**
-         * Plugin package.
-         */
-        PLUGIN = 'plugin',
-
-        /**
-         * Theme package.
-         */
-        THEME = 'theme',
-
-        /**
          * Widget package.
          */
-        WIDGET = 'widget',
+        WIDGET = 'widget';
 
-        /**
-         * Library package.
-         */
-        LIBRARY = 'library';
+//        /**
+//         * Plugin package.
+//         */
+//        PLUGIN = 'plugin',
+//
+//        /**
+//         * Theme package.
+//         */
+//        THEME = 'theme',
+//
+//        /**
+//         * Library package.
+//         */
+//        LIBRARY = 'library';
+
+    public static function getConstants()
+    {
+        $reflectionClass = new ReflectionClass(__CLASS__);
+        return $reflectionClass->getConstants();
+    }
 
 }

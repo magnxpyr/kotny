@@ -56,12 +56,7 @@ $(function ($) {
             var data = $("ol.sortable#root_" + root).nestedSortable("toArray", {startDepthCount: 0});
             if (data) {
                 $.post(url, {root: root, data: data}, function (response) {
-                    if (response.success == true) {
-                        console.log("save successfully");
-                        //   noty({layout:'center',type:'success',text:'Root "'+root+'" saved',timeout:2000});
-                    } else {
-                        console.log("save failed");
-                    }
+                    handleResponse(response)
                 }, "json");
             }
         });
@@ -69,11 +64,15 @@ $(function ($) {
 
     $(".box-body").on("click", '.ajaxDelete', function(e) {
         e.preventDefault();
+        var data;
 
         var t = this;
         var parent = $(t).data("parent-id");
         var url = $(t).data("url");
-        var data = $(t).data("data");
+        if (typeof table !== 'undefined') {
+            data = table.row($(t).closest(parent)).data();
+        }
+
         if (confirm('Do you really want to delete this item?')) {
             $.post(url, data, function(response) {
                 if(response.success) {
@@ -85,6 +84,9 @@ $(function ($) {
             });
         }
     });
+
+    $.fn.datetimepicker.defaults.format ='DD-MM-YYYY hh:mm';
+    $.fn.datetimepicker.defaults.showTodayButton = true;
 });
 
 function handleResponse(response) {
@@ -110,4 +112,6 @@ function ajaxFailure(response) {
     }
     $("#flash-area").html("<div class=\"alert alert-danger alert-dismissible\">" + message + "</div>")
 }
+
+
 

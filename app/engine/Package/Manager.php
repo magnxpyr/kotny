@@ -8,10 +8,9 @@
 
 namespace Engine\Package;
 
-use Engine\Behavior\DiBehavior;
+use Engine\Di\Injectable;
 use Engine\Mvc\Exception;
-use Engine\Plugins\AclHandler;
-use Module\Core\Models\Module;
+use Module\Core\Models\Package;
 use Module\Core\Models\Migration as MigrationModel;
 use Module\Core\Models\User;
 use Module\Core\Models\Widget;
@@ -22,10 +21,8 @@ use Phalcon\Db\Column;
  * Class Manager
  * @package Engine\Package
  */
-class Manager
+class Manager extends Injectable
 {
-    use DiBehavior;
-
     const MIGRATION_FILE_NAME_PATTERN = '/^\d+_([\w_]+).php$/i';
 
     public function __construct()
@@ -83,18 +80,47 @@ class Manager
 
     /**
      * Remove package based on type and package id
-     * @param $packageType PackageType|int
      * @param $packageId int
+     * @throws Exception
      */
-    public function removePackage($packageType, $packageId)
+    public function removePackage($packageId)
     {
-        switch ($packageType) {
+        $package = Package::findFirstById($packageId);
+        if (!$package) {
+            throw new Exception("Package not found");
+        }
+        switch ($package->getType()) {
             case PackageType::MODULE:
-                $this->removeModule($packageId);
+                $this->removeModule($package);
                 break;
             case PackageType::WIDGET:
-                $this->removeWidget($packageId);
+                $this->removeWidget($package);
                 break;
+        }
+    }
+
+    /**
+     * Remove package from disk
+     * @param $packageName string
+     * @param $packageType PackageType|string
+     * @throws Exception
+     */
+    public function removePackageFromDisk($packageName, $packageType)
+    {
+        $deleted = false;
+        $dir = null;
+        switch ($packageType) {
+            case PackageType::MODULE:
+                $dir = MODULES_PATH . $packageName;
+                $deleted = $this->helper->removeDir($dir);
+                break;
+            case PackageType::WIDGET:
+                $dir = WIDGETS_PATH . $packageName;
+                $deleted = $this->helper->removeDir($dir);
+                break;
+        }
+        if (!$deleted) {
+            throw new Exception("Unable to delete directory $dir");
         }
     }
 
@@ -160,8 +186,9 @@ class Manager
 
         $config = $this->getModuleConfig($moduleName);
 
-        $model = new Module();
+        $model = new Package();
         $model->setName($moduleName);
+        $model->setType(PackageType::MODULE);
         $model->setVersion($config->version);
         $model->setAuthor($config->author);
         $model->setWebsite($config->website);
@@ -188,26 +215,20 @@ class Manager
         }
 
         $this->cache->delete($this->acl->getCacheKey());
+        $this->cache->delete(Package::getCacheActiveModules());
         $this->logger->debug("Module $moduleName installed successfully");
     }
 
     /**
      * Uninstall a module
-     * @param int $moduleId
+     * @param $package Package
+     * @throws Exception
      */
-    public function removeModule($moduleId)
+    public function removeModule($package)
     {
-        $this->logger->debug("Removing module with id: $moduleId");
-        /**
-         * @var $model Module
-         */
-        $model = Module::findFirstById($moduleId);
-        if (!$model) {
-            $this->logger->debug("Module with id: $moduleId not found");
-            return;
-        }
+        $this->logger->debug("Removing module with id: " . $package->getId());
 
-        $controllersPath = MODULES_PATH . $model->getName() . "/Controllers";
+        $controllersPath = MODULES_PATH . $package->getName() . "/Controllers";
 
         $files = scandir($controllersPath);
         foreach ($files as $file) {
@@ -222,12 +243,13 @@ class Manager
             $this->acl->adapter->dropResourceAccess($resourceName);
         }
 
-        $this->migrate(Migration::DOWN, PackageType::MODULE, $model->getName(), $model->getId());
-        $model->delete();
-        $this->cache->delete(Module::getCacheActiveModules());
+        $this->migrate(Migration::DOWN, PackageType::MODULE, $package->getName(), $package->getId());
+        $package->delete();
+        $this->cache->delete(Package::getCacheActiveModules());
         $this->cache->delete($this->acl->getCacheKey());
-        $this->helper->removeDir(MODULES_PATH . $model->getName());
-        $this->logger->debug("Module " . $model->getName() . " with id $moduleId removed successfully");
+        $this->removePackageFromDisk($package->getName(), PackageType::MODULE);
+        $this->helper->removeDir(MODULES_PATH . $package->getName());
+        $this->logger->debug("Module " . $package->getName() . " with id " . $package->getId() . " removed successfully");
     }
 
     /**
@@ -253,8 +275,9 @@ class Manager
         $this->logger->debug("Installing widget $widgetName");
         $config = $this->getWidgetConfig($widgetName);
 
-        $model = new Widget();
+        $model = new Package();
         $model->setName($widgetName);
+        $model->setType(PackageType::WIDGET);
         $model->setVersion($config->version);
         $model->setAuthor($config->author);
         $model->setWebsite($config->website);
@@ -280,31 +303,30 @@ class Manager
         }
 
         $this->cache->delete($this->acl->getCacheKey());
+        $this->cache->delete(Package::getCacheActiveWidgets());
         $this->logger->debug("Widget $widgetName installed successfully");
     }
 
     /**
-     * @param $widgetId
+     * @param $package Package
      * @throws Exception
      */
-    public function removeWidget($widgetId)
+    public function removeWidget($package)
     {
-        $this->logger->debug("Removing module with id: $widgetId");
-        /**
-         * @var $model Widget
-         */
-        $model = Widget::findFirstById($widgetId);
-        if (!$model) {
-            throw new Exception("Widget with id: $widgetId not found");
+        $this->logger->debug("Removing widget with id: " . $package->getId());
+
+        $widgets = Widget::findFirstByPackageId($package->getId());
+        if ($widgets) {
+            throw new Exception("Package is assigned to widgets");
         }
 
-        $this->migrate(Migration::DOWN, PackageType::WIDGET, $model->getName(), $model->getId());
+        $this->migrate(Migration::DOWN, PackageType::WIDGET, $package->getName(), $package->getId());
 
-        $model->delete();
-        $this->cache->delete(Widget::getCacheActiveWidgets());
+        $package->delete();
+        $this->cache->delete(Package::getCacheActiveWidgets());
         $this->cache->delete($this->acl->getCacheKey());
-        $this->helper->removeDir(WIDGETS_PATH . $model->getName());
-        $this->logger->debug("Widget " . $model->getName() . " with id $widgetId removed successfully");
+        $this->removePackageFromDisk($package->getName(), PackageType::WIDGET);
+        $this->logger->debug("Widget " . $package->getName() . " with id " . $package->getId() . " removed successfully");
     }
 
     /**

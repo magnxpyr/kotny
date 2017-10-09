@@ -18,11 +18,15 @@ namespace Engine;
  * @property \Engine\Acl\BaseMemory $acl
  * @property \Engine\Package\Manager $packageManager
  * @property \Engine\Widget\Widget $widget
+ * @property \Engine\Mvc\View\Section $section
+ * @property \Phalcon\Mvc\View $viewWidget
+ * @property \Phalcon\Mvc\View\Simple $viewSimple
  * @property \Phalcon\Mailer\Manager $mail
  * @property \Phalcon\Config $config
  * @property \Phalcon\Logger\Adapter $logger
  * @property \Phalcon\Cache\Backend $cache
  * @property \Phalcon\Translate\Adapter\NativeArray $t
+ * @property \Phalcon\Mvc\Model\Manager $modelsManager
  */
 trait Meta
 {

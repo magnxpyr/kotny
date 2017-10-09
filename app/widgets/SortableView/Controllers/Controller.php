@@ -6,11 +6,11 @@
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
-namespace Widget\SortableView;
+namespace Widget\SortableView\Controllers;
 
 /**
  * Class Controller
- * @package Widget\GridView
+ * @package Widget\GridView\Controllers
  */
 class Controller extends \Engine\Widget\Controller
 {

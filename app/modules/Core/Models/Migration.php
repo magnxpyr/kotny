@@ -169,8 +169,7 @@ class Migration extends Model
     public function initialize()
     {
         $this->setSource('migration');
-        $this->hasOne('package_id', 'Module\Core\Models\Module', 'id', ['alias' => 'module', 'reusable' => true]);
-        $this->hasOne('package_id', 'Module\Core\Models\Widget', 'id', ['alias' => 'widget', 'reusable' => true]);
+        $this->hasOne('package_id', 'Module\Core\Models\Package', 'id', ['alias' => 'package', 'reusable' => true]);
     }
 
     public function getSource()

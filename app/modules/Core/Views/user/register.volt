@@ -20,19 +20,20 @@
                     <span class="glyphicon glyphicon-lock form-control-feedback"></span>
                 </div>
 
-                <div class="form-group has-feedback">
-                    {{ form.render('repeatPassword') }}
-                    <span class="glyphicon glyphicon-log-in form-control-feedback"></span>
+            <div class="form-group has-feedback">
+                {{ form.render('repeatPassword') }}
+                <span class="glyphicon glyphicon-log-in form-control-feedback"></span>
+            </div>
+            {{ form.render('csrf') }}
+            <div class="row">
+                <div class="col-xs-8">
+                    By signing up you accept the terms and privacy policy.
                 </div>
-                <div class="row">
-                    <div class="col-xs-8">
-                        By signing up you accept the terms and privacy policy.
-                    </div>
-                    <div class="col-xs-4">
-                        {{ form.render('submit') }}
-                    </div>
+                <div class="col-xs-4">
+                    {{ form.render('submit') }}
                 </div>
-            </fieldset>
+            </div>
+        </fieldset>
 
             <div class="social-auth-links text-center">
                 <p>- OR -</p>

@@ -19,7 +19,10 @@ use Phalcon\Paginator\Adapter\QueryBuilder as PaginatorQueryBuilder;
 class ContentController extends Controller
 {
     /**
-     * Index action
+     * Show articles from a category
+     *
+     * @param $category
+     * @param $page
      */
     public function categoryAction($category, $page)
     {
@@ -33,6 +36,8 @@ class ContentController extends Controller
             ->orderBy('content.created_at DESC');
             if ($category) {
                 $builder->andWhere('category.alias = :category:', ['category' => $category]);
+            } else {
+                $category = "articles";
             }
 
         $paginator = new PaginatorQueryBuilder([
@@ -45,6 +50,13 @@ class ContentController extends Controller
         $this->view->setVar('category', $category);
     }
 
+    /**
+     * Show an article
+     *
+     * @param $catAlias string
+     * @param $articleId int
+     * @param $articleAlias string
+     */
     public function articleAction($catAlias, $articleId, $articleAlias)
     {
         $this->view->setVar('metaAuthor', '');
@@ -65,11 +77,11 @@ class ContentController extends Controller
             ->getSingleResult();
 
         // if empty show 404
-        if (!$model || $model->content->getAlias() != $articleAlias || $model->category->getAlias() != $catAlias ||
-            !$this->acl->checkViewLevel($model->viewLevel->getRoles())) {
+        if (!$model || !$this->helper->isContentPublished($model->c) || $model->content->getAlias() != $articleAlias ||
+            $model->category->getAlias() != $catAlias || !$this->acl->checkViewLevel($model->viewLevel->getRoles())) {
             $this->dispatcher->forward([
                 'controller' => 'error',
-                'action' => '404'
+                'action' => 'show404'
             ]);
             return;
         }

@@ -27,6 +27,7 @@
     {{ assets.outputCss("header-css") }}
     {{ assets.outputCss("header-css-min") }}
     {{ assets.outputInlineCss() }}
+    {{ assets.outputViewCss() }}
 </head>
 <body class="skin-purple">
 {{ content() }}
@@ -47,6 +48,6 @@
 {{ assets.outputJs("footer-js-min") }}
 {{ assets.outputJs("footer-js") }}
 {{ assets.outputInlineJs() }}
-{% block scripts %} {% endblock %}
+{{ assets.outputViewJs() }}
 </body>
 </html>

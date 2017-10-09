@@ -21,7 +21,7 @@ abstract class AdminController extends Controller
      * Initializes the controller
      * @return void
      */
-    protected function initialize()
+    public function initialize()
     {
         $this->setMetaDefaults();
         if ($this->request->isAjax()) {

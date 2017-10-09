@@ -17,6 +17,11 @@ trait AclBehavior
     use DiBehavior;
 
     /**
+     * @var \Phalcon\Acl
+     */
+    private $acl;
+
+    /**
      * Acl cache key.
      * @var string
      */

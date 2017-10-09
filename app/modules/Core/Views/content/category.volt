@@ -27,12 +27,10 @@
         </div>
         {% endfor %}
     </div>
-    {{ link_to("/" ~ category, "First") }}
-    {{ link_to("/" ~ category ~ "/" ~ model.before, "Previous") }}
-    {{ link_to("/" ~ category ~ "/" ~ model.next, "Next") }}
-    {{ link_to("/" ~ category ~ "/" ~ model.last, "Last") }}
+    {% if model.total_pages > 1 %}
+        {{ link_to("/" ~ category, "First") }}
+        {{ link_to("/" ~ category ~ "/" ~ model.before, "Previous") }}
+        {{ link_to("/" ~ category ~ "/" ~ model.next, "Next") }}
+        {{ link_to("/" ~ category ~ "/" ~ model.last, "Last") }}
+    {% endif %}
 </div>
-
-
-
-{#{{ widget.render('Content') }}#}

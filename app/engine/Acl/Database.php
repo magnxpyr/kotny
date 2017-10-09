@@ -71,9 +71,9 @@ class Database extends Adapter implements AdapterInterface
                 $roles = Role::find();
                 foreach ($roles as $role) {
                     if ($role->getParentId() > 0) {
-                        $acl->addRole($role->getId(), $role->getParentId());
+                        $acl->addRole(new AclRole($role->getId(), $role->getName()), $role->getParentId());
                     } else {
-                        $acl->addRole($role->getId());
+                        $acl->addRole(new AclRole($role->getId(), $role->getName()));
                     }
                 }
                 // Looking for all controllers inside modules and get actions.
@@ -132,7 +132,7 @@ class Database extends Adapter implements AdapterInterface
                 ->setDescription($role->getDescription())
                 ->create();
 
-            $this->db->execute(
+            $this->di->getDb()->execute(
                 'INSERT INTO access_list (role_id, resource_id, access_name, status) VALUES (?, ?, ?, ?)',
                 [$role->getName(), '*', '*', $this->_defaultAccess]
             );
@@ -380,7 +380,7 @@ class Database extends Adapter implements AdapterInterface
      * @param string $roleName
      * @param string $resourceName
      * @param string $accessName
-     *
+     * @param array $parameters
      * @return bool
      */
     public function isAllowed($roleName, $resourceName, $accessName, array $parameters = null)

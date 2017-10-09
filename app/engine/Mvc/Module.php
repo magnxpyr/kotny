@@ -17,7 +17,7 @@ use Phalcon\Text;
  * Class Module
  * @package Engine\Mvc
  */
-abstract class Module implements ModuleDefinitionInterface
+class Module implements ModuleDefinitionInterface
 {
     use Meta;
 
@@ -43,6 +43,6 @@ abstract class Module implements ModuleDefinitionInterface
 
         //Registering the view component
         $view = $di->get('view');
-        $view->setViewsDir(APP_PATH . "modules/$moduleName/Views/");
+        $view->setViewsDir("$moduleName/Views/");
     }
 }

@@ -52,7 +52,7 @@ class UserResetPasswordsMigration extends Migration
                 ),
                 'indexes' => array(
                     new Index('PRIMARY', array('id')),
-                    new Index('UNIQUE', array('token'))
+                    new Index('UNIQUE', array('token'), 'UNIQUE')
                 ),
                 'options' => array(
                     'TABLE_TYPE' => 'BASE TABLE',

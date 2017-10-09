@@ -4,6 +4,9 @@ It is the connector to the File Manager, [guillermomartinez/filemanager-ui](http
 ## Required
 - PHP >= 5.4
 
+## Wiki
+[Wiki](https://github.com/guillermomartinez/filemanager-ui/wiki)
+
 ## Installation
 ```
 composer require guillermomartinez/filemanager-php:0.1.*
@@ -28,6 +31,13 @@ $extra = array(
 	// o http://php-filemanager.rhcloud.com/filemanager/userfiles/imagen.jpg
 	"url" => "http://php-filemanager.rhcloud.com/",
 	"debug" => false,
+	"images" => [
+        	'resize'=>[
+			// width,height,IF TRUE crop in width ELSEIF NULL is auto,IF TRUE crop in height ELSEIF NULL is auto
+            		'medium' => array(340,180,true,true),
+			'large' => array(1024,768,true,true),
+        	]
+    	],
 	);
 if(isset($_POST['typeFile']) && $_POST['typeFile']=='images'){
     $extra['type_file'] = 'images';
@@ -39,7 +49,7 @@ $f->run();
 
 Install https://github.com/guillermomartinez/filemanager-ui for user interface.
 
-##Demo
+## Demo
 http://php-filemanager.rhcloud.com/
 
 ![demo2](https://cloud.githubusercontent.com/assets/5642429/8630887/aec46114-2731-11e5-9a7b-907127d77891.jpg)
