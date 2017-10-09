@@ -41,9 +41,6 @@ class AclHandler extends Plugin
 //        $acl->addResource('*', '*');
 //        $acl->allow('admin', '*', '*');
 //        die;
-
-//        $manager = new Manager();
-//        $manager->installModule('Core');
         
         
         //Check whether the "auth" variable exists in session to define the active role
