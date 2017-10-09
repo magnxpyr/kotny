@@ -188,3 +188,6 @@
 <!--Newsfeed end-->
 
 
+{% do assets.collection('footer-js').addJs("https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.2.1/owl.carousel.min.js") %}
+{% do addViewJs('index/index-scripts') %}
+

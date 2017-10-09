@@ -77,7 +77,7 @@ class ContentController extends Controller
             ->getSingleResult();
 
         // if empty show 404
-        if (!$model || !$this->helper->isContentPublished($model->c) || $model->content->getAlias() != $articleAlias ||
+        if (!$model || !$this->helper->isContentPublished($model->content) || $model->content->getAlias() != $articleAlias ||
             $model->category->getAlias() != $catAlias || !$this->acl->checkViewLevel($model->viewLevel->getRoles())) {
             $this->dispatcher->forward([
                 'controller' => 'error',

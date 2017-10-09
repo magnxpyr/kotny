@@ -34,3 +34,6 @@
         {{ link_to("/" ~ category ~ "/" ~ model.last, "Last") }}
     {% endif %}
 </div>
+
+{% do assets.collection('footer-js').addJs("//linzap.github.io/waterfall/waterfall-light.js") %}
+{% do addViewJs('content/category-scripts') %}

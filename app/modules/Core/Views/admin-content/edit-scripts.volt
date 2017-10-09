@@ -8,7 +8,7 @@
         var editor_config = {
             path_absolute : '{{ url("admin/core/file-manager/basic") }}',
             selector: "textarea",
-            skin: "light",
+            skin: "lightgray",
             theme: "modern",
             menubar: false,
             plugins: [

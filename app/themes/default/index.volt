@@ -33,11 +33,9 @@
 {{ content() }}
 
 {{ javascript_include("https://code.jquery.com/jquery-3.2.1.min.js") }}
+{#{{ javascript_include("//code.jquery.com/jquery-migrate-1.2.1.min.js") }}#}
 {{ javascript_include("assets/common/js/mg.js") }}
-{{ javascript_include("//code.jquery.com/jquery-migrate-1.2.1.min.js") }}
-{{ javascript_include("https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.2.1/owl.carousel.min.js") }}
 {{ javascript_include("https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js") }}
-{{ javascript_include("//linzap.github.io/waterfall/waterfall-light.js") }}
 {# TODO to be moved on homepage index #}
 {{ javascript_include("assets/default/js/app.js") }}
 {{ javascript_include("assets/default/js/pdw.js") }}
