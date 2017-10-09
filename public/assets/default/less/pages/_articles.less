@@ -1,0 +1,41 @@
+/*****************************************************************************************
+*
+*	name: articles.less
+*   path: pages/articles.less
+*	version: 1.0.0
+*	description: article structure
+*	author: Gina Chiirac
+*	url: http://www.magnxpyr.com
+*
+*****************************************************************************************/
+
+.main-wrapper {
+  .container;
+  img {
+    width: 100%;
+    height: auto;
+  }
+  .articles-list-wrapper {
+    .container {
+      overflow: hidden;
+      max-width: 377px;
+      float: left;
+      padding: (@grid-gutter-width/2);
+      .inner {
+        transition: 0.3s all ease-in-out;
+        box-shadow: 0 0 20px -1px rgba(217,217,217,1);
+        &:hover {
+          box-shadow: 0 1px 1px 1px rgba(217,217,217,0.6);
+        }
+        .article-info {
+          font-size: @font-size-small;
+          padding: (@grid-gutter-width/2);
+          .meta {
+            font-size: 13px;
+            padding-bottom: (@grid-gutter-width/2);
+          }
+        }
+      }
+    }
+  }
+}

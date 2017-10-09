@@ -1,0 +1,59 @@
+/*****************************************************************************************
+*
+*	name: _carousel.less
+*	path: components/_carousel.less
+*	description: Home carousel styling
+*	author: Gina Chiriac
+*	e-mail: ginabuna@gmail.com
+*
+*****************************************************************************************/
+
+
+
+.carousel-wrapper {
+  .img {
+    .background-style;
+    width: 100%
+  }
+  #ontop-carousel {
+    .img {
+      background-position: center;
+      background-size: cover;
+      height: 400px;
+      @media(max-width: @screen-xs) {
+        height: 100vh;
+      }
+    }
+    .jumbotron {
+      .robotoThin;
+      pointer-events: none;
+      text-align: center;
+      color: @brand-light;
+      background-color: transparent;
+      position: absolute;
+      width: 100%;
+      top: 30%;
+      z-index: 2;
+      p {
+        @media(max-width: @screen-sm) {
+          font-size: @font-size-medium;
+        }
+      }
+    }
+  }
+  .owl-dots {
+    position: relative;
+    margin-top: -(@grid-gutter-width) !important;
+    margin-bottom: 6px;
+    z-index: 5;
+    .owl-dot {
+      &.active,
+      &:hover {
+        span {
+          .lh-box-shadow(0px 0px 0px 3px rgba(255, 255, 255,0.1));
+          background-color: @brand-primary;
+        }
+      }
+    }
+  }
+}

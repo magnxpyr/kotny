@@ -1,0 +1,50 @@
+/*****************************************************************************************
+*
+*	name: _branding.less
+*	path: config/_branding.less
+*	description: include branding definitions (styles, colors, font sizes)
+*	author: Gina Chiriac
+*	e-mail: ginabuna@gmail.com
+*
+*****************************************************************************************/
+
+//@brand-primary:                                                                   #0b51c1;
+@brand-primary:                                                                   #2d5986;
+@brand-secondary:                                                                 #00b386;
+@brand-dark-green:                                                                #008060;
+@brand-dark:                                                                      #000000;
+@brand-gray:                                                                      #8c8c8c;
+@light-gray:                                                                      #f2f2f2;
+@brand-light:                                                                     #ffffff;
+@primary-text-color:                                                                      #8d8d8d;
+//@nav-color:                                                       rgba(66, 134, 244, 0.8);
+@nav-color:                                                           rgba(45, 89, 134, 0.8);
+
+
+
+@font-size-title:                                                                    23px;
+@font-size-subtitle:                                                                 18px;
+
+.primary-bg {
+  background-color: @brand-primary;
+  background-color: @nav-color;
+}
+
+.title {
+  .robotoBold;
+  text-transform: capitalize;
+  text-align: center;
+  display: block;
+  margin: (@grid-gutter-width/2.5) 0;
+}
+
+
+.box-shadow {
+  .lh-box-shadow(0px 0px 0px 10px rgba(255, 255, 255,0.4));
+}
+
+.background-style {
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}

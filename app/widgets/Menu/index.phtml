@@ -5,7 +5,7 @@
 $this->getContent();
 $level = 1;
 
-echo '<ul class="nav navbar-nav pull-right">';
+echo '<ul class="nav navbar-nav navbar-right">';
 $isActive = false;
 $uri = trim($this->router->getRewriteUri(), "/ ");
 foreach ($menuElements as $k => $elements) {

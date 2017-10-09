@@ -1,0 +1,37 @@
+/*****************************************************************************************
+*
+*	name: _footer.less
+*	path: base/_footer.less
+*	description: footer structure
+*	author: Gina Chiriac
+*	e-mail: ginabuna@gmail.com
+*
+*****************************************************************************************/
+
+.main-footer {
+  background-color: @light-gray;
+  border-top: 1px solid @light-gray;
+  display: block;
+  padding: (@grid-gutter-width/3) 0;
+  &.stickyFooter {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+  }
+  .left-box {
+    font-size: @font-size-xsmall;
+    float: left;
+    padding-top: 8px;
+    @media (max-width: @screen-xs) {
+      width: 100%;
+      text-align: center;
+    }
+  }
+  .right-box {
+    float: right;
+    @media (max-width: @screen-xs) {
+      width: 100%;
+      text-align: center;
+    }
+  }
+}

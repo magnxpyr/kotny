@@ -1,0 +1,51 @@
+/*****************************************************************************************
+*
+*	name: _header.less
+*	path: base/_header.less
+*	description: header structure
+*	author: Gina Chiriac
+*	e-mail: ginabuna@gmail.com
+*
+*****************************************************************************************/
+
+.topbar {
+  .robotoLight;
+  .primary-bg;
+  .lh-border-radius(0);
+  color: @brand-light;
+  border: 0;
+  width: 100%;
+  top: 0;
+  position: fixed;
+  z-index: 999;
+  li {
+    &.active {
+      background-color: @brand-primary;
+    }
+    a {
+      font-size: @font-size-base;
+      color: @brand-light;
+      &:hover,
+      &:active,
+      &:focus {
+        background-color: @brand-primary !important;
+      }
+    }
+  }
+  .navbar-brand {
+    font-size: @font-size-title;
+    color: @brand-light;
+    padding-right: 0;
+    padding-left: 0;
+    @media(max-width: (@screen-sm - 1)) {
+      padding-left: (@grid-gutter-width/2);
+    }
+  }
+  .navbar-toggle {
+    .lh-border-radius(0);
+    border: 2px solid @brand-light;
+    .icon-bar {
+      background-color: @brand-light;
+    }
+  }
+}

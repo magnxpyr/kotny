@@ -1,0 +1,12 @@
+{
+  "name": "dependencies",
+  "description": "",
+  "main": "Gruntfile.js",
+  "authors": [
+    "Gina Chiriac"
+  ],
+  "devDependencies": {
+    "font-awesome": "fontawesome#^4.7.0",
+    "bootstrap": "^3.3.7"
+  }
+}
