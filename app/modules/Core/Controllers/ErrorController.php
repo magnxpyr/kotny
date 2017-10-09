@@ -20,7 +20,8 @@ class ErrorController extends Controller
     public function initialize()
     {
         parent::initialize();
-        $this->view->setViewsDir(APP_PATH . 'themes/'.DEFAULT_THEME.'/views/');
+        $this->view->setBasePath(null);
+        $this->view->setViewsDir(THEMES_PATH . DEFAULT_THEME . '/views/');
     }
 
     /**
@@ -48,5 +49,16 @@ class ErrorController extends Controller
     public function show503Action()
     {
         $this->response->setStatusCode(503, 'Service unavailable');
+
+        if ($this->request->isAjax()) {
+            $obj = new \stdClass();
+            $obj->success = false;
+            $obj->html = "Service unavailable";
+
+            $this->view->disable();
+            $this->response->setJsonContent($obj);
+            $this->response->send();
+            return false;
+        }
     }
 }
