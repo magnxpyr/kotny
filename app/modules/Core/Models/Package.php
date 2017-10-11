@@ -247,8 +247,8 @@ class Package extends Model
     public function initialize()
     {
         $this->setSource('package');
-        $this->hasMany('id', 'Module\Core\Models\Migration', 'package_id', ['alias' => 'migration', 'reusable' => true]);
-        $this->hasMany('id', 'Module\Core\Models\Widget', 'package_id', ['alias' => 'widget', 'reusable' => true]);
+        $this->hasMany('id', Migration::class, 'package_id', ['alias' => 'migration', 'reusable' => true]);
+        $this->hasMany('id', Widget::class, 'package_id', ['alias' => 'widget', 'reusable' => true]);
     }
 
     public function getSource()

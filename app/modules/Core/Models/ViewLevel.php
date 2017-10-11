@@ -97,7 +97,7 @@ class ViewLevel extends Model
      */
     public function getRoles()
     {
-        return json_decode($this->roles);
+        return $this->roles;
     }
 
     /**
@@ -111,5 +111,10 @@ class ViewLevel extends Model
     public function getSource()
     {
         return 'view_level';
+    }
+
+    public function getRolesArray()
+    {
+        return json_decode($this->roles);
     }
 }

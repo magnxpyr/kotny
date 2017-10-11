@@ -492,6 +492,7 @@ class Content extends Model
     public function initialize()
     {
         $this->setSource('content');
+        $this->hasOne('category_id', Category::class, 'id', ['alias' => 'category', 'reusable' => true]);
         $this->belongsTo('created_by', 'Module\Core\Models\User', 'id', ['alias' => 'user', 'reusable' => true]);
         $this->belongsTo('modified_by', 'Module\Core\Models\User', 'id', ['alias' => 'user', 'reusable' => true]);
     }
@@ -525,5 +526,9 @@ class Content extends Model
     {
         $this->setModifiedAt(time());
         $this->setModifiedBy($this->getDI()->getShared('auth')->getUserId());
+    }
+
+    public function getMetadataArray() {
+        return json_decode($this->metadata);
     }
 }

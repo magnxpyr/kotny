@@ -48,10 +48,8 @@ class CategoryMigration extends Migration
                         )
                     ),
                     new Column('metadata', array(
-                            'type' => Column::TYPE_VARCHAR,
-                            'notNull' => true,
-                            'size' => 2048,
-                            'after' => 'description'
+                            'type' => Column::TYPE_TEXT,
+                            'after' => 'fulltext'
                         )
                     ),
                     new Column('hits', array(

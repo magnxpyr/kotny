@@ -472,6 +472,8 @@ class Category extends Model
     {
         $this->setSource('category');
         $this->hasOne('view_level', 'Module\Core\Models\ViewLevel', 'id', ['alias' => 'viewLevel', 'reusable' => true]);
+        $this->hasMany('id', Content::class, 'category', ['alias' => 'content', 'reusable' => true]);
+
     }
 
     public function getSource()
@@ -499,5 +501,9 @@ class Category extends Model
                 ->setModifiedAt(time())
                 ->setModifiedBy($this->getDI()->get("auth")->getUserId());
         }
+    }
+
+    public function getMetadataArray() {
+        return json_decode($this->metadata);
     }
 }

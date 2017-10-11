@@ -8,8 +8,10 @@
 
 namespace Module\Core\Controllers;
 
+use Module\Core\Models\Category;
 use Module\Core\Models\Content;
 use Engine\Mvc\Controller;
+use Module\Core\Models\User;
 use Phalcon\Paginator\Adapter\QueryBuilder as PaginatorQueryBuilder;
 
 /**
@@ -24,21 +26,19 @@ class ContentController extends Controller
      * @param $category
      * @param $page
      */
-    public function categoryAction($category, $page)
+    public function categoryAction($category = "articles", $page)
     {
         $builder = $this->modelsManager->createBuilder()
-            ->columns('c.*, cat.*, u.*')
-            ->addFrom('Module\Core\Models\Content', 'c')
-            ->addFrom('Module\Core\Models\Category', 'cat')
-            ->addFrom('Module\Core\Models\User', 'u')
-            ->andWhere('c.category = cat.id')
-            ->andWhere('c.created_by = u.id')
-            ->orderBy('c.created_at DESC');
-            if ($category) {
-                $builder->andWhere('cat.alias = :category:', ['category' => $category]);
+            ->columns('u.*, c.*, cat.*')
+            ->addFrom(Content::class, 'c')
+            ->leftJoin(User::class, 'c.created_by = u.id', 'u');
+            if ($category == "articles") {
+                $builder->leftJoin(Category::class, 'cat.id = c.category', 'cat');
             } else {
-                $category = "articles";
+                $builder->innerJoin(Category::class, 'c.category = cat.id', 'cat')
+                    ->andWhere('cat.alias = :category:', ['category' => $category]);
             }
+        $builder->orderBy('c.created_at DESC');
 
         $paginator = new PaginatorQueryBuilder([
             "builder"  => $builder,
@@ -78,7 +78,7 @@ class ContentController extends Controller
 
         // if empty show 404
         if (!$model || !$this->helper->isContentPublished($model->c) || $model->c->getAlias() != $articleAlias ||
-            $model->cat->getAlias() != $catAlias || !$this->acl->checkViewLevel($model->viewLevel->getRoles())) {
+            $model->cat->getAlias() != $catAlias || !$this->acl->checkViewLevel($model->viewLevel->getRolesArray())) {
             $this->dispatcher->forward([
                 'controller' => 'error',
                 'action' => 'show404'
@@ -91,8 +91,17 @@ class ContentController extends Controller
         if (!empty($model->u->name)) {
             $this->view->setVar('metaAuthor', $model->u->name);
         }
-        if (!empty($model->c->meta)) {
-            $this->view->setVar('metaKeywords', $model->c->meta);
+
+        $meta = $model->c->getMetadataArray();
+        if (!empty($meta)) {
+            foreach ($meta as $key => $val) {
+                if (!empty($val)) {
+                    $this->view->setVar($key, $val);
+                }
+            }
+            if (!isset($meta->metaTitle) || empty($meta->metaTitle)) {
+                $this->view->setVar('metaTitle', $model->c->title);
+            }
         }
 
         /**

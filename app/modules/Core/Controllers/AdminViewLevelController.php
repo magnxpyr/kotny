@@ -76,8 +76,9 @@ class AdminViewLevelController extends AdminController
 
             $this->tag->setDefault("id", $model->getId());
             $this->tag->setDefault("name", $model->getName());
-            if (!empty($model->getRoles())) {
-                foreach ($model->getRoles() as $role) {
+            $roles = $model->getRolesArray();
+            if (!empty($roles)) {
+                foreach ($roles as $role) {
                     $this->tag->setDefault("role$role", $role);
                 }
             }

@@ -96,7 +96,7 @@ abstract class AdminController extends Controller
         $level = 1;
 
         foreach ($menuElements as $elements) {
-            if (!$this->acl->checkViewLevel($elements->viewLevel->getRoles())) continue;
+            if (!$this->acl->checkViewLevel($elements->viewLevel->getRolesArray())) continue;
 
             $active = "";
             if (!$isActive) {

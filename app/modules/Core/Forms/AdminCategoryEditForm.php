@@ -84,14 +84,6 @@ class AdminCategoryEditForm extends Form
         );
         $this->add($role);
 
-        // Metadata
-        $metadata = new Text('metadata', [
-            'class' => 'form-control'
-        ]);
-        $metadata->setLabel($this->t->_('Metadata'));
-        $metadata->setFilters('string');
-        $this->add($metadata);
-
         // Description
         $description = new TextArea('description', [
             'rows' => 5,
@@ -101,5 +93,58 @@ class AdminCategoryEditForm extends Form
         $description->setLabel($this->t->_('Description'));
         $description->setFilters('string');
         $this->add($description);
+
+        // ---- SEO ----
+        // Meta Title
+        $metaTitle = new Text('metaTitle', [
+            'class' => 'form-control'
+        ]);
+        $metaTitle->setLabel($this->t->_('Meta Title'));
+        $metaTitle->setFilters('string');
+        $this->add($metaTitle);
+
+        // Meta Keywords
+        $metaKeyword = new Text('metaKeywords', [
+            'class' => 'form-control'
+        ]);
+        $metaKeyword->setLabel($this->t->_('Meta Keywords'));
+        $metaKeyword->setFilters('string');
+        $this->add($metaKeyword);
+
+        // Meta Description
+        $metaDescription = new Text('metaDescription', [
+            'rows' => 5,
+            'cols' => 30,
+            'class' => 'form-control'
+        ]);
+        $metaDescription->setLabel($this->t->_('Meta Description'));
+        $metaDescription->setFilters('string');
+        $this->add($metaDescription);
+    }
+
+    public function bind(array $data, $entity, $whitelist = null)
+    {
+        $meta = [];
+        foreach ($data as $key => $val) {
+            if (substr( $key, 0, 4 ) === "meta") {
+                $meta[$key] = $val;
+                unset($data[$key]);
+            }
+        }
+        $entity->setMetadata(json_encode($meta));
+        parent::bind($data, $entity, $whitelist);
+    }
+
+    public function setEntity($entity)
+    {
+        $meta = $entity->getMetadataArray();
+        if ($meta != null) {
+            foreach ($meta as $key => $val) {
+                if ($this->get($key)) {
+                    $this->get($key)->setDefault($val);
+                }
+            }
+        }
+        parent::setEntity($entity);
     }
 }
