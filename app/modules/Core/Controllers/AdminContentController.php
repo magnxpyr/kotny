@@ -81,7 +81,7 @@ class AdminContentController extends AdminController
                 ]);
                 return;
             }
-            
+            $this->view->setVar('model', $model);
             $form->setEntity($model);
         }
     }

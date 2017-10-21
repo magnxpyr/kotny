@@ -6,6 +6,7 @@
  */
 
 $(function ($) {
+    window.baseURI = $('meta[name=url]').attr("content");
     var AdminLTEOptions = {
         //Enable sidebar expand on hover effect for sidebar mini
         //This option is forced to true if both the fixed layout and sidebar mini
@@ -85,6 +86,17 @@ $(function ($) {
         }
     });
 
+    $(".box-body").on("click", '.file-manager', function(e) {
+        var inputId = $(this).data("input");
+        showBSModal({
+            title: 'Change image',
+            size: 'large',
+            modalClass: 'filemanager-modal',
+            body: '<iframe src="' + window.baseURI + 'admin/core/file-manager/basic" frameborder="0" data-input="' + inputId + '"></iframe>'
+
+        });
+    });
+
     $.fn.datetimepicker.defaults.format ='DD-MM-YYYY hh:mm';
     $.fn.datetimepicker.defaults.showTodayButton = true;
 });
@@ -113,5 +125,15 @@ function ajaxFailure(response) {
     $("#flash-area").html("<div class=\"alert alert-danger alert-dismissible\">" + message + "</div>")
 }
 
+function setData(data) {
+    var elemId = $(".filemanager-modal iframe").data("input");
+    $.each(data, function(index, val) {
+        $("#" + elemId).val(val.url);
+        $("#wrapper-"+elemId+"-preview img").attr("src", val.url);
+    });
+}
 
+function closeModal() {
+    $('.filemanager-modal').remove();
+}
 

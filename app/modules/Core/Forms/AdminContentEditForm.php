@@ -58,6 +58,19 @@ class AdminContentEditForm extends Form
         $alias->setFilters('string');
         $this->add($alias);
 
+        // Images
+        $title = new Text('images', [
+            'class' => 'form-control', 'readonly' => 'readonly'
+        ]);
+        $title->setLabel($this->t->_('Featured Image'));
+        $title->setFilters('string');
+        $title->addValidator(
+            new PresenceOf([
+                'message' => $this->t->_('%field% is required', ['field' => $this->t->_('Featured Image')])
+            ])
+        );
+        $this->add($title);
+
         // Intro Text
         $introText = new TextArea('introtext', [
             'class' => 'form-control'
@@ -83,7 +96,7 @@ class AdminContentEditForm extends Form
         $category->setFilters('int');
         $category->addValidator(
             new PresenceOf([
-                'view_level' => $this->t->_('%field% is required', ['field' => $this->t->_('Category')])
+                'message' => $this->t->_('%field% is required', ['field' => $this->t->_('Category')])
             ])
         );
         $this->add($category);
@@ -103,7 +116,7 @@ class AdminContentEditForm extends Form
         $status->setFilters('int');
         $status->addValidator(
             new PresenceOf([
-                'status' => $this->t->_('%field% is required', ['field' => $this->t->_('Status')])
+                'message' => $this->t->_('%field% is required', ['field' => $this->t->_('Status')])
             ])
         );
         $this->add($status);
@@ -117,7 +130,7 @@ class AdminContentEditForm extends Form
         $role->setFilters('int');
         $role->addValidator(
             new PresenceOf([
-                'view_level' => $this->t->_('%field% is required', ['field' => $this->t->_('View Level')])
+                'message' => $this->t->_('%field% is required', ['field' => $this->t->_('View Level')])
             ])
         );
         $this->add($role);
@@ -130,7 +143,7 @@ class AdminContentEditForm extends Form
         $publishUp->setAttribute('timestamp', true);
         $publishUp->addValidator(
             new PresenceOf([
-                'title' => $this->t->_('%field% is required', ['field' => $this->t->_('Publish date')])
+                'message' => $this->t->_('%field% is required', ['field' => $this->t->_('Publish date')])
             ])
         );
         $this->add($publishUp);

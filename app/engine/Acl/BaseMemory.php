@@ -33,19 +33,9 @@ class BaseMemory extends AclMemory
     public function checkViewLevel($roles)
     {
         $allow = false;
-        if (in_array($this->getDI()->get('auth')->getUserRole(), $roles))
+        if (in_array($this->getDI()->get('auth')->getUserRoleId(), $roles))
             $allow = true;
 
         return $allow;
-    }
-
-    public function getRoleByKey($id) {
-        $roles = $this->getDI()->get('acl')->getRoles();
-        foreach ($roles as $key => $role) {
-            if ((int)$id == $key + 1) {
-                return $role->getName();
-            }
-        }
-        return 'guest';
     }
 }

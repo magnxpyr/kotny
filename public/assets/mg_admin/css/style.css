@@ -169,3 +169,24 @@ ul.datatable-action li {
     margin: 0 2px;
     padding: 0 2px;
 }
+
+.filemanager-modal .modal-dialog {
+    width: 98%;
+    height: 92%;
+    padding: 0;
+}
+
+.filemanager-modal .modal-content {
+    height: 90%;
+}
+
+.filemanager-modal .modal-body {
+    height: 80%;
+}
+
+iframe {
+    display: block;
+    border: none;
+    height: 100%;
+    width: 100%;
+}

@@ -48,6 +48,11 @@ class Content extends Model
     /**
      * @var string
      */
+    private $images;
+
+    /**
+     * @var string
+     */
     private $metadata;
 
     /**
@@ -487,6 +492,24 @@ class Content extends Model
     }
 
     /**
+     * @return string
+     */
+    public function getImages()
+    {
+        $baseUrl = $this->getDI()->getShared("url")->getBaseUri();
+        return $baseUrl . $this->images;
+    }
+
+    /**
+     * @param string $images
+     */
+    public function setImages($images)
+    {
+        $this->images = $images;
+    }
+
+
+    /**
      * Initialize method for model.
      */
     public function initialize()
@@ -524,6 +547,12 @@ class Content extends Model
 
     public function beforeUpdate()
     {
+
+        if ($this->getImages()) {
+            $baseUrl = $this->getDI()->getShared("url")->getBaseUri();
+            $images = $this->getDI()->getShared("helper")->replaceFirst($this->getImages(), $baseUrl, "");
+            $this->setImages($images);
+        }
         $this->setModifiedAt(time());
         $this->setModifiedBy($this->getDI()->getShared('auth')->getUserId());
     }

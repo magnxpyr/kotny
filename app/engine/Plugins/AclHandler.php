@@ -37,17 +37,8 @@ class AclHandler extends Plugin
             $this->auth->loginWithRememberMe(false);
         }
 
-//        $acl = new Database();
-//        $acl->addResource('*', '*');
-//        $acl->allow('admin', '*', '*');
-//        die;
-        
-        
         //Check whether the "auth" variable exists in session to define the active role
         $role = $this->auth->getUserRole();
-        if ($this->config->app->aclAdapter == AclHandler::MEMORY) {
-            $role = $this->acl->getRoleByKey($role);
-        }
 
         //Take the active resources from the dispatcher
         $module = $dispatcher->getModuleName();
