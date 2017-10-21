@@ -74,13 +74,17 @@
         .lh-transform(scale(1.1));
       }
       &.active {
+        text-align: center;
         background-color: @light-gray;
         border-right: none;
         border-left: 3px solid @brand-secondary;
-
         position: relative;
         margin-right: -1px;
         z-index: 1;
+        @media(max-width: (@screen-sm - 1)) {
+          border-left: none;
+          border-bottom: 3px solid @brand-secondary;
+        }
       }
       a {
         color: @brand-dark;
@@ -97,6 +101,9 @@
       &:hover {
         .lh-transition(all 200ms ease-in);
         .lh-transform(scale(1.1));
+      }
+      .tab-title {
+        padding-bottom: (@grid-gutter-width/1.5);
       }
     }
   }

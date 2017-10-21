@@ -1,10 +1,15 @@
 
 
 $(document).ready(function(){
-    checkHTMLBodyHeight();
     initializeMenu();
+    hideAlertMesssage();
 });
 
+$(window).on('load resize', function() {
+    //make footer visible after checking html body height
+    $('.main-footer').removeClass('hidden');
+    checkHTMLBodyHeight();
+});
 
 function checkHTMLBodyHeight() {
     var HTMLBody = $('body').height();
@@ -26,4 +31,10 @@ function initializeMenu() {
         $(content).show();
         $(content).siblings('.tab-content').hide();
     });
+}
+
+function hideAlertMesssage() {
+    $('body').on('click', function() {
+        $(this).find('.alert-dismissible').fadeOut('slow');
+    })
 }

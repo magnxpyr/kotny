@@ -14,9 +14,11 @@
   display: block;
   padding: (@grid-gutter-width/3) 0;
   &.stickyFooter {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
+    @media(min-width: (@screen-sm - 1)) {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+    }
   }
   .left-box {
     font-size: @font-size-xsmall;

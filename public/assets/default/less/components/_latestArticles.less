@@ -10,31 +10,21 @@
 *****************************************************************************************/
 
 .news-wrapper {
-  .make-row();
+  .make-row;
   .news-box {
     .make-sm-column(4);
   }
 }
 
 .newsfeed-wrapper {
-  background-color: @light-gray;
-  padding-top: (@grid-gutter-width*2);
-  padding-bottom: (@grid-gutter-width*2);
   .news-box {
     position: relative;
     padding: (@grid-gutter-width/2);
     a {
+      .grid-box-shadow;
       color: @brand-dark-green;
       background-color: @brand-light;
       display: block;
-      &:hover {
-        color: @brand-light;
-        background-color: @brand-dark-green;
-        .news-image {
-          background-color: rgba(0, 128, 96, 0.5);
-          z-index: 9;
-        }
-      }
       .news-image {
         height: 200px;
         width: 100%;

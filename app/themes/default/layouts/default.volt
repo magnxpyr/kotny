@@ -8,7 +8,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#">MagnXpyr</a>
+            <a class="navbar-brand" href="/">MagnXpyr</a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
@@ -19,18 +19,13 @@
     </div>
 </div>
 
-<div class="">
-    {#{% if title %}#}
-    {#<section class="content-header">#}
-        {#{{ title }}#}
-    {#</section>#}
-    {#{% endif %}#}
-
+<div class="main">
     <div id="flash-area">
         {{ flashSession.output() }}
     </div>
+
     {{ content() }}
-    <footer class="main-footer">
+    <footer class="main-footer hidden">
         <div class="container">
             <div class="left-box">Powered by <a href="">Magnxpyr Network</a> &copy 2016</div>
             <div class="right-box social-logo">

@@ -1,6 +1,7 @@
 <script>
     $(document).ready(function(){
         carouselConfig();
+        $('#first-tab').addClass('in');
     });
 
     function carouselConfig() {

@@ -1,0 +1,40 @@
+/*****************************************************************************************
+*
+*	name: error page
+*   path: pages/_error_page.less
+*	version: 1.0.0
+*	description: error page styling
+*	author: Gina Chiirac
+*	url: http://www.magnxpyr.com
+*
+*****************************************************************************************/
+
+.error-page {
+  .make-row;
+  width: 600px;
+  margin: 5% auto (@grid-gutter-width*2);
+  @media (max-width: (@screen-sm - 1)) {
+    text-align: center;
+    width: 100%;
+  }
+  .text-green {
+    color: @brand-secondary;
+  }
+  .headline {
+    .make-sm-column(4);
+    font-size: 100px;
+    font-weight: 300;
+  }
+  .error-content {
+    .make-sm-column(8);
+    display: block;
+    h3 {
+      font-weight: 300;
+      font-size: 25px;
+      margin: (@grid-gutter-width/2) 0;
+      i {
+        padding-right: (@grid-gutter-width/3);
+      }
+    }
+  }
+}
