@@ -1,6 +1,8 @@
 <script>
     $(document).ready(function(){
         initializeArticlesGrid();
+        $('.articles-list-wrapper').find('.container').removeClass('hidden');
+
     });
 
     function initializeArticlesGrid() {
@@ -18,4 +20,5 @@
 
         articlesList.waterfall(setting);
     }
+
 </script>

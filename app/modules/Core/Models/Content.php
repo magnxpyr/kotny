@@ -548,9 +548,9 @@ class Content extends Model
     public function beforeUpdate()
     {
 
-        if ($this->getImages()) {
+        if ($this->images) {
             $baseUrl = $this->getDI()->getShared("url")->getBaseUri();
-            $images = $this->getDI()->getShared("helper")->replaceFirst($this->getImages(), $baseUrl, "");
+            $images = $this->getDI()->getShared("helper")->replaceFirst($this->images, $baseUrl, "");
             $this->setImages($images);
         }
         $this->setModifiedAt(time());

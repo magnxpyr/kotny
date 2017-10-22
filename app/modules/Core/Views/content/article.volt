@@ -1,5 +1,5 @@
 <div class="container post-container">
-    {% if (acl.isRole(3)) %}
+    {% if (auth.isEditor()) %}
      <ul class="nav nav-tabs post-admin-tab">
         <li class="active pull-right">
             <a href="{{ url("/admin/core/content/edit/" ~ model.content.id) }}">Edit</a>

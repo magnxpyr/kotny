@@ -9368,6 +9368,21 @@ ul {
 p {
   margin: 0;
 }
+.loading-spinner {
+  background-color: #ffffff;
+  position: absolute;
+  top: 0;
+  bottom: -16px;
+  left: 0;
+  right: 0;
+  z-index: 9999;
+}
+.loading-spinner i {
+  color: #00b386;
+  position: absolute;
+  left: 40%;
+  top: 50%;
+}
 /*****************************************************************************************
 *
 *	name: _header.less
@@ -9620,6 +9635,10 @@ p {
   border-radius: 0;
   box-shadow: none;
   border: 1px solid transparent;
+  padding: 5px 15px;
+}
+.btn.btn-borderless {
+  border-radius: 15px;
 }
 .btn.uppercase {
   text-transform: uppercase;
@@ -9759,6 +9778,11 @@ p {
   right: -10px;
   font-size: 10px;
   font-weight: 400;
+}
+.btn-wrapper {
+  text-align: right;
+  background-color: #f2f2f2;
+  padding: 15px;
 }
 /*
  * Component: Form
@@ -11101,6 +11125,7 @@ fieldset[disabled] .btn-yahoo.focus {
   margin-left: auto;
   padding-left: 15px;
   padding-right: 15px;
+  position: relative;
 }
 @media (min-width: 768px) {
   .main-wrapper {
@@ -11148,7 +11173,7 @@ fieldset[disabled] .btn-yahoo.focus {
 }
 .main-wrapper .articles-list-wrapper .container .inner .article-info {
   font-size: 14px;
-  padding: 15px;
+  padding: 0 15px 15px;
 }
 .main-wrapper .articles-list-wrapper .container .inner .article-info .meta {
   font-size: 13px;

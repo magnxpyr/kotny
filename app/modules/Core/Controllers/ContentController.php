@@ -35,7 +35,7 @@ class ContentController extends Controller
             if ($category == "articles") {
                 $builder->leftJoin(Category::class, 'category.id = content.category', 'category');
             } else {
-                $builder->innerJoin(Category::class, 'c.category = category.id', 'category')
+                $builder->innerJoin(Category::class, 'content.category = category.id', 'category')
                     ->andWhere('category.alias = :category:', ['category' => $category]);
             }
         $builder->orderBy('content.created_at DESC');

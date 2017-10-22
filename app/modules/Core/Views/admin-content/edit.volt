@@ -17,16 +17,15 @@
         </div>
     </div>
     <div class="box-body">
-        < formmethod='post' action="{{
-            url("admin/core/content/save")}}" id="contentForm">
+        <form method='post' action="{{url("admin/core/content/save")}}" id="contentForm">
             {{ form.render('id') }}
-                {{form.render('csrf') }}
+            {{form.render('csrf') }}
             {{ form.renderDecorated('title', ['label': ['class': 'control-label col-sm-2']]) }}
             {{ form.renderDecorated('alias', ['label': ['class': 'control-label col-sm-2']]) }}
 
             <div class="form-group">
                 {{ form.label('images', ['class': 'control-label col-sm-2']) }}
-                <div class="input-group col-lg-4"id="wrapper-images">
+                <div class="input-group col-lg-4" id="wrapper-images">
                 {{ form.render('images') }}
                     <span class="input-group-btn">
                         <button class="btn btn-default file-manager" data-input="images" type="button"><i class="fa fa-folder-open"></i></button>
@@ -39,7 +38,7 @@
 
             {{ form.renderDecorated('introtext', ['label': ['class': 'control-label col-sm-2']]) }}
             {{ form.renderDecorated('fulltext', ['label': ['class': 'control-label col-sm-2']]) }}
-        {{ form.renderDecorated('category', ['label': ['class': 'control-label col-sm-2']]) }}
+            {{ form.renderDecorated('category', ['label': ['class': 'control-label col-sm-2']]) }}
             {{ form.renderDecorated('featured', ['label': ['class': 'control-label col-sm-2']]) }}
             {{ form.renderDecorated('status', ['label': ['class': 'control-label col-sm-2']]) }}
             {{ form.renderDecorated('view_level', ['label': ['class': 'control-label col-sm-2']]) }}

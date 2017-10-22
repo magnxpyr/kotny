@@ -8,7 +8,10 @@
   border-radius: 0;
   box-shadow: none;
   border: 1px solid transparent;
-
+  padding: (@grid-gutter-width/6)  (@grid-gutter-width/2);
+  &.btn-borderless {
+    border-radius: (@grid-gutter-width/2);
+  }
   &.uppercase {
     text-transform: uppercase
   }
@@ -166,4 +169,10 @@
     font-size: 10px;
     font-weight: 400;
   }
+}
+
+.btn-wrapper {
+  text-align: right;
+  background-color: @light-gray;
+  padding: (@grid-gutter-width/2);
 }

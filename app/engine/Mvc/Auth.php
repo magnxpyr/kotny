@@ -533,7 +533,7 @@ class Auth extends Component
      */
     public function isEditor()
     {
-        if ($this->acl->isAllowed($this->getUserRole(), "module:core/content", "edit")) {
+        if ($this->acl->isAllowed($this->getUserRole(), "module:core/admin-content", "edit")) {
             return true;
         }
         return false;

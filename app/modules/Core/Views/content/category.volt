@@ -1,20 +1,27 @@
 <div class="main-wrapper">
+    {#<div class="loading-spinner">#}
+        {#<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>#}
+    {#</div>#}
     <div class="articles-list-wrapper">
         {% for item in model.items %}
-        <div class="container">
+        <div class="container hidden">
             <div class="inner">
+                {% if (auth.isEditor()) %}
+                    <div class="btn-wrapper">
+                        <a href="{{ url("/admin/core/content/edit/" ~ item.content.id) }}" class="btn btn-primary btn-borderless">Edit</a>
+                    </div>
+                {% endif %}
                 <div class="article-info">
-                    {#{{ item.category.title }}{{ item.user.name }} item.content.created_at#}
-                    {% if (acl.isRole(3)) %}
-                        <a href="{{ url("/admin/core/content/edit/" ~ item.content.id) }}" class="btn btn-primary">Edit</a>
-                    {% endif %}
+                    <div class="post-featured-images row">
+                        <img src="{{ item.content.getImages() }}"/>
+                    </div>
                     <a href="{{ url(item.category.alias ~ "/" ~ item.content.id ~ "-" ~ item.content.alias) }}">
                         <h3 class="title">
                             {{ item.content.title }}
                         </h3>
                     </a>
                     <div class="meta">
-                        <span>Posted by:</span>
+                        <span>by </span>
                         <span class="author">
                             {{ item.user.name }}
                             on
