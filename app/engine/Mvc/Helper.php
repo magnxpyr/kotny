@@ -242,4 +242,13 @@ class Helper extends Component
         }
        return null;
     }
+
+    public function replaceFirst($haystack, $needle, $replacement)
+    {
+        $pos = strpos($haystack, $needle);
+        if ($pos !== false) {
+            return substr_replace($haystack, $replacement, $pos, strlen($needle));
+        }
+        return $haystack;
+    }
 }

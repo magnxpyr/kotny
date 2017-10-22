@@ -328,7 +328,6 @@ class Menu extends Model
         $this->setSource('menu');
         $this->belongsTo('menu_type_id', 'Module\Core\Models\MenuType', 'id', ['alias' => 'menuType', 'reusable' => true]);
         $this->hasOne('view_level', 'Module\Core\Models\ViewLevel', 'id', ['alias' => 'viewLevel', 'reusable' => true]);
-    //    $this->addBehavior(new Model\Behavior\NestedSet(['rootAttribute' => 'parent_id']));
     }
 
     public function getSource()

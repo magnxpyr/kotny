@@ -50,11 +50,15 @@ class ContentMigration extends Migration
                             'after' => 'introtext'
                         )
                     ),
-                    new Column('metadata', array(
+                    new Column('images', array(
                             'type' => Column::TYPE_VARCHAR,
-                            'notNull' => true,
-                            'size' => 2048,
+                            'size' => 255,
                             'after' => 'fulltext'
+                        )
+                    ),
+                    new Column('metadata', array(
+                            'type' => Column::TYPE_TEXT,
+                            'after' => 'images'
                         )
                     ),
                     new Column('category', array(

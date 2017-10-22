@@ -53,7 +53,15 @@ class AdminFileManagerController extends AdminController
         $extra = [
             "doc_root" => PUBLIC_PATH,
             "source" => "media",
-            "url" => $this->url->getBaseUri()
+            "url" => $this->url->getBaseUri(),
+            "images" => [
+                'resize'=> [
+                    'large' => [1024,768,true,true],
+                ]
+            ],
+            // to show thumbs directory you need to set a valid directory and set show_folder_thumb on true
+            "folder_thumb" => 'thumbs',
+            "show_folder_thumb" => true
         ];
         if (isset($_POST['typeFile']) && $_POST['typeFile'] == 'images') {
             $extra['type_file'] = 'images';

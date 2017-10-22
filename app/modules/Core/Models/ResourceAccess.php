@@ -79,7 +79,7 @@ class ResourceAccess extends Model
     public function initialize()
     {
         $this->setSource('resource_access');
-        $this->belongsTo('resource_id', 'Module\Core\Models\Resource', 'id', ['alias' => 'resource', 'reusable' => true]);
+        $this->belongsTo('resource_id', Resource::class, 'id', ['alias' => 'resource', 'reusable' => true]);
     }
 
     public function getSource()

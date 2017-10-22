@@ -43,7 +43,7 @@ class Section extends Injectable
 
         $html = null;
         foreach ($model as $row) {
-            if (!$this->acl->checkViewLevel($row->viewLevel->getRoles())) continue;
+            if (!$this->acl->checkViewLevel($row->viewLevel->getRolesArray())) continue;
 
             $params = (array) json_decode($row->widget->params);
             $params['widget'] = $row->widget->title;

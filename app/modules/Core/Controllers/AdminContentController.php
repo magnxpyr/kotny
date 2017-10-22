@@ -9,9 +9,12 @@
 namespace Module\Core\Controllers;
 
 use Module\Core\Forms\AdminContentEditForm;
+use Module\Core\Models\Category;
 use Module\Core\Models\Content;
 use DataTables\DataTable;
 use Engine\Mvc\AdminController;
+use Module\Core\Models\User;
+use Module\Core\Models\ViewLevel;
 use Phalcon\Mvc\View;
 use Phalcon\Paginator\Adapter\Model as Paginator;
 
@@ -34,13 +37,10 @@ class AdminContentController extends AdminController
     {
         $builder = $this->modelsManager->createBuilder()
             ->columns('c.id, c.title, cy.title as category, v.name as viewLevel, c.featured, u.username, c.created_at, c.status, c.hits')
-            ->addFrom('Module\Core\Models\Content', 'c')
-            ->addFrom('Module\Core\Models\Category', 'cy')
-            ->addFrom('Module\Core\Models\User', 'u')
-            ->addFrom('Module\Core\Models\ViewLevel', 'v')
-            ->where('c.category = cy.id')
-            ->andWhere('c.view_level = v.id')
-            ->andWhere('c.created_by = u.id');
+            ->addFrom(Content::class, 'c')
+            ->leftJoin(ViewLevel::class, 'c.view_level = v.id', 'v')
+            ->leftJoin(Category::class, 'c.category = cy.id', 'cy')
+            ->leftJoin(User::class, 'c.created_by = u.id', 'u');
 
         $dataTables = new DataTable();
         $dataTables->fromBuilder($builder)->sendResponse();
@@ -78,7 +78,7 @@ class AdminContentController extends AdminController
                 ]);
                 return;
             }
-            
+            $this->view->setVar('model', $model);
             $form->setEntity($model);
         }
     }

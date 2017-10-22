@@ -330,8 +330,8 @@ class Widget extends Model
     public function initialize()
     {
         $this->setSource('widget');
-        $this->hasOne('view_level', 'Module\Core\Models\ViewLevel', 'id', ['alias' => 'viewLevel', 'reusable' => true]);
-        $this->belongsTo('package_id', 'Module\Core\Models\Package', 'id', ['alias' => 'package', 'reusable' => true]);
+        $this->hasOne('view_level', ViewLevel::class, 'id', ['alias' => 'viewLevel', 'reusable' => true]);
+        $this->belongsTo('package_id', Package::class, 'id', ['alias' => 'package', 'reusable' => true]);
     }
 
     public function getSource()

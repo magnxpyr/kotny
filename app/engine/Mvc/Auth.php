@@ -8,6 +8,7 @@
 
 namespace Engine\Mvc;
 
+use Engine\Plugins\AclHandler;
 use Module\Core\Models\UserAuthTokens;
 use Module\Core\Models\User;
 use Engine\Meta;
@@ -470,10 +471,32 @@ class Auth extends Component
     }
 
     /**
-     * Get User Role
-     * @return int|\Phalcon\Mvc\Model|\Phalcon\Mvc\Model\Resultset
+     * Get user role.
+     * Necessary when user role is dependent on AclHandler type
+     *
+     * @return string|int
      */
     public function getUserRole()
+    {
+        $roleId = $this->getUserRoleId();
+        if ($this->config->app->aclAdapter == AclHandler::MEMORY) {
+            $roles = $this->acl->getRoles();
+            foreach ($roles as $key => $role) {
+                if ((int)$roleId == $key + 1) {
+                    return $role->getName();
+                }
+            }
+            return 'guest';
+        }
+
+        return $roleId;
+    }
+
+    /**
+     * Get User Role Id
+     * @return int|\Phalcon\Mvc\Model|\Phalcon\Mvc\Model\Resultset
+     */
+    public function getUserRoleId()
     {
         $auth = $this->session->get('auth');
         if ($auth) {
@@ -501,6 +524,19 @@ class Auth extends Component
             throw new Exception('The user does not exist');
         }
         return $user;
+    }
+
+    /**
+     * Check if the current user can edit an article
+     *
+     * @return bool
+     */
+    public function isEditor()
+    {
+        if ($this->acl->isAllowed($this->getUserRole(), "module:core/content", "edit")) {
+            return true;
+        }
+        return false;
     }
 
     /**

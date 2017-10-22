@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <meta name="generator" content="Magnxpyr CMS">
     {% if metaShowAuthor %}
-        <meta name="author" content={{ metaAuthor }}>
+        <meta name="author" content="{{ metaAuthor }}">
     {% endif %}
-    <meta name="description" content={{ metaDescription }}>
-    <meta name="keywords" content={{ metaKeywords }}>
-    <meta name="robots" content={{ metaRobots }}>
-    <meta name="rights" content={{ metaContentRights }}>
+    <meta name="description" content="{{ metaDescription }}">
+    <meta name="keywords" content="{{ metaKeywords }}">
+    <meta name="robots" content="{{ metaRobots }}">
+    <meta name="rights" content="{{ metaContentRights }}">
     <meta name="_token" content="{{ token }}">
     {{ get_title() }}
 

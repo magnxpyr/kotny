@@ -202,7 +202,7 @@ abstract class Controller extends \Phalcon\Mvc\Controller
      */
     public function createCacheKey($widget, $params)
     {
-        return md5(serialize($widget).serialize($params).$this->auth->getUserRole());
+        return md5(serialize($widget).serialize($params).$this->auth->getUserRoleId());
     }
 
     /**

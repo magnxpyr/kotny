@@ -58,6 +58,19 @@ class AdminContentEditForm extends Form
         $alias->setFilters('string');
         $this->add($alias);
 
+        // Images
+        $title = new Text('images', [
+            'class' => 'form-control', 'readonly' => 'readonly'
+        ]);
+        $title->setLabel($this->t->_('Featured Image'));
+        $title->setFilters('string');
+        $title->addValidator(
+            new PresenceOf([
+                'message' => $this->t->_('%field% is required', ['field' => $this->t->_('Featured Image')])
+            ])
+        );
+        $this->add($title);
+
         // Intro Text
         $introText = new TextArea('introtext', [
             'class' => 'form-control'
@@ -74,14 +87,6 @@ class AdminContentEditForm extends Form
         $fullText->setFilters(['escapeHtml', 'string']);
         $this->add($fullText);
 
-        // Metadata
-        $metadata = new Text('metadata', [
-            'class' => 'form-control'
-        ]);
-        $metadata->setLabel($this->t->_('Metadata'));
-        $metadata->setFilters('string');
-        $this->add($metadata);
-
         // Categories
         $category = new Select('category',
             Category::find(),
@@ -91,7 +96,7 @@ class AdminContentEditForm extends Form
         $category->setFilters('int');
         $category->addValidator(
             new PresenceOf([
-                'view_level' => $this->t->_('%field% is required', ['field' => $this->t->_('Category')])
+                'message' => $this->t->_('%field% is required', ['field' => $this->t->_('Category')])
             ])
         );
         $this->add($category);
@@ -111,7 +116,7 @@ class AdminContentEditForm extends Form
         $status->setFilters('int');
         $status->addValidator(
             new PresenceOf([
-                'status' => $this->t->_('%field% is required', ['field' => $this->t->_('Status')])
+                'message' => $this->t->_('%field% is required', ['field' => $this->t->_('Status')])
             ])
         );
         $this->add($status);
@@ -125,7 +130,7 @@ class AdminContentEditForm extends Form
         $role->setFilters('int');
         $role->addValidator(
             new PresenceOf([
-                'view_level' => $this->t->_('%field% is required', ['field' => $this->t->_('View Level')])
+                'message' => $this->t->_('%field% is required', ['field' => $this->t->_('View Level')])
             ])
         );
         $this->add($role);
@@ -138,7 +143,7 @@ class AdminContentEditForm extends Form
         $publishUp->setAttribute('timestamp', true);
         $publishUp->addValidator(
             new PresenceOf([
-                'title' => $this->t->_('%field% is required', ['field' => $this->t->_('Publish date')])
+                'message' => $this->t->_('%field% is required', ['field' => $this->t->_('Publish date')])
             ])
         );
         $this->add($publishUp);
@@ -150,5 +155,59 @@ class AdminContentEditForm extends Form
         $publishDown->setFilters('string');
         $publishDown->setAttribute('timestamp', true);
         $this->add($publishDown);
+
+
+        // ---- SEO ----
+        // Meta Title
+        $metaTitle = new Text('metaTitle', [
+            'class' => 'form-control'
+        ]);
+        $metaTitle->setLabel($this->t->_('Meta Title'));
+        $metaTitle->setFilters('string');
+        $this->add($metaTitle);
+
+        // Meta Keywords
+        $metaKeyword = new Text('metaKeywords', [
+            'class' => 'form-control'
+        ]);
+        $metaKeyword->setLabel($this->t->_('Meta Keywords'));
+        $metaKeyword->setFilters('string');
+        $this->add($metaKeyword);
+
+        // Meta Description
+        $metaDescription = new Text('metaDescription', [
+            'rows' => 5,
+            'cols' => 30,
+            'class' => 'form-control'
+        ]);
+        $metaDescription->setLabel($this->t->_('Meta Description'));
+        $metaDescription->setFilters('string');
+        $this->add($metaDescription);
+    }
+
+    public function bind(array $data, $entity, $whitelist = null)
+    {
+        $meta = [];
+        foreach ($data as $key => $val) {
+            if (substr( $key, 0, 4 ) === "meta") {
+                $meta[$key] = $val;
+                unset($data[$key]);
+            }
+        }
+        $entity->setMetadata(json_encode($meta));
+        parent::bind($data, $entity, $whitelist);
+    }
+
+    public function setEntity($entity)
+    {
+        $meta = $entity->getMetadataArray();
+        if ($meta != null) {
+            foreach ($meta as $key => $val) {
+                if ($this->has($key)) {
+                    $this->get($key)->setDefault($val);
+                }
+            }
+        }
+        parent::setEntity($entity);
     }
 }

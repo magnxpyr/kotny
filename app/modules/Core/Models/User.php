@@ -502,11 +502,11 @@ class User extends Model
     public function initialize()
     {
         $this->setSource('user');
-        $this->hasMany('id', 'Module\Core\Models\Content', 'created_by', ['alias' => 'contentCreated', 'reusable' => true]);
-        $this->hasMany('id', 'Module\Core\Models\Content', 'modified_by', ['alias' => 'contentModified', 'reusable' => true]);
-        $this->hasMany('id', 'Module\Core\Models\UserAuthTokens', 'user_id', ['alias' => 'userAuthTokens', 'reusable' => true]);
-        $this->hasOne('id', 'Module\Core\Models\UserEmailConfirmations', 'user_id', ['alias' => 'userEmailConfirmations', 'reusable' => true]);
-        $this->hasOne('id', 'Module\Core\Models\UserResetPasswords', 'user_id', ['alias' => 'userResetPasswords', 'reusable' => true]);
+        $this->hasMany('id', Content::class, 'created_by', ['alias' => 'contentCreated', 'reusable' => true]);
+        $this->hasMany('id', Content::class, 'modified_by', ['alias' => 'contentModified', 'reusable' => true]);
+        $this->hasMany('id', UserAuthTokens::class, 'user_id', ['alias' => 'userAuthTokens', 'reusable' => true]);
+        $this->hasOne('id', UserEmailConfirmations::class, 'user_id', ['alias' => 'userEmailConfirmations', 'reusable' => true]);
+        $this->hasOne('id', UserResetPasswords::class, 'user_id', ['alias' => 'userResetPasswords', 'reusable' => true]);
     }
 
     /**

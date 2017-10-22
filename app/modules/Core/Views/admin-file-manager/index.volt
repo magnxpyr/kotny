@@ -8,7 +8,7 @@ do assets.addInlineJs('
             languaje: "US",
             upload_max: 5,
             views: "thumbs",
-            insertButton: true,
+            insertButton: false,
             headers: { "X-CSRF-TOKEN": "'~token~'" }
         });
     });
