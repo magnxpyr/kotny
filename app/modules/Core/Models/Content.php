@@ -547,7 +547,7 @@ class Content extends Model
 
     public function beforeUpdate()
     {
-        if ($this->images) {
+        if ($this->images && substr($this->images, 0, 1) === "/") {
             $baseUrl = $this->getDI()->getShared("url")->getBaseUri();
             $images = $this->getDI()->getShared("helper")->replaceFirst($this->images, $baseUrl, "");
             $this->setImages($images);
