@@ -496,8 +496,10 @@ class Content extends Model
      */
     public function getImages()
     {
-        $baseUrl = $this->getDI()->getShared("url")->getBaseUri();
-        return $baseUrl . $this->images;
+        if ($this->images) {
+            return $this->getDI()->getShared("url")->get($this->images);
+        }
+        return null;
     }
 
     /**
@@ -547,8 +549,8 @@ class Content extends Model
 
     public function beforeUpdate()
     {
-        if ($this->images && substr($this->images, 0, 1) === "/") {
-            $baseUrl = $this->getDI()->getShared("url")->getBaseUri();
+        $baseUrl = $this->getDI()->getShared("url")->getBaseUri();
+        if ($this->images && substr($this->images, 0, strlen($baseUrl)) === $baseUrl) {
             $images = $this->getDI()->getShared("helper")->replaceFirst($this->images, $baseUrl, "");
             $this->setImages($images);
         }
