@@ -35,9 +35,17 @@ class Auth extends Component
     
     /**
      * Cookie settings from config
+     *
      * @var \stdClass
      */
     private $cookie;
+
+    /**
+     * Check if current user can edit articles
+     *
+     * @var boolean
+     */
+    private $isEditor;
 
     /**
      * Initialize Auth
@@ -533,10 +541,10 @@ class Auth extends Component
      */
     public function isEditor()
     {
-        if ($this->acl->isAllowed($this->getUserRole(), "module:core/content", "edit")) {
-            return true;
+        if ($this->isEditor == null) {
+            $this->isEditor = $this->acl->isAllowed($this->getUserRole(), "module:core/admin-content", "edit");
         }
-        return false;
+        return $this->isEditor;
     }
 
     /**

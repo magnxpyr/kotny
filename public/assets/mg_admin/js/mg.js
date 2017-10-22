@@ -134,6 +134,7 @@ function setData(data) {
 }
 
 function closeModal() {
+    $('.modal-backdrop').remove();
     $('.filemanager-modal').remove();
 }
 

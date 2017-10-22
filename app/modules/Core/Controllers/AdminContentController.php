@@ -57,6 +57,7 @@ class AdminContentController extends AdminController
         $this->setTitle('Create Article');
         $form = new AdminContentEditForm();
         $this->view->setVar('form', $form);
+        $this->view->setVar('model', new Content());
         $this->view->render('admin-content', 'edit');
         $this->view->setRenderLevel(View::LEVEL_ACTION_VIEW);
     }
