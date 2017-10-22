@@ -1,12 +1,13 @@
 <div class="container post-container">
     {% if (auth.isEditor()) %}
-     <ul class="nav nav-tabs post-admin-tab">
-        <li class="active pull-right">
-            <a href="{{ url("/admin/core/content/edit/" ~ model.content.id) }}">Edit</a>
-        </li>
-    </ul>
+        <div class="btn-wrapper">
+            <a href="{{ url("/admin/core/content/edit/" ~ model.content.id) }}" class="btn btn-primary btn-borderless">Edit</a>
+        </div>
     {% endif %}
     <div class="post-wrapper">
+        <div class="post-featured-images row">
+            <img src="{{ model.content.getImages() }}"/>
+        </div>
         <h2 class="post-title">{{ model.content.title }}</h2>
         <div class="meta">
             <span class="post-author">
