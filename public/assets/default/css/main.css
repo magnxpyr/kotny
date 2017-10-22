@@ -9227,8 +9227,8 @@ button.close {
   background-color: rgba(45, 89, 134, 0.95);
 }
 .title {
-  font-family: 'oswald_bold', sans-serif;
-  font-weight: 700;
+  font-family: 'oswald_light', sans-serif;
+  font-weight: 100;
   text-transform: capitalize;
   text-align: center;
   display: block;
@@ -9585,6 +9585,9 @@ p {
     float: left;
     width: 33.33333333%;
   }
+}
+.newsfeed-wrapper {
+  padding: 90px 0;
 }
 .newsfeed-wrapper .news-box {
   position: relative;
