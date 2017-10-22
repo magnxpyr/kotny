@@ -54,7 +54,7 @@ class Filemanager
         "data"=>array(),
         "status"=>1,
         "msg"=>array("query"=>"","params"=>array())
-        );
+    );
 
     /**
      * Microtime for Log
@@ -76,7 +76,7 @@ class Filemanager
         "previewfull" => "",
         "preview" => "",
         "size" => "",
-        );
+    );
 
     /**
      * Create new Filemanager
@@ -95,19 +95,20 @@ class Filemanager
                 "number" => 5,
                 "overwrite" => false,
                 "size_max" => 10
-                ),
+            ),
             "images" => array(
                 "images_ext" => array("jpg","jpeg","gif","png"),
                 "resize" => array(
                     // width,height,IF TRUE crop in width ELSEIF NULL is auto,IF TRUE crop in height ELSEIF NULL is auto
                     'small' => array(120,90,true,true),
-                    ),
-                "quality" => 100,
                 ),
+                "quality" => 100,
+            ),
             "type_file" => null,
             "folder_excludes" => array(),
             "folder_thumb" => '_thumbs',
-            );
+            "show_folder_thumb" => false
+        );
         if(isset($_SERVER['DOCUMENT_ROOT'])) $this->config['doc_root'] = $_SERVER['DOCUMENT_ROOT'];
         if(count($extra)>0) $this->setup($extra);
         if($this->config['type_file']=='images'){
@@ -156,7 +157,7 @@ class Filemanager
      *
      * @param array $extra Configuraciones a modificar
      * @return void
-    */
+     */
     private function setup($extra){
         $this->config = array_replace_recursive($this->config,$extra);
     }
@@ -165,7 +166,7 @@ class Filemanager
      * Obtiene la ruta absoluta
      *
      * @return string
-    */
+     */
     public function getFullPath(){
         if($this->config['doc_root']=='')
             return $this->config['source'];
@@ -329,12 +330,12 @@ class Filemanager
     }
 
     /**
-    * Todas las propiedades de un archivo o directorio
-    *
-    * @param SplFileInfo $file Object of SplFileInfo
-    * @param string $path Ruta de la carpeta o archivo
-    * @return array|null Lista de propiedades o null si no es leible
-    */
+     * Todas las propiedades de un archivo o directorio
+     *
+     * @param SplFileInfo $file Object of SplFileInfo
+     * @param string $path Ruta de la carpeta o archivo
+     * @return array|null Lista de propiedades o null si no es leible
+     */
     public function fileInfo($file,$path){
         if($file->isReadable()){
             $item = $this->fileDetails;
@@ -342,13 +343,18 @@ class Filemanager
             $item["filetype"] = $file->getExtension();
             $item["lastmodified"] = $file->getMTime();
             $item["size"] = $file->getSize();
+            $item['previewfull'] = $this->config['url'].$this->config['source'].$path.$item["filename"];
             if ($this->isImage($file)) {
-                $thumb =  $this->firstThumb($file,$path);
-                if($thumb){
-                    $item['preview'] = $this->config['url'].$this->config['source'].'/'.$this->config['folder_thumb'].$path.$thumb;
+                $thumbPath = "/".$this->config['folder_thumb']."/";
+                if (substr($path, 0, strlen($thumbPath)) == $thumbPath) {
+                    $item['preview'] = $item['previewfull'];
+                } else {
+                    $thumb =  $this->firstThumb($file,$path);
+                    if($thumb){
+                        $item['preview'] = $this->config['url'].$this->config['source'].'/'.$this->config['folder_thumb'].$path.$thumb;
+                    }
                 }
             }
-            $item['previewfull'] = $this->config['url'].$this->config['source'].$path.$item["filename"];
             return $item;
         }else{
             return ;
@@ -531,11 +537,11 @@ class Filemanager
     }
 
     /**
-    * Lista carpeta y archivos segun el path ingresado, no recursivo, ordenado por tipo y nombre
-    *
-    * @param string $path Ruta de la carpeta o archivo
-    * @return array|null Listado de archivos o null si no existe
-    */
+     * Lista carpeta y archivos segun el path ingresado, no recursivo, ordenado por tipo y nombre
+     *
+     * @param string $path Ruta de la carpeta o archivo
+     * @return array|null Listado de archivos o null si no existe
+     */
     public function getAllFiles($path){
         $fullpath = $this->getFullPath().$path;
         if(file_exists($fullpath)){
@@ -544,16 +550,18 @@ class Filemanager
                 $r = array();
                 // if($path != "/") $r[] = $this->folderParent($path);
                 $finder = new Finder();
-                $directories = $finder->notName($this->config['folder_thumb']);
+                if (!$this->config['show_folder_thumb'] || $this->validPath("/".$this->config['folder_thumb']."/")==false) {
+                    $directories = $finder->notName($this->config['folder_thumb']);
+                }
                 if (count($this->config['folder_excludes'])>0) {
                     foreach ($this->config['folder_excludes'] as $value) {
                         $directories = $finder->notName($value);
                     }
                 }
                 //$directories = $directories->notName('web.config')->notName('.htaccess')->depth(0)->sortByType();
-                $directories = $directories->notName('web.config')->notName('.htaccess')->depth(0)->sort(
+                $directories = $finder->notName('web.config')->notName('.htaccess')->depth(0)->sort(
                     function ($a, $b) {return $b->getMTime() - $a->getMTime();}
-                    );
+                );
                 // $directories = $directories->files()->name('*.jpg');
                 $directories = $directories->in($fullpath);
                 foreach ($directories as $key => $directorie) {
@@ -857,10 +865,10 @@ class Filemanager
                 $this->setInfo(array("msg"=>$result, "status"=>0));
             }
         }else{
-           $result = array("query"=>"BE_RENAME_FILENAME_NOT_VALID","params"=>array());
-           $this->setInfo(array("msg"=>$result, "status"=>0));
-       }
-   }
+            $result = array("query"=>"BE_RENAME_FILENAME_NOT_VALID","params"=>array());
+            $this->setInfo(array("msg"=>$result, "status"=>0));
+        }
+    }
 
     /**
      * Mueve un archivo o directorio

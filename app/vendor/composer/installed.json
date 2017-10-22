@@ -17,7 +17,7 @@
         "require": {
             "php": ">=5.3.0"
         },
-        "time": "2016-08-06T14:39:51+00:00",
+        "time": "2016-08-06 14:39:51",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -69,7 +69,7 @@
         "require": {
             "php": ">=5.3.0"
         },
-        "time": "2015-07-22T18:31:08+00:00",
+        "time": "2015-07-22 18:31:08",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -114,7 +114,7 @@
         "require": {
             "php": ">=5.3.0"
         },
-        "time": "2016-08-06T20:24:11+00:00",
+        "time": "2016-08-06 20:24:11",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -162,7 +162,7 @@
         "require": {
             "php": ">=5.3.0"
         },
-        "time": "2016-10-10T12:19:37+00:00",
+        "time": "2016-10-10 12:19:37",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -211,7 +211,7 @@
         "require": {
             "php": ">=5.4"
         },
-        "time": "2016-09-14T19:12:27+00:00",
+        "time": "2016-09-14 19:12:27",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -256,7 +256,7 @@
             "friendsofphp/php-cs-fixer": "^1.11",
             "phpunit/phpunit": "3.7.*"
         },
-        "time": "2016-08-02T22:00:48+00:00",
+        "time": "2016-08-02 22:00:48",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -314,7 +314,7 @@
         "suggest": {
             "tedivm/stash": "For caching certs and tokens (using Google_Client::setCache)"
         },
-        "time": "2016-09-14T19:33:35+00:00",
+        "time": "2016-09-14 19:33:35",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -359,7 +359,7 @@
         "require": {
             "php": ">=5.3"
         },
-        "time": "2016-09-23T08:16:04+00:00",
+        "time": "2016-09-23 08:16:04",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -392,19 +392,19 @@
         "source": {
             "type": "git",
             "url": "https://github.com/magnxpyr/phalcon-datatables.git",
-            "reference": "d495378265cfaef329ae8e839c4bf86743b32b67"
+            "reference": "6129d93b9cee25d7108cff64920e3cf04d6b8777"
         },
         "dist": {
             "type": "zip",
             "url": "https://api.github.com/repos/magnxpyr/phalcon-datatables/zipball/d495378265cfaef329ae8e839c4bf86743b32b67",
-            "reference": "d495378265cfaef329ae8e839c4bf86743b32b67",
+            "reference": "6129d93b9cee25d7108cff64920e3cf04d6b8777",
             "shasum": ""
         },
         "require-dev": {
             "fzaninotto/faker": "1.5.*@dev",
             "kahlan/kahlan": "^3.0"
         },
-        "time": "2016-11-19T21:03:58+00:00",
+        "time": "2016-11-19 21:03:58",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -465,7 +465,7 @@
             "guzzlehttp/guzzle": "Allows for implementation of the Guzzle HTTP client",
             "paragonie/random_compat": "Provides a better CSPRNG option in PHP 5"
         },
-        "time": "2017-01-19T15:42:20+00:00",
+        "time": "2017-01-19 15:42:20",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -526,7 +526,7 @@
         "suggest": {
             "behat/transliterator": "Transliterator provides ability to set non-latin1 pretty names"
         },
-        "time": "2017-01-24T09:29:39+00:00",
+        "time": "2017-01-24 09:29:39",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -573,7 +573,7 @@
         "require-dev": {
             "phpunit/phpunit": "^4.0"
         },
-        "time": "2016-12-20T10:07:11+00:00",
+        "time": "2016-12-20 10:07:11",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -630,7 +630,7 @@
         "require-dev": {
             "phpunit/phpunit": "~4.0"
         },
-        "time": "2017-03-20T17:10:46+00:00",
+        "time": "2017-03-20 17:10:46",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -673,6 +673,53 @@
         ]
     },
     {
+        "name": "google/recaptcha",
+        "version": "1.1.3",
+        "version_normalized": "1.1.3.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/google/recaptcha.git",
+            "reference": "5a56d15ca10a7b75158178752b2ad8f755eb4f78"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/google/recaptcha/zipball/5a56d15ca10a7b75158178752b2ad8f755eb4f78",
+            "reference": "5a56d15ca10a7b75158178752b2ad8f755eb4f78",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.5"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "^4.8"
+        },
+        "time": "2017-03-09 18:44:34",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "1.1.x-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "ReCaptcha\\": "src/ReCaptcha"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "BSD-3-Clause"
+        ],
+        "description": "Client library for reCAPTCHA, a free service that protect websites from spam and abuse.",
+        "homepage": "http://www.google.com/recaptcha/",
+        "keywords": [
+            "Abuse",
+            "captcha",
+            "recaptcha",
+            "spam"
+        ]
+    },
+    {
         "name": "swiftmailer/swiftmailer",
         "version": "v5.4.8",
         "version_normalized": "5.4.8.0",
@@ -694,7 +741,7 @@
             "mockery/mockery": "~0.9.1",
             "symfony/phpunit-bridge": "~3.2"
         },
-        "time": "2017-05-01T15:54:03+00:00",
+        "time": "2017-05-01 15:54:03",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -765,7 +812,7 @@
             "ext-aerospike": "*",
             "sergeyklay/aerospike-php-stubs": "The most complete Aerospike PHP stubs which allows autocomplete in modern IDEs"
         },
-        "time": "2017-05-26T20:47:25+00:00",
+        "time": "2017-05-26 20:47:25",
         "type": "library",
         "installation-source": "source",
         "autoload": {
@@ -844,7 +891,7 @@
             "ruflin/elastica": "Allow sending log messages to an Elastic Search server",
             "sentry/sentry": "Allow sending log messages to a Sentry server"
         },
-        "time": "2017-06-19T01:22:40+00:00",
+        "time": "2017-06-19 01:22:40",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -906,7 +953,7 @@
             "ext-mcrypt": "Install the Mcrypt extension in order to speed up a few other cryptographic operations.",
             "ext-openssl": "Install the OpenSSL extension in order to speed up a wide variety of cryptographic operations."
         },
-        "time": "2017-06-05T06:31:10+00:00",
+        "time": "2017-06-05 06:31:10",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -998,7 +1045,7 @@
         "suggest": {
             "psr/log": "Required for using the Log middleware"
         },
-        "time": "2017-06-22T18:50:49+00:00",
+        "time": "2017-06-22 18:50:49",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -1055,7 +1102,7 @@
         "require": {
             "php": "^5.5.9|>=7.0.8"
         },
-        "time": "2017-10-03T13:33:10+00:00",
+        "time": "2017-10-03 13:33:10",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -1089,67 +1136,6 @@
         "homepage": "https://symfony.com"
     },
     {
-        "name": "symfony/polyfill-mbstring",
-        "version": "v1.5.0",
-        "version_normalized": "1.5.0.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/symfony/polyfill-mbstring.git",
-            "reference": "7c8fae0ac1d216eb54349e6a8baa57d515fe8803"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/7c8fae0ac1d216eb54349e6a8baa57d515fe8803",
-            "reference": "7c8fae0ac1d216eb54349e6a8baa57d515fe8803",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=5.3.3"
-        },
-        "suggest": {
-            "ext-mbstring": "For best performance"
-        },
-        "time": "2017-06-14T15:44:48+00:00",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "1.5-dev"
-            }
-        },
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "Symfony\\Polyfill\\Mbstring\\": ""
-            },
-            "files": [
-                "bootstrap.php"
-            ]
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Nicolas Grekas",
-                "email": "p@tchwork.com"
-            },
-            {
-                "name": "Symfony Community",
-                "homepage": "https://symfony.com/contributors"
-            }
-        ],
-        "description": "Symfony polyfill for the Mbstring extension",
-        "homepage": "https://symfony.com",
-        "keywords": [
-            "compatibility",
-            "mbstring",
-            "polyfill",
-            "portable",
-            "shim"
-        ]
-    },
-    {
         "name": "symfony/http-foundation",
         "version": "v3.3.10",
         "version_normalized": "3.3.10.0",
@@ -1171,7 +1157,7 @@
         "require-dev": {
             "symfony/expression-language": "~2.8|~3.0"
         },
-        "time": "2017-10-05T23:10:23+00:00",
+        "time": "2017-10-05 23:10:23",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -1222,7 +1208,7 @@
         "require": {
             "php": "^5.5.9|>=7.0.8"
         },
-        "time": "2017-10-02T06:42:24+00:00",
+        "time": "2017-10-02 06:42:24",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -1283,7 +1269,7 @@
             "guzzlehttp/guzzle": "~5.0",
             "phpunit/phpunit": "~4.5"
         },
-        "time": "2017-08-26T03:54:21+00:00",
+        "time": "2017-08-26 03:54:21",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -1304,50 +1290,64 @@
         "description": "Filemanager for php, it is the connector to the File Manager, regardless of the GUI."
     },
     {
-        "name": "google/recaptcha",
-        "version": "1.1.3",
-        "version_normalized": "1.1.3.0",
+        "name": "symfony/polyfill-mbstring",
+        "version": "v1.6.0",
+        "version_normalized": "1.6.0.0",
         "source": {
             "type": "git",
-            "url": "https://github.com/google/recaptcha.git",
-            "reference": "5a56d15ca10a7b75158178752b2ad8f755eb4f78"
+            "url": "https://github.com/symfony/polyfill-mbstring.git",
+            "reference": "2ec8b39c38cb16674bbf3fea2b6ce5bf117e1296"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/google/recaptcha/zipball/5a56d15ca10a7b75158178752b2ad8f755eb4f78",
-            "reference": "5a56d15ca10a7b75158178752b2ad8f755eb4f78",
+            "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/2ec8b39c38cb16674bbf3fea2b6ce5bf117e1296",
+            "reference": "2ec8b39c38cb16674bbf3fea2b6ce5bf117e1296",
             "shasum": ""
         },
         "require": {
-            "php": ">=5.5"
+            "php": ">=5.3.3"
         },
-        "require-dev": {
-            "phpunit/phpunit": "^4.8"
+        "suggest": {
+            "ext-mbstring": "For best performance"
         },
-        "time": "2017-03-09T18:44:34+00:00",
+        "time": "2017-10-11 12:05:26",
         "type": "library",
         "extra": {
             "branch-alias": {
-                "dev-master": "1.1.x-dev"
+                "dev-master": "1.6-dev"
             }
         },
         "installation-source": "dist",
         "autoload": {
             "psr-4": {
-                "ReCaptcha\\": "src/ReCaptcha"
-            }
+                "Symfony\\Polyfill\\Mbstring\\": ""
+            },
+            "files": [
+                "bootstrap.php"
+            ]
         },
         "notification-url": "https://packagist.org/downloads/",
         "license": [
-            "BSD-3-Clause"
+            "MIT"
         ],
-        "description": "Client library for reCAPTCHA, a free service that protect websites from spam and abuse.",
-        "homepage": "http://www.google.com/recaptcha/",
+        "authors": [
+            {
+                "name": "Nicolas Grekas",
+                "email": "p@tchwork.com"
+            },
+            {
+                "name": "Symfony Community",
+                "homepage": "https://symfony.com/contributors"
+            }
+        ],
+        "description": "Symfony polyfill for the Mbstring extension",
+        "homepage": "https://symfony.com",
         "keywords": [
-            "Abuse",
-            "captcha",
-            "recaptcha",
-            "spam"
+            "compatibility",
+            "mbstring",
+            "polyfill",
+            "portable",
+            "shim"
         ]
     }
 ]
