@@ -208,10 +208,10 @@ class Helper extends Component
     public function removeDir($dir) {
         $files = array_diff(scandir($dir), array('.','..'));
         foreach ($files as $file) {
-            is_dir("$dir/$file") ? $this->removeDir("$dir/$file") : unlink("$dir/$file");
+            is_dir("$dir/$file") ? @$this->removeDir("$dir/$file") : @unlink("$dir/$file");
         }
         try {
-            $removed = rmdir($dir);
+            $removed = @rmdir($dir);
         } catch (Exception $e) {
             $removed = false;
         } finally {
