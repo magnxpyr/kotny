@@ -35,9 +35,17 @@ class Auth extends Component
     
     /**
      * Cookie settings from config
+     *
      * @var \stdClass
      */
     private $cookie;
+
+    /**
+     * Check if current user can edit articles
+     *
+     * @var boolean
+     */
+    private $isEditor;
 
     /**
      * Initialize Auth
@@ -533,10 +541,10 @@ class Auth extends Component
      */
     public function isEditor()
     {
-        if ($this->acl->isAllowed($this->getUserRole(), "module:core/admin-content", "edit")) {
-            return true;
+        if ($this->isEditor == null) {
+            $this->isEditor = $this->acl->isAllowed($this->getUserRole(), "module:core/admin-content", "edit");
         }
-        return false;
+        return $this->isEditor;
     }
 
     /**
@@ -544,11 +552,16 @@ class Auth extends Component
      */
     private function setReturnUrl()
     {
+        $returnUrl = null;
         if ($this->request->has('returnUrl')) {
             $returnUrl = $this->request->get('returnUrl', 'string');
-            if ($returnUrl != $this->url->get('user/login') || $returnUrl != $this->url->get('user/register')) {
-                $this->session->set('returnUrl', $returnUrl);
-            }
+        } elseif ($_SERVER['HTTP_REFERER']) {
+            $returnUrl = $_SERVER['HTTP_REFERER'];
+        }
+        if ($returnUrl != null && $returnUrl != $this->url->get('user/login') &&
+            $returnUrl != $this->url->get('user/register') && $returnUrl != $this->helper->getUri('user/login') &&
+            $returnUrl != $this->helper->getUri('user/register')) {
+            $this->session->set('returnUrl', $returnUrl);
         }
     }
 
