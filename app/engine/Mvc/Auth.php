@@ -552,11 +552,16 @@ class Auth extends Component
      */
     private function setReturnUrl()
     {
+        $returnUrl = null;
         if ($this->request->has('returnUrl')) {
             $returnUrl = $this->request->get('returnUrl', 'string');
-            if ($returnUrl != $this->url->get('user/login') || $returnUrl != $this->url->get('user/register')) {
-                $this->session->set('returnUrl', $returnUrl);
-            }
+        } elseif ($_SERVER['HTTP_REFERER']) {
+            $returnUrl = $_SERVER['HTTP_REFERER'];
+        }
+        if ($returnUrl != null && $returnUrl != $this->url->get('user/login') &&
+            $returnUrl != $this->url->get('user/register') && $returnUrl != $this->helper->getUri('user/login') &&
+            $returnUrl != $this->helper->getUri('user/register')) {
+            $this->session->set('returnUrl', $returnUrl);
         }
     }
 
