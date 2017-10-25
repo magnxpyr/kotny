@@ -25,7 +25,7 @@ class AdminIndexForm extends Form
     public function initialize()
     {
         // Menu
-        $menu = new Select('widgetMenu',
+        $menu = new Select('_menu',
             MenuType::find(),
             ['using' => ['id', 'title']]
         );

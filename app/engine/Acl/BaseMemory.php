@@ -8,7 +8,6 @@
 
 namespace Engine\Acl;
 
-use Engine\Behavior\AclBehavior;
 use Phalcon\Acl\Adapter\Memory as AclMemory;
 
 /**
@@ -17,7 +16,7 @@ use Phalcon\Acl\Adapter\Memory as AclMemory;
  */
 class BaseMemory extends AclMemory
 {
-    use AclBehavior;
+    use AclTrait;
 
     /**
      * @var \Engine\Acl\Database

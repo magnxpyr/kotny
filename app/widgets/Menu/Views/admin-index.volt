@@ -1,6 +1,6 @@
 <div class="form-group">
-    <label for='widgetMenu' class='control-label col-sm-2'>Categories</label>
+    <label for='_menu' class='control-label col-sm-2'>Menu</label>
     <div class="input-group" id="wrapper-widgetMenu">
-        {{ form.render('widgetMenu', ['class': 'form-control']) }}
+        {{ form.render('_menu', ['class': 'form-control']) }}
     </div>
 </div>

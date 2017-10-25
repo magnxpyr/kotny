@@ -25,7 +25,7 @@ class Controller extends \Engine\Widget\Controller
     {
         $menuElements = Loader::fromResultset(Menu::find([
             'conditions' => 'menu_type_id = ?1',
-            'bind' => [1 => $this->getParam('widgetMenu')],
+            'bind' => [1 => $this->getParam('_menu')],
             'bindTypes' => [Column::BIND_PARAM_INT],
             'order' => 'lft'
         ]), 'viewLevel');

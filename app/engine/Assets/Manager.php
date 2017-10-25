@@ -29,23 +29,11 @@ class Manager extends \Phalcon\Assets\Manager
         $this->getDI();
     }
 
-    public function includeInlineJs($file, $attributes)
-    {
-        $moduleName = Text::camelize($this->dispatcher->getModuleName());
-        $controllerName = $this->di->getDispatcher()->getControllerName();
-        $path = MODULES_PATH . "$moduleName/Views/$controllerName/$file";
-        $text = file_get_contents($path);
-        foreach ($attributes as $key => $value) {
-            $text = str_replace($key, $value, $text);
-        }
-        $this->addInlineJs($text);
-    }
-
     public function outputViewJs()
     {
         $collection = $this->collection(self::OUTPUT_VIEW_JS);
         foreach ($collection as $resource) {
-            echo $this->di->getViewSimple()->render($resource->getPath());
+            echo $this->di->getViewSimple()->render($resource->getPath(), $resource->getAttributes());
         }
     }
 
@@ -53,7 +41,7 @@ class Manager extends \Phalcon\Assets\Manager
     {
         $collection = $this->collection(self::OUTPUT_VIEW_CSS);
         foreach ($collection as $resource) {
-            echo $this->di->getViewSimple()->render($resource->getPath());
+            echo $this->di->getViewSimple()->render($resource->getPath(), $resource->getAttributes());
         }
     }
 }

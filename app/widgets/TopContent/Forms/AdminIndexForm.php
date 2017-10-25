@@ -26,7 +26,7 @@ class AdminIndexForm extends Form
     public function initialize()
     {
         // Category
-        $category = new Select('widgetCategory',
+        $category = new Select('_category',
             Category::find(),
             ['using' => ['id', 'title']]
         );
@@ -40,7 +40,7 @@ class AdminIndexForm extends Form
         $this->add($category);
 
         // Limit
-        $limit = new Numeric('widgetLimit');
+        $limit = new Numeric('_limit');
         $limit->setLabel($this->t->_('Limit'));
         $limit->setFilters('int');
         $limit->addValidator(

@@ -1,0 +1,9 @@
+{
+  "package": "Carousel",
+  "type": "widget",
+  "version": "1.0.0",
+  "author": "Magnxpyr Network",
+  "website": "http://www.magnxpyr.com",
+  "description": "Carousel widget",
+  "licence": "BSD"
+}

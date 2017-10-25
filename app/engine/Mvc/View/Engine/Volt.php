@@ -16,6 +16,8 @@ use Engine\Assets\Manager;
  */
 class Volt extends \Phalcon\Mvc\View\Engine\Volt
 {
+    use ViewEngineTrait;
+
     public function initCompiler()
     {
         $di = $this->getDI();
@@ -27,15 +29,11 @@ class Volt extends \Phalcon\Mvc\View\Engine\Volt
         });
 
         $compiler->addFunction('addViewJs', function ($resolvedArgs, $exprArgs) use ($di) {
-            $file = $di->getView()->getBasePath(). $di->getView()->getViewsDir() .
-                str_replace("'", "", $resolvedArgs);
-            $di->getAssets()->collection(Manager::OUTPUT_VIEW_JS)->addJs($file);
+            return '$this->addViewJs(' . $resolvedArgs . ')';
         });
 
         $compiler->addFunction('addViewCss', function ($resolvedArgs, $exprArgs) use ($di) {
-            $file = $di->getView()->getBasePath(). $di->getView()->getViewsDir() .
-                str_replace("'", "", $resolvedArgs);
-            $di->getAssets()->collection(Manager::OUTPUT_VIEW_CSS)->addJs($file);
+            return '$this->addViewCss(' . $resolvedArgs . ')';
         });
     }
 }

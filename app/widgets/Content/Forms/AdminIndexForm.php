@@ -27,7 +27,7 @@ class AdminIndexForm extends Form
     public function initialize()
     {
         // Content
-        $fullText = new TextArea('widgetContent');
+        $fullText = new TextArea('_content');
         $fullText->setLabel($this->t->_('Content'));
         $fullText->setFilters(['escapeHtml', 'string']);
         $this->add($fullText);

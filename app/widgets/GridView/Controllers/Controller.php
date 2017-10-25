@@ -100,7 +100,6 @@ class Controller extends \Engine\Widget\Controller
                 searchable: false,
                 className: "all",
                 render: function (data, type, row) {
-                console.log(data);
                     var custom = "";
                 ';
 

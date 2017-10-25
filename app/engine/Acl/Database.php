@@ -12,7 +12,6 @@ use Module\Core\Models\AccessList;
 use Module\Core\Models\Resource;
 use Module\Core\Models\ResourceAccess;
 use Module\Core\Models\Role;
-use Engine\Behavior\AclBehavior;
 use Engine\Mvc\Exception;
 use Phalcon\Acl;
 use Phalcon\Acl\Adapter\Memory as AclMemory;
@@ -28,7 +27,7 @@ use Phalcon\Acl\AdapterInterface;
  */
 class Database extends Adapter implements AdapterInterface
 {
-    use AclBehavior;
+    use AclTrait;
 
     /**
      * Sets the default access level (Phalcon\Acl::ALLOW or Phalcon\Acl::DENY) for no arguments provided in isAllowed action if there exists func for accessKey

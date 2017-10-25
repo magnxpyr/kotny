@@ -25,4 +25,7 @@
         </form>
     </div>
 </div>
-{% do addViewJs('admin-widget/edit-scripts') %}
+
+{% do assets.collection('footer-js').addJs("https://cloud.tinymce.com/stable/tinymce.min.js") %}
+{% do assets.collection('footer-js').addJs("https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.6.1/jquery.tinymce.min.js") %}
+{% do addViewJs('admin-widget/edit-scripts', ['widgetScripts': widgetScripts]) %}

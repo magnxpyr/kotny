@@ -6,13 +6,15 @@
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
-namespace Engine\Behavior;
+namespace Engine\Acl;
+
+use Engine\Behavior\DiBehavior;
 
 /**
  * Class AclBehavior
  * @package Engine\Behavior
  */
-trait AclBehavior
+trait AclTrait
 {
     use DiBehavior;
 
@@ -48,6 +50,4 @@ trait AclBehavior
     {
         return $this->cacheExpire;
     } // 30 days cache.
-
-
 }
