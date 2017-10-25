@@ -12,3 +12,8 @@
         </div>
     </div>
 </div>
+
+{% do assets.collection('header-css').addCss("https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.2.1/assets/owl.carousel.min.css") %}
+{% do assets.collection('header-css').addCss("https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.2.1/assets/owl.theme.default.min.css") %}
+{% do assets.collection('footer-js').addJs("https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.2.1/owl.carousel.min.js") %}
+{% do addViewWidgetJs('index-scripts') %}

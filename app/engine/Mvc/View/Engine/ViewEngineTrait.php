@@ -25,6 +25,18 @@ trait ViewEngineTrait
     public function addViewCss($view, $params = null)
     {
         $file = $this->getDI()->getView()->getBasePath(). $this->getDI()->getView()->getViewsDir() . $view;
-        $this->getDI()->getAssets()->collection(Manager::OUTPUT_VIEW_CSS)->addJs($file, true, null, $params);
+        $this->getDI()->getAssets()->collection(Manager::OUTPUT_VIEW_CSS)->addCss($file, true, null, $params);
+    }
+
+    public function addViewWidgetJs($view, $params = null)
+    {
+        $file = $this->getDI()->getViewWidget()->getViewsDir() . $view;
+        $this->getDI()->getAssets()->collection(Manager::OUTPUT_VIEW_JS)->addJs($file, true, null, $params);
+    }
+
+    public function addViewWidgetCss($view, $params = null)
+    {
+        $file = $this->getDI()->getViewWidget()->getViewsDir() . $view;
+        $this->getDI()->getAssets()->collection(Manager::OUTPUT_VIEW_CSS)->addCss($file, true, null, $params);
     }
 }

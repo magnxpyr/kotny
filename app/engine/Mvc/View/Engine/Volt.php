@@ -35,5 +35,13 @@ class Volt extends \Phalcon\Mvc\View\Engine\Volt
         $compiler->addFunction('addViewCss', function ($resolvedArgs, $exprArgs) use ($di) {
             return '$this->addViewCss(' . $resolvedArgs . ')';
         });
+
+        $compiler->addFunction('addViewWidgetJs', function ($resolvedArgs, $exprArgs) use ($di) {
+            return '$this->addViewWidgetJs(' . $resolvedArgs . ')';
+        });
+
+        $compiler->addFunction('addViewWidgetCss', function ($resolvedArgs, $exprArgs) use ($di) {
+            return '$this->addViewWidgetCss(' . $resolvedArgs . ')';
+        });
     }
 }

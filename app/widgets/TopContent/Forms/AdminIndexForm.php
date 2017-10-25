@@ -28,19 +28,19 @@ class AdminIndexForm extends Form
         // Category
         $category = new Select('_category',
             Category::find(),
-            ['using' => ['id', 'title']]
+            [
+                'using' => ['id', 'title'],
+                'useEmpty' => true,
+                'emptyText' => "All"
+            ]
         );
         $category->setLabel($this->t->_('Category'));
         $category->setFilters('int');
-        $category->addValidator(
-            new PresenceOf([
-                'message' => $this->t->_('%field% is required', ['field' => $this->t->_('Category')])
-            ])
-        );
         $this->add($category);
 
         // Limit
-        $limit = new Numeric('_limit');
+        $limit = new Numeric('_limit', ['required' => 'required']);
+        $limit->setDefault(10);
         $limit->setLabel($this->t->_('Limit'));
         $limit->setFilters('int');
         $limit->addValidator(

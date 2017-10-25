@@ -67,6 +67,7 @@ class AdminWidgetController extends AdminController
             $form->get('ordering')->setOptions($this->getOrdering($_POST['position'], $_POST['id']));
         } else {
             $this->view->setVar('widgetContent', null);
+            $this->view->setVar('widgetScripts', null);
             $form->get('ordering')->setOptions($this->getOrdering('menu', null));
         }
 
