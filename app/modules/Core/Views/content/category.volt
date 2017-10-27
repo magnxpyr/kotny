@@ -4,34 +4,37 @@
     {#</div>#}
     <div class="articles-list-wrapper">
         {% for item in model.items %}
-        <div class="container hidden">
-            <div class="inner">
-                {% if (auth.isEditor()) %}
-                    <div class="btn-wrapper">
-                        <a href="{{ url("/admin/core/content/edit/" ~ item.content.id) }}" class="btn btn-primary btn-borderless">Edit</a>
+            {% set images = item.content.getImagesArray() %}
+            <div class="container hidden">
+                <div class="inner">
+                    {% if (auth.isEditor()) %}
+                        <div class="btn-wrapper">
+                            <a href="{{ url("/admin/core/content/edit/" ~ item.content.id) }}" class="btn btn-primary btn-borderless">Edit</a>
+                        </div>
+                    {% endif %}
+                    <div class="article-info">
+                        {% if images and images.introImage %}
+                        <div class="post-featured-images row">
+                            <img src="{{ images.introImage }}"/>
+                        </div>
+                        {% endif %}
+                        <a href="{{ url(item.category.alias ~ "/" ~ item.content.id ~ "-" ~ item.content.alias) }}">
+                            <h3 class="title">
+                                {{ item.content.title }}
+                            </h3>
+                        </a>
+                        <div class="meta">
+                            <span>by </span>
+                            <span class="author">
+                                {{ item.user.name }}
+                                on
+                            </span>
+                            <span>{{ date('d M Y', item.content.created_at) }}</span>
+                        </div>
+                        <div>{{ helper.htmlDecode(item.content.introtext) }}</div>
                     </div>
-                {% endif %}
-                <div class="article-info">
-                    <div class="post-featured-images row">
-                        <img src="{{ item.content.getImages() }}"/>
-                    </div>
-                    <a href="{{ url(item.category.alias ~ "/" ~ item.content.id ~ "-" ~ item.content.alias) }}">
-                        <h3 class="title">
-                            {{ item.content.title }}
-                        </h3>
-                    </a>
-                    <div class="meta">
-                        <span>by </span>
-                        <span class="author">
-                            {{ item.user.name }}
-                            on
-                        </span>
-                        <span>{{ date('d M Y', item.content.created_at) }}</span>
-                    </div>
-                    <div>{{ helper.htmlDecode(item.content.introtext) }}</div>
                 </div>
             </div>
-        </div>
         {% endfor %}
     </div>
     {% if model.total_pages > 1 %}

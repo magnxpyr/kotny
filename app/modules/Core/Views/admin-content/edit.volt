@@ -19,24 +19,38 @@
     <div class="box-body">
         <form method='post' action="{{url("admin/core/content/save")}}" id="contentForm">
             {{ form.render('id') }}
-            {{form.render('csrf') }}
+            {{ form.render('csrf') }}
             {{ form.renderDecorated('title', ['label': ['class': 'control-label col-sm-2']]) }}
             {{ form.renderDecorated('alias', ['label': ['class': 'control-label col-sm-2']]) }}
 
             <div class="form-group">
-                {{ form.label('images', ['class': 'control-label col-sm-2']) }}
-                <div class="input-group col-lg-4" id="wrapper-images">
-                {{ form.render('images') }}
+                {{ form.label('introImage', ['class': 'control-label col-sm-2']) }}
+                <div class="input-group col-lg-4" id="wrapper-introImage">
+                {{ form.render('introImage') }}
                     <span class="input-group-btn">
-                        <button class="btn btn-default file-manager" data-input="images" type="button"><i class="fa fa-folder-open"></i></button>
+                        <button class="btn btn-default file-manager" data-input="introImage" type="button"><i class="fa fa-folder-open"></i></button>
                     </span>
                 </div>
-                <div class="input-group col-lg-offset-2 col-lg-6" id="wrapper-images-preview">
-                    <img src="{{ model.getImages() }}" height="250px" width="250px">
+                <div class="input-group col-lg-offset-2 col-lg-6" id="wrapper-introImage-preview">
+                    <img src="{{ form.getEntityValue('introImage') }}" height="250px" width="250px">
                 </div>
             </div>
 
             {{ form.renderDecorated('introtext', ['label': ['class': 'control-label col-sm-2']]) }}
+
+            <div class="form-group">
+                {{ form.label('fulltextImage', ['class': 'control-label col-sm-2']) }}
+                <div class="input-group col-lg-4" id="wrapper-fulltextImage">
+                    {{ form.render('fulltextImage') }}
+                    <span class="input-group-btn">
+                        <button class="btn btn-default file-manager" data-input="fulltextImage" type="button"><i class="fa fa-folder-open"></i></button>
+                    </span>
+                </div>
+                <div class="input-group col-lg-offset-2 col-lg-6" id="wrapper-fulltextImage-preview">
+                    <img src="{{ form.getEntityValue('fulltextImage') }}" height="250px" width="250px">
+                </div>
+            </div>
+
             {{ form.renderDecorated('fulltext', ['label': ['class': 'control-label col-sm-2']]) }}
             {{ form.renderDecorated('category', ['label': ['class': 'control-label col-sm-2']]) }}
             {{ form.renderDecorated('featured', ['label': ['class': 'control-label col-sm-2']]) }}
