@@ -6,16 +6,17 @@
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
-namespace Widget\Content\Controllers;
+namespace Widget\Carousel\Controllers;
 
 /**
  * Class Controller
- * @package Widget\Content\Controllers
+ * @package Widget\Carousel\Controllers
  */
 class Controller extends \Engine\Widget\Controller
 {
+
     public function indexAction()
     {
-        $this->viewWidget->setVar('content', $this->getParam("_content"));
+        $this->viewWidget->setVar('images', $this->getParam("_images"));
     }
 }

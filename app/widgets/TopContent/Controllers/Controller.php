@@ -14,11 +14,7 @@ namespace Widget\TopContent\Controllers;
  */
 class Controller extends \Engine\Widget\Controller
 {
-    /**
-     * @param array $categories
-     * @param int $limit
-     */
-    public function indexAction($categories = null, $limit = 10)
+    public function indexAction()
     {
         $model = $this->modelsManager->createBuilder()
             ->columns('content.*, category.*, user.*')
@@ -28,11 +24,12 @@ class Controller extends \Engine\Widget\Controller
             ->andWhere('content.category = category.id')
             ->andWhere('content.created_by = user.id')
             ->orderBy('content.created_at DESC')
-            ->limit($limit);
-        if ($categories) {
-            $model->andWhere('category.alias in (:category:)', ['category' => implode(",", $categories)]);
+            ->limit($this->getParam("limit"));
+        if ($this->getParam("category")) {
+            $model->andWhere('category.alias = :category:', ['category' => $this->getParam("category")]);
         }
         
         $this->viewWidget->setVar('model', $model->getQuery()->execute());
+        $this->viewWidget->setVar('params', $this->getParams());
     }
 }

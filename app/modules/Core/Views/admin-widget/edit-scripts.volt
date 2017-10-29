@@ -39,17 +39,17 @@
                         tinyMCE.remove();
                         initMCE();
                     }
+                    $('#wrapper-admin-widget-scripts').html(data.scripts);
                 }
             })
         });
 
         // Initialize tinyMce
         function initMCE() {
-            console.log("run");
             var editor_config = {
                 path_absolute: '{{ url("admin/core/file-manager/basic") }}',
                 selector: "#wrapper-admin-widget textarea",
-                skin: "light",
+                skin: "lightgray",
                 theme: "modern",
                 menubar: false,
                 plugins: [
@@ -100,3 +100,5 @@
         initMCE();
     });
 </script>
+
+<div id="wrapper-admin-widget-scripts">{{ widgetScripts }}</div>

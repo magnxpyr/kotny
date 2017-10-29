@@ -10,6 +10,7 @@ namespace Engine\Widget;
 
 use Engine\Di\Injectable;
 use Module\Core\Models\Package;
+use Phalcon\Mvc\View\Exception;
 use Phalcon\Text;
 
 /**
@@ -108,5 +109,25 @@ class Widget extends Injectable
             $controller->cache->save($options['cacheKey'], $html, 300);
         }
         return $html;
+    }
+
+    /**
+     * Render a widget view using viewSimple
+     *
+     * $widget = [
+     *  'widget' => 'carousel',
+     *  'view' => 'admin-index-scripts'
+     * ]
+     *
+     * @param $widget
+     * @return string
+     */
+    public function renderSimple($widget)
+    {
+        try {
+            return $this->viewSimple->render(WIDGETS_PATH . $widget['widget'] . "/Views/" . $widget['view']);
+        } catch (Exception $e) {
+            return null;
+        }
     }
 }

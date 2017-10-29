@@ -8,13 +8,12 @@
 
 namespace Engine\Acl;
 
-use Engine\Behavior\AclBehavior;
 use Phalcon\Acl;
 use Phalcon\Acl\Adapter\Memory as AclMemory;
 
 class Memory extends AclMemory
 {
-    use AclBehavior;
+    use AclTrait;
 
     /**
      * Get acl system.

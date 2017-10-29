@@ -25,9 +25,6 @@ class AdminWidgetController extends AdminController
     public function initialize()
     {
         parent::initialize();
-
-        $this->assets->collection('footer-js')->addJs("vendor/tinymce/tinymce.min.js");
-        $this->assets->collection('footer-js')->addJs("vendor/tinymce/jquery.tinymce.min.js");
     }
 
     /**
@@ -70,6 +67,7 @@ class AdminWidgetController extends AdminController
             $form->get('ordering')->setOptions($this->getOrdering($_POST['position'], $_POST['id']));
         } else {
             $this->view->setVar('widgetContent', null);
+            $this->view->setVar('widgetScripts', null);
             $form->get('ordering')->setOptions($this->getOrdering('menu', null));
         }
 
@@ -106,13 +104,18 @@ class AdminWidgetController extends AdminController
             /** @var Package $package */
             $package = Package::findFirstById($model->getPackageId());
             $widgetContent = null;
+            $widgetScripts = null;
             if ($package) {
                $widgetContent = $this->renderWidget([
                    'widgetName' => $package->getName(),
                    'widgetId' => $model->getId()
                ]);
+               $widgetScripts = $this->renderWidgetScripts([
+                   'widgetName' => $package->getName()
+               ]);
             }
             $this->view->setVar('widgetContent', $widgetContent);
+            $this->view->setVar('widgetScripts', $widgetScripts);
         } else {
             $form->get('ordering')->setOptions($this->getOrdering($_POST['position'], $_POST['id']));
         }
@@ -151,7 +154,7 @@ class AdminWidgetController extends AdminController
 
         $params = [];
         foreach ($post as $key => $value) {
-            if (strpos($key, 'widget') === 0) {
+            if (substr($key, 0, 1) === "_") {
                 $params[$key] = $value;
             }
         }
@@ -262,6 +265,7 @@ class AdminWidgetController extends AdminController
 
         return $this->returnJSON([
             'html' => $this->renderWidget($_GET),
+            'scripts' => $this->renderWidgetScripts($_GET),
             'success' => true
         ]);
     }
@@ -355,6 +359,14 @@ class AdminWidgetController extends AdminController
             'controller' => 'admin-controller'
         ], [
             'id' => $widget['widgetId']
+        ]);
+    }
+
+    private function renderWidgetScripts($widget)
+    {
+        return $this->widget->renderSimple([
+            'widget' => $widget['widgetName'],
+            'view' => 'admin-index-scripts'
         ]);
     }
 }
