@@ -3,12 +3,13 @@
     <div class="news-container container">
         <div class="news-wrapper">
             {% for item in model %}
+                {% set images = item.content.getImagesArray() %}
                 <div class="news-box">
                     <div class="overlay"></div>
                     <a class="wrap" href="">
-                        {% if item.content.images %}
+                        {% if images and images.introImage %}
                         <div class="news-image">
-                            <img src="{{ item.content.images }}">
+                            <img src="{{ images.introImage }}">
                         </div>
                         {% endif %}
                         <div class="text-wrapper">

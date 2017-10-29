@@ -56,6 +56,24 @@ class Form extends \Phalcon\Forms\Form
         }
     }
 
+    public function mapEntity($data)
+    {
+        if ($data != null) {
+            foreach ($data as $key => $val) {
+                if ($this->has($key)) {
+                    $this->get($key)->setDefault($val);
+                }
+            }
+        }
+    }
+
+    public function getEntityValue($name)
+    {
+        if ($this->has($name)) {
+            return $this->get($name)->getValue();
+        }
+        return null;
+    }
 
     /**
      * Renders a specific item in the form if the item exists

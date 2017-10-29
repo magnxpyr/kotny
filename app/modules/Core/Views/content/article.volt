@@ -1,3 +1,4 @@
+{% set images = model.content.getImagesArray() %}
 <div class="container post-container">
     {% if (auth.isEditor()) %}
         <div class="btn-wrapper">
@@ -5,9 +6,11 @@
         </div>
     {% endif %}
     <div class="post-wrapper">
+        {% if images and images.fulltextImage %}
         <div class="post-featured-images row">
-            <img src="{{ model.content.getImages() }}"/>
+            <img src="{{ images.fulltextImage }}"/>
         </div>
+        {% endif %}
         <h2 class="post-title">{{ model.content.title }}</h2>
         <div class="meta">
             <span class="post-author">

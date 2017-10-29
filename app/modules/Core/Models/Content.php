@@ -496,10 +496,7 @@ class Content extends Model
      */
     public function getImages()
     {
-        if ($this->images) {
-            return $this->getDI()->getShared("url")->get($this->images);
-        }
-        return null;
+        return $this->images;
     }
 
     /**
@@ -550,15 +547,37 @@ class Content extends Model
     public function beforeUpdate()
     {
         $baseUrl = $this->getDI()->getShared("url")->getBaseUri();
-        if ($this->images && substr($this->images, 0, strlen($baseUrl)) === $baseUrl) {
-            $images = $this->getDI()->getShared("helper")->replaceFirst($this->images, $baseUrl, "");
-            $this->setImages($images);
+        $images = $this->getImagesArray(false);
+        foreach ($images as $key => $image) {
+            if ($image && substr($image, 0, strlen($baseUrl)) === $baseUrl) {
+                $image = $this->getDI()->getShared("helper")->replaceFirst($image, $baseUrl, "");
+                $images->$key = $image;
+            }
         }
+        $this->setImages(json_encode($images));
+
         $this->setModifiedAt(time());
         $this->setModifiedBy($this->getDI()->getShared('auth')->getUserId());
     }
 
-    public function getMetadataArray() {
+    public function getMetadataArray()
+    {
         return json_decode($this->metadata);
+    }
+
+    public function getImagesArray($base = true)
+    {
+        $images = json_decode($this->images);
+
+        if (!$base) return $images;
+
+        if ($images) {
+            foreach ($images as $key => $image) {
+                if ($image) {
+                    $images->$key = $this->getDI()->getShared("url")->get($image);
+                }
+            }
+        }
+        return $images;
     }
 }

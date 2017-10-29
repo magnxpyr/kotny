@@ -58,18 +58,18 @@ class AdminContentEditForm extends Form
         $alias->setFilters('string');
         $this->add($alias);
 
-        // Images
-        $title = new Text('images', [
+        // Featured intro image
+        $introImage = new Text('introImage', [
             'class' => 'form-control', 'readonly' => 'readonly'
         ]);
-        $title->setLabel($this->t->_('Featured Image'));
-        $title->setFilters('string');
-        $title->addValidator(
+        $introImage->setLabel($this->t->_('Featured Intro Image'));
+        $introImage->setFilters('string');
+        $introImage->addValidator(
             new PresenceOf([
-                'message' => $this->t->_('%field% is required', ['field' => $this->t->_('Featured Image')])
+                'message' => $this->t->_('%field% is required', ['field' => $this->t->_('Featured Intro Image')])
             ])
         );
-        $this->add($title);
+        $this->add($introImage);
 
         // Intro Text
         $introText = new TextArea('introtext', [
@@ -78,6 +78,14 @@ class AdminContentEditForm extends Form
         $introText->setLabel($this->t->_('Intro Text'));
         $introText->setFilters(['escapeHtml', 'string']);
         $this->add($introText);
+
+        // Featured full text image
+        $fullTextImage = new Text('fulltextImage', [
+            'class' => 'form-control', 'readonly' => 'readonly'
+        ]);
+        $fullTextImage->setLabel($this->t->_('Featured Full text Image'));
+        $fullTextImage->setFilters('string');
+        $this->add($fullTextImage);
 
         // Full Text
         $fullText = new TextArea('fulltext', [
@@ -195,19 +203,17 @@ class AdminContentEditForm extends Form
             }
         }
         $entity->setMetadata(json_encode($meta));
+
+        $images = ['introImage' => $data['introImage'], 'fulltextImage' => $data['fulltextImage']];
+        $entity->setImages(json_encode($images));
+
         parent::bind($data, $entity, $whitelist);
     }
 
     public function setEntity($entity)
     {
-        $meta = $entity->getMetadataArray();
-        if ($meta != null) {
-            foreach ($meta as $key => $val) {
-                if ($this->has($key)) {
-                    $this->get($key)->setDefault($val);
-                }
-            }
-        }
+        $this->mapEntity($entity->getMetadataArray());
+        $this->mapEntity($entity->getImagesArray());
         parent::setEntity($entity);
     }
 }
