@@ -15,8 +15,28 @@ define('APP_PATH', ROOT_PATH . 'app/');
 define('MEDIA_PATH', PUBLIC_PATH . 'media/');
 
 // Check phalcon framework installation.
-if (!extension_loaded('phalcon')) {
-    printf('Install Phalcon framework %s', '> 3.0.x');
+if (!extension_loaded('phalcon') || phpversion("phalcon") < 3) {
+    printf('Install Phalcon PHP Framework %s<br />', '>= 3.x.x');
+    $path = dirname(__DIR__) . DIRECTORY_SEPARATOR;
+
+    $phalconSo = getPhalconSo();
+    $error = false;
+    switch ($phalconSo) {
+        case "php":
+            echo "Your PHP version needs to be >= 5.6<br />";
+            $error = true;
+            break;
+        case "cos":
+            $error = true;
+            break;
+    }
+
+    if (!$error) {
+        $url = "https://github.com/magnxpyr/phalcon.so/releases/download/phalcon3.2/";
+        echo "We detected a possible compatible phalcon.so: <a href='" . $url . $phalconSo ."'>$phalconSo</a><br />";
+    }
+    echo "If you're running on cPanel, check the <a href='https://github.com/magnxpyr/phalcon.so' target='_blank'>following documentation</a> on how you could setup Phalcon PHP Framework.<br />";
+    echo "If you have your own server, check the <a href='https://phalconphp.com/en/download/linux' target='_blank'>documentation</a> on how to get started.";
     exit(1);
 }
 
@@ -24,4 +44,43 @@ require_once APP_PATH . 'engine/Bootstrap.php';
 
 $bootstrap = new Bootstrap();
 $bootstrap->run();
+
+
+function getPhalconSo()
+{
+    $phpVersion = substr(phpversion(), 0, 3);
+    $kernel = php_uname("r");
+    $kernelVersion = substr($kernel, 0, 1);
+
+    $os = null;
+    if (strpos($kernel, "el6") !== false) {
+        $os = "el6";
+    } elseif (strpos($kernel, "el7") !== false) {
+        $os = "el7";
+    }
+
+
+    $url = "phalcon";
+    switch ((string) $phpVersion) {
+        case "5.6": $url .= "php56"; break;
+        case "7.0": $url .= "php70"; break;
+        case "7.1": $url .= "php71"; break;
+        default: return "php";
+    }
+
+    switch ($os) {
+        case "el6": $url .= "cos6"; break;
+        case "el7": $url .= "cos7"; break;
+        default:
+            switch ($kernelVersion) {
+                case 2: $url .= "cos6"; break;
+                case 3: $url .= "cos7"; break;
+                default: return "cos";
+            }
+    }
+
+    $url .= ".so";
+
+    return $url;
+}
 
