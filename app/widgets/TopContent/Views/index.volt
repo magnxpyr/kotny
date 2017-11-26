@@ -1,15 +1,15 @@
 <div class="newsfeed-wrapper">
-    <h1 class="title">{{ params['widget'] }}</h1>
+    <h3 class="title">{{ params['widget'] }}</h3>
     <div class="news-container container">
         <div class="news-wrapper">
             {% for item in model %}
                 {% set images = item.content.getImagesArray() %}
                 <div class="news-box">
                     <div class="overlay"></div>
-                    <a class="wrap" href="">
+                    <a class="wrap" href="{{ url(item.category.alias ~ "/" ~ item.content.id ~ "-" ~ item.content.alias) }}">
                         {% if images and images.introImage %}
                         <div class="news-image">
-                            <img src="{{ images.introImage }}">
+                            <div class="bg-image" style="background-image: url('{{ images.introImage }}')"></div>
                         </div>
                         {% endif %}
                         <div class="text-wrapper">

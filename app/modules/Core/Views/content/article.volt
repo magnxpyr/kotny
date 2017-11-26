@@ -7,8 +7,8 @@
     {% endif %}
     <div class="post-wrapper">
         {% if images and images.fulltextImage %}
-        <div class="post-featured-images row">
-            <img src="{{ images.fulltextImage }}"/>
+        <div class="post-featured-images">
+            <div class="img"  style="background-image: url('{{ images.fulltextImage }}')"/>
         </div>
         {% endif %}
         <h2 class="post-title">{{ model.content.title }}</h2>
