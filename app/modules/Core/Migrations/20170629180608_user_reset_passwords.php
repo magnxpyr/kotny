@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * @copyright   2006 - 2017 Magnxpyr Network
  * @license     New BSD License; see LICENSE
@@ -12,55 +12,53 @@ use Phalcon\Db\Index;
 
 class UserResetPasswordsMigration extends Migration
 {
+    const TABLE_NAME = 'user_reset_passwords';
+
     public function up()
     {
         $this->morphTable(
-            'user_reset_passwords',
-            array(
-                'columns' => array(
-                    new Column('id', array(
-                            'type' => Column::TYPE_INTEGER,
-                            'unsigned' => true,
-                            'notNull' => true,
-                            'autoIncrement' => true,
-                            'size' => 11,
-                            'first' => true
-                        )
-                    ),
-                    new Column('user_id', array(
-                            'type' => Column::TYPE_INTEGER,
-                            'unsigned' => true,
-                            'notNull' => true,
-                            'size' => 11,
-                            'after' => 'id'
-                        )
-                    ),
-                    new Column('token', array(
-                            'type' => Column::TYPE_CHAR,
-                            'notNull' => true,
-                            'size' => 64,
-                            'after' => 'user_id'
-                        )
-                    ),
-                    new Column('expires', array(
-                            'type' => Column::TYPE_INTEGER,
-                            'notNull' => true,
-                            'size' => 11,
-                            'after' => 'token'
-                        )
-                    )
-                ),
-                'indexes' => array(
-                    new Index('PRIMARY', array('id')),
-                    new Index('UNIQUE', array('token'), 'UNIQUE')
-                ),
-                'options' => array(
+            self::TABLE_NAME,
+            [
+                'columns' => [
+                    new Column('id', [
+                        'type' => Column::TYPE_INTEGER,
+                        'unsigned' => true,
+                        'notNull' => true,
+                        'autoIncrement' => true,
+                        'size' => 11,
+                        'first' => true
+                    ]),
+                    new Column('user_id', [
+                        'type' => Column::TYPE_INTEGER,
+                        'unsigned' => true,
+                        'notNull' => true,
+                        'size' => 11,
+                        'after' => 'id'
+                    ]),
+                    new Column('token', [
+                        'type' => Column::TYPE_CHAR,
+                        'notNull' => true,
+                        'size' => 64,
+                        'after' => 'user_id'
+                    ]),
+                    new Column('expires', [
+                        'type' => Column::TYPE_INTEGER,
+                        'notNull' => true,
+                        'size' => 11,
+                        'after' => 'token'
+                    ])
+                ],
+                'indexes' => [
+                    new Index('PRIMARY', ['id']),
+                    new Index('UNIQUE', ['token'], 'UNIQUE')
+                ],
+                'options' => [
                     'TABLE_TYPE' => 'BASE TABLE',
                     'AUTO_INCREMENT' => '1',
                     'ENGINE' => 'InnoDB',
                     'TABLE_COLLATION' => 'utf8_general_ci'
-                )
-            )
+                ]
+            ]
         );
     }
 }

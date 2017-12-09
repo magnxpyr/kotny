@@ -1,0 +1,109 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <h3>Pre-Installation Check</h3>
+            <p>To install Magnxpyr CMS your setup must meet the requirements below.</p>
+
+            <table class="table table-striped table-condensed">
+                <tbody>
+                    <tr>
+                        <td class="item">PHP Version &gt;= 5.6</td>
+                        <td><?= isRequired(version_compare($required['php'], '5.6', '>=')) ?></td>
+                    </tr>
+                    <tr>
+                        <td class="item">Phalcon Version &gt;= 3.0</td>
+                        <td><?= isRequired(version_compare($required['phalcon'], '3.2', '>=')) ?></td>
+                    </tr>
+                    <tr>
+                        <td class="item">Zip Support</td>
+                        <td><?= isRequired($required['zip']) ?></td>
+                    </tr>
+                    <tr>
+                        <td class="item">Database Support (<?= $required['db'] ?>)</td>
+                        <td><?= isRequired($required['db']) ?></td>
+                    </tr>
+                    <tr>
+                        <td class="item">Json Support</td>
+                        <td><?= isRequired($required['json']) ?></td>
+                    </tr>
+                    <tr>
+                        <td class="item">Mcrypt Support</td>
+                        <td><?= isRequired($required['mcrypt']) ?></td>
+                    </tr>
+                    <tr>
+                        <td class="item">Writable Root</td>
+                        <td><?= isRequired($required['writableRoot']) ?></td>
+                    </tr>
+                    <tr>
+                        <td class="item">Writable Modules</td>
+                        <td><?= isRequired($required['writableModules']) ?></td>
+                    </tr>
+                    <tr>
+                        <td class="item">Writable Widgets</td>
+                        <td><?= isRequired($required['writableWidgets']) ?></td>
+                    </tr>
+                    <tr>
+                        <td class="item">Writable Media</td>
+                        <td><?= isRequired($required['writableMedia']) ?></td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="2"></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        <div class="col-md-6">
+            <h3>Recommended settings</h3>
+            <p>These settings are recommended, but not mandatory.</p>
+
+            <table class="table table-striped table-condensed">
+                <thead>
+                <tr>
+                    <th>Directive</th>
+                    <th>Recommended</th>
+                    <th>Actual</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td class="item">Zlib Compression Support</td>
+                    <td><?= isRecommended(true) ?></td>
+                    <td><?= isRecommended($recommended['zlib']) ?></td>
+                </tr>
+                <tr>
+                    <td class="item">Magic Quotes Runtime</td>
+                    <td><?= isRecommended(false, true) ?></td>
+                    <td><?= isRecommended($recommended['magicQuotes'], true) ?></td>
+                </tr>
+                <tr>
+                    <td class="item">Zlib Support</td>
+                    <td><?= isRecommended(true) ?></td>
+                    <td><?= isRecommended($recommended['zlib']) ?></td>
+                </tr>
+                <tr>
+                    <td class="item">File Uploads</td>
+                    <td><?= isRecommended(true) ?></td>
+                    <td><?= isRecommended($recommended['fileUploads']) ?></td>
+                </tr>
+                <tr>
+                    <td class="item">Safe Mode</td>
+                    <td><?= isRecommended(false, true) ?></td>
+                    <td><?= isRecommended($recommended['safeMode'], true) ?></td>
+                </tr>
+                <tr>
+                    <td class="item">Display Errors</td>
+                    <td><?= isRecommended(false, true) ?></td>
+                    <td><?= isRecommended($recommended['displayErrors'], true) ?></td>
+                </tr>
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td colspan="2"></td>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>

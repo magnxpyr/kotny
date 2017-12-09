@@ -7,6 +7,7 @@
  */
 
 namespace Engine;
+
 use Phalcon\Mvc\User\Component;
 
 /**

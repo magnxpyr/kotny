@@ -12,10 +12,12 @@ use Phalcon\Db\Index;
 
 class WidgetMigration extends Migration
 {
+    const TABLE_NAME = 'widget';
+
     public function up()
     {
         $this->morphTable(
-            'widget',
+            self::TABLE_NAME,
             [
                 'columns' => [
                     new Column('id', [

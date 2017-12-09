@@ -35,7 +35,7 @@ class ErrorHandler extends Plugin
         if (DEV) {
             throw $exception;
         } else {
-            $this->logger->error('Page error: ', $exception);
+            $this->logger->error('Page error: ', [$exception->getMessage()]);
         }
 
         if ($exception instanceof Exception) {

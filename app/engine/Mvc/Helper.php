@@ -46,6 +46,8 @@ class Helper extends Component
         'footer-mid' => 'footer-mid', 'footer-right' => 'footer-right'
     ];
 
+    private $dbAdaptors = ['mysql' => 'Mysql', 'postgresql' => 'PostgreSQL', 'oracle' => 'Oracle'];
+
     /**
      * Get status by id of a field if can be displayed
      * @param $id
@@ -106,6 +108,14 @@ class Helper extends Component
     public function getTemplateSections()
     {
         return $this->templateSections;
+    }
+
+    /**
+     * @return array
+     */
+    public function getDbAdaptors()
+    {
+        return $this->dbAdaptors;
     }
 
     /**

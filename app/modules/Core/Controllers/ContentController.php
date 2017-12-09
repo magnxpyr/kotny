@@ -60,8 +60,8 @@ class ContentController extends Controller
     public function articleAction($catAlias, $articleId, $articleAlias)
     {
         $this->view->setVar('metaAuthor', '');
-        $this->view->setVar('metaDescription', $this->config->app->meta->description);
-        $this->view->setVar('metaKeywords', $this->config->app->meta->keywords);
+        $this->view->setVar('metaDescription', $this->config->metaDesc);
+        $this->view->setVar('metaKeywords', $this->config->metaKeys);
 
         $model = $this->modelsManager->createBuilder()
             ->columns('content.*, category.*, user.*, viewLevel.*')

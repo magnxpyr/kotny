@@ -294,14 +294,16 @@ abstract class Migration extends Injectable
 
     /**
      * Inserts multiple rows in a table
+     *
      * @param string $tableName
-     * @param array $rows
+     * @param array $values
+     * @param array $fields
      */
-    public function batchInsert($tableName, $rows)
+    public function batchInsert($tableName, $values, $fields)
     {
         $this->db->begin();
-        foreach ($rows as $row) {
-            $this->db->insert($tableName, $row);
+        foreach ($values as $value) {
+            $this->db->insert($tableName, $value, $fields);
         }
         $this->db->commit();
     }

@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="generator" content="Magnxpyr CMS">
+    <meta name="description" content="Magnxpyr CMS Installer">
+    <meta name="keywords" content="cms, installer">
+    <meta name="robots" content="NOINDEX, NOFOLLOW">
+    <title>Magnxpyr CMS</title>
+
+    <?= $this->tag->stylesheetLink('https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css') ?>
+    <?= $this->tag->stylesheetLink('https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css') ?>
+    <?= $this->tag->stylesheetLink('assets/default/css/main.min.css') ?>
+    <style>
+        body {
+            line-height: 1.9em;
+            border-top: dashed 3px #0099CC;
+            padding: 0;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            padding: 50px 0;
+        }
+
+        #logo {
+            font-family: 'Open Sans', sans-serif;
+            color: #555;
+            text-decoration: none;
+            text-transform: uppercase;
+            font-size: 80px;
+            font-weight: 800;
+            letter-spacing: -3px;
+            line-height: 1;
+            text-shadow: #EDEDED 3px 2px 0;
+            position: relative;
+        }
+
+        #logo:after {
+            content: "magnxpyr cms";
+            position: absolute;
+            left: 10px;
+            top: 6px;
+        }
+
+        #logo:after {
+            background-image: -webkit-linear-gradient(left top, transparent 0%, transparent 25%, #555 25%, #555 50%, transparent 50%, transparent 75%, #555 75%);
+            background-size: 4px 4px;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            z-index: -5;
+            display: block;
+            text-shadow: none;
+        }
+
+        .icons {
+            font-size: 20px;
+        }
+
+        .btn-group {
+            -webkit-border-top-right-radius: 4px;
+            border-top-right-radius: 4px;
+            -webkit-border-bottom-right-radius: 4px;
+            border-bottom-right-radius: 4px;
+            -moz-border-radius-topright: 4px;
+            -moz-border-radius-bottomright: 4px;
+        }
+
+        .content {
+            padding: 20px;
+        }
+
+        .tab-content {
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+<header class="container" id="header">
+    <div class="col-md-10" id="logo">Magnxpyr Cms</div>
+    <div class="right-box social-logo col-md-2">
+        <a href="https://www.facebook.com/magnxpyr" target="_blank"><i class="facebook icons"></i></a>
+        <a href="https://twitter.com/magnxpyr" target="_blank"><i class="twitter icons"></i></a>
+    </div>
+</header>
+<div id="flash-messages"></div>
+<div class="main">
+    <div class="container tabs-wrap">
+        <ul class="nav nav-tabs">
+            <li class="active disabled" role="presentation">
+                <a role="tab" aria-expanded="true" aria-controls="requirements-tab" href="#requirements-tab" data-toggle="tab">Requirements</a>
+            </li>
+            <li class="disabled">
+                <a role="tab" aria-expanded="false" aria-controls="configuration-tab" href="#configuration-tab" data-toggle="tab">Configuration</a>
+            </li>
+            <li class="disabled">
+                <a role="tab" aria-expanded="false" aria-controls="overview-tab" href="#overview-tab" data-toggle="tab">Overview</a>
+            </li>
+        </ul>
+
+        <div class="tab-content">
+            <div class="tab-pane active" id="requirements-tab" role="tabpanel">
+                <?php $this->partial("index/requirements", ['required' => $required, 'recommended' => $recommended]); ?>
+                <div class="btn-group pull-right">
+                    <a href="#" class="btn btn-primary" onclick="checkRequirements();" rel="next" title="Next">
+                        <i class="fa fa-arrow-right"></i> Next</a>
+                </div>
+            </div>
+
+            <div class="tab-pane" id="configuration-tab" role="tabpanel">
+                <form id="configuration">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h3>Database</h3>
+                            <div class="content">
+                                <div class="form-group row">
+                                    <?= $form->label('db-adapter', ['class' => 'control-label col-sm-4']) ?>
+                                    <div class="col-sm-8" id="wrapper-db-adaptor">
+                                        <?= $form->render('db-adapter', ['class' => 'form-control', 'required' => "required"]) ?>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <?= $form->label('db-hostname', ['class' => 'control-label col-sm-4']) ?>
+                                    <div class="col-sm-8" id="wrapper-db-hostname">
+                                        <?= $form->render('db-hostname', ['class' => 'form-control', 'required' => "required"]) ?>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <?= $form->label('db-username', ['class' => 'control-label col-sm-4']) ?>
+                                    <div class="col-sm-8" id="wrapper-db-username">
+                                        <?= $form->render('db-username', ['class' => 'form-control', 'required' => "required"]) ?>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <?= $form->label('db-password', ['class' => 'control-label col-sm-4']) ?>
+                                    <div class="col-sm-8" id="wrapper-db-password">
+                                        <?= $form->render('db-password', ['class' => 'form-control', 'required' => "required"]) ?>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <?= $form->label('db-name', ['class' => 'control-label col-sm-4']) ?>
+                                    <div class="col-sm-8" id="wrapper-db-name">
+                                        <?= $form->render('db-name', ['class' => 'form-control', 'required' => "required"]) ?>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <?= $form->label('db-port', ['class' => 'control-label col-sm-4']) ?>
+                                    <div class="col-sm-8" id="wrapper-db-name">
+                                        <?= $form->render('db-port', ['class' => 'form-control', 'required' => "required"]) ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <h3>Super User Account Details</h3>
+                            <div class="content">
+                                <div class="form-group row">
+                                    <?= $form->label('su-email', ['class' => 'control-label col-sm-4']) ?>
+                                    <div class="col-sm-8" id="wrapper-su-email">
+                                        <?= $form->render('su-email', ['class' => 'form-control', 'required' => "required"]) ?>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <?= $form->label('su-username', ['class' => 'control-label col-sm-4']) ?>
+                                    <div class="col-sm-8" id="wrapper-su-username">
+                                        <?= $form->render('su-username', ['class' => 'form-control', 'required' => "required"]) ?>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <?= $form->label('su-password', ['class' => 'control-label col-sm-4']) ?>
+                                    <div class="col-sm-8" id="wrapper-su-password">
+                                        <?= $form->render('su-password', ['class' => 'form-control', 'required' => "required"]) ?>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <?= $form->label('su-password-repeat', ['class' => 'control-label col-sm-4']) ?>
+                                    <div class="col-sm-8" id="wrapper-su-password">
+                                        <?= $form->render('su-password-repeat', ['class' => 'form-control', 'required' => "required"]) ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </form>
+                </div>
+
+                <div class="btn-group pull-right">
+                    <a class="btn" href="#" rel="prev" title="Previous">
+                        <i class="fa fa-arrow-left"></i> Previous</a>
+                    <a class="btn btn-primary" href="#" onclick="checkConfiguration()" rel="next" title="Next">
+                        <i class="fa fa-arrow-right"></i> Next</a>
+                </div>
+            </div>
+
+            <div class="tab-pane" id="overview-tab" role="tabpanel">
+                <?php $this->partial("index/overview", ['required' => $required, 'recommended' => $recommended]); ?>
+                <?php $this->partial("index/requirements", ['required' => $required, 'recommended' => $recommended]); ?>
+                <a class="btn" href="#" rel="prev" title="Previous">
+                    <i class="fa fa-arrow-left"></i> Previous</a>
+                <a class="btn btn-primary" href="#" onclick="checkOverview()" rel="next" title="Next">
+                    <i class="fa fa-arrow-right"></i> Install</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?= $this->tag->javascriptInclude('https://code.jquery.com/jquery-3.2.1.min.js') ?>
+<?= $this->tag->javascriptInclude('https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js') ?>
+<?= $this->tag->javascriptInclude('assets/common/js/mg.js') ?>
+<?= $this->tag->javascriptInclude('assets/default/js/app.js') ?>
+<?= $this->tag->javascriptInclude('assets/default/js/mg.js') ?>
+<?= $this->tag->javascriptInclude('assets/default/js/main.js') ?>
+<script>
+    $('a[rel=prev]').click(function () {
+        var li = $('.nav-tabs > .active').prev('li');
+        li.removeClass('disabled');
+        li.find('a').trigger('click');
+        li.addClass('disabled')
+    });
+
+    $(".nav-tabs").on("click", ".disabled",function (e) {
+        e.preventDefault();
+        return false;
+    });
+
+    function checkRequirements() {
+        <?= $isValid ? 'next();' : '' ?>
+    }
+
+    function checkConfiguration() {
+        $.ajax({
+            type: "POST",
+            url: "<?= $this->url->get("/checkConfiguration") ?>",
+            data: $('form#configuration').serialize(),
+            success: function (data) {
+                if (!data.success) {
+                    var error = '';
+                    $.each(data.errors, function(k, v) {
+                        error += '<div class="alert alert-danger">' + v + '</div>'
+                    });
+                    $('#flash-messages').html(error);
+                } else {
+                    $('#flash-messages').html('');
+                    $.each($('form#configuration').serializeArray(), function(i, field) {
+                        $('#ow-' + field.name).html(field.value)
+                    });
+                    next();
+                }
+            }
+        });
+
+    }
+
+    function checkOverview() {
+        next();
+    }
+
+    function next() {
+        var li = $('.nav-tabs > .active').next('li');
+        li.removeClass('disabled');
+        li.find('a').trigger('click');
+        li.addClass('disabled')
+    }
+</script>
+</body>
+</html>
+
+<?php
+function isRequired($value) {
+    if ($value) {
+        echo '<span class="label label-success">Yes</span>';
+    } else {
+        echo '<span class="label label-danger">No</span>';
+    }
+}
+
+function isRecommended($value, $reverse = false) {
+    if ($value) {
+        echo '<span class="label label-' . ($reverse ? 'danger' : 'success') . '">On</span>';
+    } else {
+        echo '<span class="label label-' . ($reverse ? 'success' : 'danger') . '">Off</span>';
+    }
+}
+?>

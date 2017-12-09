@@ -22,7 +22,7 @@ namespace Engine;
  * @property \Phalcon\Mvc\View $viewWidget
  * @property \Phalcon\Mvc\View\Simple $viewSimple
  * @property \Phalcon\Mailer\Manager $mail
- * @property \Phalcon\Config $config
+ * @property \Engine\Mvc\Config\ConfigSample $config
  * @property \Phalcon\Logger\Adapter $logger
  * @property \Phalcon\Cache\Backend $cache
  * @property \Phalcon\Translate\Adapter\NativeArray $t

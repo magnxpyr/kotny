@@ -35,12 +35,12 @@ abstract class Controller extends \Phalcon\Mvc\Controller
     {
         $this->view->setVar('token', $this->tokenManager->getToken());
         $this->view->setVar('title', '');
-        $this->view->setVar('metaShowAuthor', $this->config->app->meta->showAuthor);
-        $this->view->setVar('metaDescription', $this->config->app->meta->description);
+        $this->view->setVar('metaShowAuthor', $this->config->metaAuthor);
+        $this->view->setVar('metaDescription', $this->config->metaDesc);
         $this->view->setVar('metaAuthor', '');
-        $this->view->setVar('metaKeywords', $this->config->app->meta->keywords);
-        $this->view->setVar('metaContentRights', $this->config->app->meta->contentRights);
-        $this->view->setVar('metaRobots', $this->config->app->meta->robots);
+        $this->view->setVar('metaKeywords', $this->config->metaKeys);
+        $this->view->setVar('metaContentRights', $this->config->metaRights);
+        $this->view->setVar('metaRobots', $this->config->metaRobots);
     }
 
     /**
@@ -52,15 +52,15 @@ abstract class Controller extends \Phalcon\Mvc\Controller
         if($title === null) {
             return;
         }
-        switch($this->config->app->siteNameLocation) {
+        switch($this->config->siteNameLocation) {
             case 0:
                 $this->tag->setTitle($title);
                 break;
             case 1:
-                $this->tag->setTitle($this->config->app->siteName . ' | ' . $title);
+                $this->tag->setTitle($this->config->siteName . ' | ' . $title);
                 break;
             case 2:
-                $this->tag->setTitle($title . '|' . $this->config->app->siteName);
+                $this->tag->setTitle($title . '|' . $this->config->siteName);
                 break;
         }
         if(!$headerOnly) {

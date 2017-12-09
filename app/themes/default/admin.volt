@@ -33,7 +33,6 @@
 {{ javascript_include("https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js") }}
 {{ javascript_include("https://cdn.datatables.net/responsive/2.1.1/js/dataTables.responsive.min.js") }}
 {{ javascript_include("https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap.min.js") }}
-{{ javascript_include("https://cdn.datatables.net/responsive/2.1.1/js/responsive.bootstrap.min.js") }}
 {{ javascript_include("https://cdnjs.cloudflare.com/ajax/libs/jQuery-slimScroll/1.3.8/jquery.slimscroll.min.js") }}
 {{ javascript_include("https://cdn.datatables.net/plug-ins/1.10.15/dataRender/datetime.js") }}
 {{ javascript_include("https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js") }}

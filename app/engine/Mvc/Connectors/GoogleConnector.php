@@ -74,11 +74,11 @@ class GoogleConnector extends Injectable
     {
         $client = new \Google_Client();
         $client->setScopes($this->scopes);
-        $client->setApplicationName($this->config->app->siteName);
-        $client->setClientId($this->config->api->google->oauth->clientId);
-        $client->setClientSecret($this->config->api->google->oauth->clientSecret);
+        $client->setApplicationName($this->config->siteName);
+        $client->setClientId($this->config->gOAuthId);
+        $client->setClientSecret($this->config->gOAuthSecret);
         $client->setRedirectUri($this->helper->getUri('user/login-with-google'));
-        $client->setDeveloperKey($this->config->api->google->oauth->developerKey);
+        $client->setDeveloperKey($this->config->gOAuthKey);
 
         return $client;
     }

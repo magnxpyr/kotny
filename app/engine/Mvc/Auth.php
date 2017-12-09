@@ -32,13 +32,6 @@ class Auth extends Component
     const WORK_FACTOR = 12;
     const SELECTOR_BYTES = 8;
     const TOKEN_BYTES = 32;
-    
-    /**
-     * Cookie settings from config
-     *
-     * @var \stdClass
-     */
-    private $cookie;
 
     /**
      * Check if current user can edit articles
@@ -46,14 +39,6 @@ class Auth extends Component
      * @var boolean
      */
     private $isEditor;
-
-    /**
-     * Initialize Auth
-     */
-    public function __construct()
-    {
-        $this->cookie = $this->config->app->cookie;
-    }
 
     /**
      * Login user - normal way
@@ -97,8 +82,8 @@ class Auth extends Component
      */
     public function loginWithRememberMe($redirect = true)
     {
-        if ($this->cookies->has($this->cookie->name)) {
-            $cookie = explode(':', $this->cookies->get($this->cookie->name)->getValue());
+        if ($this->cookies->has($this->config->cookieName)) {
+            $cookie = explode(':', $this->cookies->get($this->config->cookieName)->getValue());
             if (count($cookie) == 2) {
                 $model = $this->modelsManager->createBuilder()
                     ->columns('auth.*, user.*')
@@ -125,7 +110,7 @@ class Auth extends Component
                     }
                     $model->auth->delete();
                 } else {
-                    $this->cookies->get($this->cookie->name)->delete();
+                    $this->cookies->get($this->config->cookieName)->delete();
                 }
             }
         }
@@ -177,15 +162,15 @@ class Auth extends Component
         }
         $remember->setSelector($selector);
         $remember->setToken($this->security->hash($token));
-        $remember->setExpires($this->cookie->expire);
+        $remember->setExpires($this->config->cookieExpire);
         if ($remember->save()) {
             $this->cookies->set(
-                $this->cookie->name,
+                $this->config->cookieName,
                 "$selector:$token",
-                $this->cookie->expire,
-                $this->cookie->path,
-                $this->cookie->secure,
-                $this->cookie->domain,
+                $this->config->cookieExpire,
+                $this->config->cookiePath,
+                $this->config->cookieSecure,
+                $this->config->cookieDomain,
                 true);
         }
     }
@@ -349,7 +334,7 @@ class Auth extends Component
      */
     public function hasRememberMe()
     {
-        return $this->cookies->has($this->cookie->name);
+        return $this->cookies->has($this->config->cookieName);
     }
 
     /**
@@ -439,14 +424,14 @@ class Auth extends Component
     public function remove()
     {
         $this->setReturnUrl();
-        $fbAppId = $this->config->api->facebook->appId; //fb id
-        if ($this->cookies->has($this->cookie->name)) {
-            $cookie = explode(':', $this->cookies->get($this->cookie->name));
+        $fbAppId = $this->config->fbId; //fb id
+        if ($this->cookies->has($this->config->cookieName)) {
+            $cookie = explode(':', $this->cookies->get($this->config->cookieName));
             $userAuthTokens = UserAuthTokens::findFirstBySelector($cookie[0]);
             if ($userAuthTokens) {
                 $userAuthTokens->delete();
             }
-            $this->cookies->delete($this->cookie->name);
+            $this->cookies->delete($this->config->cookieName);
         }
 
         $this->session->remove('auth');
@@ -487,7 +472,7 @@ class Auth extends Component
     public function getUserRole()
     {
         $roleId = $this->getUserRoleId();
-        if ($this->config->app->aclAdapter == AclHandler::MEMORY) {
+        if ($this->config->aclAdapter == AclHandler::MEMORY) {
             $roles = $this->acl->getRoles();
             foreach ($roles as $key => $role) {
                 if ((int)$roleId == $key + 1) {

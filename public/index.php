@@ -12,7 +12,13 @@ define('DS', DIRECTORY_SEPARATOR);
 define('ROOT_PATH', dirname(__DIR__) . DS);
 define('PUBLIC_PATH', __DIR__ . DS);
 define('APP_PATH', ROOT_PATH . 'app/');
+define('LOGS_PATH', ROOT_PATH . 'logs/');
 define('MEDIA_PATH', PUBLIC_PATH . 'media/');
+define('THEMES_PATH', APP_PATH . 'themes/');
+define('MODULES_PATH', APP_PATH . 'modules/');
+define('WIDGETS_PATH', APP_PATH . 'widgets/');
+define('CACHE_PATH', ROOT_PATH . 'cache/');
+define('TEMP_PATH', CACHE_PATH . 'tmp/');
 
 // Check phalcon framework installation.
 if (!extension_loaded('phalcon') || phpversion("phalcon") < 3) {
@@ -40,10 +46,15 @@ if (!extension_loaded('phalcon') || phpversion("phalcon") < 3) {
     exit(1);
 }
 
-require_once APP_PATH . 'engine/Bootstrap.php';
-
-$bootstrap = new Bootstrap();
-$bootstrap->run();
+//if (is_dir(ROOT_PATH . 'installer')) {
+//    require_once ROOT_PATH . 'installer/Bootstrap.php';
+//    $bootstrap = new Bootstrap();
+//    $bootstrap->run();
+//} else {
+    require_once APP_PATH . 'engine/Bootstrap.php';
+    $bootstrap = new Bootstrap();
+    $bootstrap->run();
+//}
 
 
 function getPhalconSo()
