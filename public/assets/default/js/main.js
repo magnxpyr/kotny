@@ -3,6 +3,7 @@
 $(document).ready(function(){
     initializeMenu();
     hideAlertMesssage();
+    checkHTMLBodyHeight();
 });
 
 $(window).on('load resize', function() {
@@ -15,7 +16,9 @@ function checkHTMLBodyHeight() {
     var HTMLBody = $('body').height();
     var screen = $(window).height();
 
-    if(HTMLBody < screen) {
+    if(screen > HTMLBody) {
+        $('.main-footer').removeClass('stickyFooter');
+    } else {
         $('.main-footer').addClass('stickyFooter');
     }
 }

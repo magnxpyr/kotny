@@ -5,7 +5,6 @@
             {% for item in model %}
                 {% set images = item.content.getImagesArray() %}
                 <div class="news-box">
-                    <div class="overlay"></div>
                     <a class="wrap" href="{{ url(item.category.alias ~ "/" ~ item.content.id ~ "-" ~ item.content.alias) }}">
                         {% if images and images.introImage %}
                         <div class="news-image">

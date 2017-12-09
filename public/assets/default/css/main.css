@@ -9273,10 +9273,13 @@ button.close {
   background-repeat: no-repeat;
 }
 .grid-box-shadow {
-  transition: 0.3s all ease-in-out;
+  -webkit-box-shadow: 0 13px 25px -9px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 0 13px 25px -9px rgba(0, 0, 0, 0.2);
   box-shadow: 0 13px 25px -9px rgba(0, 0, 0, 0.2);
 }
 .grid-box-shadow:hover {
+  -webkit-box-shadow: 0 1px 1px 1px rgba(0, 0, 0, 0.06);
+  -moz-box-shadow: 0 1px 1px 1px rgba(0, 0, 0, 0.06);
   box-shadow: 0 1px 1px 1px rgba(0, 0, 0, 0.06);
 }
 .alert {
@@ -9620,18 +9623,56 @@ p {
 .newsfeed-wrapper {
   padding: 90px 0 0;
 }
+.newsfeed-wrapper:before,
+.newsfeed-wrapper:after {
+  content: " ";
+  display: table;
+}
+.newsfeed-wrapper:after {
+  clear: both;
+}
+.newsfeed-wrapper:before,
+.newsfeed-wrapper:after {
+  content: " ";
+  display: table;
+}
+.newsfeed-wrapper:after {
+  clear: both;
+}
+.newsfeed-wrapper .title {
+  margin: 30px;
+}
+.newsfeed-wrapper .title:before,
+.newsfeed-wrapper .title:after {
+  content: " ";
+  display: table;
+}
+.newsfeed-wrapper .title:after {
+  clear: both;
+}
+.newsfeed-wrapper .title:before,
+.newsfeed-wrapper .title:after {
+  content: " ";
+  display: table;
+}
+.newsfeed-wrapper .title:after {
+  clear: both;
+}
 .newsfeed-wrapper .news-box {
   position: relative;
   padding: 15px;
 }
 .newsfeed-wrapper .news-box a {
-  transition: 0.3s all ease-in-out;
+  -webkit-box-shadow: 0 13px 25px -9px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 0 13px 25px -9px rgba(0, 0, 0, 0.2);
   box-shadow: 0 13px 25px -9px rgba(0, 0, 0, 0.2);
   color: #333333;
   background-color: #ffffff;
   display: block;
 }
 .newsfeed-wrapper .news-box a:hover {
+  -webkit-box-shadow: 0 1px 1px 1px rgba(0, 0, 0, 0.06);
+  -moz-box-shadow: 0 1px 1px 1px rgba(0, 0, 0, 0.06);
   box-shadow: 0 1px 1px 1px rgba(0, 0, 0, 0.06);
 }
 .newsfeed-wrapper .news-box a .news-image {
@@ -11205,10 +11246,13 @@ fieldset[disabled] .btn-yahoo.focus {
   padding: 15px;
 }
 .main-wrapper .articles-list-wrapper .container .inner {
-  transition: 0.3s all ease-in-out;
+  -webkit-box-shadow: 0 13px 25px -9px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 0 13px 25px -9px rgba(0, 0, 0, 0.2);
   box-shadow: 0 13px 25px -9px rgba(0, 0, 0, 0.2);
 }
 .main-wrapper .articles-list-wrapper .container .inner:hover {
+  -webkit-box-shadow: 0 1px 1px 1px rgba(0, 0, 0, 0.06);
+  -moz-box-shadow: 0 1px 1px 1px rgba(0, 0, 0, 0.06);
   box-shadow: 0 1px 1px 1px rgba(0, 0, 0, 0.06);
 }
 .main-wrapper .articles-list-wrapper .container .inner .article-info {
