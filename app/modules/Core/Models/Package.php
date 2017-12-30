@@ -246,14 +246,8 @@ class Package extends Model
      */
     public function initialize()
     {
-        $this->setSource('package');
         $this->hasMany('id', Migration::class, 'package_id', ['alias' => 'migration', 'reusable' => true]);
         $this->hasMany('id', Widget::class, 'package_id', ['alias' => 'widget', 'reusable' => true]);
-    }
-
-    public function getSource()
-    {
-        return 'package';
     }
 
     public static function getCacheActiveModules()

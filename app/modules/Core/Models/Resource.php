@@ -78,14 +78,7 @@ class Resource extends Model
      */
     public function initialize()
     {
-        $this->setSource('resource');
         $this->hasMany('id', ResourceAccess::class, 'resource_id', ['alias' => 'resourceAccess', 'reusable' => true]);
         $this->hasMany('id', AccessList::class, 'resource_id', ['alias' => 'accessList', 'reusable' => true]);
     }
-
-    public function getSource()
-    {
-        return 'resource';
-    }
-
 }

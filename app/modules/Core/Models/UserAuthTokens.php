@@ -153,13 +153,6 @@ class UserAuthTokens extends Model
      */
     public function initialize()
     {
-        $this->setSource('user_auth_tokens');
         $this->belongsTo('user_id', User::class, 'id', ['alias' => 'user', 'reusable' => true]);
     }
-
-    public function getSource()
-    {
-        return 'user_auth_tokens';
-    }
-
 }

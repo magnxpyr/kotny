@@ -82,7 +82,7 @@ class ConfigurationForm extends Form
         ]);
         $this->add($name);
 
-        // Name
+        // Port
         $port = new Numeric('db-port');
         $port->setLabel('Database Port');
         $port->setFilters('numeric');
@@ -94,6 +94,11 @@ class ConfigurationForm extends Form
         ]);
         $this->add($port);
 
+        // Prefix
+        $prefix = new Numeric('db-prefix');
+        $prefix->setLabel('Database Prefix');
+        $prefix->setFilters('string');
+        $this->add($prefix);
 
         // Email
         $email = new Email('su-email');

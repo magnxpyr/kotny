@@ -111,12 +111,6 @@ class MenuType extends Model
      */
     public function initialize()
     {
-        $this->setSource('menu_type');
         $this->hasMany('id', Menu::class, 'menu_type_id', ['alias' => 'menu', 'reusable' => true]);
-    }
-
-    public function getSource()
-    {
-        return 'menu_type';
     }
 }

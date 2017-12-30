@@ -30,7 +30,6 @@ class AdminMenuController extends AdminController
      */
     public function indexAction($id = null)
     {
-//        $this->assets->collection('footer-js')->addJs('vendor/jquery-ui/extra/jquery.mjs.nestedSortable.js');
         $this->setTitle('Menu');
 
         $menuId = $this->request->isPost() ? $this->request->getPost('menuType') : $id;
@@ -38,20 +37,20 @@ class AdminMenuController extends AdminController
 
         $menuType = MenuType::find(['columns' => ['id', 'title']]);
 
-//        $model = Loader::fromResultset(Menu::find([
-//            'conditions' => 'menu_type_id = ?1',
-//            'bind' => [1 => $menuId],
-//            'order' => 'lft'
-//        ]), 'viewLevel');
-//
-//        if (count($model) == 0) {
-//            $this->flash->notice("The search did not find any menu");
-//        }
+        $model = Loader::fromResultset(Menu::find([
+            'conditions' => 'menu_type_id = ?1',
+            'bind' => [1 => $menuId],
+            'order' => 'lft'
+        ]), 'viewLevel');
+
+        if (count($model) == 0) {
+            $this->flash->notice("The search did not find any menu");
+        }
 
         $this->tag->setDefault('menuType', $menuId);
 
         $this->view->setVars([
-//            'model' => $model,
+            'model' => $model,
             'menuType' => $menuType
         ]);
     }
@@ -64,7 +63,8 @@ class AdminMenuController extends AdminController
         $builder = $this->modelsManager->createBuilder()
 //            ->columns('m.id, m.title, m.status, m.parent_id, m.level, m.lft, m.rgt, m.view_level')
             ->addFrom(Menu::class, 'm')
-            ->where('m.menu_type_id = 0');
+            ->where('m.menu_type_id = 0')
+            ->orderBy('m.lft ASC');
 
         $dataTables = new DataTable();
         $dataTables->fromBuilder($builder)->sendResponse();

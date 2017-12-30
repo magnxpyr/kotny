@@ -25,43 +25,53 @@
         </div>
     </div>
 
-    <div class="box-body">
-        {{ widget.render('GridView',
-            [
-                'columns': [
-                    ['data': 'id', 'searchable': false],
-                    ['data': 'title'],
-                    ['data': 'status'],
-                    ['data': 'view_level']
-                ],
-                'url': url('admin/core/menu/search'),
-                'actions': [
-                    'update': url('admin/core/menu/edit'),
-                    'delete': url('admin/core/menu/delete')
-                ],
-                'tableId': 'table'
-            ],
-            ['cache': false]
-        ) }}
-    </div>
-
     {#<div class="box-body">#}
-        {#{{ widget.render("SortableView",#}
+        {#{{ widget.render('GridView',#}
             {#[#}
-                {#'model': model,#}
+                {#'columns': [#}
+                    {#['data': 'title'],#}
+                    {#['data': 'status'],#}
+                    {#['data': 'view_level'],#}
+                    {#['data': 'id', 'searchable': false]#}
+                {#],#}
+                {#'url': url('admin/core/menu/search'),#}
                 {#'actions': [#}
                     {#'update': url('admin/core/menu/edit'),#}
                     {#'delete': url('admin/core/menu/delete')#}
                 {#],#}
-                {#'header': ['Title', 'Status', 'View Level', 'Id'],#}
-                {#'data': [#}
-                    {#f('$model->getTitle()'),#}
-                    {#f('$this->helper->getArticleStatus($model->getStatus())'),#}
-                    {#f('$model->viewLevel->getName()'),#}
-                    {#f('$model->getId()')#}
-                {#],#}
-                {#'colSize': [4, 2, 2, 2, 2]#}
-            {#]#}
+                {#'tableId': 'table',#}
+                {#'order': [],#}
+                {#'options': [#}
+                    {#'ordering': false,#}
+                    {#'rowReorder': [#}
+                        {#'update': false,#}
+                        {#'selector': 'td:nth-child(2)'#}
+                    {#]#}
+                {#]#}
+            {#],#}
+            {#['cache': false]#}
         {#) }}#}
     {#</div>#}
+
+    <div class="box-body">
+        {{ widget.render("SortableView",
+            [
+                'model': model,
+                'actions': [
+                    'update': url('admin/core/menu/edit'),
+                    'delete': url('admin/core/menu/delete')
+                ],
+                'header': ['Title', 'Status', 'View Level', 'Id'],
+                'data': [
+                    f('$model->getTitle()'),
+                    f('$this->helper->getArticleStatus($model->getStatus())'),
+                    f('$model->viewLevel->getName()'),
+                    f('$model->getId()')
+                ],
+                'colSize': [4, 2, 2, 2, 2]
+            ]
+        ) }}
+    </div>
 </div>
+
+{#{% do assets.collection('footer-js').addJs("assets/mg_admin/js/datatables.treeGrid.js") %}#}

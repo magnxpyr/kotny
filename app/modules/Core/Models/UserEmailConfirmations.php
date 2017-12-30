@@ -140,17 +140,7 @@ class UserEmailConfirmations extends Model
      */
     public function initialize()
     {
-        $this->setSource('user_email_confirmations');
         $this->belongsTo('user_id', User::class, 'id', ['alias' => 'user', 'reusable' => true]);
-    }
-
-    /**
-     * Set table source
-     * @return string
-     */
-    public function getSource()
-    {
-        return 'user_email_confirmations';
     }
 
     /**

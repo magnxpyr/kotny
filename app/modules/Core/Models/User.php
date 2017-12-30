@@ -501,21 +501,11 @@ class User extends Model
      */
     public function initialize()
     {
-        $this->setSource('user');
         $this->hasMany('id', Content::class, 'created_by', ['alias' => 'contentCreated', 'reusable' => true]);
         $this->hasMany('id', Content::class, 'modified_by', ['alias' => 'contentModified', 'reusable' => true]);
         $this->hasMany('id', UserAuthTokens::class, 'user_id', ['alias' => 'userAuthTokens', 'reusable' => true]);
         $this->hasOne('id', UserEmailConfirmations::class, 'user_id', ['alias' => 'userEmailConfirmations', 'reusable' => true]);
         $this->hasOne('id', UserResetPasswords::class, 'user_id', ['alias' => 'userResetPasswords', 'reusable' => true]);
-    }
-
-    /**
-     * Get table source
-     * @return string
-     */
-    public function getSource()
-    {
-        return 'user';
     }
 
     public static function getCacheRoleIdKey($id)

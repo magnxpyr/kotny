@@ -19,6 +19,9 @@ class Controller extends \Engine\Widget\Controller
      */
     public function indexAction()
     {
+        $this->assets->collection('footer-js')
+            ->addJs('https://cdnjs.cloudflare.com/ajax/libs/nestedSortable/2.0.0/jquery.mjs.nestedSortable.min.js');
+
         // disable view render
         $this->setRenderView(false);
 

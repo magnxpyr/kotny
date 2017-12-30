@@ -20,11 +20,6 @@ use Phalcon\Paginator\Adapter\Model as Paginator;
 
 class AdminContentController extends AdminController
 {
-    public function initialize()
-    {
-        parent::initialize();
-    }
-
     /**
      * Index action
      */

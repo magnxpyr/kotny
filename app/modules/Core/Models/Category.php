@@ -470,15 +470,9 @@ class Category extends Model
      */
     public function initialize()
     {
-        $this->setSource('category');
         $this->hasOne('view_level', 'Module\Core\Models\ViewLevel', 'id', ['alias' => 'viewLevel', 'reusable' => true]);
         $this->hasMany('id', Content::class, 'category', ['alias' => 'content', 'reusable' => true]);
 
-    }
-
-    public function getSource()
-    {
-        return 'category';
     }
 
     /**

@@ -162,14 +162,7 @@ class AccessList extends Model
      */
     public function initialize()
     {
-        $this->setSource('access_list');
         $this->belongsTo('resource_id', Resource::class, 'id', ['alias' => 'resource', 'reusable' => true]);
         $this->belongsTo('role_id', Role::class, 'id', ['alias' => 'role', 'reusable' => true]);
     }
-
-    public function getSource()
-    {
-        return 'access_list';
-    }
-
 }

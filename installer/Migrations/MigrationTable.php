@@ -6,13 +6,15 @@
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
+namespace Migrations;
+
 use Phalcon\Db\Column;
 use Phalcon\Db\Index;
 use Engine\Package\Migration;
 
-class MigrationMigration extends Migration
+class MigrationTable extends Migration
 {
-    const TABLE_NAME = 'menu_type';
+    const TABLE_NAME = 'migration';
 
     public function up()
     {

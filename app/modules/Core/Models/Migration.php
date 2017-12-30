@@ -168,12 +168,6 @@ class Migration extends Model
      */
     public function initialize()
     {
-        $this->setSource('migration');
         $this->hasOne('package_id', Package::class, 'id', ['alias' => 'package', 'reusable' => true]);
-    }
-
-    public function getSource()
-    {
-        return 'migration';
     }
 }

@@ -10,8 +10,11 @@ namespace Installer\Controllers;
 
 use Engine\Mvc\Auth;
 use Engine\Mvc\Config\ConfigSample;
+use Engine\Mvc\Exception;
 use Installer\Forms\ConfigurationForm;
+use Migrations\MigrationTable;
 use Phalcon\Mvc\Controller;
+use Phalcon\Mvc\Model\Manager;
 
 /**
  * Class IndexController
@@ -99,23 +102,67 @@ class IndexController extends Controller
         $this->response->send();
     }
 
-    // create config-default.php and install
-
-    public function install()
+    /**
+     * create config-default.php and install
+     */
+    public function installAction()
     {
-        $config = new ConfigSample();
-        $config->dbAdaptor = $_POST['db-adapter'];
-        $config->dbName = $_POST['db-name'];
-        $config->dbHost = $_POST['db-hostname'];
-        $config->dbPort = $_POST['db-port'];
-        $config->dbUser = $_POST['db-username'];
-        $config->dbPass = $_POST['db-password'];
-        $config->timezone = timezone_location_get();
-        $config->cryptKey = $this->security->getRandom()->hex(Auth::SELECTOR_BYTES);
+        $this->view->disable();
 
-        $this->registry->writeConfig($config);
+        $checkDB = $this->checkDB();
+        if ($checkDB != null) {
+            $response['errors'][] = $checkDB->getMessage();
+            $response['success'] = false;
+
+            $this->response->setJsonContent($response);
+            $this->response->send();
+        } else {
+            $this->getDI()->setShared("modelsManager", function () {
+                $modelsManager = new Manager();
+                $modelsManager->setModelPrefix($_POST['db-prefix']);
+                return $modelsManager;
+            });
+        }
+
+        try {
+            $config = new ConfigSample();
+            $config->dbAdaptor = $_POST['db-adapter'];
+            $config->dbName = $_POST['db-name'];
+            $config->dbHost = $_POST['db-hostname'];
+            $config->dbPort = $_POST['db-port'];
+            $config->dbUser = $_POST['db-username'];
+            $config->dbPass = $_POST['db-password'];
+            $config->dbPrefix = $_POST['db-prefix'];
+            $config->timezone = timezone_location_get();
+            $config->cryptKey = $this->security->getRandom()->hex(Auth::SELECTOR_BYTES);
+
+            $this->registry->writeConfig($config);
+
+            $migration = new MigrationTable();
+            $migration->up();
+
+            $this->packageManager->installModule('Core');
+
+            $widgets = ['Carousel','Content', 'GridView', 'Menu', 'SortableView', 'TopContent'];
+            foreach ($widgets as $widget) {
+                $this->packageManager->installWidget($widget);
+            }
+        } catch (Exception $e) {
+            $response['errors'][] = $e->getMessage();
+            $response['success'] = false;
+            $this->response->setJsonContent($response);
+            $this->response->send();
+        }
+
+        $this->response->setJsonContent(['success' => true]);
+        $this->response->send();
     }
 
+    /**
+     * Check db config
+     *
+     * @return \Exception|null
+     */
     private function checkDB()
     {
         $dbConfig = [
@@ -126,21 +173,27 @@ class IndexController extends Controller
             'dbname' => $_POST['db-name']
         ];
 
+        $db = null;
+
         try {
             // Connect to db
             switch ($_POST['db-adapter']) {
                 case 'oracle':
-                    new \Phalcon\Db\Adapter\Pdo\Oracle($dbConfig);
+                    $db = new \Phalcon\Db\Adapter\Pdo\Oracle($dbConfig);
                     break;
                 case 'postgresql':
-                    new \Phalcon\Db\Adapter\Pdo\Postgresql($dbConfig);
+                    $db = new \Phalcon\Db\Adapter\Pdo\Postgresql($dbConfig);
                     break;
                 default:
-                    new \Phalcon\Db\Adapter\Pdo\Mysql($dbConfig);
+                    $db = new \Phalcon\Db\Adapter\Pdo\Mysql($dbConfig);
                     break;
             }
         } catch (\Exception $e) {
             return $e;
+        }
+
+        if ($db != null) {
+            $this->getDI()->setShared('db', $db);
         }
 
         return null;

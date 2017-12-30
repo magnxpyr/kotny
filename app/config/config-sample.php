@@ -7,7 +7,7 @@ class Config {
     public $dbUser = '';
     public $dbPass = '';
     public $dbName = '';
-//    public $dbPrefix = '';
+    public $dbPrefix = '';
 
     // app
     public $offline = false; // true false

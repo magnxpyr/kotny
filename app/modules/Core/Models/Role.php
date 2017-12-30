@@ -134,13 +134,6 @@ class Role extends Model
      */
     public function initialize()
     {
-        $this->setSource('role');
         $this->hasMany('id', AccessList::class, 'role_id', ['alias' => 'accessList', 'reusable' => true]);
     }
-
-    public function getSource()
-    {
-        return 'role';
-    }
-
 }

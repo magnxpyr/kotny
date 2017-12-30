@@ -8,9 +8,9 @@
 
 namespace Module\Core\Controllers;
 
+use DataTables\DataTable;
 use Module\Core\Forms\AdminMenuTypeEditForm;
 use Phalcon\Mvc\View;
-use Phalcon\Paginator\Adapter\Model as Paginator;
 use Engine\Mvc\AdminController;
 use Module\Core\Models\MenuType;
 
@@ -26,22 +26,15 @@ class AdminMenuTypeController extends AdminController
     public function indexAction()
     {
         $this->setTitle('Menu Type');
+    }
 
-        $numberPage = 1;
-
-        $model = MenuType::find();
-
-        if (count($model) == 0) {
-            $this->flash->notice("The search did not find any menu");
-        }
-
-        $paginator = new Paginator([
-            "data" => $model,
-            "limit"=> 10,
-            "page" => $numberPage
-        ]);
-
-        $this->view->setVar('page', $paginator->getPaginate());
+    public function searchAction()
+    {
+        $builder = $this->modelsManager->createBuilder()
+            ->columns('m.id, m.title')
+            ->addFrom(MenuType::class, 'm');
+        $dataTables = new DataTable();
+        $dataTables->fromBuilder($builder)->sendResponse();
     }
 
     /**

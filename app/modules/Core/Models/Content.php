@@ -513,15 +513,9 @@ class Content extends Model
      */
     public function initialize()
     {
-        $this->setSource('content');
         $this->hasOne('category_id', Category::class, 'id', ['alias' => 'category', 'reusable' => true]);
         $this->belongsTo('created_by', 'Module\Core\Models\User', 'id', ['alias' => 'user', 'reusable' => true]);
         $this->belongsTo('modified_by', 'Module\Core\Models\User', 'id', ['alias' => 'user', 'reusable' => true]);
-    }
-
-    public function getSource()
-    {
-        return 'content';
     }
 
     public function beforeValidationOnCreate()

@@ -8,6 +8,7 @@
  */
 
 use Engine\TokenManager;
+use Phalcon\Mvc\Model\Manager;
 
 /**
  * Class Bootstrap
@@ -130,7 +131,8 @@ class Bootstrap
             'username' => $config->dbUser,
             'password' => $config->dbPass,
             'port' => $config->dbPort,
-            'dbname' => $config->dbName
+            'dbname' => $config->dbName,
+            'prefix' => $config->dbPrefix
         ];
 
         // Connect to db
@@ -145,6 +147,12 @@ class Bootstrap
                 $db = new \Phalcon\Db\Adapter\Pdo\Mysql($dbConfig);
                 break;
         }
+
+        $this->di->setShared("modelsManager", function () use ($config) {
+            $modelsManager = new Manager();
+            $modelsManager->setModelPrefix($config->dbPrefix);
+            return $modelsManager;
+        });
 
         $this->di->setShared('db', $db);
         $this->di->setShared('config', $config);

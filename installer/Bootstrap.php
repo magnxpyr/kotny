@@ -23,6 +23,7 @@ class Bootstrap {
         $this->initView();
         $this->initUrl();
         $this->initRegistry();
+        $this->initPackageManager();
         $this->dispatch();
     }
 
@@ -59,7 +60,8 @@ class Bootstrap {
         $loader = new \Phalcon\Loader();
         $loader->registerNamespaces([
             'Installer' => ROOT_PATH . 'installer/',
-            'Engine' => APP_PATH . 'engine/'
+            'Engine' => APP_PATH . 'engine/',
+            'Module' => MODULES_PATH
         ]);
         $loader->register();
 
@@ -78,6 +80,11 @@ class Bootstrap {
 
     private function initRegistry()
     {
-        $this->di->setShared("registry", new \Engine\Mvc\Config\Registry());
+        $this->di->setShared('registry', new \Engine\Mvc\Config\Registry());
+    }
+
+    private function initPackageManager()
+    {
+        $this->di->setShared('packageManager', new \Engine\Package\Manager());
     }
 }

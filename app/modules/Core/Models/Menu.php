@@ -325,14 +325,8 @@ class Menu extends Model
      */
     public function initialize()
     {
-        $this->setSource('menu');
         $this->belongsTo('menu_type_id', 'Module\Core\Models\MenuType', 'id', ['alias' => 'menuType', 'reusable' => true]);
         $this->hasOne('view_level', 'Module\Core\Models\ViewLevel', 'id', ['alias' => 'viewLevel', 'reusable' => true]);
-    }
-
-    public function getSource()
-    {
-        return 'menu';
     }
 
     /**

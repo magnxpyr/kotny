@@ -100,19 +100,6 @@ class ViewLevel extends Model
         return $this->roles;
     }
 
-    /**
-     * Initialize method for model.
-     */
-    public function initialize()
-    {
-        $this->setSource('view_level');
-    }
-
-    public function getSource()
-    {
-        return 'view_level';
-    }
-
     public function getRolesArray()
     {
         return json_decode($this->roles);
