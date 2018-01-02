@@ -54,10 +54,10 @@ class ViewLevelMigration extends Migration
         );
 
         $this->batchInsert(self::TABLE_NAME, [
-            'Public', json_encode([1, 2, 3]),
-            'Guest', json_encode([1]),
-            'Registered', json_encode([2, 3]),
-            'Administrator', json_encode([3])
+            ['Public', json_encode([1, 2, 3])],
+            ['Guest', json_encode([1])],
+            ['Registered', json_encode([2, 3])],
+            ['Administrator', json_encode([3])]
         ], ['name', 'roles']);
     }
 }

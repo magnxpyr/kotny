@@ -26,6 +26,6 @@
     </div>
 </div>
 
-{% do assets.collection('footer-js').addJs("https://cloud.tinymce.com/stable/tinymce.min.js") %}
-{% do assets.collection('footer-js').addJs("https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.6.1/jquery.tinymce.min.js") %}
+{% do assets.collection('footer-js').addJs("https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.7.4/tinymce.min.js") %}
+{% do assets.collection('footer-js').addJs("https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.7.4/jquery.tinymce.min.js") %}
 {% do addViewJs('admin-widget/edit-scripts', ['widgetScripts': widgetScripts]) %}

@@ -540,7 +540,7 @@ class Auth extends Component
         $returnUrl = null;
         if ($this->request->has('returnUrl')) {
             $returnUrl = $this->request->get('returnUrl', 'string');
-        } elseif ($_SERVER['HTTP_REFERER']) {
+        } elseif (isset($_SERVER['HTTP_REFERER'])) {
             $returnUrl = $_SERVER['HTTP_REFERER'];
         }
         if ($returnUrl != null && $returnUrl != $this->url->get('user/login') &&

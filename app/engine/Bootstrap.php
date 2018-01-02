@@ -109,7 +109,7 @@ class Bootstrap
 
         // Load config file
         require_once APP_PATH . 'config/config-default.php';
-        $config = new Config();
+        $config = new ConfigDefault();
         if ($config->environment != 'none') {
             $configFile = APP_PATH . 'config/config-' . $config->environment . ".php";
             if (is_file($configFile)) {

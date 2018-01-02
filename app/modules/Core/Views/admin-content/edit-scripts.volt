@@ -8,7 +8,8 @@
         var editor_config = {
             path_absolute : '{{ url("admin/core/file-manager/basic") }}',
             selector: "textarea",
-            skin: "lightgray",
+            skin_url: '{{ url('/vendor/tinymce/skins/light') }}',
+            skin: "light",
             theme: "modern",
             menubar: false,
             plugins: [
@@ -30,6 +31,7 @@
                 {title: "None", value: ""},
                 {title: "Image Responsive", value: "img-responsive"}
             ],
+            branding: false,
             file_browser_callback : function(field_name, url, type, win) {
                 var w = window,
                 d = document,

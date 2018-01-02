@@ -145,6 +145,37 @@ class Manager extends Injectable
     public function installModule($moduleName)
     {
         $this->logger->debug("Installing module: $moduleName");
+
+        $config = $this->getModuleConfig($moduleName);
+
+        $model = new Package();
+        $model->setName($moduleName);
+        $model->setType(PackageType::MODULE);
+        $model->setVersion($config->version);
+        $model->setAuthor($config->author);
+        $model->setWebsite($config->website);
+        $model->setStatus(User::STATUS_ACTIVE);
+        $model->setDescription($config->description);
+
+        if (!$model->save()) {
+            throw new Exception("Unable to save module to database");
+        }
+
+        try {
+            $this->migrate(Migration::UP, PackageType::MODULE, $moduleName, $model->getId());
+        } catch (Exception $exception) {
+            $migration = MigrationModel::findFirst([
+                'conditions' => 'package_type = ?1 and package_id = ?1',
+                'bind' => [1 => PackageType::MODULE, 2 => $model->getId()],
+                'bindTypes' => [Column::BIND_PARAM_STR, Column::BIND_PARAM_INT],
+            ]);
+            if (!$migration) {
+                $model->delete();
+                // clean acl db
+            }
+            throw new Exception("Module migration failed");
+        }
+
         $controllersPath = MODULES_PATH . "$moduleName/Controllers";
 
         $roles = $this->acl->getRoles();
@@ -182,36 +213,6 @@ class Manager extends Injectable
             if (isset($resources['deny'])) {
                 $this->buildAcl($resources['deny'], $moduleName, false);
             }
-        }
-
-        $config = $this->getModuleConfig($moduleName);
-
-        $model = new Package();
-        $model->setName($moduleName);
-        $model->setType(PackageType::MODULE);
-        $model->setVersion($config->version);
-        $model->setAuthor($config->author);
-        $model->setWebsite($config->website);
-        $model->setStatus(User::STATUS_ACTIVE);
-        $model->setDescription($config->description);
-
-        if (!$model->save()) {
-            throw new Exception("Unable to save module to database");
-        }
-
-        try {
-            $this->migrate(Migration::UP, PackageType::MODULE, $moduleName, $model->getId());
-        } catch (Exception $exception) {
-            $migration = MigrationModel::findFirst([
-                'conditions' => 'package_type = ?1 and package_id = ?1',
-                'bind' => [1 => PackageType::MODULE, 2 => $model->getId()],
-                'bindTypes' => [Column::BIND_PARAM_STR, Column::BIND_PARAM_INT],
-            ]);
-            if (!$migration) {
-                $model->delete();
-                // clean acl db
-            }
-            throw new Exception("Module migration failed");
         }
 
         $this->cache->delete($this->acl->getCacheKey());
@@ -564,7 +565,7 @@ class Manager extends Injectable
         if (preg_match(static::MIGRATION_FILE_NAME_PATTERN, $fileName, $matches)) {
             $fileName = $matches[1];
         }
-        return str_replace(' ', '', ucwords(str_replace('_', ' ', $fileName)));
+        return str_replace(' ', '', ucwords(str_replace('_', ' ', $fileName))) . "Migration";
     }
 
     public function getVersionLog($packageId, $packageType)

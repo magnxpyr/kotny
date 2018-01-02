@@ -10,9 +10,9 @@ namespace Installer\Controllers;
 
 use Engine\Mvc\Auth;
 use Engine\Mvc\Config\ConfigSample;
-use Engine\Mvc\Exception;
 use Installer\Forms\ConfigurationForm;
-use Migrations\MigrationTable;
+use Installer\Migrations\MigrationMigration;
+use Installer\Migrations\PackageMigration;
 use Phalcon\Mvc\Controller;
 use Phalcon\Mvc\Model\Manager;
 
@@ -24,6 +24,11 @@ class IndexController extends Controller
 {
     public function indexAction()
     {
+        if (file_exists(CONFIG_PATH . 'config-default.php')) {
+            $this->view->setVar('success', true);
+            return;
+        }
+
         $form = new ConfigurationForm();
 
         $dbArray = [
@@ -73,7 +78,8 @@ class IndexController extends Controller
             'form' => $form,
             'recommended' => $recommended,
             'required' => $required,
-            'isValid' => $isValid
+            'isValid' => $isValid,
+            'success' => false
         ]);
     }
 
@@ -109,6 +115,8 @@ class IndexController extends Controller
     {
         $this->view->disable();
 
+        $response = ['success' => true];
+
         $checkDB = $this->checkDB();
         if ($checkDB != null) {
             $response['errors'][] = $checkDB->getMessage();
@@ -133,28 +141,47 @@ class IndexController extends Controller
             $config->dbUser = $_POST['db-username'];
             $config->dbPass = $_POST['db-password'];
             $config->dbPrefix = $_POST['db-prefix'];
-            $config->timezone = timezone_location_get();
+            $config->timezone = date_default_timezone_get();
             $config->cryptKey = $this->security->getRandom()->hex(Auth::SELECTOR_BYTES);
 
-            $this->registry->writeConfig($config);
+            $this->registryConfig->writeConfig($config);
 
-            $migration = new MigrationTable();
+            $migration = new MigrationMigration();
             $migration->up();
 
+            $package = new PackageMigration();
+            $package->up();
+
             $this->packageManager->installModule('Core');
+            $this->getDI()->get('di')->insert('user',
+                [$_POST['su-username'], $_POST['su-email'], $this->security->hash($_POST['su-password']), 3, 1, time()],
+                ['username', 'email', 'password', 'role_id', 'status', 'created_at']);
 
             $widgets = ['Carousel','Content', 'GridView', 'Menu', 'SortableView', 'TopContent'];
             foreach ($widgets as $widget) {
                 $this->packageManager->installWidget($widget);
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $response['errors'][] = $e->getMessage();
             $response['success'] = false;
-            $this->response->setJsonContent($response);
-            $this->response->send();
         }
 
-        $this->response->setJsonContent(['success' => true]);
+        $this->response->setJsonContent($response);
+        $this->response->send();
+    }
+
+    public function removeInstaller()
+    {
+        $response = ['success' => true];
+
+        try {
+            $this->deleteDir(APP_PATH . 'installer');
+        } catch (\Exception $e) {
+            $response['success'] = false;
+        }
+
+        $this->view->disable();
+        $this->response->setJsonContent($response);
         $this->response->send();
     }
 
@@ -197,6 +224,21 @@ class IndexController extends Controller
         }
 
         return null;
+    }
+
+    /**
+     * Deletes a directory recursively
+     *
+     * @param $dir
+     * @return bool
+     */
+    public function deleteDir($dir)
+    {
+        $files = array_diff(scandir($dir), ['.','..']);
+        foreach ($files as $file) {
+            (is_dir("$dir/$file")) ? $this->deleteDir("$dir/$file") : unlink("$dir/$file");
+        }
+        return rmdir($dir);
     }
 }
 

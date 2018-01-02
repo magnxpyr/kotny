@@ -6,6 +6,8 @@
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
+use Phalcon\Cache\Backend\Memory;
+
 /**
  * Class Bootstrap
  */
@@ -19,11 +21,18 @@ class Bootstrap {
 
     public function run()
     {
+        define('DEV', true);
+
         $this->initLoader();
         $this->initView();
-        $this->initUrl();
         $this->initRegistry();
+        $this->initCache();
+        $this->initAcl();
+        $this->initUrl();
+        $this->initConfigRegistry();
         $this->initPackageManager();
+        $this->initLogger();
+        $this->initHelper();
         $this->dispatch();
     }
 
@@ -45,6 +54,18 @@ class Bootstrap {
         ]);
 
         $this->di->setShared('view', $view);
+    }
+
+    private function initCache()
+    {
+        $this->di->setShared('cache', new Memory(new \Phalcon\Cache\Frontend\Data()));
+    }
+
+    private function initRegistry()
+    {
+        $registry = new \Phalcon\Registry();
+        $registry->modules = [];
+        $this->di->setShared('registry', $registry);
     }
 
     private function initUrl()
@@ -75,16 +96,35 @@ class Bootstrap {
             'action' => 1
         ]);
 
+        require_once APP_PATH . 'vendor/autoload.php';
+
         $this->di->setShared('router', $router);
     }
 
-    private function initRegistry()
+    private function initAcl()
     {
-        $this->di->setShared('registry', new \Engine\Mvc\Config\Registry());
+        $acl = new \Engine\Acl\Memory();
+        $this->di->setShared('acl', $acl->getAcl());
+    }
+
+    private function initLogger()
+    {
+        $logPath = ROOT_PATH . 'logs/' . date('Y-m-d') . '.log';
+        $this->di->setShared('logger', new \Phalcon\Logger\Adapter\File($logPath));
+    }
+
+    private function initConfigRegistry()
+    {
+        $this->di->setShared('registryConfig', new \Engine\Mvc\Config\ConfigRegistry());
     }
 
     private function initPackageManager()
     {
         $this->di->setShared('packageManager', new \Engine\Package\Manager());
+    }
+
+    private function initHelper()
+    {
+        $this->di->setShared('helper', new \Engine\Mvc\Helper());
     }
 }
