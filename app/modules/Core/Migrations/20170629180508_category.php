@@ -135,5 +135,9 @@ class CategoryMigration extends Migration
                 ]
             ]
         );
+
+        $this->batchInsert(self::TABLE_NAME, [
+            ['Uncategorised', 'uncategorised', '', '{"metaTitle":"","metaKeywords":"","metaDescription":""}', 0, 1, 1, 0, 1, 0, 0, time(), 1],
+        ], ['title', 'alias', 'description', 'metadata', 'hits', 'status', 'view_level', 'parent_id', 'level', 'lft', 'rgt', 'created_at', 'created_by']);
     }
 }

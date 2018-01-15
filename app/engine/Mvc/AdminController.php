@@ -49,49 +49,52 @@ abstract class AdminController extends Controller
         $uri = trim($this->router->getRewriteUri(), "/ ");
 
         $menuElements = Loader::fromResultset(Menu::find([
-            'conditions' => 'menu_type_id = 0',
+            'conditions' => 'menu_type_id = 1',
             'order' => 'lft'
         ]), 'viewLevel');
         $level = 1;
 
-        foreach ($menuElements as $elements) {
-            if (!$this->acl->checkViewLevel($elements->viewLevel->getRolesArray())) continue;
+        if ($menuElements != null) {
+            foreach ($menuElements as $elements) {
+                if (!$this->acl->checkViewLevel($elements->viewLevel->getRolesArray())) continue;
 
-            $active = "";
-            if (!$isActive) {
-                $this->generateBreadcrumbs($elements, $breadcrumb, $ids, $count);
-            }
-            if ($elements->getPath() != "#" && substr($elements->getPath(), 0, 4) != "http") {
-                $path = $this->url->get($elements->getPath());
-                if (!$isActive && $uri == trim($elements->getPath(), "/ ")) {
-                    $active = "active";
-                    $isActive = true;
+                $active = "";
+                if (!$isActive) {
+                    $this->generateBreadcrumbs($elements, $breadcrumb, $ids, $count);
                 }
-            } else {
-                $path = $elements->getPath();
-            }
 
-            if ($elements->getLevel() <= $level) {
-                if ($elements->getLevel() < $level) {
-                    $content['html'] .= "</li>\n";
-                    for ($i = $level - $elements->getLevel(); $i; $i--) {
-                        $content['html'] .= "</ul></li>";
+                if ($elements->getPath() != "#" && substr($elements->getPath(), 0, 4) != "http") {
+                    $path = $this->url->get($elements->getPath());
+                    if (!$isActive && $uri == trim($elements->getPath(), "/ ")) {
+                        $active = "active";
+                        $isActive = true;
                     }
+                } else {
+                    $path = $elements->getPath();
                 }
-                $content['html'] .= "<li class=\"treeview $active\"><a href='$path'>";
-                if (!empty($elements->getPrepend())) {
-                    $content['html'] .= "<i class=\"$elements->prepend\"></i>";
-                }
-                $content['html'] .= "<span>$elements->title</span></a>";
-            } elseif ($elements->level > $level) {
-                $content['html'] .= "<ul class=\"treeview-menu $active\"><li class='$active'><a href=\"$path\">";
-                if (!empty($elements->getPrepend())) {
-                    $content['html'] .= "<i class=\"$elements->prepend\"></i>";
-                }
-                $content['html'] .= "<span>$elements->title</span></a>";
-            }
 
-            $level = $elements->level;
+                if ($elements->getLevel() <= $level) {
+                    if ($elements->getLevel() < $level) {
+                        $content['html'] .= "</li>\n";
+                        for ($i = $level - $elements->getLevel(); $i; $i--) {
+                            $content['html'] .= "</ul></li>";
+                        }
+                    }
+                    $content['html'] .= "<li class=\"treeview $active\"><a href='$path'>";
+                    if (!empty($elements->getPrepend())) {
+                        $content['html'] .= "<i class=\"$elements->prepend\"></i>";
+                    }
+                    $content['html'] .= "<span>$elements->title</span></a>";
+                } elseif ($elements->level > $level) {
+                    $content['html'] .= "<ul class=\"treeview-menu $active\"><li class='$active'><a href=\"$path\">";
+                    if (!empty($elements->getPrepend())) {
+                        $content['html'] .= "<i class=\"$elements->prepend\"></i>";
+                    }
+                    $content['html'] .= "<span>$elements->title</span></a>";
+                }
+
+                $level = $elements->level;
+            }
         }
 
         $cb = count($breadcrumb) - 1;

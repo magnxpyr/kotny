@@ -57,7 +57,6 @@ if (is_dir(ROOT_PATH . 'installer')) {
     $bootstrap->run();
 }
 
-
 function getPhalconSo()
 {
     $phpVersion = substr(phpversion(), 0, 3);

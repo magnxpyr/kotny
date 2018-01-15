@@ -30,6 +30,10 @@ class Controller extends \Engine\Widget\Controller
             'order' => 'lft'
         ]), 'viewLevel');
 
+        if ($menuElements == null) {
+            $menuElements = [];
+        }
+
         $this->viewWidget->setVar('menuElements', $menuElements);
     }
 }

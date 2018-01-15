@@ -53,7 +53,7 @@ class MenuTypeMigration extends Migration
         );
 
         $this->batchInsert(self::TABLE_NAME, [
-            ['Admin'], ['Main menu']
+            ['Admin Sidebar'], ['Admin Top'], ['Main menu']
         ], ['title']);
     }
 }

@@ -140,7 +140,7 @@ class AdminCategoryEditForm extends Form
         $meta = $entity->getMetadataArray();
         if ($meta != null) {
             foreach ($meta as $key => $val) {
-                if ($this->get($key)) {
+                if ($this->has($key)) {
                     $this->get($key)->setDefault($val);
                 }
             }

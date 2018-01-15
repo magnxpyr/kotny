@@ -81,7 +81,7 @@ class Controller extends \Engine\Widget\Controller
                 $colSizeNext = 1;
                 if (isset($colSize[$key + 1])) $colSizeNext = $colSize[$key + 1];
                 echo "<div class='col-xs-$colSizeNext'>";
-                echo $this->tag->linkTo($actions['update'] . "/" . $value->getId(), '<i class="fa fa-edit"></i>');
+                echo '<a href="' . $actions['update'] . "/" . $value->getId() . '"><i class="fa fa-edit"></i></a>';
                 $url = $actions['delete'] . "/" . $value->getId();
                 echo "<a href='#' class='ajaxDelete' data-url='$url' data-parent-id='#item_" . $value->getId() . "'><i class='fa fa-trash-o'></i></a></div></div>";
             }

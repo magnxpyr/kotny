@@ -21,7 +21,6 @@ class AdminCategoryController extends AdminController
      */
     public function indexAction()
     {
-        $this->assets->collection('footer-js')->addJs('vendor/jquery-ui/extra/jquery.mjs.nestedSortable.js');
         $this->setTitle('Categories');
 
         $category = Category::find(['order' => 'lft']);
@@ -150,8 +149,14 @@ class AdminCategoryController extends AdminController
         $data = $this->request->getPost('data');
 
         foreach ($data as $el) {
-            if ($el['item_id']) {
-                $model = Category::findFirstById($el['item_id']);
+            $id = null;
+            if (isset($el['item_id'])) {
+                $id = $el['item_id'];
+            } elseif (isset($el['id'])) {
+                $id = $el['id'];
+            }
+            if (!empty($id)) {
+                $model = Category::findFirstById($id);
                 if ($model) {
                     if ($el['parent_id']) {
                         $model->setParentId($el['parent_id']);

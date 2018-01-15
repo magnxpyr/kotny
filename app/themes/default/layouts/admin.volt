@@ -20,9 +20,7 @@
 
             <!-- Navbar Right Menu -->
             <div class="navbar-custom-menu">
-                <ul class="nav navbar-nav">
-                    <li>{{ link_to("user/logout", '<i class="fa fa-sign-out"></i>') }}</li>
-                </ul>
+                {{ widget.render('Menu', ['_menu': 2]) }}
             </div>
         </nav>
     </header>

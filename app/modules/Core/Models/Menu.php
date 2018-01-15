@@ -50,6 +50,11 @@ class Menu extends Model
     /**
      * @var integer
      */
+    private $show_title;
+
+    /**
+     * @var integer
+     */
     private $parent_id;
 
     /**
@@ -153,6 +158,14 @@ class Menu extends Model
         $this->status = $status;
 
         return $this;
+    }
+
+    /**
+     * @param int $show_title
+     */
+    public function setShowTitle($show_title)
+    {
+        $this->show_title = $show_title;
     }
 
     /**
@@ -268,6 +281,14 @@ class Menu extends Model
     public function getStatus()
     {
         return $this->status;
+    }
+
+    /**
+     * @return int
+     */
+    public function getShowTitle()
+    {
+        return $this->show_title;
     }
 
     /**

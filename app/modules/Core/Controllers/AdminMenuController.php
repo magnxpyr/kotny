@@ -26,20 +26,17 @@ class AdminMenuController extends AdminController
 {
     /**
      * Index action
-     * @param null $id
+     * @param int $id
      */
-    public function indexAction($id = null)
+    public function indexAction($id = 1)
     {
         $this->setTitle('Menu');
-
-        $menuId = $this->request->isPost() ? $this->request->getPost('menuType') : $id;
-        if ($menuId == null) { $menuId = 1; }
 
         $menuType = MenuType::find(['columns' => ['id', 'title']]);
 
         $model = Loader::fromResultset(Menu::find([
             'conditions' => 'menu_type_id = ?1',
-            'bind' => [1 => $menuId],
+            'bind' => [1 => $id],
             'order' => 'lft'
         ]), 'viewLevel');
 
@@ -47,7 +44,7 @@ class AdminMenuController extends AdminController
             $this->flash->notice("The search did not find any menu");
         }
 
-        $this->tag->setDefault('menuType', $menuId);
+        $this->tag->setDefault('menuType', $id);
 
         $this->view->setVars([
             'model' => $model,
@@ -73,13 +70,11 @@ class AdminMenuController extends AdminController
     /**
      * Displays the creation form
      */
-    public function createAction()
+    public function createAction($id = 1)
     {
         $this->setTitle('New Menu Item');
         $form = new AdminMenuEditForm();
-        if ($this->request->has('menu_type')) {
-            $this->tag->setDefault("menu_type_id", $this->request->get('menu_type_id'));
-        }
+        $this->tag->setDefault("menu_type_id", $id);
         $this->view->setVar('form', $form);
         $this->view->render('admin-menu', 'edit');
         $this->view->setRenderLevel(View::LEVEL_ACTION_VIEW);
@@ -190,8 +185,14 @@ class AdminMenuController extends AdminController
         $data = $this->request->getPost('data');
 
         foreach ($data as $el) {
-            if ($el['item_id']) {
-                $model = Menu::findFirstById($el['item_id']);
+            $id = null;
+            if (isset($el['item_id'])) {
+                $id = $el['item_id'];
+            } elseif (isset($el['id'])) {
+                $id = $el['id'];
+            }
+            if (!empty($id)) {
+                $model = Menu::findFirstById($id);
                 if ($model) {
                     if ($el['parent_id']) {
                         $model->setParentId($el['parent_id']);

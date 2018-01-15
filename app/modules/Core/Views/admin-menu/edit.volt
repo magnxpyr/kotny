@@ -4,7 +4,7 @@
         <div class="col-sm-6">
             <ul class="nav nav-pills">
                 <li><button type="submit" form="menuForm" class="btn btn-sm btn-block btn-success"><i class="fa fa-edit"></i> Save</button></li>
-                <li><button onclick="location.href='{{ url("admin/core/menu/index") }}'" class="btn btn-sm btn-block btn-danger"><i class='fa fa-remove'></i> Cancel</button></li>
+                <li><button onclick="location.href='{{ url("admin/core/menu/index/") }}' + $('#menu_type_id').val()" class="btn btn-sm btn-block btn-danger"><i class='fa fa-remove'></i> Cancel</button></li>
             </ul>
         </div>
     </div>

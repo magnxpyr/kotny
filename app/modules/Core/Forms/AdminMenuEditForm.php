@@ -10,6 +10,7 @@ namespace Module\Core\Forms;
 
 use Module\Core\Models\MenuType;
 use Module\Core\Models\ViewLevel;
+use Phalcon\Forms\Element\Check;
 use Phalcon\Forms\Element\Hidden;
 use Phalcon\Forms\Element\Select;
 use Phalcon\Forms\Element\Text;
@@ -44,7 +45,7 @@ class AdminMenuEditForm extends Form
         $menu_type->setFilters('int');
         $menu_type->addValidator(
             new PresenceOf([
-                'menu_type' => $this->t->_('%field% is required', ['field' => $this->t->_('Menu Type')])
+                'message' => $this->t->_('%field% is required', ['field' => $this->t->_('Menu Type')])
             ])
         );
         $this->add($menu_type);
@@ -65,7 +66,7 @@ class AdminMenuEditForm extends Form
         $title->setFilters('string');
         $title->addValidator(
             new PresenceOf([
-                'title' => $this->t->_('%field% is required', ['field' => $this->t->_('Title')])
+                'message' => $this->t->_('%field% is required', ['field' => $this->t->_('Title')])
             ])
         );
         $this->add($title);
@@ -79,10 +80,22 @@ class AdminMenuEditForm extends Form
         $path->setFilters('string');
         $path->addValidator(
             new PresenceOf([
-                'path' => $this->t->_('%field% is required', ['field' => $this->t->_('Path')])
+                'message' => $this->t->_('%field% is required', ['field' => $this->t->_('Path')])
             ])
         );
         $this->add($path);
+
+        // Show title
+        $showTitle = new Check('show_title', ['value' => 1]);
+        $showTitle->setLabel($this->t->_('Show title'));
+        $showTitle->setDefault(1);
+        $showTitle->setFilters('int');
+        $path->addValidator(
+            new PresenceOf([
+                'message' => $this->t->_('%field% is required', ['field' => $this->t->_('Show title')])
+            ])
+        );
+        $this->add($showTitle);
 
         // Status
         $status = new Select('status',
@@ -93,7 +106,7 @@ class AdminMenuEditForm extends Form
         $status->setFilters('int');
         $status->addValidator(
             new PresenceOf([
-                'status' => $this->t->_('%field% is required', ['field' => $this->t->_('Status')])
+                'message' => $this->t->_('%field% is required', ['field' => $this->t->_('Status')])
             ])
         );
         $this->add($status);
@@ -107,7 +120,7 @@ class AdminMenuEditForm extends Form
         $role->setFilters('int');
         $role->addValidator(
             new PresenceOf([
-                'role_id' => $this->t->_('%field% is required', ['field' => $this->t->_('View Level')])
+                'message' => $this->t->_('%field% is required', ['field' => $this->t->_('View Level')])
             ])
         );
         $this->add($role);
@@ -121,5 +134,14 @@ class AdminMenuEditForm extends Form
         $description->setLabel($this->t->_('Description'));
         $description->setFilters('string');
         $this->add($description);
+    }
+
+    public function bind(array $data, $entity, $whitelist = null)
+    {
+        if (!isset($data['view_title'])) {
+            $entity->setShowTitle(0);
+        }
+
+        parent::bind($data, $entity, $whitelist);
     }
 }

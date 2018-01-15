@@ -27,7 +27,7 @@ class Bootstrap {
         $this->initView();
         $this->initRegistry();
         $this->initCache();
-        $this->initAcl();
+        $this->initSecurity();
         $this->initUrl();
         $this->initConfigRegistry();
         $this->initPackageManager();
@@ -101,16 +101,23 @@ class Bootstrap {
         $this->di->setShared('router', $router);
     }
 
-    private function initAcl()
+    private function initSecurity()
     {
         $acl = new \Engine\Acl\Memory();
         $this->di->setShared('acl', $acl->getAcl());
+
+        $this->di->setShared('security', function () {
+            $security = new \Phalcon\Security();
+            $security->setRandomBytes(\Engine\Mvc\Auth::TOKEN_BYTES);
+            $security->setWorkFactor(\Engine\Mvc\Auth::WORK_FACTOR);
+            $security->setDefaultHash(Phalcon\Security::CRYPT_DEFAULT);
+            return $security;
+        });
     }
 
     private function initLogger()
     {
-        $logPath = ROOT_PATH . 'logs/' . date('Y-m-d') . '.log';
-        $this->di->setShared('logger', new \Phalcon\Logger\Adapter\File($logPath));
+        $this->di->setShared('logger', new \Phalcon\Logger\Adapter\Stream('php://stderr'));
     }
 
     private function initConfigRegistry()

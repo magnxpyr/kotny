@@ -30,7 +30,7 @@ class ConfigSample
     public $siteName = '';
     public $siteNameLocation = 1; //0,1,2
     public $baseUri = '/';
-    public $cryptKey = '721a79281f408416';
+    public $cryptKey = '';
     public $environment = 'default'; //get by file config name
     public $aclAdapter = 'memory'; // memory, database
     public $cacheAdapter = 'file'; // file, memcache, memcached

@@ -11,6 +11,7 @@ ol.sortable .fa-reorder {
 
 li.mjs-nestedSortable-expanded ol {
     -webkit-padding-start: 10px;
+    padding-left: 10px;
     list-style-type: none;
 }
 li.placeholder {
@@ -100,6 +101,12 @@ ol.sortable li div div {
 
     .main-sidebar, .left-side, .control-sidebar {
         padding-top: 40px !important;
+    }
+}
+
+@media (min-width: 768px) {
+    .navbar-right {
+        margin: 0;
     }
 }
 /* AdminLTE End */

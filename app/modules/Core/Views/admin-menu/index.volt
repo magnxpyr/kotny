@@ -5,7 +5,7 @@
             <div class="col-xs-6 col-md-6">
                 <ul class="nav nav-pills">
                     <li>
-                        <button onclick="location.href='{{ url("admin/core/menu/create") }}'" class="btn btn-sm btn-block btn-primary">
+                        <button onclick="location.href='{{ url("admin/core/menu/create/") }}'+ $('#menuType').val()" class="btn btn-sm btn-block btn-primary">
                             <i class="fa fa-plus"></i> New</button>
                     </li>
                     <li>
@@ -15,12 +15,13 @@
                 </ul>
             </div>
             <div class="col-sm-offset-3 col-md-offset-3  col-sm-3 col-md-3">
-                {{ form("", "method": "post", "id": "menuForm") }}
+
                 <div class="form-group">
                     {{ select("menuType", menuType, "using": ["id", "title"], "class": "form-control",
-                        "onchange": "javascript: menuForm.submit()") }}
+                        "onchange": "javascript: window.location = '" ~ url("admin/core/menu/index/") ~
+                        "' + this.options[this.selectedIndex].value;") }}
                 </div>
-                {{ end_form() }}
+
             </div>
         </div>
     </div>

@@ -69,11 +69,7 @@ class ConfigRegistry
     public function writeConfig($object, $params = [])
     {
         $file = APP_PATH . "config/config-$object->environment.php";
-        if (file_exists($file)) {
-            return;
-        }
-
-        if (file_put_contents($file, $this->objectToString($object, $params))) {
+        if (!file_put_contents($file, $this->objectToString($object, $params))) {
             throw new Exception("Unable to write config file");
         }
     }

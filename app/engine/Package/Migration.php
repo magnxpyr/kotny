@@ -75,6 +75,7 @@ abstract class Migration extends Injectable
     public function morphTable($tableName, $definition)
     {
         $defaultSchema = null;
+        $tableName = $this->getTableName($tableName);
 
         if (isset($this->db->dbname)) {
             $defaultSchema = $this->db->dbname;
@@ -301,10 +302,16 @@ abstract class Migration extends Injectable
      */
     public function batchInsert($tableName, $values, $fields)
     {
+        $tableName = $this->getTableName($tableName);
         $this->db->begin();
         foreach ($values as $value) {
             $this->db->insert($tableName, $value, $fields);
         }
         $this->db->commit();
+    }
+
+    public function getTableName($tableName)
+    {
+        return $this->config->dbPrefix . $tableName;
     }
 }

@@ -95,7 +95,7 @@ class ConfigurationForm extends Form
         $this->add($port);
 
         // Prefix
-        $prefix = new Numeric('db-prefix');
+        $prefix = new Text('db-prefix');
         $prefix->setLabel('Database Prefix');
         $prefix->setFilters('string');
         $this->add($prefix);

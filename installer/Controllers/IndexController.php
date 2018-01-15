@@ -8,6 +8,7 @@
 
 namespace Installer\Controllers;
 
+use ConfigDefault;
 use Engine\Mvc\Auth;
 use Engine\Mvc\Config\ConfigSample;
 use Installer\Forms\ConfigurationForm;
@@ -28,6 +29,8 @@ class IndexController extends Controller
             $this->view->setVar('success', true);
             return;
         }
+
+        $this->createDirectories();
 
         $form = new ConfigurationForm();
 
@@ -65,6 +68,10 @@ class IndexController extends Controller
             'writableModules' => is_writable(MODULES_PATH),
             'writableWidgets' => is_writable(WIDGETS_PATH),
             'writableMedia' => is_writable(MEDIA_PATH),
+            'writableConfig' => is_writable(CONFIG_PATH),
+            'writableAssets' => is_writable(PUBLIC_PATH . 'assets/'),
+            'writableLogs' => is_writable(LOGS_PATH),
+            'writableCache' => is_writable(CACHE_PATH),
         ];
 
         $isValid = true;
@@ -141,10 +148,16 @@ class IndexController extends Controller
             $config->dbUser = $_POST['db-username'];
             $config->dbPass = $_POST['db-password'];
             $config->dbPrefix = $_POST['db-prefix'];
+            $config->baseUri = str_replace('/install/', '', $this->url->get('/'));
             $config->timezone = date_default_timezone_get();
             $config->cryptKey = $this->security->getRandom()->hex(Auth::SELECTOR_BYTES);
 
             $this->registryConfig->writeConfig($config);
+
+            $this->di->setShared('config', function () use ($config) {
+                require_once CONFIG_PATH . 'config-default.php';
+                return new ConfigDefault();
+            });
 
             $migration = new MigrationMigration();
             $migration->up();
@@ -153,7 +166,7 @@ class IndexController extends Controller
             $package->up();
 
             $this->packageManager->installModule('Core');
-            $this->getDI()->get('di')->insert('user',
+            $this->db->insert($config->dbPrefix . 'user',
                 [$_POST['su-username'], $_POST['su-email'], $this->security->hash($_POST['su-password']), 3, 1, time()],
                 ['username', 'email', 'password', 'role_id', 'status', 'created_at']);
 
@@ -170,14 +183,27 @@ class IndexController extends Controller
         $this->response->send();
     }
 
-    public function removeInstaller()
+    public function removeInstallerAction()
     {
         $response = ['success' => true];
 
+        set_error_handler(function($errno, $errstr, $errfile, $errline){
+            if($errno === E_WARNING){
+                // make it more serious than a warning so it can be caught
+                trigger_error($errstr, E_USER_ERROR);
+                return true;
+            } else {
+                // fallback to default php error handler
+                return false;
+            }
+        });
+
         try {
-            $this->deleteDir(APP_PATH . 'installer');
+            $this->deleteDir(ROOT_PATH . 'installer');
         } catch (\Exception $e) {
             $response['success'] = false;
+        } finally {
+            restore_error_handler();
         }
 
         $this->view->disable();
@@ -236,9 +262,32 @@ class IndexController extends Controller
     {
         $files = array_diff(scandir($dir), ['.','..']);
         foreach ($files as $file) {
-            (is_dir("$dir/$file")) ? $this->deleteDir("$dir/$file") : unlink("$dir/$file");
+            (is_dir("$dir/$file")) ? $this->deleteDir("$dir/$file") : @unlink("$dir/$file");
         }
         return rmdir($dir);
+    }
+
+    public function createDirectories()
+    {
+        if (!is_dir(CACHE_PATH)) {
+            @mkdir(CACHE_PATH);
+        }
+
+        if (!is_dir(CACHE_PATH . 'backend')) {
+            @mkdir(CACHE_PATH . 'backend');
+        }
+
+        if (!is_dir(CACHE_PATH . 'tmp')) {
+            @mkdir(CACHE_PATH . 'tmp');
+        }
+
+        if (!is_dir(CACHE_PATH . 'volt')) {
+            @mkdir(CACHE_PATH . 'volt');
+        }
+
+        if (!is_dir(LOGS_PATH)) {
+            @mkdir(LOGS_PATH);
+        }
     }
 }
 
