@@ -17,7 +17,7 @@
     <div class="container">
         <div class="title-wrap">
             <h3 class="title">DISCOVER</h3>
-            <h1 class="title">Our Project</h1>
+            {#<h1 class="title">Our Project</h1>#}
         </div>
         <div class="tab-wrapper">
             <div class="tab-nav">

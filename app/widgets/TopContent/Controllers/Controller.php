@@ -24,9 +24,9 @@ class Controller extends \Engine\Widget\Controller
             ->andWhere('content.category = category.id')
             ->andWhere('content.created_by = user.id')
             ->orderBy('content.created_at DESC')
-            ->limit($this->getParam("limit"));
-        if ($this->getParam("category")) {
-            $model->andWhere('category.alias = :category:', ['category' => $this->getParam("category")]);
+            ->limit($this->getParam("_limit"));
+        if ($this->getParam("_category")) {
+            $model->andWhere('category.alias = :category:', ['category' => $this->getParam("_category")]);
         }
         
         $this->viewWidget->setVar('model', $model->getQuery()->execute());

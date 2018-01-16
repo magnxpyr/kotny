@@ -25,15 +25,16 @@
     </div>
 
     {{ content() }}
-    <footer class="main-footer hidden">
-        <div class="container">
-            <div class="left-box">Powered by <a href="">Magnxpyr Network</a> &copy 2016</div>
-            <div class="right-box social-logo">
-                <a href=""><i class="facebook icons"></i></a>
-                <a href=""><i class="twitter icons"></i></a>
-                <a href=""><i class="google-plus icons"></i></a>
-                <a href=""><i class="linkedin icons"></i></a>
-            </div>
-        </div>
-    </footer>
 </div>
+
+<footer class="main-footer hidden">
+    <div class="container">
+        <div class="left-box">Powered by <a href="">Magnxpyr Network</a> &copy 2016</div>
+        <div class="right-box social-logo">
+            <a href=""><i class="facebook icons"></i></a>
+            <a href=""><i class="twitter icons"></i></a>
+            <a href=""><i class="google-plus icons"></i></a>
+            <a href=""><i class="linkedin icons"></i></a>
+        </div>
+    </div>
+</footer>

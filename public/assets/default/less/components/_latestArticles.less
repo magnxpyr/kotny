@@ -17,28 +17,38 @@
 }
 
 .newsfeed-wrapper {
-  padding: (@grid-gutter-width*3) 0;
+  .clearfix;
+  padding: (@grid-gutter-width*3) 0 0;
+  .title {
+    .clearfix;
+    margin: 30px;
+  }
   .news-box {
     position: relative;
     padding: (@grid-gutter-width/2);
     a {
       .grid-box-shadow;
-      color: @brand-dark-green;
+      color: @text-color;
       background-color: @brand-light;
       display: block;
       .news-image {
         height: 200px;
         width: 100%;
-        img {
-          width: 100%;
+        .bg-image {
+          background-size: cover;
           height: 100%;
+          background-position: 50% 50%;
         }
       }
       .text-wrapper {
-        overflow: hidden;
         height: 200px;
         padding: (@grid-gutter-width/2);
+        .news-content {
+          max-height: 124px;
+          overflow: hidden;
+        }
         h3 {
+          .roboto-bold;
           font-size: @font-size-subtitle;
           margin-bottom: (@grid-gutter-width/ 2);
         }

@@ -27,7 +27,6 @@
 }
 
 .title {
-  .oswald_light;
   text-transform: capitalize;
   text-align: center;
   display: block;
@@ -46,13 +45,15 @@
 }
 
 .grid-box-shadow {
-  transition: 0.3s all ease-in-out;
+  //transition: 0.3s all ease-in-out;
   //box-shadow: 0 0 20px -1px rgba(217,217,217,1);
   //box-shadow: 0 15px 45px -9px rgba(0,0,0,0.20);
-  box-shadow: 0 13px 25px -9px rgba(0,0,0,.2);
+  //box-shadow: 0 13px 25px -9px rgba(0,0,0,.2);
+  .lh-box-shadow(0 13px 25px -9px rgba(0,0,0, 0.2));
   &:hover {
     //box-shadow: 0 1px 1px 1px rgba(217,217,217,0.6);
-    box-shadow: 0 1px 1px 1px rgba(0,0,0,0.06);
+    //box-shadow: 0 1px 1px 1px rgba(0,0,0,0.06);
+    .lh-box-shadow(0 1px 1px 1px rgba(0,0,0,0.06))
   }
 }
 

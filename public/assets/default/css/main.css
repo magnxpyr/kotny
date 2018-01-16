@@ -9105,8 +9105,8 @@ button.close {
 *****************************************************************************************/
 @font-face {
   font-family: 'oswald_bold';
-  src: url('../../fonts/oswald-bold-webfont.eot');
-  src: url('../../fonts/oswald-bold-webfont.eot?#iefix') format('embedded-opentype'), url('../../fonts/oswald-bold-webfont.woff2') format('woff2'), url('../../fonts/oswald-bold-webfont.woff') format('woff'), url('../../fonts/oswald-bold-webfont.ttf') format('truetype'), url('../../fonts/oswald-bold-webfont.svg#oswaldbold') format('svg');
+  src: url('../fonts/oswald-bold-webfont.eot');
+  src: url('../fonts/oswald-bold-webfont.eot?#iefix') format('embedded-opentype'), url('../fonts/oswald-bold-webfont.woff2') format('woff2'), url('../fonts/oswald-bold-webfont.woff') format('woff'), url('../fonts/oswald-bold-webfont.ttf') format('truetype'), url('../fonts/oswald-bold-webfont.svg#oswaldbold') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -9116,8 +9116,8 @@ button.close {
 }
 @font-face {
   font-family: 'oswald_light';
-  src: url('../../fonts/oswald-light-webfont.eot');
-  src: url('../../fonts/oswald-light-webfont.eot?#iefix') format('embedded-opentype'), url('../../fonts/oswald-light-webfont.woff2') format('woff2'), url('../../fonts/oswald-light-webfont.woff') format('woff'), url('../../fonts/oswald-light-webfont.ttf') format('truetype'), url('../../fonts/oswald-light-webfont.svg#oswaldlight') format('svg');
+  src: url('../fonts/oswald-light-webfont.eot');
+  src: url('../fonts/oswald-light-webfont.eot?#iefix') format('embedded-opentype'), url('../fonts/oswald-light-webfont.woff2') format('woff2'), url('../fonts/oswald-light-webfont.woff') format('woff'), url('../fonts/oswald-light-webfont.ttf') format('truetype'), url('../fonts/oswald-light-webfont.svg#oswaldlight') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -9127,14 +9127,44 @@ button.close {
 }
 @font-face {
   font-family: 'oswald';
-  src: url('../../fonts/oswald-regular-webfont.eot');
-  src: url('../../fonts/oswald-regular-webfont.eot?#iefix') format('embedded-opentype'), url('../../fonts/oswald-regular-webfont.woff2') format('woff2'), url('../../fonts/oswald-regular-webfont.woff') format('woff'), url('../../fonts/oswald-regular-webfont.ttf') format('truetype'), url('../../fonts/oswald-regular-webfont.svg#oswaldregular') format('svg');
+  src: url('../fonts/oswald-regular-webfont.eot');
+  src: url('../fonts/oswald-regular-webfont.eot?#iefix') format('embedded-opentype'), url('../fonts/oswald-regular-webfont.woff2') format('woff2'), url('../fonts/oswald-regular-webfont.woff') format('woff'), url('../fonts/oswald-regular-webfont.ttf') format('truetype'), url('../fonts/oswald-regular-webfont.svg#oswaldregular') format('svg');
   font-weight: normal;
   font-style: normal;
 }
 .oswald {
   font-family: 'oswald', sans-serif;
   font-weight: 300;
+}
+@font-face {
+  font-family: 'roboto';
+  src: url('../fonts/roboto-regular-webfont.eot'), url('../fonts/roboto-regular-webfont.woff') format('woff'), url('../fonts/roboto-regular-webfont.ttf') format('truetype'), url('../fonts/roboto-regular-webfont.svg') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+.roboto {
+  font-family: 'roboto', sans-serif;
+  font-weight: 300;
+}
+@font-face {
+  font-family: 'roboto-light';
+  src: url('../fonts/roboto-light-webfont.eot'), url('../fonts/roboto-light-webfont.woff') format('woff'), url('../fonts/roboto-light-webfont.ttf') format('truetype'), url('../fonts/roboto-light-webfont.svg') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+.roboto-light {
+  font-family: 'roboto-light', sans-serif;
+  font-weight: normal;
+}
+@font-face {
+  font-family: 'roboto-bold';
+  src: url('../fonts/roboto-bold-webfont.eot'), url('../fonts/roboto-bold-webfont.woff') format('woff'), url('../fonts/roboto-bold-webfont.ttf') format('truetype'), url('../fonts/roboto-bold-webfont.svg') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+.roboto-bold {
+  font-family: 'roboto-bold', sans-serif;
+  font-weight: 700;
 }
 /*****************************************************************************************
 *
@@ -9227,8 +9257,6 @@ button.close {
   background-color: rgba(45, 89, 134, 0.95);
 }
 .title {
-  font-family: 'oswald_light', sans-serif;
-  font-weight: 100;
   text-transform: capitalize;
   text-align: center;
   display: block;
@@ -9245,10 +9273,13 @@ button.close {
   background-repeat: no-repeat;
 }
 .grid-box-shadow {
-  transition: 0.3s all ease-in-out;
+  -webkit-box-shadow: 0 13px 25px -9px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 0 13px 25px -9px rgba(0, 0, 0, 0.2);
   box-shadow: 0 13px 25px -9px rgba(0, 0, 0, 0.2);
 }
 .grid-box-shadow:hover {
+  -webkit-box-shadow: 0 1px 1px 1px rgba(0, 0, 0, 0.06);
+  -moz-box-shadow: 0 1px 1px 1px rgba(0, 0, 0, 0.06);
   box-shadow: 0 1px 1px 1px rgba(0, 0, 0, 0.06);
 }
 .alert {
@@ -9343,11 +9374,14 @@ button.close {
 *
 *****************************************************************************************/
 body {
-  font-family: 'oswald', sans-serif;
+  font-family: 'roboto', sans-serif;
   font-weight: 300;
-  font-size: 13px;
+  font-size: 15px;
   color: #8d8d8d;
+}
+body .main {
   padding-top: 50px;
+  padding-bottom: 50px;
 }
 a:hover {
   text-decoration: none;
@@ -9393,8 +9427,8 @@ p {
 *
 *****************************************************************************************/
 .topbar {
-  font-family: 'oswald_light', sans-serif;
-  font-weight: 100;
+  font-family: 'roboto-light', sans-serif;
+  font-weight: normal;
   background-color: #2d5986;
   background-color: rgba(45, 89, 134, 0.95);
   -webkit-border-radius: 0;
@@ -9531,8 +9565,8 @@ p {
   }
 }
 .carousel-wrapper #ontop-carousel .jumbotron {
-  font-family: 'oswald_light', sans-serif;
-  font-weight: 100;
+  font-family: 'roboto-light', sans-serif;
+  font-weight: normal;
   pointer-events: none;
   text-align: center;
   color: #ffffff;
@@ -9587,36 +9621,80 @@ p {
   }
 }
 .newsfeed-wrapper {
-  padding: 90px 0;
+  padding: 90px 0 0;
+}
+.newsfeed-wrapper:before,
+.newsfeed-wrapper:after {
+  content: " ";
+  display: table;
+}
+.newsfeed-wrapper:after {
+  clear: both;
+}
+.newsfeed-wrapper:before,
+.newsfeed-wrapper:after {
+  content: " ";
+  display: table;
+}
+.newsfeed-wrapper:after {
+  clear: both;
+}
+.newsfeed-wrapper .title {
+  margin: 30px;
+}
+.newsfeed-wrapper .title:before,
+.newsfeed-wrapper .title:after {
+  content: " ";
+  display: table;
+}
+.newsfeed-wrapper .title:after {
+  clear: both;
+}
+.newsfeed-wrapper .title:before,
+.newsfeed-wrapper .title:after {
+  content: " ";
+  display: table;
+}
+.newsfeed-wrapper .title:after {
+  clear: both;
 }
 .newsfeed-wrapper .news-box {
   position: relative;
   padding: 15px;
 }
 .newsfeed-wrapper .news-box a {
-  transition: 0.3s all ease-in-out;
+  -webkit-box-shadow: 0 13px 25px -9px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 0 13px 25px -9px rgba(0, 0, 0, 0.2);
   box-shadow: 0 13px 25px -9px rgba(0, 0, 0, 0.2);
-  color: #008060;
+  color: #333333;
   background-color: #ffffff;
   display: block;
 }
 .newsfeed-wrapper .news-box a:hover {
+  -webkit-box-shadow: 0 1px 1px 1px rgba(0, 0, 0, 0.06);
+  -moz-box-shadow: 0 1px 1px 1px rgba(0, 0, 0, 0.06);
   box-shadow: 0 1px 1px 1px rgba(0, 0, 0, 0.06);
 }
 .newsfeed-wrapper .news-box a .news-image {
   height: 200px;
   width: 100%;
 }
-.newsfeed-wrapper .news-box a .news-image img {
-  width: 100%;
+.newsfeed-wrapper .news-box a .news-image .bg-image {
+  background-size: cover;
   height: 100%;
+  background-position: 50% 50%;
 }
 .newsfeed-wrapper .news-box a .text-wrapper {
-  overflow: hidden;
   height: 200px;
   padding: 15px;
 }
+.newsfeed-wrapper .news-box a .text-wrapper .news-content {
+  max-height: 124px;
+  overflow: hidden;
+}
 .newsfeed-wrapper .news-box a .text-wrapper h3 {
+  font-family: 'roboto-bold', sans-serif;
+  font-weight: 700;
   font-size: 18px;
   margin-bottom: 15px;
 }
@@ -11168,10 +11246,13 @@ fieldset[disabled] .btn-yahoo.focus {
   padding: 15px;
 }
 .main-wrapper .articles-list-wrapper .container .inner {
-  transition: 0.3s all ease-in-out;
+  -webkit-box-shadow: 0 13px 25px -9px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 0 13px 25px -9px rgba(0, 0, 0, 0.2);
   box-shadow: 0 13px 25px -9px rgba(0, 0, 0, 0.2);
 }
 .main-wrapper .articles-list-wrapper .container .inner:hover {
+  -webkit-box-shadow: 0 1px 1px 1px rgba(0, 0, 0, 0.06);
+  -moz-box-shadow: 0 1px 1px 1px rgba(0, 0, 0, 0.06);
   box-shadow: 0 1px 1px 1px rgba(0, 0, 0, 0.06);
 }
 .main-wrapper .articles-list-wrapper .container .inner .article-info {
@@ -11416,10 +11497,20 @@ fieldset[disabled] .btn-yahoo.focus {
 *	url: http://www.magnxpyr.com
 *
 *****************************************************************************************/
+.post-container .post-featured-images {
+  background-color: #f2f2f2;
+  height: 400px;
+}
+.post-container .post-featured-images .img {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+}
 .post-container .post-title {
-  font-weight: 600;
   text-transform: capitalize;
-  color: #000000;
+  color: #8c8c8c;
   padding: 20px 0;
 }
 .post-container .meta {
