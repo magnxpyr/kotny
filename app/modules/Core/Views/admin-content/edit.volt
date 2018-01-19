@@ -9,7 +9,7 @@
                     </button>
                 </li>
                 <li>
-                    <button onclick="location.href='{{ url("admin/core/content/index") }}'"
+                    <button onclick="location.href='{{ url.previousUri() }}'"
                             class="btn btn-sm btn-block btn-danger"><i class='fa fa-remove'></i> Cancel
                     </button>
                 </li>

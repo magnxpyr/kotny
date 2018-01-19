@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2017 Magnxpyr Network
+ * @copyright   2006 - 2018 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -46,10 +46,12 @@ class Bootstrap
         });
 
         // Generate urls
-        $url = new Phalcon\Mvc\Url();
-        $url->setBaseUri($this->getConfig()->baseUri);
-        $url->setBasePath(ROOT_PATH);
-        $this->di->setShared('url', $url);
+        $this->di->setShared('url', function () {
+            $url = new Engine\Mvc\Url();
+            $url->setBaseUri($this->getConfig()->baseUri);
+            $url->setBasePath(ROOT_PATH);
+            return $url;
+        });
 
         $this->initView();
         $this->initView(true);

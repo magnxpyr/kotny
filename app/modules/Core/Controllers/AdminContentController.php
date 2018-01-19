@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2017 Magnxpyr Network
+ * @copyright   2006 - 2018 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -122,7 +122,7 @@ class AdminContentController extends AdminController
 
         $this->flash->success("Article was updated successfully");
 
-        $this->response->redirect('admin/core/content/index')->send();
+        $this->response->redirect($this->url->previousUri(), true)->send();
         return;
     }
 

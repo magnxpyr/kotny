@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2017 Magnxpyr Network
+ * @copyright   2006 - 2018 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -76,6 +76,7 @@ function getPhalconSo()
         case "5.6": $url .= "php56"; break;
         case "7.0": $url .= "php70"; break;
         case "7.1": $url .= "php71"; break;
+        case "7.2": $url .= "php72"; break;
         default: return "php";
     }
 
