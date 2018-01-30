@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2017 Magnxpyr Network
+ * @copyright   2006 - 2018 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -98,19 +98,6 @@ class ViewLevel extends Model
     public function getRoles()
     {
         return $this->roles;
-    }
-
-    /**
-     * Initialize method for model.
-     */
-    public function initialize()
-    {
-        $this->setSource('view_level');
-    }
-
-    public function getSource()
-    {
-        return 'view_level';
     }
 
     public function getRolesArray()

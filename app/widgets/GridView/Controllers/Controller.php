@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2017 Magnxpyr Network
+ * @copyright   2006 - 2018 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -36,6 +36,12 @@ class Controller extends \Engine\Widget\Controller
      */
     public function indexAction()
     {
+        $this->assets->collection('header-css')
+            ->addCss('https://cdn.datatables.net/v/bs/dt-1.10.16/r-2.2.1/rr-1.2.3/sl-1.2.4/datatables.min.css');
+        $this->assets->collection('footer-js')
+            ->addJs('https://cdn.datatables.net/v/bs/dt-1.10.16/r-2.2.1/rr-1.2.3/sl-1.2.4/datatables.min.js')
+            ->addJs('https://cdn.datatables.net/plug-ins/1.10.15/dataRender/datetime.js');
+
         // disable view render
         $this->setRenderView(false);
 
@@ -62,6 +68,8 @@ class Controller extends \Engine\Widget\Controller
      */
     private function getJs()
     {
+        $params = $this->getParams();
+
         $js = 'var table = $("#'.$this->getParam('tableId').'").DataTable({
             serverSide: true,
             responsive: {
@@ -77,13 +85,18 @@ class Controller extends \Engine\Widget\Controller
                 headers: { "X-CSRF-Token": "' . $this->tokenManager->getToken() . '" }
             },';
 
-        if ($this->getParam('order')) {
-            $js .= 'order: '. $this->getParam('order') . ',';
+        if (isset($params['order'])) {
+            if (empty($params['order'])) {
+                $js .= 'order: [],';
+            } else {
+                $js .= 'order: '. $this->getParam('order') . ',';
+            }
         } else {
             $js .= 'order: [[1, "desc"]],';
         }
 
-        $js .= 'columns: [{
+        $js .= 'columns: [
+        {
             data: null,
             defaultContent: "",
             className: "select-checkbox",
@@ -140,9 +153,13 @@ class Controller extends \Engine\Widget\Controller
             style: "multi",
             selector: "td:first-child"
         }';
+//        treeGrid: {
+//        left: 10,
+//        indentedRow: "title"
+//        },'
 
         if ($this->getParam('options')) {
-            $js .= "," . $this->getParam('options');
+            $js .= "," . $this->arrayToString($this->getParam('options'));
         }
 
         $js .= ', columnDefs: [ {
@@ -227,5 +244,23 @@ class Controller extends \Engine\Widget\Controller
         $this->headHtml .= '<th data-column-id="actions">Actions</th><th class="control" style="display: none;"></th>';
         $this->searchHtml .= '<th></th>';
 
+    }
+
+    private function arrayToString($array)
+    {
+        $string = '';
+        if (!$array) {
+            $array = $this->getParam('options');
+        }
+        if ($array) {
+            foreach ($array as $k => $v) {
+                if (is_object($v) || is_array($v)) {
+                    $string .= "'$k': {" . $this->arrayToString($v) . "},";
+                } else {
+                    $string .= "'$k': '$v',";
+                }
+            }
+        }
+        return rtrim($string, ',');
     }
 }

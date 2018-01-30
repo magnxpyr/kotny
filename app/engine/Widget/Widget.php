@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2017 Magnxpyr Network
+ * @copyright   2006 - 2018 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -101,7 +101,7 @@ class Widget extends Injectable
             $controller->viewWidget->setViewsDir(APP_PATH . "widgets/$widgetName/Views");
             $controller->viewWidget->pick([$viewName]);
             $controller->viewWidget->setMainView($viewName);
-            $controller->viewWidget->setMainView('widget');
+            $controller->viewWidget->setLayout('widget');
             $html = $controller->viewWidget->getRender($controllerName, $action);
         }
 

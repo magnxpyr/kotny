@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2017 Magnxpyr Network
+ * @copyright   2006 - 2018 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -134,13 +134,6 @@ class Role extends Model
      */
     public function initialize()
     {
-        $this->setSource('role');
         $this->hasMany('id', AccessList::class, 'role_id', ['alias' => 'accessList', 'reusable' => true]);
     }
-
-    public function getSource()
-    {
-        return 'role';
-    }
-
 }

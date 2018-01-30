@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2017 Magnxpyr Network
+ * @copyright   2006 - 2018 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -32,8 +32,8 @@ class FacebookConnector extends Injectable
     public function __construct()
     {
         $this->fb = new Facebook([
-            'app_id' => $this->config->api->facebook->appId,
-            'app_secret' => $this->config->api->facebook->secret,
+            'app_id' => $this->config->fbId,
+            'app_secret' => $this->config->fbSecret,
             'default_graph_version' => 'v2.8'
         ]);
         $this->fbHelper = $this->fb->getRedirectLoginHelper();

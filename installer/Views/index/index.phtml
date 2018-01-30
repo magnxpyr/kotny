@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="generator" content="Magnxpyr CMS">
+    <meta name="description" content="Magnxpyr CMS Installer">
+    <meta name="keywords" content="cms, installer">
+    <meta name="robots" content="NOINDEX, NOFOLLOW">
+    <title>Magnxpyr CMS</title>
+
+    <?= $this->tag->stylesheetLink('https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css') ?>
+    <?= $this->tag->stylesheetLink('https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css') ?>
+    <?= $this->tag->stylesheetLink('assets/default/css/main.min.css') ?>
+    <style>
+        body {
+            line-height: 1.9em;
+            border-top: dashed 3px #0099CC;
+            padding: 0;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            padding: 50px 0;
+        }
+
+        #logo {
+            font-family: 'Open Sans', sans-serif;
+            color: #555;
+            text-decoration: none;
+            text-transform: uppercase;
+            font-size: 80px;
+            font-weight: 800;
+            letter-spacing: -3px;
+            line-height: 1;
+            text-shadow: #EDEDED 3px 2px 0;
+            position: relative;
+        }
+
+        #logo:after {
+            content: "magnxpyr cms";
+            position: absolute;
+            left: 10px;
+            top: 6px;
+        }
+
+        #logo:after {
+            background-image: -webkit-linear-gradient(left top, transparent 0%, transparent 25%, #555 25%, #555 50%, transparent 50%, transparent 75%, #555 75%);
+            background-size: 4px 4px;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            z-index: -5;
+            display: block;
+            text-shadow: none;
+        }
+
+        .layout-loader {
+            width: 100%;
+            min-height: 100%;
+            position: fixed;
+            background-color: rgba(0, 0, 0, 0.3);
+            z-index: 999;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+        }
+
+        .layout-loader:after {
+            content: '';
+            display: table;
+            clear: both;
+        }
+
+        .loader {
+            position: fixed;
+            width: 200px;
+            height: 100px;
+            margin: auto;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            z-index: 1000;
+            color: #5a5a5a;
+        }
+
+        .loader .loader-text {
+            display: inline-block;
+            padding-left: 15px;
+            vertical-align: text-bottom;
+        }
+
+        .icons {
+            font-size: 20px;
+        }
+
+        .alert {
+            position: relative;
+        }
+
+        .btn-group {
+            -webkit-border-top-right-radius: 4px;
+            border-top-right-radius: 4px;
+            -webkit-border-bottom-right-radius: 4px;
+            border-bottom-right-radius: 4px;
+            -moz-border-radius-topright: 4px;
+            -moz-border-radius-bottomright: 4px;
+        }
+
+        .content {
+            padding: 20px;
+        }
+
+        .tab-content {
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+<header class="container" id="header">
+    <div class="col-md-10" id="logo">Magnxpyr Cms</div>
+    <div class="right-box social-logo col-md-2">
+        <a href="https://www.facebook.com/magnxpyr" target="_blank"><i class="facebook icons"></i></a>
+        <a href="https://twitter.com/magnxpyr" target="_blank"><i class="twitter icons"></i></a>
+    </div>
+</header>
+<div id="flash-messages"></div>
+<div class="main">
+    <?php $success ? $this->partial("index/success") :
+        $this->partial("index/tabs", ['required' => $required, 'recommended' => $recommended]); ?>
+</div>
+<div class="layout-loader hidden">
+    <div class="loader">
+        <span><i class="fa fa-spinner fa-spin" style="font-size:48px"></i></span>
+        <h3 class="loader-text">Loading</h3>
+    </div>
+</div>
+
+<?= $this->tag->javascriptInclude('https://code.jquery.com/jquery-3.2.1.min.js') ?>
+<?= $this->tag->javascriptInclude('https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js') ?>
+<?php $success ? $this->partial("index/success-scripts") :
+    $this->partial("index/tabs-scripts", ['isValid' => $isValid]); ?>
+
+</body>
+</html>

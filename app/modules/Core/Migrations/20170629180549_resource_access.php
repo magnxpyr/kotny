@@ -1,6 +1,6 @@
-<?php 
+<?php
 /**
- * @copyright   2006 - 2017 Magnxpyr Network
+ * @copyright   2006 - 2018 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -12,38 +12,38 @@ use Engine\Package\Migration;
 
 class ResourceAccessMigration extends Migration
 {
+    const TABLE_NAME = 'resource_access';
+
     public function up()
     {
         $this->morphTable(
-            'resource_access',
-            array(
-                'columns' => array(
-                    new Column('resource_id', array(
-                            'type' => Column::TYPE_INTEGER,
-                            'unsigned' => true,
-                            'notNull' => true,
-                            'size' => 11,
-                            'first' => true
-                        )
-                    ),
-                    new Column('access_name', array(
-                            'type' => Column::TYPE_VARCHAR,
-                            'notNull' => true,
-                            'size' => 64,
-                            'after' => 'resource_id'
-                        )
-                    )
-                ),
-                'indexes' => array(
-                    new Index('PRIMARY', array('resource_id', 'access_name'))
-                ),
-                'options' => array(
+            self::TABLE_NAME,
+            [
+                'columns' => [
+                    new Column('resource_id', [
+                        'type' => Column::TYPE_INTEGER,
+                        'unsigned' => true,
+                        'notNull' => true,
+                        'size' => 11,
+                        'first' => true
+                    ]),
+                    new Column('access_name', [
+                        'type' => Column::TYPE_VARCHAR,
+                        'notNull' => true,
+                        'size' => 64,
+                        'after' => 'resource_id'
+                    ])
+                ],
+                'indexes' => [
+                    new Index('PRIMARY', ['resource_id', 'access_name'])
+                ],
+                'options' => [
                     'TABLE_TYPE' => 'BASE TABLE',
                     'AUTO_INCREMENT' => '1',
                     'ENGINE' => 'InnoDB',
                     'TABLE_COLLATION' => 'utf8_general_ci'
-                )
-            )
+                ]
+            ]
         );
     }
 }

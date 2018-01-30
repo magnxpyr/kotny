@@ -1,0 +1,80 @@
+<?= $this->tag->javascriptInclude('assets/common/js/mg.js') ?>
+<?= $this->tag->javascriptInclude('assets/default/js/app.js') ?>
+<?= $this->tag->javascriptInclude('assets/default/js/mg.js') ?>
+<?= $this->tag->javascriptInclude('assets/default/js/main.js') ?>
+
+<script>
+    var loader = $('#layout-loader');
+    $(document)
+        .ajaxStart(function () {
+            loader.show();
+        })
+        .ajaxStop(function () {
+            loader.hide();
+        });
+
+    $('a[rel=prev]').click(function () {
+        var li = $('.nav-tabs > .active').prev('li');
+        li.removeClass('disabled');
+        li.find('a').trigger('click');
+        li.addClass('disabled')
+    });
+
+    $(".nav-tabs").on("click", ".disabled",function (e) {
+        e.preventDefault();
+        return false;
+    });
+
+    function checkRequirements() {
+        <?= $isValid ? 'next();' : '' ?>
+    }
+
+    function checkConfiguration() {
+        $.ajax({
+            type: "POST",
+            url: "<?= $this->url->get("/checkConfiguration") ?>",
+            data: $('form#configuration').serialize(),
+            success: function (data) {
+                if (!data.success) {
+                    var error = '';
+                    $.each(data.errors, function(k, v) {
+                        error += '<div class="alert alert-danger">' + v + '</div>'
+                    });
+                    $('#flash-messages').html(error);
+                } else {
+                    $('#flash-messages').html('');
+                    $.each($('form#configuration').serializeArray(), function(i, field) {
+                        $('#ow-' + field.name).html(field.value)
+                    });
+                    next();
+                }
+            }
+        });
+    }
+
+    function cmsInstall() {
+        $.ajax({
+            type: "POST",
+            url: "<?= $this->url->get("/install") ?>",
+            data: $('form#configuration').serialize(),
+            success: function (data) {
+                if (!data.success) {
+                    var error = '';
+                    $.each(data.errors, function(k, v) {
+                        error += '<div class="alert alert-danger">' + v + '</div>'
+                    });
+                    $('#flash-messages').html(error);
+                } else {
+                    location.reload();
+                }
+            }
+        });
+    }
+
+    function next() {
+        var li = $('.nav-tabs > .active').next('li');
+        li.removeClass('disabled');
+        li.find('a').trigger('click');
+        li.addClass('disabled')
+    }
+</script>

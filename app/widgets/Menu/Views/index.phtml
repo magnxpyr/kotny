@@ -32,37 +32,52 @@ foreach ($menuElements as $k => $elements) {
             if ($elements->getLevel() == 1) {
                 echo "<li class=\"dropdown $active\"><a class=\"dropdown-toggle\" data-toggle=\"dropdown\" href='$path'>";
                 if (!empty($elements->getPrepend())) {
-                    echo "<i class=\"$elements->prepend\"></i>";
+                    echo "<i class=\"$elements->prepend\"></i> ";
                 }
-                echo "$elements->title</a><ul class=\"dropdown-menu\">";
+                if ($elements->getShowTitle()) {
+                    echo $elements->title;
+                }
+                echo "</a><ul class=\"dropdown-menu\">";
             } else {
                 echo "<li class=' dropdown-submenu$active'><a href=\"$path\">";
                 if (!empty($elements->getPrepend())) {
-                    echo "<i class=\"$elements->prepend\"></i>";
+                    echo "<i class=\"$elements->prepend\"></i> ";
                 }
-                echo "$elements->title</a><ul class=\"dropdown-menu\">";
+                if ($elements->getShowTitle()) {
+                    echo $elements->title;
+                }
+                echo "</a><ul class=\"dropdown-menu\">";
             }
 
         } else {
             echo "<li class=\"$active\"><a href='$path'>";
             if (!empty($elements->getPrepend())) {
-                echo "<i class=\"$elements->prepend\"></i>";
+                echo "<i class=\"$elements->prepend\"></i> ";
             }
-            echo "$elements->title</a>";
+            if ($elements->getShowTitle()) {
+                echo $elements->title;
+            }
+            echo "</a>";
         }
     } elseif ($elements->level > $level) {
         if (isset($menuElements[$k+1]) && $menuElements[$k+1]->getParentId() == $elements->getId()) {
             echo "<li class='dropdown-submenu $active'><a href=\"$path\">";
             if (!empty($elements->getPrepend())) {
-                echo "<i class=\"$elements->prepend\"></i>";
+                echo "<i class=\"$elements->prepend\"></i> ";
             }
-            echo "$elements->title</a><ul class=\"dropdown-menu\">";
+            if ($elements->getShowTitle()) {
+                echo $elements->title;
+            }
+            echo "</a><ul class=\"dropdown-menu\">";
         } else {
             echo "<li class=\"$active\"><a href='$path'>";
             if (!empty($elements->getPrepend())) {
-                echo "<i class=\"$elements->prepend\"></i>";
+                echo "<i class=\"$elements->prepend\"></i> ";
             }
-            echo "$elements->title</a>";
+            if ($elements->getShowTitle()) {
+                echo $elements->title;
+            }
+            echo "</a>";
         }
     }
 

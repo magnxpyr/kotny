@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2017 Magnxpyr Network
+ * @copyright   2006 - 2018 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -58,5 +58,7 @@ class AclHandler extends Plugin
             ]);
             return $event->isStopped();
         }
+
+        $this->url->setHistory();
     }
 }

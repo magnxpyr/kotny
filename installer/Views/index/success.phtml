@@ -1,0 +1,19 @@
+<div class="container tabs-wrap" id="installer-success">
+    <div class="jumbotron">
+        <p><i class="fa  fa-check-circle-o" style="color: green"></i> Congratulations! Magnxpyr CMS is now installed.</p>
+        <p style="font-size: 16px">Please remove the installer directory to start using Magnxpyr CMS</p>
+        <p>
+            <a class="btn btn-warning" href="#" onclick="removeInstaller()" title="Remove installer">
+        Remove installation folder</a>
+        </p>
+        <hr/>
+        <p>
+            <a class="btn btn-default" href="<?= $this->url->get() ?>" title="Site">
+                <i class="fa fa-eye"></i> Site
+            </a>
+            <a class="btn btn-primary" href="<?= $this->url->get('user/login') ?>" title="Login">
+                <i class="fa fa-lock"></i> Login area
+            </a>
+        </p>
+    </div>
+</div>

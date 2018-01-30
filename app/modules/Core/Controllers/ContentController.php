@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2017 Magnxpyr Network
+ * @copyright   2006 - 2018 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -60,8 +60,8 @@ class ContentController extends Controller
     public function articleAction($catAlias, $articleId, $articleAlias)
     {
         $this->view->setVar('metaAuthor', '');
-        $this->view->setVar('metaDescription', $this->config->app->meta->description);
-        $this->view->setVar('metaKeywords', $this->config->app->meta->keywords);
+        $this->view->setVar('metaDescription', $this->config->metaDesc);
+        $this->view->setVar('metaKeywords', $this->config->metaKeys);
 
         $model = $this->modelsManager->createBuilder()
             ->columns('content.*, category.*, user.*, viewLevel.*')

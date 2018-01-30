@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2017 Magnxpyr Network
+ * @copyright   2006 - 2018 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -19,10 +19,11 @@ namespace Engine;
  * @property \Engine\Package\Manager $packageManager
  * @property \Engine\Widget\Widget $widget
  * @property \Engine\Mvc\View\Section $section
+ * @property \Engine\Mvc\Url $url
  * @property \Phalcon\Mvc\View $viewWidget
  * @property \Phalcon\Mvc\View\Simple $viewSimple
  * @property \Phalcon\Mailer\Manager $mail
- * @property \Phalcon\Config $config
+ * @property \Engine\Mvc\Config\ConfigSample $config
  * @property \Phalcon\Logger\Adapter $logger
  * @property \Phalcon\Cache\Backend $cache
  * @property \Phalcon\Translate\Adapter\NativeArray $t

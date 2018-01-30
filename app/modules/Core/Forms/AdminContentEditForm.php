@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2017 Magnxpyr Network
+ * @copyright   2006 - 2018 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -206,6 +206,10 @@ class AdminContentEditForm extends Form
 
         $images = ['introImage' => $data['introImage'], 'fulltextImage' => $data['fulltextImage']];
         $entity->setImages(json_encode($images));
+
+        if (!isset($data['featured'])) {
+            $entity->setFeatured(0);
+        }
 
         parent::bind($data, $entity, $whitelist);
     }

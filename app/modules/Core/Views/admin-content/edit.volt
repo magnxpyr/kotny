@@ -9,7 +9,7 @@
                     </button>
                 </li>
                 <li>
-                    <button onclick="location.href='{{ url("admin/core/content/index") }}'"
+                    <button onclick="location.href='{{ url.previousUri() }}'"
                             class="btn btn-sm btn-block btn-danger"><i class='fa fa-remove'></i> Cancel
                     </button>
                 </li>
@@ -65,6 +65,7 @@
     </div>
 </div>
 
-{% do assets.collection('footer-js').addJs("https://cloud.tinymce.com/stable/tinymce.min.js") %}
-{% do assets.collection('footer-js').addJs("https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.6.1/jquery.tinymce.min.js") %}
+{% do assets.collection('footer-js').addJs("https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.7.4/tinymce.min.js") %}
+{% do assets.collection('footer-js').addJs("https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.7.4/jquery.tinymce.min.js") %}
+
 {% do addViewJs('admin-content/edit-scripts') %}

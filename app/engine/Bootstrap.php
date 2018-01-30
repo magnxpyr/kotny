@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2017 Magnxpyr Network
+ * @copyright   2006 - 2018 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -8,6 +8,7 @@
  */
 
 use Engine\TokenManager;
+use Phalcon\Mvc\Model\Manager;
 
 /**
  * Class Bootstrap
@@ -45,10 +46,12 @@ class Bootstrap
         });
 
         // Generate urls
-        $url = new Phalcon\Mvc\Url();
-        $url->setBaseUri($this->getConfig()->app->baseUri);
-        $url->setBasePath(ROOT_PATH);
-        $this->di->setShared('url', $url);
+        $this->di->setShared('url', function () {
+            $url = new Engine\Mvc\Url();
+            $url->setBaseUri($this->getConfig()->baseUri);
+            $url->setBasePath(ROOT_PATH);
+            return $url;
+        });
 
         $this->initView();
         $this->initView(true);
@@ -105,38 +108,56 @@ class Bootstrap
     {
         // Define internal variables
         define('DEFAULT_THEME', 'default');
-        define('THEMES_PATH', APP_PATH . 'themes/');
-        define('MODULES_PATH', APP_PATH . 'modules/');
-        define('WIDGETS_PATH', APP_PATH . 'widgets/');
-        define('TEMP_PATH', ROOT_PATH . 'cache/tmp/');
 
         // Load config file
-        $config = require_once APP_PATH . 'config/config.php';
-        if ($config['app']['development']) {
-            if (is_file(APP_PATH . 'config/development/config.php')) {
-                $config = require_once APP_PATH . 'config/development/config.php';
+        require_once APP_PATH . 'config/config-default.php';
+        $config = new ConfigDefault();
+        if ($config->environment != 'none') {
+            $configFile = APP_PATH . 'config/config-' . $config->environment . ".php";
+            if (is_file($configFile)) {
+                require_once $configFile;
+                $class = "Config". \Phalcon\Text::camelize($config->environment);
+                $config = new $class();
             }
         }
 
-        date_default_timezone_set($config['app']['timezone']);
+        define('DEV', $config->dev);
 
-        define('CACHE_PATH', ROOT_PATH . 'cache/');
-        define('DEV', $config['app']['development']);
+        date_default_timezone_set($config->timezone);
 
         // set cookies time
-        $config['app']['cookie']['expire'] = time() + $config['app']['cookie']['expire'];
+        $config->cookieExpire = time() + $config->cookieExpire;
+
+        $dbConfig = [
+            'host' => $config->dbHost,
+            'username' => $config->dbUser,
+            'password' => $config->dbPass,
+            'port' => $config->dbPort,
+            'dbname' => $config->dbName,
+            'prefix' => $config->dbPrefix
+        ];
 
         // Connect to db
-        $db = new \Phalcon\Db\Adapter\Pdo\Mysql([
-            'host' => $config['database']['host'],
-            'username' => $config['database']['username'],
-            'password' => $config['database']['password'],
-            'dbname' => $config['database']['dbname']
-        ]);
+        switch ($config->dbAdaptor) {
+            case 'oracle':
+                $db = new \Phalcon\Db\Adapter\Pdo\Oracle($dbConfig);
+                break;
+            case 'postgresql':
+                $db = new \Phalcon\Db\Adapter\Pdo\Postgresql($dbConfig);
+                break;
+            default:
+                $db = new \Phalcon\Db\Adapter\Pdo\Mysql($dbConfig);
+                break;
+        }
+
+        $this->di->setShared("modelsManager", function () use ($config) {
+            $modelsManager = new Manager();
+            $modelsManager->setModelPrefix($config->dbPrefix);
+            return $modelsManager;
+        });
+
         $this->di->setShared('db', $db);
-
-        $this->di->setShared('config', new \Phalcon\Config($config));
-
+        $this->di->setShared('config', $config);
         $this->initCache();
 
         // Load loader
@@ -238,6 +259,7 @@ class Bootstrap
             $this->di->setShared('view', $view);
         }
     }
+
     private function initSimpleView()
     {
         $view = new \Phalcon\Mvc\View\Simple();
@@ -259,7 +281,7 @@ class Bootstrap
         // Set up crypt service
         $this->di->setShared('crypt', function () use ($config) {
             $crypt = new \Phalcon\Crypt();
-            $crypt->setKey($config->app->cryptKey);
+            $crypt->setKey($config->cryptKey);
             return $crypt;
         });
 
@@ -273,7 +295,7 @@ class Bootstrap
         });
 
         $acl = null;
-        switch ($config->app->aclAdapter) {
+        switch ($config->aclAdapter) {
             case 'memory':
                 $acl = new \Engine\Acl\Memory();
                 break;
@@ -293,16 +315,26 @@ class Bootstrap
         // Register mail service
         $this->di->set('mail', function () use ($config) {
             $settings = [
-                'from' => $config->mail->from->toArray(),
-                'driver' => $config->mail->driver,
-                'viewsDir' => APP_PATH . 'themes/' . DEFAULT_THEME . '/emails/'
+                'from' => [
+                    'name' => $config->fromMame,
+                    'email' => $config->mailFrom,
+                ],
+                'driver' => $config->mailer,
+                'viewsDir' => THEMES_PATH . DEFAULT_THEME . '/emails/'
             ];
-            switch ($config->mail->driver) {
+            switch ($config->mailer) {
                 case 'sendmail':
-                    $settings['sendmail'] = $config->mail->sendmail;
+                    $settings['sendmail'] = $config->sendmail;
                     break;
                 case 'smtp':
-                    $settings = array_merge($settings, $config->mail->smtp->toArray());
+                    $smtp = [
+                        'host' => $config->smtpHost,
+                        'port' => $config->smtpPort,
+                        'encryption' => $config->smtpSecure ? 'ssl' : '',
+                        'username' => $config->smtpUser,
+                        'password' => $config->smtpUser,
+                    ];
+                    $settings = array_merge($settings, $smtp);
                     break;
             }
             return new \Phalcon\Mailer\Manager($settings);
@@ -339,7 +371,7 @@ class Bootstrap
         ]);
 
         $cache = null;
-        switch ($config->app->cache->adapter) {
+        switch ($config->cacheAdapter) {
             case 'file':
                 $cache = new \Phalcon\Cache\Backend\File($cacheFrontend, [
                     "cacheDir" => CACHE_PATH . 'backend/'
@@ -348,15 +380,15 @@ class Bootstrap
             case 'memcache':
                 $cache = new \Phalcon\Cache\Backend\Memcache(
                     $cacheFrontend, [
-                    "host" => $config->app->cache->host,
-                    "port" => $config->app->cache->port,
+                    "host" => $config->cacheHost,
+                    "port" => $config->cachePort,
                 ]);
                 break;
             case 'memcached':
                 $cache = new \Phalcon\Cache\Backend\Libmemcached(
                     $cacheFrontend, [
-                    "host" => $config->app->cache->host,
-                    "port" => $config->app->cache->port,
+                    "host" => $config->cacheHost,
+                    "port" => $config->cachePort,
                 ]);
                 break;
         }
@@ -414,6 +446,9 @@ class Bootstrap
         }
     }
 
+    /**
+     * @return Config
+     */
     private function getConfig()
     {
         return $this->di->getShared('config');

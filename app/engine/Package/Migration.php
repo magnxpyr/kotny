@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2017 Magnxpyr Network
+ * @copyright   2006 - 2018 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -75,6 +75,7 @@ abstract class Migration extends Injectable
     public function morphTable($tableName, $definition)
     {
         $defaultSchema = null;
+        $tableName = $this->getTableName($tableName);
 
         if (isset($this->db->dbname)) {
             $defaultSchema = $this->db->dbname;
@@ -294,15 +295,23 @@ abstract class Migration extends Injectable
 
     /**
      * Inserts multiple rows in a table
+     *
      * @param string $tableName
-     * @param array $rows
+     * @param array $values
+     * @param array $fields
      */
-    public function batchInsert($tableName, $rows)
+    public function batchInsert($tableName, $values, $fields)
     {
+        $tableName = $this->getTableName($tableName);
         $this->db->begin();
-        foreach ($rows as $row) {
-            $this->db->insert($tableName, $row);
+        foreach ($values as $value) {
+            $this->db->insert($tableName, $value, $fields);
         }
         $this->db->commit();
+    }
+
+    public function getTableName($tableName)
+    {
+        return $this->config->dbPrefix . $tableName;
     }
 }

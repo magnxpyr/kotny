@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2017 Magnxpyr Network
+ * @copyright   2006 - 2018 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -46,6 +46,11 @@ class Menu extends Model
      * @var integer
      */
     private $status;
+
+    /**
+     * @var integer
+     */
+    private $show_title;
 
     /**
      * @var integer
@@ -153,6 +158,14 @@ class Menu extends Model
         $this->status = $status;
 
         return $this;
+    }
+
+    /**
+     * @param int $show_title
+     */
+    public function setShowTitle($show_title)
+    {
+        $this->show_title = $show_title;
     }
 
     /**
@@ -271,6 +284,14 @@ class Menu extends Model
     }
 
     /**
+     * @return int
+     */
+    public function getShowTitle()
+    {
+        return $this->show_title;
+    }
+
+    /**
      * Returns the value of field parent_id
      *
      * @return integer
@@ -325,14 +346,8 @@ class Menu extends Model
      */
     public function initialize()
     {
-        $this->setSource('menu');
         $this->belongsTo('menu_type_id', 'Module\Core\Models\MenuType', 'id', ['alias' => 'menuType', 'reusable' => true]);
         $this->hasOne('view_level', 'Module\Core\Models\ViewLevel', 'id', ['alias' => 'viewLevel', 'reusable' => true]);
-    }
-
-    public function getSource()
-    {
-        return 'menu';
     }
 
     /**

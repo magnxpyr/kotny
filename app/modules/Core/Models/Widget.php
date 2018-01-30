@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2017 Magnxpyr Network
+ * @copyright   2006 - 2018 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -329,14 +329,8 @@ class Widget extends Model
      */
     public function initialize()
     {
-        $this->setSource('widget');
         $this->hasOne('view_level', ViewLevel::class, 'id', ['alias' => 'viewLevel', 'reusable' => true]);
         $this->belongsTo('package_id', Package::class, 'id', ['alias' => 'package', 'reusable' => true]);
-    }
-
-    public function getSource()
-    {
-        return 'widget';
     }
 
     public function beforeValidation()

@@ -1,0 +1,15 @@
+<script>
+    function removeInstaller() {
+        $.ajax({
+            type: "POST",
+            url: "<?= $this->url->get("/removeInstaller") ?>",
+            success: function (data) {
+                if (!data.success) {
+                    $('#flash-messages').html('<div class="alert alert-danger">Unable to delete installer directory! Please remove it manually!</div>');
+                } else {
+                    $('#flash-messages').html('<div class="alert alert-success">Installer directory removed successfully! Please proceed to your website.</div>');
+                }
+            }
+        });
+    }
+</script>

@@ -9,33 +9,20 @@
     </div>
 
     <div class="box-body">
-        <!-- Table -->
-        <table class="table table-bordered table-striped">
-            <thead>
-                <tr>
-                    <th>Title</th>
-                    <th>Description</th>
-                    <th>Id</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% if page.items is defined %}
-                    {% for menu in page.items %}
-                        <tr data-item="item_{{ menu.getId() }}">
-                            <td>{{ link_to("admin/core/menu/index/"~menu.getId(), menu.getTitle()) }}</td>
-                            <td>{{ menu.getDescription() }}</td>
-                            <td>{{ menu.getId() }}</td>
-                            <td>
-                                {{ link_to("admin/core/menu-type/edit/"~menu.getId(), '<i class="fa fa-edit"></i>') }}
-                                <a href="#" class="ajaxDelete" data-url="{{ url("admin/core/menu-type/delete/"~menu.getId()) }}" data-parent-id="#item_{{ menu.getId() }}">
-                                    <i class="fa fa-trash-o"></i>
-                                </a>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                {% endif %}
-            </tbody>
-        </table>
+        {{ widget.render('GridView',
+            [
+                'columns': [
+                    ['data': 'id', 'searchable': false],
+                    ['data': 'title']
+                ],
+                'url': url('admin/core/menu-type/search'),
+                'actions': [
+                    'update': url('admin/core/menu-type/edit'),
+                    'delete': url('admin/core/menu-type/delete')
+                ],
+                'tableId': 'table'
+            ],
+            ['cache': false]
+        ) }}
     </div>
 </div>

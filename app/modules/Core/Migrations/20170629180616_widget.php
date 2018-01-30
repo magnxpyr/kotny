@@ -1,6 +1,6 @@
 <?php 
 /**
- * @copyright   2006 - 2017 Magnxpyr Network
+ * @copyright   2006 - 2018 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -12,10 +12,12 @@ use Phalcon\Db\Index;
 
 class WidgetMigration extends Migration
 {
+    const TABLE_NAME = 'widget';
+
     public function up()
     {
         $this->morphTable(
-            'widget',
+            self::TABLE_NAME,
             [
                 'columns' => [
                     new Column('id', [
@@ -99,5 +101,11 @@ class WidgetMigration extends Migration
                 ]
             ]
         );
+
+        $this->batchInsert(self::TABLE_NAME, [
+            [5, 'Homepage Menu', 0, 'menu', time(), 1, '{"_menu":"3"}', 0, 1],
+            [2, 'Homepage Carousel', 0, 'header', time(), 1, '{"_images":["https:\/\/farm1.staticflickr.com\/516\/32235079792_0ce7b5c93f_k.jpg"]}', 0, 1],
+            [7, 'Latest Posts', 0, 'footer', time(), 1, '{"_category":"","_limit":"3"}', 1, 1]
+        ], ['package_id', 'title', 'ordering', 'position', 'publish_up', 'view_level', 'params', 'show_title', 'status']);
     }
 }

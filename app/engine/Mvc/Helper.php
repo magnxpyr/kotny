@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2017 Magnxpyr Network
+ * @copyright   2006 - 2018 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -45,6 +45,8 @@ class Helper extends Component
         'sidebar-right' => 'sidebar-right', 'footer' => 'footer', 'footer-left' => 'footer-left',
         'footer-mid' => 'footer-mid', 'footer-right' => 'footer-right'
     ];
+
+    private $dbAdaptors = ['mysql' => 'Mysql', 'postgresql' => 'PostgreSQL', 'oracle' => 'Oracle'];
 
     /**
      * Get status by id of a field if can be displayed
@@ -106,6 +108,14 @@ class Helper extends Component
     public function getTemplateSections()
     {
         return $this->templateSections;
+    }
+
+    /**
+     * @return array
+     */
+    public function getDbAdaptors()
+    {
+        return $this->dbAdaptors;
     }
 
     /**

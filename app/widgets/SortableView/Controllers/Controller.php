@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2017 Magnxpyr Network
+ * @copyright   2006 - 2018 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -19,6 +19,9 @@ class Controller extends \Engine\Widget\Controller
      */
     public function indexAction()
     {
+        $this->assets->collection('footer-js')
+            ->addJs('https://cdnjs.cloudflare.com/ajax/libs/nestedSortable/2.0.0/jquery.mjs.nestedSortable.min.js');
+
         // disable view render
         $this->setRenderView(false);
 
@@ -78,7 +81,7 @@ class Controller extends \Engine\Widget\Controller
                 $colSizeNext = 1;
                 if (isset($colSize[$key + 1])) $colSizeNext = $colSize[$key + 1];
                 echo "<div class='col-xs-$colSizeNext'>";
-                echo $this->tag->linkTo($actions['update'] . "/" . $value->getId(), '<i class="fa fa-edit"></i>');
+                echo '<a href="' . $actions['update'] . "/" . $value->getId() . '"><i class="fa fa-edit"></i></a>';
                 $url = $actions['delete'] . "/" . $value->getId();
                 echo "<a href='#' class='ajaxDelete' data-url='$url' data-parent-id='#item_" . $value->getId() . "'><i class='fa fa-trash-o'></i></a></div></div>";
             }

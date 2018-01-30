@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2017 Magnxpyr Network
+ * @copyright   2006 - 2018 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -8,6 +8,7 @@
 
 namespace Module\Core\Controllers;
 
+use DataTables\DataTable;
 use Module\Core\Forms\AdminMenuEditForm;
 use Module\Core\Models\MenuType;
 use Phalcon\Mvc\Model\Criteria;
@@ -25,21 +26,17 @@ class AdminMenuController extends AdminController
 {
     /**
      * Index action
-     * @param null $id
+     * @param int $id
      */
-    public function indexAction($id = null)
+    public function indexAction($id = 1)
     {
-        $this->assets->collection('footer-js')->addJs('vendor/jquery-ui/extra/jquery.mjs.nestedSortable.js');
         $this->setTitle('Menu');
-
-        $menuId = $this->request->isPost() ? $this->request->getPost('menuType') : $id;
-        if ($menuId == null) { $menuId = 1; }
 
         $menuType = MenuType::find(['columns' => ['id', 'title']]);
 
         $model = Loader::fromResultset(Menu::find([
             'conditions' => 'menu_type_id = ?1',
-            'bind' => [1 => $menuId],
+            'bind' => [1 => $id],
             'order' => 'lft'
         ]), 'viewLevel');
 
@@ -47,7 +44,7 @@ class AdminMenuController extends AdminController
             $this->flash->notice("The search did not find any menu");
         }
 
-        $this->tag->setDefault('menuType', $menuId);
+        $this->tag->setDefault('menuType', $id);
 
         $this->view->setVars([
             'model' => $model,
@@ -58,51 +55,26 @@ class AdminMenuController extends AdminController
     /**
      * Searches for menu
      */
-    public function searchAction()
+    public function searchAction($id = 1)
     {
-        $numberPage = 1;
-        if ($this->request->isPost()) {
-            $query = Criteria::fromInput($this->di, "Core\\Models\\Menu", $_POST);
-            $this->persistent->set('parameters', $query->getParams());
-        } else {
-            $numberPage = $this->request->getQuery("page", "int");
-        }
+        $builder = $this->modelsManager->createBuilder()
+//            ->columns('m.id, m.title, m.status, m.parent_id, m.level, m.lft, m.rgt, m.view_level')
+            ->addFrom(Menu::class, 'm')
+            ->where('m.menu_type_id = 0')
+            ->orderBy('m.lft ASC');
 
-        $parameters = $this->persistent->get('parameters');
-        if (!is_array($parameters)) {
-            $parameters = [];
-        }
-        $parameters["order"] = "id";
-
-        $menu = Menu::find($parameters);
-        if (count($menu) == 0) {
-            $this->flash->notice("The search did not find any menu");
-
-            $this->dispatcher->forward([
-                "action" => "index"
-            ]);
-            return;
-        }
-
-        $paginator = new Paginator([
-            "data" => $menu,
-            "limit"=> 10,
-            "page" => $numberPage
-        ]);
-
-        $this->view->setVar('page', $paginator->getPaginate());
+        $dataTables = new DataTable();
+        $dataTables->fromBuilder($builder)->sendResponse();
     }
 
     /**
      * Displays the creation form
      */
-    public function createAction()
+    public function createAction($id = 1)
     {
         $this->setTitle('New Menu Item');
         $form = new AdminMenuEditForm();
-        if ($this->request->has('menu_type')) {
-            $this->tag->setDefault("menu_type_id", $this->request->get('menu_type_id'));
-        }
+        $this->tag->setDefault("menu_type_id", $id);
         $this->view->setVar('form', $form);
         $this->view->render('admin-menu', 'edit');
         $this->view->setRenderLevel(View::LEVEL_ACTION_VIEW);
@@ -213,8 +185,14 @@ class AdminMenuController extends AdminController
         $data = $this->request->getPost('data');
 
         foreach ($data as $el) {
-            if ($el['item_id']) {
-                $model = Menu::findFirstById($el['item_id']);
+            $id = null;
+            if (isset($el['item_id'])) {
+                $id = $el['item_id'];
+            } elseif (isset($el['id'])) {
+                $id = $el['id'];
+            }
+            if (!empty($id)) {
+                $model = Menu::findFirstById($id);
                 if ($model) {
                     if ($el['parent_id']) {
                         $model->setParentId($el['parent_id']);
