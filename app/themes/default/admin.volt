@@ -18,6 +18,7 @@
     {{ assets.outputCss("header-css") }}
     {{ stylesheet_link("assets/default/css/pdw.css") }}
     {{ stylesheet_link("assets/mg_admin/css/style.css") }}
+    {{ stylesheet_link("assets/mg_admin/css/main.css") }}
     {{ assets.outputViewCss() }}
     {{ assets.outputInlineCss() }}
 </head>

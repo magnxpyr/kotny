@@ -21,6 +21,7 @@
             <!-- Navbar Right Menu -->
             <div class="navbar-custom-menu">
                 <ul class="nav navbar-nav">
+                    <li>{{ link_to("/", '<i class="fa fa-home"></i>') }}</li>
                     <li>{{ link_to("user/logout", '<i class="fa fa-sign-out"></i>') }}</li>
                 </ul>
             </div>
@@ -33,7 +34,6 @@
         <section class="sidebar" style="height: auto">
             <!-- Sidebar Menu -->
             <ul class="sidebar-menu">
-                <li class="header">MAIN NAVIGATION</li>
                 {{ navigation['html'] }}
             </ul><!-- /.sidebar-menu -->
         </section>

@@ -4,8 +4,8 @@
         <div class="col-sm-6">
             <ul class="nav nav-pills">
                 <li>
-                    <button type="submit" form="contentForm" class="btn btn-sm btn-block btn-success"><i
-                                class="fa fa-edit"></i> Save
+                    <button type="submit" form="contentForm" class="btn btn-sm btn-block btn-success">
+                        <i class="fa fa-edit"></i> Save
                     </button>
                 </li>
                 <li>

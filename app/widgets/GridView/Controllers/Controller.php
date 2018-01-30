@@ -50,8 +50,8 @@ class Controller extends \Engine\Widget\Controller
      */
     private function getTableHtml()
     {
-        echo '<button id="searchFilter" class="btn btn-sm btn-primary"><i class="fa fa-plus"></i>Search Filter</button>';
-        echo '<div class="searchContainer" style="display: none">' . $this->searchHtml . '</div><br>';
+        echo '<div class="searchFilterWrapper"><button id="searchFilter" class="btn btn-sm btn-primary"><i class="fa fa-search"></i> Advanced Search</button></div>';
+        echo '<div id="searchFilterContainer" class="row" style="display: none">' . $this->searchHtml . '</div>';
         echo '<div class="table-responsive"></div><table id="'.$this->getParam('tableId').'" class="table table-striped table-bordered dataTable no-footer" width="100%"><thead><tr>';
         echo $this->headHtml;
         echo '</tr></thead><tbody></tbody></table></div>';
@@ -181,9 +181,16 @@ class Controller extends \Engine\Widget\Controller
             }
         });
         
-        $("#searchFilter").click(function(){
-            $(".searchContainer").slideToggle();
-        });';
+        $("#searchFilter").on("click", function(){
+            $("#searchFilterContainer").slideToggle();
+            $(this).toggleText("Search Filter", "Close Filter")
+        });
+        
+        $(document).ready(function() {
+            $("#searchFilterContainer").insertAfter("#table_wrapper .row:first-child")
+            $(".searchFilterWrapper").prependTo("#table_wrapper #table_filter")
+        })
+        ';
 
         $this->assets->addInlineJs($js);
     }
@@ -202,8 +209,10 @@ class Controller extends \Engine\Widget\Controller
 
                 if (!isset($column['searchable']) || $column['searchable']) {
                     $this->searchHtml .= '
-                            <div class="col-md-4 col-sm-6">
-                                <input type="text" data-col="' . ($key + 1) . '" placeholder="Search '.Text::camelize($column['data']).'">
+                            <div class="col-md-4 col-sm-6 form-group">
+                                <div class="input-wrapper">
+                                    <input class="form-control" type="text" data-col="' . ($key + 1) . '" placeholder="Search '.Text::camelize($column['data']).'">
+                                </div>
                             </div>
                         ';
                 } else {
