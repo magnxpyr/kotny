@@ -9,6 +9,7 @@
 namespace Engine\Widget;
 
 use Engine\Di\Injectable;
+use Engine\Mvc\View;
 use Module\Core\Models\Package;
 use Phalcon\Mvc\View\Exception;
 use Phalcon\Text;
@@ -19,6 +20,34 @@ use Phalcon\Text;
  */
 class Widget extends Injectable
 {
+    const CACHE_PREFIX = 'widget_',
+        CACHE_LIFETIME = 300;
+
+    /**
+     * Get widget cache key prefix.
+     *
+     * @param $widgetName string
+     * @return string
+     */
+    public function getCachePrefix($widgetName)
+    {
+        return Widget::CACHE_PREFIX . $widgetName .  '-';
+    }
+
+    /**
+     * Create cache key
+     *
+     * @param $widget string|array
+     * @param $params
+     * @param $widgetName
+     * @return string
+     */
+    public function createCacheKey($widget, $params, $widgetName)
+    {
+        return $this->getCachePrefix($widgetName) .
+            md5(serialize($widget).serialize($params).$this->auth->getUserRoleId());
+    }
+
     /**
      * Render widget
      * $widget = widgetName
@@ -63,6 +92,15 @@ class Widget extends Injectable
             $viewName = "admin-$action";
         }
 
+        if (isset($options['view'])) {
+            $viewName = $options['view'];
+        }
+
+        $layout = null;
+        if (isset($options['layout'])) {
+            $layout = $options['layout'];
+        }
+
         // Render widget only if is active
         if (!Package::isActiveWidget($widgetName)) {
             $this->logger->debug("Widget is not active and won't be rendered; widget: $widgetName");
@@ -79,11 +117,11 @@ class Widget extends Injectable
 
         /** @var \Engine\Widget\Controller $controller */
         $controller = new $controllerClass();
-        if ($options !== null && $options['cache']) {
+        if ($options !== null && isset($options['cache']) && !empty($options['cache'])) {
             if (!isset($params['cacheKey'])) {
-                $options['cacheKey'] = $controller->createCacheKey($widget, $params);
+                $options['cacheKey'] = $this->createCacheKey($widget, $params, $widgetName);
             }
-            if ($controller->cache->exists($options['cacheKey'], 300)) {
+            if ($controller->cache->exists($options['cacheKey'], $options['cache'])) {
                 return $controller->cache->get($options['cacheKey']);
             }
         }
@@ -94,19 +132,35 @@ class Widget extends Injectable
         if ($options !== null && isset($options['renderView'])) {
             $controller->setRenderView($options['renderView']);
         }
-        $controller->initialize();
+        // initialize the controller with the necessary settings
+//        $controller->initialize();
+
+        $viewWidget = clone $this->di->get('viewWidget');
+        $controller->viewWidget = $this->di->get('viewWidget');
+
+        $isBackend = (substr($controllerName, 0, 5) === "Admin");
+        if ($isBackend) {
+            // get params before calling the controller to have the necessary data for admin form
+            $this->getAdminParams($controller);
+        }
+
         $controller->{"{$action}Action"}();
         $html = null;
         if ($controller->getRenderView()) {
-            $controller->viewWidget->setViewsDir(APP_PATH . "widgets/$widgetName/Views");
-            $controller->viewWidget->pick([$viewName]);
-            $controller->viewWidget->setMainView($viewName);
-            $controller->viewWidget->setLayout('widget');
+            if ($isBackend) {
+                $controller->viewWidget->setViewsDir(APP_PATH . "widgets/$widgetName/Views");
+                $controller->viewWidget->pick($viewName);
+                $controller->viewWidget->setRenderLevel(View::LEVEL_ACTION_VIEW);
+            } else {
+                $this->getWidgetDefaults($controller, $widgetName, $viewName, $layout);
+                $controller->viewWidget->setVar('params', $params);
+            }
             $html = $controller->viewWidget->getRender($controllerName, $action);
         }
+        $this->di->set('viewWidget', $viewWidget);
 
-        if ($html != null && $options !== null && $options['cache']) {
-            $controller->cache->save($options['cacheKey'], $html, 300);
+        if ($html != null && $options !== null && isset($options['cache']) && !empty($options['cache'])) {
+            $controller->cache->save($options['cacheKey'], $html, $options['cache']);
         }
         return $html;
     }
@@ -129,5 +183,57 @@ class Widget extends Injectable
         } catch (Exception $e) {
             return null;
         }
+    }
+
+    private function getWidgetDefaults(&$controller, $widgetName, $viewName, $layout)
+    {
+        $pickView = $controller->viewWidget->getPickView();
+        if ($pickView !== null) {
+            $viewName = $pickView[0];
+        }
+
+        $controller->viewWidget->setViewsDir(APP_PATH . "widgets/$widgetName/Views");
+        $controller->viewWidget->pick([$viewName]);
+
+        $viewsDir = THEMES_PATH . $this->config->defaultTheme . '/views/widgets/' .
+            $this->helper->uncamelize($widgetName) . '/';
+        if ($controller->viewWidget->viewExists($viewsDir . $viewName)) {
+            $controller->viewWidget->setViewsDir($viewsDir);
+        }
+
+        if ($controller->viewWidget->getLayoutsDir() !== null) {
+            $controller->viewWidget->setLayoutsDir(THEMES_PATH . View::DEFAULT_THEME . '/layouts/');
+        }
+
+//        $layout = $controller->viewWidget->getLayout();
+
+        if (!empty($layout)) {
+            if ($controller->viewWidget->viewExists(THEMES_PATH . $this->config->defaultTheme . '/layouts/' . $layout)) {
+                $controller->viewWidget->setLayoutsDir(THEMES_PATH . $this->config->defaultTheme . '/layouts/');
+            }
+        } else {
+            $controller->viewWidget->setLayout(View::DEFAULT_WIDGET_LAYOUT);
+            if ($controller->viewWidget->viewExists(THEMES_PATH . $this->config->defaultTheme . '/layouts/' . View::DEFAULT_WIDGET_LAYOUT)) {
+                $controller->viewWidget->setLayoutsDir(THEMES_PATH . $this->config->defaultTheme . '/layouts/');
+            }
+        }
+
+    }
+
+    private function getAdminParams(&$controller)
+    {
+        $dbParams = [];
+        $params = $controller->getParams();
+        if ($params['id']) {
+            $model = \Module\Core\Models\Widget::findFirstById($params['id']);
+            if ($model->getParams()) {
+                $dbParams = (array) json_decode($model->getParams());
+            }
+        }
+
+        $params = array_merge($dbParams, $dbParams);
+
+        $controller->setParams($params);
+        $controller->viewWidget->setVar('params', $params);
     }
 }

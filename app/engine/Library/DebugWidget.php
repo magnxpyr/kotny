@@ -35,14 +35,17 @@ class DebugWidget implements InjectionAwareInterface {
 			foreach ($serviceNames as $eventName => $services) {
 				if (in_array($name, $services)) {
 					$service->setShared(true);
-					$di->get($name)->setEventsManager($eventsManager);
-                                        break;
+					if ($di->get($name)->getEventsManager() == null) {
+                        $eventsManager->attach($eventName, $this);
+                        $di->get($name)->setEventsManager($eventsManager);
+                    } else {
+                        $di->get($name)->getEventsManager()->attach($eventName, $this);
+                    }
+					break;
 				}
 			}
 		}
-		foreach (array_keys($serviceNames) as $eventName) {
-			$eventsManager->attach($eventName, $this);
-		}
+
 		$this->_serviceNames = $serviceNames;
 	}
 

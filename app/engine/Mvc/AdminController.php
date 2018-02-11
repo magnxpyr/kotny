@@ -27,8 +27,6 @@ abstract class AdminController extends Controller
         if ($this->request->isAjax()) {
             return;
         }
-        $this->view->setMainView(THEMES_PATH . DEFAULT_THEME . '/admin');
-        $this->view->setLayout('admin');
         $this->setupAssets();
         $this->view->setVar('navigation', $this->setupNavigation());
         $this->view->setVar('sidebar_collapse', isset($_COOKIE['mg-sdbrClp']) && $_COOKIE['mg-sdbrClp'] == 1 ? 'sidebar-collapse' : '');
@@ -42,7 +40,7 @@ abstract class AdminController extends Controller
     {
         $isActive = false;
         $breadcrumb = [];
-        $ids = ['currentId' => 0, 'previousId' => 0, 'parentId' => 0];
+        $ids = ['currentId' => 0, 'previousId' => 0, 'parenId' => 0];
         $content = ['html' => '', 'breadcrumb' => ''];
         $count = 0;
 

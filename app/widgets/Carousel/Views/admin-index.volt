@@ -4,7 +4,7 @@
         <button class="btn btn-primary" onclick="addImageInput()"><i class="fa fa-plus"></i> Add image</button>
     </div>
     <div id="wrapper-widget-images">
-    {% if images is empty %}
+    {% if params['_images'] is empty %}
         <div class="input-group col-lg-offset-2" id="wrapper-widget-images0">
             <input type="text" id="_images0" name="_images[]" value="" class="form-control">
             <span class="input-group-btn">
@@ -14,7 +14,7 @@
             <button class="btn btn-xs" onclick="deleteImageInput('wrapper-widget-images0')"><i class="fa fa-minus-square-o"></i></button>
         </div>
     {% else %}
-        {% for index, image in images %}
+        {% for index, image in params['_images'] %}
             <div class="input-group col-lg-offset-2" id="wrapper-widget-images{{ index }}">
                 <input type="text" id="_images{{ index }}" name="_images[]" value="{{ image }}" class="form-control">
                 <span class="input-group-btn">

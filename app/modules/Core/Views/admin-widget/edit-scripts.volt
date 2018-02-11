@@ -40,6 +40,26 @@
                         initMCE();
                     }
                     $('#wrapper-admin-widget-scripts').html(data.scripts);
+
+                    $('#view').find('option').remove().end().append('<option>None</option>');
+                    $.each(data.views, function (i, item) {
+                        $('#view').append($('<option>', {
+                            value: item,
+                            text : item
+                        }));
+                    });
+                    $('#view').find('option:eq(1)').prop('selected', true);
+
+                    $('#layout').find('option').remove().end().append('<option>None</option>');
+                    $.each(data.layouts, function (i, item) {
+                        $('#layout').append($('<option>', {
+                            value: item,
+                            text : item
+                        }));
+                    });
+                    if (data.views.length) {
+                        $('#layout').find('option:eq(1)').prop('selected', true);
+                    }
                 }
             })
         });

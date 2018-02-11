@@ -52,4 +52,8 @@ class Config {
     public $smtpSecure = false; // true false
     public $smtpUser = '';
     public $smtpPass = '';
+
+    // template
+    public $defaultTheme = 'default';
+    public $defaultLayout = 'default';
 }

@@ -538,7 +538,7 @@ class User extends Model
     public function beforeUpdate()
     {
         $this->setVisitedAt(time());
-        $this->cache->delete(self::getCacheRoleIdKey($this->getRoleId()));
+        $this->getDI()->getShared('cache')->delete(self::getCacheRoleIdKey($this->getRoleId()));
     }
 
     /**

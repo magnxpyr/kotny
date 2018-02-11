@@ -16,33 +16,16 @@ use Engine\Meta;
 abstract class Controller extends \Phalcon\Mvc\Controller
 {
     use Meta;
-    
-    /**
-     * Cache prefix.
-     */
-    public $cache_prefix = 'widget_';
 
     /**
-     * @var \Phalcon\Mvc\View() $viewWidget
+     * @var \Engine\Mvc\View $viewWidget
      */
     public $viewWidget;
-
-    /**
-     * Widget Name
-     *
-     * @var string
-     */
-    public $widgetName;
 
     /**
      * @var array
      */
     private $params = [];
-
-    /**
-     * @var array
-     */
-    private $options = [];
 
     /**
      * @var bool
@@ -95,51 +78,6 @@ abstract class Controller extends \Phalcon\Mvc\Controller
     }
 
     /**
-     * Get widget option.
-     *
-     * @param string $key     Option name.
-     * @param null   $default Option default value.
-     * @return null
-     */
-    public function getOption($key, $default = null)
-    {
-        if (!isset($this->options[$key])) {
-            return $default;
-        }
-        return $this->options[$key];
-    }
-
-    /**
-     * Get all widget options.
-     *
-     * @return array
-     */
-    public function getOptions()
-    {
-        return $this->options;
-    }
-
-    /**
-     * Set all widget options
-     * @param $options
-     */
-    public function setOptions($options)
-    {
-        $this->options = $options;
-    }
-
-    /**
-     * Set a widget option
-     *
-     * @param string|int $key
-     * @param string|int|array $value
-     */
-    public function setOption($key, $value)
-    {
-        $this->options[$key] = $value;
-    }
-
-    /**
      * @return bool
      */
     public function getRenderView()
@@ -153,68 +91,5 @@ abstract class Controller extends \Phalcon\Mvc\Controller
     public function setRenderView($value)
     {
         $this->renderView = $value;
-    }
-
-    /**
-     * Get widget cache key.
-     *
-     * @return string|null
-     */
-    public function getCacheKey()
-    {
-        if (isset($this->options['cache_key'])) {
-            return $this->cache_prefix . $this->options['cache_key'];
-        }
-        if (isset($this->options['content_id'])) {
-            return $this->cache_prefix . $this->widgetName . $this->options['content_id'];
-        }
-        return null;
-    }
-    /**
-     * Get widget cache lifetime.
-     *
-     * @return int
-     */
-    public function getCacheLifeTime()
-    {
-        return 300;
-    }
-    /**
-     * Clear widget cache.
-     *
-     * @return void
-     */
-    public function clearCache()
-    {
-        $key = $this->getCacheKey();
-        if ($key) {
-            $cache = $this->getDI()->get('cache');
-            $cache->delete($key);
-        }
-    }
-
-    /**
-     * Create cache key
-     *
-     * @param $widget
-     * @param $params
-     * @return string
-     */
-    public function createCacheKey($widget, $params)
-    {
-        return md5(serialize($widget).serialize($params).$this->auth->getUserRoleId());
-    }
-
-    /**
-     * Initialize the widget
-     */
-    public function initialize()
-    {
-        if ($this->getRenderView()) {
-            $this->viewWidget = $this->di->get('viewWidget');
-            if ($this->getParam('title')) {
-                $this->viewWidget->setVar('widget', $this->getParam('widget'));
-            }
-        }
     }
 }

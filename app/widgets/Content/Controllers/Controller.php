@@ -16,6 +16,6 @@ class Controller extends \Engine\Widget\Controller
 {
     public function indexAction()
     {
-        $this->viewWidget->setVar('content', $this->getParam("_content"));
+
     }
 }

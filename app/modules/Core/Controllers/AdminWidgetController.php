@@ -69,6 +69,7 @@ class AdminWidgetController extends AdminController
             $this->view->setVar('widgetContent', null);
             $this->view->setVar('widgetScripts', null);
             $form->get('ordering')->setOptions($this->getOrdering('menu', null));
+            $form->get('cache')->setDefault(\Engine\Widget\Widget::CACHE_LIFETIME);
         }
 
         $this->view->render('admin-widget', 'edit');
@@ -100,19 +101,22 @@ class AdminWidgetController extends AdminController
             $form->setEntity($model);
 
             $form->get('ordering')->setOptions($this->getOrdering($model->getPosition(), $id));
+            $form->get('layout')->setOptions($this->getWidgetLayouts());
 
             /** @var Package $package */
             $package = Package::findFirstById($model->getPackageId());
             $widgetContent = null;
             $widgetScripts = null;
             if ($package) {
-               $widgetContent = $this->renderWidget([
+                $form->get('view')->setOptions($this->getWidgetViews($package->getName()));
+
+                $widgetContent = $this->renderWidget([
                    'widgetName' => $package->getName(),
                    'widgetId' => $model->getId()
-               ]);
-               $widgetScripts = $this->renderWidgetScripts([
+                ]);
+                $widgetScripts = $this->renderWidgetScripts([
                    'widgetName' => $package->getName()
-               ]);
+                ]);
             }
             $this->view->setVar('widgetContent', $widgetContent);
             $this->view->setVar('widgetScripts', $widgetScripts);
@@ -266,6 +270,8 @@ class AdminWidgetController extends AdminController
         return $this->returnJSON([
             'html' => $this->renderWidget($_GET),
             'scripts' => $this->renderWidgetScripts($_GET),
+            'layouts' => $this->getWidgetLayouts(),
+            'views' => $this->getWidgetViews($_GET['widgetName']),
             'success' => true
         ]);
     }
@@ -368,5 +374,32 @@ class AdminWidgetController extends AdminController
             'widget' => $widget['widgetName'],
             'view' => 'admin-index-scripts'
         ]);
+    }
+
+    private function getWidgetLayouts()
+    {
+        $view = ['widget' => 'widget'];
+        $files = glob($this->view->getLayoutsDir() . 'widget*.{volt,phtml}', GLOB_BRACE);
+        foreach ($files as $file) {
+            preg_match("/.*[\/|\\\](.*?)\..*/s", $file, $matches);
+            if (isset($matches[1]) && $matches[1] != 'widget') {
+                $view[$matches[1]] = $matches[1];
+            }
+        }
+        return $view;
+    }
+
+    private function getWidgetViews($widget)
+    {
+        $view = [];
+        $files = glob(WIDGETS_PATH . "$widget/Views/*.{volt,phtml}", GLOB_BRACE);
+        foreach ($files as $file) {
+            preg_match("/.*[\/|\\\](.*?)\..*/s", $file, $matches);
+            if (isset($matches[1]) && substr($matches[1], 0, 6) != 'admin-' &&
+                strpos($matches[1], '-scripts') === false) {
+                $view[$matches[1]] = $matches[1];
+            }
+        }
+        return $view;
     }
 }

@@ -8,7 +8,6 @@
 
 namespace Widget\Content\Controllers;
 
-use Module\Core\Models\Widget;
 use Widget\Content\Forms\AdminIndexForm;
 
 /**
@@ -20,13 +19,7 @@ class AdminController extends \Engine\Widget\Controller
     public function indexAction()
     {
         $form = new AdminIndexForm();
-        $params = new \stdClass();
-        if ($this->getParam('id')) {
-            $model = Widget::findFirstById($this->getParam('id'));
-            if ($model->getParams()) {
-                $params = json_decode($model->getParams());
-            }
-        }
+        $params = (object) $this->getParams();
 
         $form->setEntity($params);
 

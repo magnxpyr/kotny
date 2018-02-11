@@ -146,13 +146,7 @@ class Tools extends ControllerBase {
      */
     protected static function _getToolsConfig() {
         if(is_null(self::$_toolsConfig)) {
-            $config = self::getConfig();
-            if(!isset($config->tools))
-                throw new \Exception ('Unable to find config file');
-            if(is_string($config->tools))
-                $config = new Config(require_once $config->tools);
-            else
-                $config = $config->tools;
+            $config = new Config(require_once CONFIG_PATH . 'tools.php');
             self::$_toolsConfig = $config;
         }
 

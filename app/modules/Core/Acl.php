@@ -22,6 +22,15 @@ return [
         'user' => [
             'user' => ['logout']
         ],
+        'editor' => [
+            'admin-index' => ['*'],
+            'admin-content' => ['*'],
+            'admin-category' => ['*'],
+            'admin-file-manager' => ['*'],
+            'admin-menu' => ['*'],
+            'admin-menu-type' => ['*'],
+            'admin-widget' => ['*']
+        ],
         '*' => [
             'user' => ['index'],
             'error' => ['*'],

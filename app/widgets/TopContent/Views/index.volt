@@ -1,5 +1,7 @@
 <div class="newsfeed-wrapper">
-    <h3 class="title">{{ params['widget'] }}</h3>
+    {% if params['showTitle'] %}
+        <h3 class="title">{{ params['title'] }}</h3>
+    {% endif %}
     <div class="news-container container">
         <div class="news-wrapper">
             {% for item in model %}

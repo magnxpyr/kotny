@@ -17,13 +17,6 @@ use Phalcon\Mvc\View;
  */
 class ErrorController extends Controller
 {
-    public function initialize()
-    {
-        parent::initialize();
-        $this->view->setBasePath(null);
-        $this->view->setViewsDir(THEMES_PATH . DEFAULT_THEME . '/views/');
-    }
-
     /**
      * Show 404 error
      */

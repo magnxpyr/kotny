@@ -148,7 +148,7 @@ class UserResetPasswords extends Model
      */
     public function beforeValidation()
     {
-        $this->rawToken = $this->getDI()->getShared('tokenManager')->generateToken();
+        $this->rawToken = $this->getDI()->getShared('security')->getToken();
         $this->setExpires(time() + 24 * 60);
         $this->setToken(hash('sha256', $this->rawToken));
     }
@@ -159,7 +159,7 @@ class UserResetPasswords extends Model
     public function afterSave()
     {
         $params = [
-            'siteName' => $this->getDI()->getShared('config')->app->siteName,
+            'siteName' => $this->getDI()->getShared('config')->siteName,
             'name' => $this->user->getUsername(),
             'resetUrl' => $this->getDI()->getShared('url')->getUri(
                 'user/forgot-password',
@@ -167,7 +167,7 @@ class UserResetPasswords extends Model
                 '?code=' . $this->rawToken
             )
         ];
-        $this->getDI()->get('mail')->createMessageFromView('resetPassword', $params)
+        $this->getDI()->get('mail')->createMessageFromView('emails/resetPassword', $params)
         ->to($this->user->getEmail())
         ->subject('Password Change Request')
         ->send();

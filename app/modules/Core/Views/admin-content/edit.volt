@@ -17,7 +17,7 @@
         </div>
     </div>
     <div class="box-body">
-        <form method='post' action="{{url("admin/core/content/save")}}" id="contentForm">
+        <form method='post' action="{{url("admin/core/content/save?returnUrl=" ~ url.previousUri())}}" id="contentForm">
             {{ form.render('id') }}
             {{ form.render('csrf') }}
             {{ form.renderDecorated('title', ['label': ['class': 'control-label col-sm-2']]) }}

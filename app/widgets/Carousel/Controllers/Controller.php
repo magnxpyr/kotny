@@ -17,6 +17,6 @@ class Controller extends \Engine\Widget\Controller
 
     public function indexAction()
     {
-        $this->viewWidget->setVar('images', $this->getParam("_images"));
+
     }
 }

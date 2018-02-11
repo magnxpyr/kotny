@@ -13,6 +13,7 @@ use Engine\Package\PackageType;
 use Module\Core\Models\Package;
 use Module\Core\Models\ViewLevel;
 use Phalcon\Forms\Element\Hidden;
+use Phalcon\Forms\Element\Numeric;
 use Phalcon\Forms\Element\Select;
 use Phalcon\Forms\Element\Text;
 use Phalcon\Validation\Validator\PresenceOf;
@@ -75,6 +76,33 @@ class AdminWidgetEditForm extends Form
             ])
         );
         $this->add($position);
+
+        // Layout
+        $layout = new Select('layout', [],
+            [
+                'useEmpty' => true,
+                'emptyText' => 'None',
+                'emptyValue' => null,
+                'class' => 'form-control'
+            ]
+        );
+        $layout->setLabel($this->t->_('Layout'));
+        $layout->setFilters('string');
+        $this->add($layout);
+
+        // View
+        $view = new Select('view', [],
+            [
+                'useEmpty' => true,
+                'emptyText' => 'None',
+                'emptyValue' => null,
+                'value' => 'index',
+                'class' => 'form-control'
+            ]
+        );
+        $view->setLabel($this->t->_('View'));
+        $view->setFilters('string');
+        $this->add($view);
 
         // Ordering
         $order = new Select('ordering', [],
@@ -151,5 +179,13 @@ class AdminWidgetEditForm extends Form
             ])
         );
         $this->add($status);
+
+        // Cache
+        $cache = new Numeric('cache',
+            ['class' => 'form-control']
+        );
+        $cache->setLabel($this->t->_('Cache'));
+        $cache->setFilters('int');
+        $this->add($cache);
     }
 }

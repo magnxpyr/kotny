@@ -139,11 +139,8 @@ class UserController extends Controller
                 $form->clear();
                 if($user) {
                     if($user->getStatus() > 0) {
-                        $this->flash->notice('Your account is already active');
-                        $this->dispatcher->forward([
-                            'controller' => 'user',
-                            'action' => 'login'
-                        ]);
+                        $this->flashSession->notice('Your account is already active');
+                        $this->response->redirect('user/login')->send();
                         return;
                     }
                     if (!$user->userEmailConfirmations) {
@@ -156,10 +153,7 @@ class UserController extends Controller
                     }
                 }
                 $this->flash->success('Email sent. Please follow the instructions to activate your account');
-                $this->dispatcher->forward([
-                    'controller' => 'index',
-                    'action' => 'index'
-                ]);
+                $this->response->redirect('index/index')->send();
                 return;
             } else {
                 $this->flashErrors($form);
@@ -202,10 +196,7 @@ class UserController extends Controller
         $confirmation->delete();
 
         $this->flash->success('Your email was successfully confirmed. Please login to manage your account');
-        $this->dispatcher->forward([
-            'controller' => 'user',
-            'action' => 'login'
-        ]);
+        $this->response->redirect('user/login')->send();
         return;
     }
 
@@ -214,6 +205,10 @@ class UserController extends Controller
      */
     public function forgotPasswordAction()
     {
+        if($this->auth->isUserSignedIn()) {
+            return $this->auth->redirectReturnUrl();
+        }
+
         $this->view->status = 1;
 
         $form = new ForgotPasswordForm();
@@ -234,11 +229,8 @@ class UserController extends Controller
                         $user->userResetPasswords->save();
                     }
                 }
-                $this->flash->success('Email sent. Please follow the instructions to change your password');
-                $this->dispatcher->forward([
-                    'controller' => 'index',
-                    'action' => 'index'
-                ]);
+                $this->flashSession->success('Email sent. Please follow the instructions to change your password');
+                $this->response->redirect('index/index')->send();
                 return;
             } else {
                 $this->flashErrors($form);
@@ -271,10 +263,7 @@ class UserController extends Controller
 
             $resetPassword->delete();
 
-            $this->dispatcher->forward([
-                'controller' => 'user',
-                'action' => 'resetPassword'
-            ]);
+            $this->response->redirect('user/resetPassword')->send();
             return;
         }
     }
@@ -285,10 +274,7 @@ class UserController extends Controller
     public function resetPasswordAction()
     {
         if (!$this->auth->isUserSignedIn()) {
-            $this->dispatcher->forward([
-                'controller' => 'user',
-                'action' => 'login'
-            ]);
+            $this->response->redirect('user/login')->send();
             return;
         }
 
@@ -309,18 +295,12 @@ class UserController extends Controller
                 // Set a new password
                 if (!$user->save()) {
                     $this->flashErrors($user);
-                    $this->dispatcher->forward([
-                        'controller' => 'index',
-                        'action' => 'index'
-                    ]);
+                    $this->response->redirect('index/index')->send();
                     return;
                 }
 
                 $this->flashSession->success($this->t->_('Password changed successfully'));
-                $this->dispatcher->forward([
-                    'controller' => 'index',
-                    'action' => 'index'
-                ]);
+                $this->response->redirect('index/index')->send();
                 return;
             } else {
                 $this->flashErrors($form);

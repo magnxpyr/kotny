@@ -20,7 +20,10 @@
             {{ form.renderDecorated('publish_up', ['label': ['class': 'control-label col-sm-2']]) }}
             {{ form.renderDecorated('publish_down', ['label': ['class': 'control-label col-sm-2']]) }}
             {{ form.renderDecorated('show_title', ['label': ['class': 'control-label col-sm-2']]) }}
+            {{ form.renderDecorated('layout', ['label': ['class': 'control-label col-sm-2']]) }}
+            {{ form.renderDecorated('view', ['label': ['class': 'control-label col-sm-2']]) }}
             {{ form.renderDecorated('status', ['label': ['class': 'control-label col-sm-2']]) }}
+            {{ form.renderDecorated('cache', ['label': ['class': 'control-label col-sm-2']]) }}
             <div id="wrapper-admin-widget">{{ widgetContent }}</div>
         </form>
     </div>

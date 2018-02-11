@@ -41,6 +41,15 @@ class Widget extends Model
      */
     private $position;
 
+    /** @var string */
+    private $layout;
+
+    /** @var string */
+    private $view;
+
+    /** @var int */
+    private $cache;
+
     /**
      * @var integer
      */
@@ -325,6 +334,54 @@ class Widget extends Model
     }
 
     /**
+     * @return string
+     */
+    public function getLayout()
+    {
+        return $this->layout;
+    }
+
+    /**
+     * @param string $layout
+     */
+    public function setLayout($layout)
+    {
+        $this->layout = $layout;
+    }
+
+    /**
+     * @return string
+     */
+    public function getView()
+    {
+        return $this->view;
+    }
+
+    /**
+     * @param string $view
+     */
+    public function setView($view)
+    {
+        $this->view = $view;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCache()
+    {
+        return $this->cache;
+    }
+
+    /**
+     * @param int $cache
+     */
+    public function setCache($cache)
+    {
+        $this->cache = $cache;
+    }
+
+    /**
      * Initialize method for model.
      */
     public function initialize()
@@ -340,6 +397,13 @@ class Widget extends Model
             $this->setPublishDown($this->getDI()->getShared('helper')->timestampFromDate($this->getPublishDown()));
         } else {
             $this->setPublishDown(null);
+        }
+
+        if (empty($this->getLayout())) {
+            $this->setLayout(null);
+        }
+        if (empty($this->getCache())) {
+            $this->setCache(null);
         }
     }
 }

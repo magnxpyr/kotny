@@ -30,6 +30,5 @@ class Controller extends \Engine\Widget\Controller
         }
         
         $this->viewWidget->setVar('model', $model->getQuery()->execute());
-        $this->viewWidget->setVar('params', $this->getParams());
     }
 }

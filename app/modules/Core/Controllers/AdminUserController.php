@@ -107,6 +107,10 @@ class AdminUserController extends AdminController
             return;
         }
 
+        if (!$this->security->checkHash($_POST['password'], $menu->getPassword())) {
+            $menu->setPassword($this->security->hash($_POST['password']));
+        }
+
         if (!$menu->save()) {
             $this->flashErrors($menu);
 

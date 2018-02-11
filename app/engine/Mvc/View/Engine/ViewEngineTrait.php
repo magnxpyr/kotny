@@ -1,9 +1,9 @@
 <?php
 /**
- * Created by IntelliJ IDEA.
- * User: gatz
- * Date: 24.10.2017
- * Time: 22:11
+ * @copyright   2006 - 2018 Magnxpyr Network
+ * @license     New BSD License; see LICENSE
+ * @link        http://www.magnxpyr.com
+ * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
 namespace engine\Mvc\View\Engine;
@@ -18,25 +18,33 @@ trait ViewEngineTrait
 {
     public function addViewJs($view, $params = null)
     {
-        $file = $this->getDI()->getView()->getBasePath(). $this->getDI()->getView()->getViewsDir() . $view;
+        $file = $this->getDI()->getView()->getBasePath() . $this->getViewsDir($this->getDI()->getView()->getViewsDir()) . $view;
         $this->getDI()->getAssets()->collection(Manager::OUTPUT_VIEW_JS)->addJs($file, true, null, $params);
     }
 
     public function addViewCss($view, $params = null)
     {
-        $file = $this->getDI()->getView()->getBasePath(). $this->getDI()->getView()->getViewsDir() . $view;
+        $file = $this->getDI()->getView()->getBasePath() . $this->getViewsDir($this->getDI()->getView()->getViewsDir()) . $view;
         $this->getDI()->getAssets()->collection(Manager::OUTPUT_VIEW_CSS)->addCss($file, true, null, $params);
     }
 
     public function addViewWidgetJs($view, $params = null)
     {
-        $file = $this->getDI()->getViewWidget()->getViewsDir() . $view;
+        $file = $this->getViewsDir($this->getDI()->getViewWidget()->getViewsDir()) . $view;
         $this->getDI()->getAssets()->collection(Manager::OUTPUT_VIEW_JS)->addJs($file, true, null, $params);
     }
 
     public function addViewWidgetCss($view, $params = null)
     {
-        $file = $this->getDI()->getViewWidget()->getViewsDir() . $view;
+        $file = $this->getViewsDir($this->getDI()->getViewWidget()->getViewsDir()) . $view;
         $this->getDI()->getAssets()->collection(Manager::OUTPUT_VIEW_CSS)->addCss($file, true, null, $params);
+    }
+
+    private function getViewsDir($views)
+    {
+        if (is_array($views)) {
+            $views = count($views) > 0 ? $views[0] : '';
+        }
+        return $views;
     }
 }

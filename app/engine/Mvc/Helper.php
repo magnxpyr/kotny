@@ -119,29 +119,6 @@ class Helper extends Component
     }
 
     /**
-     * Return full url
-     *
-     * @param string $path
-     * @param bool|true $get
-     * @param string|null $params
-     * @return string
-     */
-    public function getUri($path, $get = true, $params = null)
-    {
-        $protocol  = 'http://';
-        if ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443) {
-            $protocol = 'https://';
-        }
-        if($get) {
-            $path = $this->url->get($path);
-        }
-        if($params !== null) {
-            $path .= $params;
-        }
-        return $protocol . $_SERVER['HTTP_HOST'] . $path;
-    }
-
-    /**
      * Make alias from title
      * @param string $string
      * @return string
@@ -170,7 +147,7 @@ class Helper extends Component
     public function isBackend()
     {
         $isBackend = false;
-        if ($this->router->getMatchedRoute() != null && strpos($this->router->getMatchedRoute()->getName(), 'admin') !== false)
+        if (substr($this->dispatcher->getControllerName(), 0, 5) === 'admin')
             $isBackend = true;
 
         return $isBackend;

@@ -53,6 +53,8 @@ class Bootstrap
             return $url;
         });
 
+        $this->initEventManager();
+
         $this->initView();
         $this->initView(true);
         $this->initSimpleView();
@@ -72,7 +74,6 @@ class Bootstrap
         $this->di->setShared('response', $response);
 
         $this->initSecurity();
-        $this->initEventManager();
 
         // Register assets that will be loaded in every page
         $this->di->setShared('assets', function () {
@@ -91,6 +92,9 @@ class Bootstrap
             $filter->add('escapeHtml', function ($value) use ($escaper) {
                 return $escaper->escapeHtml($value);
             });
+            $filter->add('alias', function ($value) {
+                return preg_replace('([^a-zA-Z0-9\-]+)', '', $value);
+            });
 
             return $filter;
         });
@@ -106,9 +110,6 @@ class Bootstrap
 
     private function initConfig()
     {
-        // Define internal variables
-        define('DEFAULT_THEME', 'default');
-
         // Load config file
         require_once APP_PATH . 'config/config-default.php';
         $config = new ConfigDefault();
@@ -205,9 +206,6 @@ class Bootstrap
         $eventsManager->attach('dispatch', new \Engine\Plugins\AclHandler());
         $eventsManager->attach('dispatch', new \Engine\Plugins\ErrorHandler());
         $eventsManager->attach('dispatch', new \Engine\Plugins\Translation());
-        $eventsManager->attach('dispatch:beforeDispatchLoop', function (\Phalcon\Events\Event $event, \Phalcon\Dispatcher $dispatcher) {
-            $dispatcher->setActionName(lcfirst(\Phalcon\Text::camelize($dispatcher->getActionName())));
-        });
 
         //Bind the EventsManager to the Dispatcher
         $dispatcher->setEventsManager($eventsManager);
@@ -220,15 +218,7 @@ class Bootstrap
      */
     private function initView($widget = false)
     {
-        $view = new \Phalcon\Mvc\View();
-        $view->setLayoutsDir(THEMES_PATH . DEFAULT_THEME . '/layouts/');
-
-        if (!$widget) {
-            $view->setBasePath(MODULES_PATH);
-            $view->setPartialsDir(THEMES_PATH . DEFAULT_THEME . '/partials/');
-            $view->setMainView(THEMES_PATH . DEFAULT_THEME . '/index');
-            $view->setLayout(DEFAULT_THEME);
-        }
+        $view = new \Engine\Mvc\View();
 
         $view->registerEngines([
             '.phtml' => function($view, $di) {
@@ -250,12 +240,20 @@ class Bootstrap
         ]);
 
         if ($widget) {
-            $this->di->setShared('viewWidget', $view);
+            $view->disableLevel(\Engine\Mvc\View::LEVEL_MAIN_LAYOUT);
+            $view->setVar('viewType', \Engine\Mvc\View::WIDGET);
+            $this->di->set('viewWidget', $view);
 
             $this->di->setShared('widget', function () {
                 return new Engine\Widget\Widget();
             });
         } else {
+            $config = $this->getConfig();
+            $view->setBasePath(MODULES_PATH);
+            $view->setPartialsDir(THEMES_PATH . $config->defaultTheme . '/partials/');
+            $view->setLayoutsDir(THEMES_PATH . $config->defaultTheme . '/layouts/');
+            $view->setLayout($config->defaultLayout);
+            $view->setVar('viewType', \Engine\Mvc\View::SITE);
             $this->di->setShared('view', $view);
         }
     }
@@ -316,11 +314,11 @@ class Bootstrap
         $this->di->set('mail', function () use ($config) {
             $settings = [
                 'from' => [
-                    'name' => $config->fromMame,
+                    'name' => $config->fromName,
                     'email' => $config->mailFrom,
                 ],
                 'driver' => $config->mailer,
-                'viewsDir' => THEMES_PATH . DEFAULT_THEME . '/emails/'
+                'viewsDir' => THEMES_PATH . \Engine\Mvc\View::DEFAULT_THEME . '/'
             ];
             switch ($config->mailer) {
                 case 'sendmail':
@@ -332,7 +330,7 @@ class Bootstrap
                         'port' => $config->smtpPort,
                         'encryption' => $config->smtpSecure ? 'ssl' : '',
                         'username' => $config->smtpUser,
-                        'password' => $config->smtpUser,
+                        'password' => $config->smtpPass,
                     ];
                     $settings = array_merge($settings, $smtp);
                     break;
@@ -372,11 +370,6 @@ class Bootstrap
 
         $cache = null;
         switch ($config->cacheAdapter) {
-            case 'file':
-                $cache = new \Phalcon\Cache\Backend\File($cacheFrontend, [
-                    "cacheDir" => CACHE_PATH . 'backend/'
-                ]);
-                break;
             case 'memcache':
                 $cache = new \Phalcon\Cache\Backend\Memcache(
                     $cacheFrontend, [
@@ -391,15 +384,47 @@ class Bootstrap
                     "port" => $config->cachePort,
                 ]);
                 break;
+            case 'file':
+            default:
+                $cache = new \Phalcon\Cache\Backend\File($cacheFrontend, [
+                    "cacheDir" => CACHE_PATH . 'backend/'
+                ]);
+                break;
         }
 
         $this->di->setShared('cache', $cache);
         $this->di->setShared('modelsCache', $cache);
 
+
+        $modelsMetadata = null;
+        switch ($config->cacheAdapter) {
+            case 'memcache':
+                $modelsMetadata = new \Phalcon\Mvc\Model\MetaData\Memcache([
+                    "host" => $config->cacheHost,
+                    "port" => $config->cachePort,
+                ]);
+                break;
+            case 'memcached':
+                $modelsMetadata = new \Phalcon\Mvc\Model\MetaData\Libmemcached([
+                    "host" => $config->cacheHost,
+                    "port" => $config->cachePort,
+                ]);
+                break;
+            case 'file':
+            default:
+                $modelsMetadata = new \Phalcon\Mvc\Model\MetaData\Files([
+                    "metaDataDir" => CACHE_PATH . 'metadata/'
+                ]);
+                break;
+        }
+
+        if (DEV) {
+            $modelsMetadata = new \Phalcon\Mvc\Model\MetaData\Memory();
+        }
+
+
         // If the configuration specify the use of metadata adapter use it or use memory otherwise
-        $this->di->setShared('modelsMetadata', function () {
-            return new \Phalcon\Mvc\Model\MetaData\Memory();
-        });
+        $this->di->setShared('modelsMetadata', $modelsMetadata);
     }
 
     private function dispatch()

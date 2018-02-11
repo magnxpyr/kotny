@@ -45,7 +45,7 @@ class FacebookConnector extends Injectable
      */
     public function getLoginUrl($scope = [])
     {
-        return $this->fbHelper->getLoginUrl($this->helper->getUri('/user/login-with-facebook'), $scope);
+        return $this->fbHelper->getLoginUrl($this->url->getUri('/user/login-with-facebook'), $scope);
     }
 
     /**

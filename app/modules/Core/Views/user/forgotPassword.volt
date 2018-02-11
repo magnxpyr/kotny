@@ -11,6 +11,7 @@
                         {{ form.render('email') }}
                         <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
                     </div>
+                    {{ form.render('csrf') }}
                     <div class="form-group" align="center">
                         {{ form.render('submit') }}
                     </div>

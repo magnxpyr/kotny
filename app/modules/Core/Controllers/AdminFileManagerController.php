@@ -19,18 +19,6 @@ use Phalcon\Mvc\View;
 class AdminFileManagerController extends AdminController
 {
     /**
-     * Add File manager dependencies
-     */
-    public function initialize()
-    {
-        parent::initialize();
-
-        $this->assets->collection('header-css')->addCss("vendor/filemanager-ui/css/filemanager-ui-without.min.css");
-
-        $this->assets->collection('footer-js')->addJs("vendor/filemanager-ui/js/filemanager-ui-without.min.js");
-    }
-
-    /**
      * Display File Manager
      */
     public function indexAction()

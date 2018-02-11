@@ -55,7 +55,7 @@ class AdminContentEditForm extends Form
         ]);
         $alias->setLabel($this->t->_('Alias'));
         $alias->setAttribute('placeholder', $this->t->_("Generated from title"));
-        $alias->setFilters('string');
+        $alias->setFilters('alias');
         $this->add($alias);
 
         // Featured intro image

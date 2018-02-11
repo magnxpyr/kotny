@@ -62,7 +62,8 @@ class RoleMigration extends Migration
         $this->batchInsert(self::TABLE_NAME, [
             [0, 'guest', 'Guest user group'],
             [0, 'user', 'Common logged in user without additional access'],
-            [0, 'admin', 'Administrators group with full access']
+            [0, 'admin', 'Administrators group with full access'],
+            [2, 'editor', 'Users with editorial permissions']
         ], ['parent_id', 'name', 'description']);
     }
 }

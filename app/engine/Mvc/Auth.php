@@ -544,8 +544,8 @@ class Auth extends Component
             $returnUrl = $_SERVER['HTTP_REFERER'];
         }
         if ($returnUrl != null && $returnUrl != $this->url->get('user/login') &&
-            $returnUrl != $this->url->get('user/register') && $returnUrl != $this->helper->getUri('user/login') &&
-            $returnUrl != $this->helper->getUri('user/register')) {
+            $returnUrl != $this->url->get('user/register') && $returnUrl != $this->url->getUri('user/login') &&
+            $returnUrl != $this->url->getUri('user/register')) {
             $this->session->set('returnUrl', $returnUrl);
         }
     }

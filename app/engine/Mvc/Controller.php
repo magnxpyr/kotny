@@ -8,8 +8,6 @@
 
 namespace Engine\Mvc;
 use Engine\Meta;
-use Phalcon\Assets\Filters\Cssmin;
-use Phalcon\Assets\Filters\Jsmin;
 
 /**
  * Base Controller
@@ -46,6 +44,7 @@ abstract class Controller extends \Phalcon\Mvc\Controller
     /**
      * Set page title
      * @param string $title
+     * @param bool $headerOnly
      */
     protected function setTitle($title, $headerOnly = false)
     {

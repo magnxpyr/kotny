@@ -1,25 +1,26 @@
 {{ content() }}
-{{ form('user/reset-password', 'method':'post') }}
-    <fieldset>
-        <div class="form-group form-max-size">
-            <div class="form-group">
-                {{ form.label('password', ['class': 'control-label']) }}
-                <div class="input-group">
-                    <span class="input-group-addon" id="password-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                    {{ form.render('password', ['aria-describedby': 'password-addon']) }}
-                </div>
-            </div>
+<div class="gray-bg">
+    <div class="register-box">
+        <div class="register-box-body">
+            {{ form('user/reset-password', 'method':'post') }}
+                <fieldset>
+                    <div class="form-group has-feedback">
+                        {{ form.label('password', ['class': 'control-label']) }}
+                        {{ form.render('password') }}
+                        <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                    </div>
 
-            <div class="form-group">
-                {{ form.label('repeatPassword', ['class': 'control-label']) }}
-                <div class="input-group">
-                    <span class="input-group-addon" id="password-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                    {{ form.render('repeatPassword', ['aria-describedby': 'password-addon']) }}
-                </div>
-            </div>
+                    <div class="form-group has-feedback">
+                        {{ form.label('repeatPassword', ['class': 'control-label']) }}
+                        {{ form.render('repeatPassword') }}
+                        <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                    </div>
+                    {{ form.render('csrf') }}
+                    <div class="form-group">
+                        {{ form.render('submit') }}
+                    </div>
+                </fieldset>
+            {{ end_form() }}
         </div>
-        <div class="form-group">
-            {{ form.render('submit') }}
-        </div>
-    </fieldset>
-</form>
+    </div>
+</div>

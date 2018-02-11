@@ -20,10 +20,11 @@ namespace Engine;
  * @property \Engine\Widget\Widget $widget
  * @property \Engine\Mvc\View\Section $section
  * @property \Engine\Mvc\Url $url
- * @property \Phalcon\Mvc\View $viewWidget
+ * @property \Engine\Mvc\View $view
+ * @property \Engine\Mvc\View $viewWidget
+ * @property \Engine\Mvc\Config\ConfigSample $config
  * @property \Phalcon\Mvc\View\Simple $viewSimple
  * @property \Phalcon\Mailer\Manager $mail
- * @property \Engine\Mvc\Config\ConfigSample $config
  * @property \Phalcon\Logger\Adapter $logger
  * @property \Phalcon\Cache\Backend $cache
  * @property \Phalcon\Translate\Adapter\NativeArray $t

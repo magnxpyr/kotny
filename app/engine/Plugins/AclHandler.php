@@ -61,4 +61,9 @@ class AclHandler extends Plugin
 
         $this->url->setHistory();
     }
+
+    public function beforeDispatchLoop($event, $dispatcher)
+    {
+        $dispatcher->setActionName(lcfirst(\Phalcon\Text::camelize($dispatcher->getActionName())));
+    }
 }

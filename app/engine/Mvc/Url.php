@@ -18,7 +18,8 @@ class Url extends \Phalcon\Mvc\Url
 
     public function setHistory()
     {
-        if ($this->getDI()->getShared('request')->isAjax() || !$this->getDI()->getShared('request')->isGet()) {
+        if ($this->getDI()->getShared('request')->isAjax() ||
+            !$this->getDI()->getShared('request')->isGet()) {
             return;
         }
 
@@ -38,7 +39,34 @@ class Url extends \Phalcon\Mvc\Url
 
     public function previousUri()
     {
-        $historyUri = $this->getDI()->getShared('session')->get(self::HISTORY_URI);
-        return $this->getDI()->getShared('url')->get($historyUri[1]);
+        if ($this->getDI()->getShared('request')->has('returnUrl')) {
+            return $this->getDI()->getShared('request')->get('returnUrl');
+        } else {
+            $historyUri = $this->getDI()->getShared('session')->get(self::HISTORY_URI);
+            return $this->getDI()->getShared('url')->get($historyUri[1]);
+        }
+    }
+
+    /**
+     * Return full url
+     *
+     * @param string $path
+     * @param bool|true $get
+     * @param string|null $params
+     * @return string
+     */
+    public function getUri($path, $get = true, $params = null)
+    {
+        $protocol  = 'http://';
+        if ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443) {
+            $protocol = 'https://';
+        }
+        if($get) {
+            $path = $this->get($path);
+        }
+        if($params !== null) {
+            $path .= $params;
+        }
+        return $protocol . $_SERVER['HTTP_HOST'] . $path;
     }
 }

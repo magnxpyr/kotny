@@ -9,6 +9,7 @@
 namespace Engine\Mvc\View;
 
 use Engine\Di\Injectable;
+use Engine\Widget\Widget;
 
 /**
  * Class Section
@@ -16,6 +17,7 @@ use Engine\Di\Injectable;
  */
 class Section extends Injectable
 {
+    const CACHE_KEY_PREFIX = "section_";
     /**
      * Render widgets from a section
      *
@@ -39,6 +41,7 @@ class Section extends Injectable
             ->andWhere('widget.view_level = viewLevel.id')
             ->orderBy('widget.ordering')
             ->getQuery()
+            ->cache(['key' => self::CACHE_KEY_PREFIX . $section, 'lifetime' => DEV ? 1 : Widget::CACHE_LIFETIME])
             ->execute();
 
         $html = null;
@@ -46,12 +49,17 @@ class Section extends Injectable
             if (!$this->acl->checkViewLevel($row->viewLevel->getRolesArray())) continue;
 
             $params = (array) json_decode($row->widget->params);
-            $params['widget'] = $row->widget->title;
+            $params['title'] = $row->widget->title;
+            $params['showTitle'] = $row->widget->showTitle;
 
             $html .= $this->widget->render([
                'widget' => $row->package->name,
                'controller' => 'controller',
-            ], $params);
+            ], $params, [
+                'cache' => DEV ? null : $row->widget->cache,
+                'layout' => $row->widget->layout,
+                'view' => $row->widget->view
+            ]);
         }
 
         return $html;

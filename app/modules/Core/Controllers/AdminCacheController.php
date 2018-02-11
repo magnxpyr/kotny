@@ -72,6 +72,8 @@ class AdminCacheController extends AdminController
             $this->cache->delete($key);
         }
 
+        $this->modelsMetadata->reset();
+
         $this->returnJSON(['success' => true]);
         return;
     }
