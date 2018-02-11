@@ -7,7 +7,7 @@
  */
 
 // define global variables
-define('MG_VERSION', '0.1.0');
+define('MG_VERSION', '1.0.0-SNAPSHOT');
 define('DS', DIRECTORY_SEPARATOR);
 define('ROOT_PATH', dirname(__DIR__) . DS);
 define('PUBLIC_PATH', __DIR__ . DS);
@@ -47,15 +47,15 @@ if (!extension_loaded('phalcon') || phpversion("phalcon") < 3) {
     exit(1);
 }
 
-if (is_dir(ROOT_PATH . 'installer')) {
-    require_once ROOT_PATH . 'installer/Bootstrap.php';
-    $bootstrap = new Bootstrap();
-    $bootstrap->run();
-} else {
+//if (is_dir(ROOT_PATH . 'installer')) {
+//    require_once ROOT_PATH . 'installer/Bootstrap.php';
+//    $bootstrap = new Bootstrap();
+//    $bootstrap->run();
+//} else {
     require_once APP_PATH . 'engine/Bootstrap.php';
     $bootstrap = new Bootstrap();
     $bootstrap->run();
-}
+//}
 
 function getPhalconSo()
 {

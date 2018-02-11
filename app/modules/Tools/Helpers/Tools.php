@@ -246,7 +246,7 @@ class Tools extends ControllerBase {
         $iterator = new \DirectoryIterator(self::getModulesPath());
         $modules = array();
         foreach($iterator as $fileinfo){
-            if(!$fileinfo->isDot() && file_exists($fileinfo->getPathname() . '/Module.php')){
+            if(!$fileinfo->isDot()){
                 $modules[] = $fileinfo->getFileName();
             }
         }
