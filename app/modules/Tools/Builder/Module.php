@@ -78,6 +78,12 @@ class Module extends Component
         ));
         $controller->build();
 
+        if(!is_dir($this->_options['directory'] . Tools::getMigrationsDir())) {
+            if (!@mkdir($this->_options['directory'] . Tools::getMigrationsDir()))
+                throw new \Exception("Unable to create model directory!");
+            @chmod($this->_options['directory'] . Tools::getMigrationsDir(), 0777);
+        }
+
         if(!is_dir($this->_options['directory'] . Tools::getModelsDir())) {
             if (!@mkdir($this->_options['directory'] . Tools::getModelsDir()))
                 throw new \Exception("Unable to create model directory!");
@@ -136,7 +142,7 @@ class Routes";
         }
         $code .= "\n{\n\t/**
      * Add routes
-     * @param \\Phalcon\\Mvc\\Router() \$router
+     * @param \\Phalcon\\Mvc\\Router \$router
      */
     public function init(\$router)
     {
@@ -165,82 +171,18 @@ class Routes";
      */
     private function _createModule()
     {
-        $code = "<?php\n".Tools::getCopyright().PHP_EOL.PHP_EOL.'namespace ' .$this->_options['namespace'].';'.PHP_EOL.PHP_EOL;
+        $code = "<?php\n".Tools::getCopyright().PHP_EOL.PHP_EOL;
 
-        if(Tools::fullVersion()) {
-            $code .= 'use Phalcon\DiInterface;'.PHP_EOL.'use Phalcon\Loader;'
-                .PHP_EOL.'use Phalcon\Mvc\View;'.PHP_EOL.'use Phalcon\Mvc\Dispatcher;'
-                .PHP_EOL.'use Phalcon\Mvc\ModuleDefinitionInterface;';
-        }
-
-        $baseModule = Tools::getBaseModule();
-        if(!empty($baseModule)) {
-            $base = explode('\\', Tools::getBaseModule());
-            $baseClass = end($base);
-
-            $useClass = PHP_EOL . 'use '.Tools::getBaseModule().';';
-            $code .= $useClass;
-        }
-
-        $code .= PHP_EOL.PHP_EOL.
-'/**
- * Class Module
- * @package ' . $this->_options['namespace'] . '
- */
-class Module';
-        if(!empty($baseModule)) {
-            $code .= " extends $baseClass";
-        }
-        if(Tools::fullVersion()) {
-            $code .= " implements ModuleDefinitionInterface\n{\n\t/**
-     * Register a specific autoloader for the module
-     * @param \\Phalcon\\DiInterface \$di
-     */
-    public function registerAutoloaders(DiInterface \$di = null)
-    {
-        \$loader = new Loader();
-        \$loader->registerNamespaces(
-            array(" . PHP_EOL . "\t\t\t\t'" .
-                $this->_options['namespace'] .'\\'. Tools::getControllersDir() . "' => __DIR__ . '/" .
-                Tools::getControllersDir() . "'," . PHP_EOL . "\t\t\t\t'" .
-                $this->_options['namespace'] .'\\'. Tools::getModelsDir() . "' => __DIR__ . '/" .
-                Tools::getModelsDir() . "'" . PHP_EOL . "\t\t\t)
-        );
-        \$loader->register();
-    }
-
-    /**
-     * Register specific services for the module
-     * @param \\Phalcon\\DiInterface \$di
-     */
-    public function registerServices(DiInterface \$di)
-    {
-        //Registering a dispatcher
-        \$di->set('dispatcher', function() {
-            \$dispatcher = new Dispatcher();
-            \$dispatcher->setDefaultNamespace('" . $this->_options['namespace'] . "');
-            return \$dispatcher;
-        });
-
-        //Registering the view component
-        \$di->set('view', function() {
-            \$view = new View();
-            \$view->setViewsDir(__DIR__ . '/" . Tools::getViewsDir() . "');
-            return \$view;
-        });
-    }\n}";
-        } else {
-            $code .= " {" . PHP_EOL . PHP_EOL . "}";
-        }
+        $code .= "return [\n\t'allow' => [\n\t\t'guest' => [\n\t\t\t'index' => ['index']\n\t\t]\n\t]\n];";
 
         $code = str_replace("\t", "    ", $code);
 
-        $modulePath = $this->_options['directory'] . DIRECTORY_SEPARATOR . 'Module.php';
-        if (!file_exists($modulePath) || $this->_options['force'] == true) {
-            if (!@file_put_contents($modulePath, $code)) {
-                throw new \Exception("Unable to write to '$modulePath'");
+        $aclPath = $this->_options['directory'] . DIRECTORY_SEPARATOR . 'Acl.php';
+        if (!file_exists($aclPath) || $this->_options['force'] == true) {
+            if (!@file_put_contents($aclPath, $code)) {
+                throw new \Exception("Unable to write to '$aclPath'");
             }
-            @chmod($modulePath, 0777);
+            @chmod($aclPath, 0777);
         } else {
             throw new \Exception("Module.php file already exists");
         }

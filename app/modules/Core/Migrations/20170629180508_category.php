@@ -17,7 +17,7 @@ class CategoryMigration extends Migration
     public function up()
     {
         $this->morphTable(
-            'category',
+            self::TABLE_NAME,
             [
                 'columns' => [
                     new Column('id', [

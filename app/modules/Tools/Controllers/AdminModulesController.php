@@ -9,8 +9,6 @@
 namespace Module\Tools\Controllers;
 
 use Engine\Package\PackageType;
-use Module\Core\Models\Package;
-use Module\Tools\Helpers\Tools;
 use Module\Tools\Builder\Module;
 
 /**
@@ -57,7 +55,7 @@ class AdminModulesController extends ControllerBase
                     'force'     => $force
                 );
 
-                $moduleBuilder = new Package($component);
+                $moduleBuilder = new Module($component);
                 $moduleBuilder->build();
 
                 $this->flash->success('Module "'.$name.'" was created successfully');
@@ -67,8 +65,9 @@ class AdminModulesController extends ControllerBase
             }
         }
 
-        return $this->dispatcher->forward(array(
+        $this->dispatcher->forward(array(
             'action' => 'index'
         ));
+        return;
     }
 }

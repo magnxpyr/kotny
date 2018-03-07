@@ -8,6 +8,8 @@
 
 namespace Module\Tools\Helpers;
 
+use Engine\Mvc\Config\ConfigSample;
+use Engine\Package\PackageType;
 use Phalcon\Config;
 use Phalcon\Di;
 use Module\Tools\Controllers\ControllerBase;
@@ -15,7 +17,7 @@ use Module\Tools\Controllers\ControllerBase;
 class Tools extends ControllerBase {
 
     /**
-     * @var \Phalcon\Config
+     * @var ConfigSample
      */
     private static $_config;
 
@@ -25,7 +27,7 @@ class Tools extends ControllerBase {
     private static $_toolsConfig;
 
     /**
-     * @var \Phalcon\Mvc\Url
+     * @var \Engine\Mvc\Url
      */
     private static $_url;
 
@@ -38,11 +40,6 @@ class Tools extends ControllerBase {
      * @var \Phalcon\Mvc\Model
      */
     private static $_connection;
-
-    /**
-     * @var \Phalcon\Config
-     */
-    private static $_db;
 
     /**
      * Navigation
@@ -156,7 +153,7 @@ class Tools extends ControllerBase {
     /**
      * Return the config object in the services container
      *
-     * @return \Phalcon\Config
+     * @return ConfigSample
      */
     public static function getConfig() {
         if(is_null(self::$_config))
@@ -198,26 +195,6 @@ class Tools extends ControllerBase {
     }
 
     /**
-     * Return the db config object in the services container
-     *
-     * @throws \Exception
-     * @return \Phalcon\Mvc\Model
-     */
-    public static function getDb() {
-        if(is_null(self::$_db)) {
-            if(isset(self::getConfig()->database)) {
-                $dbConfig = self::getConfig()->database;
-            } elseif (isset(self::getConfig()->db)) {
-                $dbConfig = self::getConfig()->db;
-            } else {
-                throw new \Exception("Database configuration cannot be loaded from your config file");
-            }
-            return $dbConfig;
-        }
-        return self::$_db;
-    }
-
-    /**
      * Return a new url according to params
      *
      * @param string $controller
@@ -238,13 +215,14 @@ class Tools extends ControllerBase {
     }
 
     /**
-     * Return an array with modules name
-     *
+     * @param $packageType PackageType
      * @return array
      */
-    public static function listModules() {
-        $iterator = new \DirectoryIterator(self::getModulesPath());
-        $modules = array();
+    public static function listPackages($packageType)
+    {
+        $packagePath = self::getPackagePath($packageType);
+        $iterator = new \DirectoryIterator($packagePath);
+        $modules = [];
         foreach($iterator as $fileinfo){
             if(!$fileinfo->isDot()){
                 $modules[] = $fileinfo->getFileName();
@@ -253,25 +231,37 @@ class Tools extends ControllerBase {
         return $modules;
     }
 
+    public static function getPackagePath($packageType)
+    {
+        switch ($packageType) {
+            case PackageType::WIDGET:
+                $packagePath = WIDGETS_PATH;
+                break;
+            case PackageType::MODULE:
+                $packagePath = MODULES_PATH;
+                break;
+        }
+        return $packagePath;
+    }
+
     /**
      * Return the modules input with all modules
      *
      * @param string $selected
      * @return string
      */
-    public static function renderModulesInput($selected = null) {
-        $iterator = new \DirectoryIterator(self::getModulesPath());
+    public static function renderPackageInput($selected = null, $path) {
+        $iterator = new \DirectoryIterator($path);
         $options = null;
         foreach($iterator as $fileinfo){
-            if(!$fileinfo->isDot() && file_exists($fileinfo->getPathname() . '/Module.php')){
+            if(!$fileinfo->isDot()){
                 $options .= '<option value=' . $fileinfo->getFileName() . '>';
-                if($selected == null) $selected = $fileinfo->getFileName();
             }
         }
 
-        $input = '<label class="control-label" for="name">Module</label>
-                    <input list="module" name="module" value="' . $selected . '" class="form-control">
-                    <datalist id="module">' . $options . '</datalist>';
+        $input = '<label class="control-label" for="name">Package</label>
+                    <input list="package" name="package" value="' . $selected . '" class="form-control">
+                    <datalist id="package">' . $options . '</datalist>';
 
         return $input;
     }
@@ -395,10 +385,7 @@ class Tools extends ControllerBase {
      * @return string
      */
     public static function getBaseNamespace() {
-        if(isset(self::_getToolsConfig()->baseNamespace)) {
-            return self::_getToolsConfig()->baseNamespace . '\\';
-        }
-        return '';
+        return 'Module';
     }
 
     /**
@@ -407,21 +394,18 @@ class Tools extends ControllerBase {
      * @throws \Exception
      */
     public static function getModulesPath() {
-        if(isset(self::_getToolsConfig()->modulesPath)) {
-            return self::_getToolsConfig()->modulesPath;
-        }
-        throw new \Exception('Modules path is not defined');
+        return MODULES_PATH;
     }
 
     /**
      * Return the View directory
      * @return string
      */
-    public static function getMigrationsPath() {
-        if(isset(self::_getToolsConfig()->migrationsPath)) {
-            return self::_getToolsConfig()->migrationsPath;
+    public static function getMigrationsDir() {
+        if(isset(self::_getToolsConfig()->migrationsDir)) {
+            return self::_getToolsConfig()->migrationsDir;
         }
-        throw new \Exception("Migrations path is not defined");
+        return 'Migrations';
     }
 
     /**

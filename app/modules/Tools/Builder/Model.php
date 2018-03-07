@@ -57,7 +57,7 @@ class Model extends Component
                 $options['namespace'] = Tools::getBaseNamespace() . $options['module'] . '\\' . Tools::getModelsDir();
         }
         if (empty($options['baseClass'])) {
-            $options['baseClass'] = 'Phalcon\Mvc\Model';
+            $options['baseClass'] = 'Engine\Mvc\Model';
         }
         if (empty($options['tableName'])) {
             throw new \Exception("Please, specify the table name");
@@ -244,11 +244,9 @@ class %s extends %s
             }
         }
 
-        if(Tools::getDb()) {
-            $dbConfig = Tools::getDb();
-        }
+        $dbConfig = Tools::getConfig();
 
-        if (!isset($dbConfig->adapter)) {
+        if (!isset($dbConfig->dbAdaptor)) {
             throw new \Exception(
                 "Adapter was not found in the config. " .
                 "Please specify a config variable [database][adapter]"
@@ -258,7 +256,6 @@ class %s extends %s
         if (isset($this->_options['namespace'])) {
             $namespace = PHP_EOL . PHP_EOL. 'namespace ' . $this->_options['namespace'] . ';'
                 . PHP_EOL . PHP_EOL;
-            $methodRawCode[] = sprintf($getSource, $this->_options['tableName']);
         } else {
             $namespace = '';
         }
@@ -270,45 +267,36 @@ class %s extends %s
             $genDocMethods = false;
         }
 
-        $this->isSupportedAdapter($dbConfig->adapter);
-
-        if (isset($dbConfig->adapter)) {
-            $adapter = $dbConfig->adapter;
-        } else {
-            $adapter = 'Mysql';
-        }
-
-        $configArray = $dbConfig->toArray();
+        $this->isSupportedAdapter($dbConfig->dbAdaptor);
 
         // An array for use statements
         $uses = array(sprintf($templateUse, $this->_options['baseClass']));
 
-        $adapterName = '\Phalcon\Db\Adapter\Pdo\\' . $adapter;
-        unset($configArray['adapter']);
-        $db = new $adapterName($configArray);
+        $db = Tools::getConnection();
 
         $initialize = array();
         if (isset($this->_options['schema'])) {
-            if ($this->_options['schema'] != $dbConfig->dbname) {
+            if ($this->_options['schema'] != $dbConfig->dbName) {
                 $initialize[] = sprintf(
                     $templateThis, 'setSchema', '"' . $this->_options['schema'] . '"'
                 );
             }
             $schema = $this->_options['schema'];
-        } elseif ($adapter == 'Postgresql') {
+        } elseif ( $dbConfig->dbAdaptor == 'Postgresql') {
             $schema = 'public';
             $initialize[] = sprintf(
                 $templateThis, 'setSchema', '"' . $schema . '"'
             );
         } else {
-            $schema = $dbConfig->dbname;
+            $schema = $dbConfig->dbName;
         }
 
-        if ($this->_options['name'] != $this->_options['tableName']) {
+        if (Text::uncamelize($this->_options['name']) != $this->_options['tableName']) {
             $initialize[] = sprintf(
                 $templateThis, 'setSource',
                 '\'' . $this->_options['tableName'] . '\''
             );
+            $methodRawCode[] = sprintf($getSource, $this->_options['tableName']);
         }
 
         $table = $this->_options['tableName'];

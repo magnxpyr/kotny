@@ -8,6 +8,7 @@ class Config {
     public $dbPass = '';
     public $dbName = '';
     public $dbPrefix = '';
+    public $dbSchema = '';
 
     // app
     public $offline = false; // true false

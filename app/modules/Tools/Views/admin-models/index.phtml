@@ -17,7 +17,7 @@ echo $this->getContent();
               action="<?php echo Tools::generateUrl($this->view->getControllerName(), 'create') ?>">
             <div class="control-group">
                 <div class="form-group">
-                    <?php echo Tools::renderModulesInput($selectedModule) ?>
+                    <?php echo Tools::renderPackageInput($selectedModule, MODULES_PATH) ?>
                     <span class="hint-block">Leave empty if you don't use modules</span>
                 </div>
                 <div class="form-group">

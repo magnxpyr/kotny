@@ -42,7 +42,7 @@ class AdminModelsController extends ControllerBase
         if ($this->request->isPost()) {
 
             $name = $this->request->getPost('name', 'string');
-            $module = $this->request->getPost('module', 'string');
+            $module = $this->request->getPost('package', 'string');
             $force = $this->request->getPost('force', 'int');
             $schema = $this->request->getPost('schema', 'string');
             $directory = $this->request->getPost('directory', 'string');
@@ -99,8 +99,9 @@ class AdminModelsController extends ControllerBase
             }
         }
 
-        return $this->dispatcher->forward(array(
+        $this->dispatcher->forward(array(
             'action' => 'index'
         ));
+        return;
     }
 }

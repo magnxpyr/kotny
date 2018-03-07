@@ -58,14 +58,6 @@ class $className$Controller extends $controllerName$
     }
 
     /**
-     * Displays the creation form
-     */
-    public function createAction()
-    {
-
-    }
-
-    /**
      * Edits a $singular$
      *
      * @param string $pkVar$

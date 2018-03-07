@@ -1,0 +1,19 @@
+<script>
+    function changePackage(event) {
+        var pack = $(event).val();
+        $.ajax({
+            type: 'POST',
+            url: '<?= $this->url->get('admin/tools/migrations/changePackage/') ?>' + pack,
+            success: function (data) {
+               var dataList = $("#package");
+                dataList.empty();
+                if(data.packages.length > 0) {
+                    for(var i = 0; i < data.packages.length; i++) {
+                        var opt = $("<option></option>").attr("value", data.packages[i]);
+                        dataList.append(opt);
+                    }
+                }
+            }
+        })
+    }
+</script>

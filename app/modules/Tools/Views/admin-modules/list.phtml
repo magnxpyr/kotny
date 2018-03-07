@@ -29,7 +29,7 @@ echo $this->getContent();
             <tbody>
             <?php
 
-            foreach (Tools::listModules() as $module) {
+            foreach (Tools::listModules(\Engine\Package\PackageType::MODULE) as $module) {
                 echo '<tr>
                         <td>', $module, '</td>
                         <td>

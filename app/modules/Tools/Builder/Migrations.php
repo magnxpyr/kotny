@@ -45,8 +45,6 @@ class Migrations
         $tableName = $options['tableName'];
         $exportData = $options['exportData'];
         $migrationsDir = $options['migrationsDir'];
-        $originalVersion = $options['originalVersion'];
-        $force = $options['force'];
         $config = $options['config'];
 
         if (empty($migrationsDir)) {
@@ -57,158 +55,33 @@ class Migrations
             mkdir($migrationsDir, 0777, true);
         }
 
-        if ($originalVersion) {
-            if (!preg_match('/[a-z0-9](\.[a-z0-9]+)*/', $originalVersion, $matches)) {
-                throw new \Exception('Version '.$originalVersion.' is invalid');
-            }
-
-            $originalVersion = $matches[0];
-            $version = new VersionItem($originalVersion, 3);
-            if (file_exists($migrationsDir.'/'.$version) && !$force) {
-                throw new \Exception('Version '.$version.' is already generated');
-            }
-        } else {
-            $versions = array();
-            $iterator = new \DirectoryIterator($migrationsDir);
-            foreach ($iterator as $fileInfo) {
-                if ($fileInfo->isDir()) {
-                    if (preg_match('/[a-z0-9](\.[a-z0-9]+)+/', $fileInfo->getFilename(), $matches)) {
-                        $versions[] = new VersionItem($matches[0], 3);
-                    }
-                }
-            }
-
-            $date = new \DateTime('now', new \DateTimeZone('UTC'));
-            $version = $date->format('YmdHis');
-
-//            if (count($versions) == 0) {
-//                $version = new VersionItem('1.0.0');
-//            } else {
-//                $version = VersionItem::maximum($versions);
-//                $version = $version->addMinor(1);
-//            }
-        }
-
-//        if (!file_exists($migrationsDir.'/'.$version)) {
-//            if(!@mkdir($migrationsDir.'/'.$version)) {
-//                throw new \Exception("Cannot create Migrations version directory");
-//            }
-//            @chmod($migrationsDir.'/'.$version, 0777);
-//        }
-
-        if (isset($config->database)) {
-            ModelMigration::setup($config->database);
-        } else {
-            throw new \Exception("Cannot load database configuration");
-        }
-
-        ModelMigration::setSkipAutoIncrement($options['no-ai']);
-//        ModelMigration::setMigrationPath($migrationsDir.'/'.$version);
-        ModelMigration::setMigrationPath($migrationsDir);
-        if ($tableName == 'all') {
-            $migrations = ModelMigration::generateAll($version, $exportData);
-            foreach ($migrations as $tableName => $migration) {
-//                file_put_contents($migrationsDir.'/'.$version.'/'.$tableName.'.php', '<?php'.PHP_EOL.Tools::getCopyright().PHP_EOL.PHP_EOL.$Migrations);
-//                @chmod($migrationsDir.'/'.$version.'/'.$tableName.'.php', 0777);
-
-                file_put_contents($migrationsDir.'/'.$version.'_'.$tableName.'.php', '<?php'.PHP_EOL.Tools::getCopyright().PHP_EOL.PHP_EOL.$migration);
-                @chmod($migrationsDir.'/'.$version.'_'.$tableName.'.php', 0777);
-            }
-        } else {
-            $migration = ModelMigration::generate($version, $tableName, $exportData);
-            file_put_contents($migrationsDir.'/'.$version.'_'.$tableName.'.php', '<?php '.PHP_EOL.Tools::getCopyright().PHP_EOL.PHP_EOL.$migration);
-            @chmod($migrationsDir.'/'.$version.'_'.$tableName.'.php', 0777);
-//            file_put_contents($migrationsDir.'/'.$version.'/'.$tableName.'.php', '<?php '.PHP_EOL.Tools::getCopyright().PHP_EOL.PHP_EOL.$Migrations);
-//            @chmod($migrationsDir.'/'.$version.'/'.$tableName.'.php', 0777);
-        }
-    }
-
-    /**
-     * Run migrations
-     *
-     * @param array $options
-     * @throws \Exception
-     */
-    public static function run(array $options)
-    {
-        $path = $options['migrationsDir'] . DIRECTORY_SEPARATOR . 'Migrations-version';
-        $migrationsDir = $options['migrationsDir'];
-        $config = $options['config'];
-        $version = null;
-
-        if (isset($options['version']) && $options['version'] !== null) {
-            $version = new VersionItem($options['version']);
-        }
-
-        if (isset($options['tableName'])) {
-            $tableName = $options['tableName'];
-        } else {
-            $tableName = 'all';
-        }
-
-        if (!file_exists($migrationsDir)) {
-            throw new \Exception('Migrations directory could not found');
-        }
-
         $versions = array();
         $iterator = new \DirectoryIterator($migrationsDir);
-        foreach ($iterator as $fileinfo) {
-            if ($fileinfo->isDir()) {
-                if (preg_match('/[a-z0-9](\.[a-z0-9]+)+/', $fileinfo->getFilename(), $matches)) {
+        foreach ($iterator as $fileInfo) {
+            if ($fileInfo->isDir()) {
+                if (preg_match('/[a-z0-9](\.[a-z0-9]+)+/', $fileInfo->getFilename(), $matches)) {
                     $versions[] = new VersionItem($matches[0], 3);
                 }
             }
         }
 
-        if ( count($versions) == 0) {
-            throw new \Exception('Migrations were not found at '.$migrationsDir);
-        } elseif ($version === null){
-            $version = VersionItem::maximum($versions);
-        }
+        $date = new \DateTime('now', new \DateTimeZone('UTC'));
+        $version = $date->format('YmdHis');
 
-        if (file_exists($path)) {
-            $fromVersion = trim(file_get_contents($path));
-        } else {
-            $fromVersion = null;
-        }
+        ModelMigration::setup($config);
 
-        if (isset($config->database)) {
-            ModelMigration::setup($config->database);
-        } else {
-            throw new \Exception("Cannot load database configuration");
-        }
-
-        ModelMigration::setMigrationPath($migrationsDir.'/'.$version . '/') ;
-        $versionsBetween = VersionItem::between($fromVersion, $version, $versions);
-
-        // get rid of the current version, we don't want migrations to run for our
-        // existing version.
-        if (isset($versionsBetween[0]) && (string)$versionsBetween[0] == $fromVersion) {
-            unset($versionsBetween[0]);
-        }
-
-        foreach ($versionsBetween as $version) {
-            if ($tableName == 'all') {
-                $iterator = new \DirectoryIterator($migrationsDir.'/'.$version);
-                foreach ($iterator as $fileinfo) {
-                    if ($fileinfo->isFile()) {
-                        if (preg_match('/\.php$/', $fileinfo->getFilename())) {
-                            ModelMigration::migrateFile((string) $version, $migrationsDir.'/'.$version.'/'.$fileinfo->getFilename());
-                        }
-                    }
-                }
-            } else {
-                $migrationPath = $migrationsDir.'/'.$version.'/'.$tableName.'.php';
-                if (file_exists($migrationPath)) {
-                    ModelMigration::migrateFile((string) $version, $migrationPath);
-                } else {
-                    throw new \Exception('Migration class was not found '.$migrationPath);
-                }
+        ModelMigration::setMigrationPath($migrationsDir);
+        if ($tableName == 'all') {
+            $migrations = ModelMigration::generateAll($version, $exportData);
+            foreach ($migrations as $tableName => $migration) {
+                file_put_contents($migrationsDir . '/' . $version . '_' . $tableName . '.php', '<?php' . PHP_EOL . Tools::getCopyright() . PHP_EOL . PHP_EOL . $migration);
+                @chmod($migrationsDir . '/' . $version . '_' . $tableName . '.php', 0777);
             }
+        } else {
+            $migration = ModelMigration::generate($version, $tableName, $exportData);
+            file_put_contents($migrationsDir . '/' . $version . '_' . $tableName . '.php', '<?php ' . PHP_EOL . Tools::getCopyright() . PHP_EOL . PHP_EOL . $migration);
+            @chmod($migrationsDir . '/' . $version . '_' . $tableName . '.php', 0777);
         }
-
-        file_put_contents($path, (string) $version);
-        @chmod($path, 0777);
     }
 }
 

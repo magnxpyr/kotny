@@ -18,6 +18,9 @@
 */
 namespace Module\Tools\Controllers;
 
+use Engine\Package\Migration;
+use Engine\Package\PackageType;
+use Module\Core\Models\Package;
 use Module\Tools\Builder\Migrations;
 use Module\Tools\Helpers\Tools;
 
@@ -27,54 +30,16 @@ use Module\Tools\Helpers\Tools;
  */
 class AdminMigrationsController extends ControllerBase
 {
-    /**
-     * @throws \Exception
-     * @return string
-     */
-    protected function _getMigrationsDir()
-    {
-        $migrationsDir = Tools::getMigrationsPath();
-        if (!file_exists($migrationsDir)) {
-            if(!@mkdir($migrationsDir)) {
-                throw new \Exception("Unable to create Migrations directory on ".Tools::getMigrationsPath());
-            }
-            @chmod($migrationsDir, 0777);
-        }
-
-        return $migrationsDir;
-    }
-
-    /**
-     * @throws \Exception
-     */
-    protected function _prepareVersions()
-    {
-        $migrationsDir = $this->_getMigrationsDir();
-
-        $folders = array();
-
-        $iterator = new \DirectoryIterator($migrationsDir);
-        foreach ($iterator as $fileinfo) {
-            if (!$fileinfo->isDot() && $fileinfo->isDir()) {
-                $folders[$fileinfo->getFileName()] = $fileinfo->getFileName();
-            }
-        }
-
-        natsort($folders);
-        $folders = array_reverse($folders);
-        $foldersKeys = array_keys($folders);
-
-        if (isset($foldersKeys[0])) {
-            $this->view->setVar('version', $foldersKeys[0]);
-        } else {
-            $this->view->setVar('version', 'None');
-        }
-    }
-
     public function indexAction()
     {
         $this->setTitle("Generate Migration");
-        $this->_prepareVersions();
+
+        $selectedModule = null;
+        $params = $this->router->getParams();
+        if(!empty($params))
+            $selectedModule = $this->router->getParams()[0];
+        $this->view->selectedModule = $selectedModule;
+
         $this->listTables(true);
     }
 
@@ -85,23 +50,18 @@ class AdminMigrationsController extends ControllerBase
     {
         if ($this->request->isPost()) {
             $exportData = '';
+            $packageType = $this->request->getPost('packageType', 'string');
+            $package = $this->request->getPost('package', 'string');
             $tableName = $this->request->getPost('table-name', 'string');
-            $version = $this->request->getPost('version', 'string');
-            $noAi = $this->request->getPost('noAi', 'int');
-            $force = $this->request->getPost('force', 'int');
 
             $migrationsDir = $this->_getMigrationsDir();
 
             try {
                 Migrations::generate(array(
                     'config' => Tools::getConfig(),
-                    'directory' => null,
                     'tableName' => $tableName,
                     'exportData' => $exportData,
-                    'migrationsDir' => $migrationsDir,
-                    'originalVersion' => $version,
-                    'force' => $force,
-                    'no-ai' => $noAi
+                    'migrationsDir' => Tools::getPackagePath($packageType) . "$package/$migrationsDir/",
                 ));
 
                 $this->flash->success("The Migrations was generated successfully");
@@ -110,9 +70,10 @@ class AdminMigrationsController extends ControllerBase
             }
         }
 
-        return $this->dispatcher->forward(array(
-         'action' => 'index'
-        ));
+        $this->dispatcher->forward([
+            'action' => 'index'
+        ]);
+        return;
     }
 
     /**
@@ -122,28 +83,60 @@ class AdminMigrationsController extends ControllerBase
     {
         $this->setTitle("Run Migration");
 
+        $selectedModule = null;
+        $params = $this->router->getParams();
+        if(!empty($params))
+            $selectedModule = $this->router->getParams()[0];
+        $this->view->selectedModule = $selectedModule;
+
         if ($this->request->isPost()) {
-            $version = '';
-            $exportData = '';
-            $force = $this->request->getPost('force', 'int');
+            $packageType = $this->request->getPost('packageType', 'string');
+            $package = $this->request->getPost('package', 'string');
 
             try {
-                $migrationsDir = $this->_getMigrationsDir();
+                /** @var Package $model */
+                $model = Package::findFirstByName($package);
+                if (!$model) {
+                    $this->flash->error("Package does not exist or is not installed");
+                    return;
+                }
 
-                Migrations::run(array(
-                    'config' => Tools::getConfig(),
-                    'directory' => null,
-                    'tableName' => 'all',
-                    'migrationsDir' => $migrationsDir,
-                    'force' => $force
-                ));
+                $this->packageManager->migrate(Migration::UP, $packageType, $package, $model->getId());
 
                 $this->flash->success("The Migrations was executed successfully");
             } catch (\Exception $e) {
                 $this->flash->error($e->getMessage());
             }
         }
+    }
 
-        $this->_prepareVersions();
+    /**
+     * @param $packageType PackageType
+     */
+    public function changePackageAction($packageType)
+    {
+        if (!$this->request->isAjax() || !$this->request->isPost()) {
+            return;
+        }
+
+        $this->returnJSON(['packages' => Tools::listPackages($packageType), 'success' => true]);
+        return;
+    }
+
+    /**
+     * @throws \Exception
+     * @return string
+     */
+    private function _getMigrationsDir()
+    {
+        $migrationsDir = Tools::getMigrationsDir();
+        if (!file_exists($migrationsDir)) {
+            if(!@mkdir($migrationsDir)) {
+                throw new \Exception("Unable to create Migrations directory on ".Tools::getMigrationsDir());
+            }
+            @chmod($migrationsDir, 0777);
+        }
+
+        return $migrationsDir;
     }
 }

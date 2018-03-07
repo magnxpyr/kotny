@@ -32,11 +32,11 @@ class ControllerBase extends AdminController
      * Initialize controller
      * @throws \Exception
      */
-//    protected function initialize()
-//    {
-//        parent::initialize();
-//        $this->_checkAccess();
-//    }
+    public function initialize()
+    {
+        parent::initialize();
+        $this->_checkAccess();
+    }
 
     /**
      * Check remote IP address to disable remote activity
@@ -77,8 +77,8 @@ class ControllerBase extends AdminController
         }
 
         $this->view->tables = $tables;
-        if ($config->database->adapter != 'Sqlite') {
-            $this->view->databaseName = $config->database->dbname;
+        if ($config->dbAdaptor != 'Sqlite') {
+            $this->view->databaseName = $config->dbName;
         } else {
             $this->view->databaseName = null;
         }

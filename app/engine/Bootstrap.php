@@ -135,7 +135,8 @@ class Bootstrap
             'password' => $config->dbPass,
             'port' => $config->dbPort,
             'dbname' => $config->dbName,
-            'prefix' => $config->dbPrefix
+            'prefix' => $config->dbPrefix,
+            'schema' => $config->dbSchema
         ];
 
         // Connect to db

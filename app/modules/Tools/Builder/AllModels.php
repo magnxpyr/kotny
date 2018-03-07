@@ -57,7 +57,7 @@ class AllModels extends Component
                 $options['namespace'] = Tools::getBaseModule() . $options['module'] . '\\' . Tools::getModelsDir();
         }
         if (empty($options['baseClass'])) {
-            $options['baseClass'] = 'Phalcon\Mvc\Model';
+            $options['baseClass'] = 'Engine\Mvc\Model';
         }
         if (empty($options['tableName'])) {
             throw new \Exception("Please, specify the table name");
@@ -92,39 +92,19 @@ class AllModels extends Component
             $genSettersGetters = false;
         }
 
-        if(isset(Tools::getConfig()->database)) {
-            $dbConfig = Tools::getConfig()->database;
-        } elseif(Tools::getConfig()->db) {
-            $dbConfig = Tools::getConfig()->db;
-        }
-
-        if (isset($dbConfig->adapter)) {
-            $adapter = $dbConfig->adapter;
-            $this->isSupportedAdapter($adapter);
-        } else {
-            $adapter = 'Mysql';
-        }
-
-        if (is_object($dbConfig)) {
-            $configArray = $dbConfig->toArray();
-        } else {
-            $configArray = $dbConfig;
-        }
-
-        $adapterName = 'Phalcon\Db\Adapter\Pdo\\' . $adapter;
-        unset($configArray['adapter']);
+        $dbConfig = Tools::getConfig();
 
         /**
          * @var $db \Phalcon\Db\Adapter\Pdo
          */
-        $db = new $adapterName($configArray);
+        $db = Tools::getConnection();
 
         if (isset($this->_options['schema'])) {
             $schema = $this->_options['schema'];
-        } elseif ($adapter == 'Postgresql') {
+        } elseif ($dbConfig->dbAdaptor == 'Postgresql') {
             $schema = 'public';
         } else {
-            $schema = isset($dbConfig->schema) ? $dbConfig->schema : $dbConfig->dbname;
+            $schema = isset($dbConfig->schema) ? $dbConfig->schema : $dbConfig->dbName;
         }
 
         $hasMany = array();
@@ -145,7 +125,7 @@ class AllModels extends Component
                 }
 
                 $camelCaseName = Text::camelize($name);
-                $refSchema = ($adapter != 'Postgresql') ? $schema : $dbConfig->dbname;
+                $refSchema = ($dbConfig->dbAdaptor != 'Postgresql') ? $schema : $dbConfig->dbName;
 
                 foreach ($db->describeReferences($name, $schema) as $reference) {
                     $columns = $reference->getColumns();

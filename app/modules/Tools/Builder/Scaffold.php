@@ -94,15 +94,9 @@ class Scaffold extends Component
     {
         $options = $this->_options;
 
-        if(Tools::getDb()) {
-            $config = Tools::getDb();
-        }
+        $config = Tools::getConnection();
 
-        if (!isset($config->adapter)) {
-            throw new \Exception("Adapter was not found in the config. Please specify a config variable [database][adapter]");
-        }
-
-        $adapter = ucfirst($config->adapter);
+        $adapter = ucfirst(Tools::getConfig()->dbAdaptor);
 
         $this->isSupportedAdapter($adapter);
 

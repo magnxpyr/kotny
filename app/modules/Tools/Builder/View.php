@@ -56,7 +56,7 @@ class View extends Component
         $viewDir = $this->_options['directory'] . DIRECTORY_SEPARATOR . $viewName;
         $viewPath = $viewDir . DIRECTORY_SEPARATOR . $action . '.volt';
 
-        $code = "<?php\n".Tools::getCopyright()."\n?>\n";
+        $code = "{#\n".Tools::getCopyright()."\n#}\n";
         $code = str_replace("\t", "    ", $code);
 
         if (!file_exists($viewPath) || $this->_options['force'] == true) {

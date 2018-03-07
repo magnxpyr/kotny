@@ -58,10 +58,9 @@ class AdminScaffoldController extends ControllerBase
     public function createAction()
     {
         if ($this->request->isPost()) {
-            $module = $this->request->getPost('module', 'string');
+            $module = $this->request->getPost('package', 'string');
             $schema = $this->request->getPost('schema', 'string');
             $tableName = $this->request->getPost('tableName', 'string');
-            $version = $this->request->getPost('version', 'string');
             $templateEngine = $this->request->getPost('templateEngine');
             $force = $this->request->getPost('force', 'int');
             $genSettersGetters = $this->request->getPost('genSettersGetters', 'int');
@@ -92,8 +91,9 @@ class AdminScaffoldController extends ControllerBase
             }
         }
 
-        return $this->dispatcher->forward(array(
+        $this->dispatcher->forward(array(
             'action' => 'index'
         ));
+        return;
     }
 }

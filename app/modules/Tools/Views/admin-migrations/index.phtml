@@ -12,7 +12,7 @@ echo $this->getContent();
 ?>
 <div class="box box-default">
     <div class="box-header">
-        <ul class="nav nav-pills">
+        <ul class="nav nav-tabs">
             <?php echo Tools::getMenu($this->view->getControllerName(), $this->view->getActionName()) ?>
         </ul>
     </div>
@@ -20,15 +20,11 @@ echo $this->getContent();
         <form method="post" autocomplete="off"
               action="<?php echo Tools::generateUrl($this->view->getControllerName(), 'generate') ?>">
             <div class="form-group">
-                <b>Current Version</b> <i><?php echo $version ?></i>
+                <label class="control-label" for="packageType">Package Type</label>
+                <?= Phalcon\Tag::select(["packageType", "class" => "form-control", "onchange" => "changePackage(this)"], \Engine\Package\PackageType::getConstants()) ?>
             </div>
             <div class="form-group">
-                <label class="control-label" for="schema">New Version</label>
-                <?php echo Phalcon\Tag::textField(array(
-                    'version',
-                    'class' => 'form-control',
-                    'placeholder' => 'Let empty to auto new version'
-                )) ?>
+                <?php echo Tools::renderPackageInput($selectedModule, MODULES_PATH) ?>
             </div>
             <div class="form-group">
                 <label class="control-label" for="schema">Table name</label>
@@ -39,17 +35,6 @@ echo $this->getContent();
                     } ?>
                 </datalist>
             </div>
-            <div class="form-group">
-                <label>
-                    <?php echo Phalcon\Tag::checkField(array('noAi', 'value' => '1')) . ' Disable auto increment' ?>
-                </label>
-            </div>
-            <div class="form-group">
-                <label>
-                    <?php echo Phalcon\Tag::checkField(array('force', 'value' => '1')) . ' Force' ?>
-                </label>
-                <span class="hint-block">Overwrite files if they already exists</code></span>
-            </div>
             <div align="right">
                 <input type="submit" class="btn btn-primary" value="Generate"/>
             </div>
@@ -57,3 +42,5 @@ echo $this->getContent();
     </div>
 </div>
 
+
+<?php $this->addViewJs("admin-migrations/index-scripts") ?>
