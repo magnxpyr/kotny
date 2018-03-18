@@ -167,14 +167,18 @@ class Form extends \Phalcon\Forms\Form
 
         if (isset($attributes['input'])) {
             if (isset($attributes['input']['class'])) {
-                $attributes['input']['class'] .= ' input-group';
                 if ($inputDate) {
+                    $attributes['input']['class'] .= ' input-group';
                     $input .= ' date';
+                } else {
+                    $attributes['input']['class'] .= ' form-group';
+
                 }
             } else {
-                $input .= 'class="input-group';
                 if ($inputDate) {
-                    $input .= ' date';
+                    $input .= 'class="input-group date';
+                } else {
+                    $input .= 'class="form-group';
                 }
                 $input .= '" ';
             }
@@ -182,9 +186,10 @@ class Form extends \Phalcon\Forms\Form
                 $input .= "$key=\"$value\" ";
             }
         } else {
-            $input .= 'class="input-group';
             if ($inputDate) {
-                $input .= ' date';
+                $input .= 'class="input-group date';
+            } else {
+                $input .= 'class="form-group';
             }
             $input .= '" ';
         }

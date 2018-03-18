@@ -39,6 +39,7 @@ class AdminCategoryEditForm extends Form
             'class' => 'form-control'
         ]);
         $title->setLabel($this->t->_('Title'));
+        $title->setAttribute('placeholder', $this->t->_("Title"));
         $title->setFilters('string');
         $title->addValidator(
             new PresenceOf([
@@ -53,7 +54,7 @@ class AdminCategoryEditForm extends Form
         ]);
         $alias->setLabel($this->t->_('Alias'));
         $alias->setFilters('string');
-        $alias->setAttribute('placeholder', $this->t->_("Generated from title"));
+        $alias->setAttribute('placeholder', $this->t->_("Alias"));
         $this->add($alias);
 
         // Status

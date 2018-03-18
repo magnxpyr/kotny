@@ -1,5 +1,4 @@
 
-
 $(document).ready(function(){
     initializeMenu();
     hideAlertMesssage();
@@ -17,9 +16,9 @@ function checkHTMLBodyHeight() {
     var screen = $(window).height();
 
     if(screen > HTMLBody) {
-        $('.main-footer').removeClass('stickyFooter');
-    } else {
         $('.main-footer').addClass('stickyFooter');
+    } else {
+        $('.main-footer').removeClass('stickyFooter');
     }
 }
 

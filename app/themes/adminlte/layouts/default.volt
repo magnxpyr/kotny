@@ -31,7 +31,6 @@
         <section class="sidebar" style="height: auto">
             <!-- Sidebar Menu -->
             <ul class="sidebar-menu">
-                <li class="header">MAIN NAVIGATION</li>
                 {{ navigation['html'] }}
             </ul><!-- /.sidebar-menu -->
         </section>
