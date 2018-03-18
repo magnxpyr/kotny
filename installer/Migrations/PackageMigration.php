@@ -55,7 +55,6 @@ class PackageMigration extends Migration
                     ]),
                     new Column('author', [
                         'type' => Column::TYPE_VARCHAR,
-                        'notNull' => true,
                         'size' => 255,
                         'after' => 'version'
                     ]),
@@ -65,12 +64,11 @@ class PackageMigration extends Migration
                         'after' => 'author'
                     ]),
                     new Column('status', [
-                            'type' => Column::TYPE_INTEGER,
-                            'notNull' => true,
-                            'size' => 1,
-                            'after' => 'website'
-                        ]
-                    )
+                        'type' => Column::TYPE_INTEGER,
+                        'notNull' => true,
+                        'size' => 1,
+                        'after' => 'website'
+                    ])
                 ],
                 'indexes' => [
                     new Index('PRIMARY', ['id']),

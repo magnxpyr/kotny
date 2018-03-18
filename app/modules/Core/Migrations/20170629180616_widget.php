@@ -10,7 +10,7 @@ use Engine\Package\Migration;
 use Phalcon\Db\Column;
 use Phalcon\Db\Index;
 
-class WidgetMigration extends Migration
+class Widget20170629180616Migration extends Migration
 {
     const TABLE_NAME = 'widget';
 

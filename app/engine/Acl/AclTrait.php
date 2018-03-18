@@ -8,7 +8,7 @@
 
 namespace Engine\Acl;
 
-use Engine\Behavior\DiBehavior;
+use Engine\Di\DiTrait;
 
 /**
  * Class AclBehavior
@@ -16,7 +16,7 @@ use Engine\Behavior\DiBehavior;
  */
 trait AclTrait
 {
-    use DiBehavior;
+    use DiTrait;
 
     /**
      * @var \Phalcon\Acl

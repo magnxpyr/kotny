@@ -10,7 +10,7 @@ use Engine\Package\Migration;
 use Phalcon\Db\Column;
 use Phalcon\Db\Index;
 
-class ViewLevelMigration extends Migration
+class ViewLevel20170629180612Migration extends Migration
 {
     const TABLE_NAME = 'view_level';
 

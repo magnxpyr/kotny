@@ -90,7 +90,7 @@ class AdminMigrationsController extends ControllerBase
         $this->view->selectedModule = $selectedModule;
 
         if ($this->request->isPost()) {
-            $packageType = $this->request->getPost('packageType', 'string');
+            $packageType = PackageType::getConstant($this->request->getPost('packageType', 'string'));
             $package = $this->request->getPost('package', 'string');
 
             try {

@@ -9,7 +9,7 @@
 
 namespace Engine\Package;
 
-use Engine\Behavior\DiBehavior;
+use Engine\Di\DiTrait;
 use Engine\Di\Injectable;
 use Engine\Mvc\Exception;
 use Phalcon\Db\Exception as DbException;
@@ -20,7 +20,7 @@ use Phalcon\Db\Exception as DbException;
  */
 abstract class Migration extends Injectable
 {
-    use DiBehavior;
+    use DiTrait;
 
     const
         UP = "up",
@@ -87,7 +87,7 @@ abstract class Migration extends Injectable
                 throw new DbException('Table must have at least one column');
             }
 
-            $fields = array();
+            $fields = [];
             foreach ($definition['columns'] as $tableColumn) {
                 if (!is_object($tableColumn)) {
                     throw new DbException('Table must have at least one column');
@@ -97,7 +97,7 @@ abstract class Migration extends Injectable
             }
 
             if ($tableExists == true) {
-                $localFields = array();
+                $localFields = [];
                 /** @var  \Phalcon\Db\ColumnInterface[] $description */
                 $description = $this->db->describeColumns($tableName, $defaultSchema);
                 foreach ($description as $field) {
@@ -157,7 +157,7 @@ abstract class Migration extends Injectable
                     $references[$tableReference->getName()] = $tableReference;
                 }
 
-                $localReferences = array();
+                $localReferences = [];
                 $activeReferences = $this->db->describeReferences($tableName, $defaultSchema);
                 foreach ($activeReferences as $activeReference) {
                     $localReferences[$activeReference->getName()] = array(
@@ -221,12 +221,12 @@ abstract class Migration extends Injectable
 
         if (isset($definition['indexes'])) {
             if ($tableExists == true) {
-                $indexes = array();
+                $indexes = [];
                 foreach ($definition['indexes'] as $tableIndex) {
                     $indexes[$tableIndex->getName()] = $tableIndex;
                 }
 
-                $localIndexes = array();
+                $localIndexes = [];
                 $actualIndexes = $this->db->describeIndexes($tableName, $defaultSchema);
                 foreach ($actualIndexes as $actualIndex) {
                     $localIndexes[$actualIndex->getName()] = $actualIndex->getColumns();

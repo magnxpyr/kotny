@@ -23,7 +23,7 @@ use Phalcon\Db\Column;
  */
 class Manager extends Injectable
 {
-    const MIGRATION_FILE_NAME_PATTERN = '/^\d+_([\w_]+).php$/i';
+    const MIGRATION_FILE_NAME_PATTERN = '/(^\d+)_([\w_]+).php$/i';
 
     public function __construct()
     {
@@ -419,7 +419,7 @@ class Manager extends Injectable
                 throw new Exception("$version is not a valid version");
             }
         }
-        krsort($migrations);
+        ksort($migrations);
         if ($direction === Migration::DOWN) {
             foreach ($migrations as $key => $migration) {
                 $key = (int) $key;
@@ -561,9 +561,9 @@ class Manager extends Injectable
      */
     private function mapFileNameToClassName($fileName)
     {
-        $matches = array();
+        $matches = [];
         if (preg_match(static::MIGRATION_FILE_NAME_PATTERN, $fileName, $matches)) {
-            $fileName = $matches[1];
+            $fileName = $matches[2] . $matches[1];
         }
         return str_replace(' ', '', ucwords(str_replace('_', ' ', $fileName))) . "Migration";
     }

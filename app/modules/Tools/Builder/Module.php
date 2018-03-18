@@ -33,7 +33,7 @@ class Module extends Component
             $options['directory'] .= DIRECTORY_SEPARATOR;
         }
         if (empty($options['namespace']) || $options['namespace'] != 'None') {
-            $options['namespace'] = Tools::getBaseNamespace() . $options['name'];
+            $options['namespace'] = Tools::getBaseNamespace() . "\\" . $options['name'];
         }
         if (empty($options['routes'])) {
             $options['routes'] = false;
@@ -102,11 +102,11 @@ class Module extends Component
             @chmod($this->_options['directory'] . Tools::getViewsDir(), 0777);
         }
 
-        $view = new View(array(
+        $view = new View([
             'name' => 'IndexController',
             'module' => $this->_options['name'],
             'force' => $this->_options['force']
-        ));
+        ]);
         $view->build();
 
         if($this->_options['routes']) {
@@ -114,6 +114,7 @@ class Module extends Component
         }
 
         $this->_createModule();
+        $this->createPackageJson();
     }
 
     /**
@@ -185,6 +186,35 @@ class Routes";
             @chmod($aclPath, 0777);
         } else {
             throw new \Exception("Module.php file already exists");
+        }
+    }
+
+    /**
+     * Create package.json file
+     * @throws \Exception
+     */
+    private function createPackageJson()
+    {
+        $code = "{
+    \"package\": \"" . $this->_options['name'] . "\",
+    \"type\": \"module\",
+    \"version\": \"1.0.0\",
+    \"author\": \"\",
+    \"website\": \"\",
+    \"description\": \"\",
+    \"licence\": \"\"
+}";
+
+        $code = str_replace("\t", "    ", $code);
+
+        $path = $this->_options['directory'] . DIRECTORY_SEPARATOR . 'package.json';
+        if (!file_exists($path) || $this->_options['force'] == true) {
+            if (!@file_put_contents($path, $code)) {
+                throw new \Exception("Unable to write to '$path'");
+            }
+            @chmod($path, 0777);
+        } else {
+            throw new \Exception("package.json file already exists");
         }
     }
 }

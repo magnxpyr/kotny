@@ -10,7 +10,7 @@ use Phalcon\Db\Column;
 use Phalcon\Db\Index;
 use Engine\Package\Migration;
 
-class AccessListMigration extends Migration
+class AccessList20170629180415Migration extends Migration
 {
     const TABLE_NAME = 'access_list';
 

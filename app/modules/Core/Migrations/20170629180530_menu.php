@@ -10,7 +10,7 @@ use Phalcon\Db\Column;
 use Phalcon\Db\Index;
 use Engine\Package\Migration;
 
-class MenuMigration extends Migration
+class Menu20170629180530Migration extends Migration
 {
     const TABLE_NAME = 'menu';
 

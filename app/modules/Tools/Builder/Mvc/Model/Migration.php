@@ -298,8 +298,7 @@ class Migration
             $optionsDefinition[] = "\t\t\t\t\t'" . strtoupper($optionName) . "' => '" . $optionValue . "'";
         }
 
-        $classVersion = preg_replace('/[^0-9A-Za-z]/', '', $version);
-        $className = Text::camelize($table) . 'Migration';
+        $className = Text::camelize($table) . $version . 'Migration';
         $classData = "use Phalcon\\Db\\Column;
 use Phalcon\\Db\\Index;
 use Phalcon\\Db\\Reference;
@@ -363,7 +362,7 @@ class ".$className." extends Migration\n{\n".
     }
 
     private static function generateEmpty($options) {
-        $className = Text::camelize($options['table']) . 'Migration';
+        $className = Text::camelize($options['table']) . $options['version'] . 'Migration';
         $classData = "use Phalcon\\Db\\Column;
 use Phalcon\\Db\\Index;
 use Phalcon\\Db\\Reference;
@@ -375,21 +374,19 @@ class ".$className." extends Migration\n{\n".
             "\t\t\$this->morphTable(\n\t\t\tself::TABLE_NAME,\n\t\t\t[" .
             "\n\t\t\t\t'columns' => [
                     new Column('id', [
-                            'type' => Column::TYPE_INTEGER,
-                            'size' => 11,
-                            'unsigned' => true,
-                            'notNull' => true,
-                            'autoIncrement' => true,
-                            'first' => true
-                        ]
-                    ),
+                        'type' => Column::TYPE_INTEGER,
+                        'size' => 11,
+                        'unsigned' => true,
+                        'notNull' => true,
+                        'autoIncrement' => true,
+                        'first' => true
+                    ]),
                     new Column('name', [
-                            'type' => Column::TYPE_VARCHAR,
-                            'notNull' => true,
-                            'size' => 255,
-                            'after' => 'id'
-                        ]
-                    ),\n\t\t\t\t],";
+                        'type' => Column::TYPE_VARCHAR,
+                        'notNull' => true,
+                        'size' => 255,
+                        'after' => 'id'
+                    ]),\n\t\t\t\t],";
 
         $classData .= "\n\t\t\t\t'indexes' => [\n\t\t\t\t\tnew Index('PRIMARY', ['id'])\n\t\t\t\t],";
 

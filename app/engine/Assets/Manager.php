@@ -9,8 +9,7 @@
 
 namespace Engine\Assets;
 
-use Engine\Behavior\DiBehavior;
-use Phalcon\Text;
+use Engine\Di\DiTrait;
 
 /**
  * Class Manager
@@ -18,7 +17,7 @@ use Phalcon\Text;
  */
 class Manager extends \Phalcon\Assets\Manager
 {
-    use DiBehavior;
+    use DiTrait;
 
     const OUTPUT_VIEW_CSS = 'output-view-css',
         OUTPUT_VIEW_JS = 'output-view-js';

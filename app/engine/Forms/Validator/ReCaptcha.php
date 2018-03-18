@@ -8,8 +8,7 @@
 
 namespace Engine\Forms\Validator;
 
-use Engine\Behavior\DiBehavior;
-use Engine\Meta;
+use Engine\Di\DiTrait;
 use Phalcon\Validation;
 use Phalcon\Validation\Message;
 use Phalcon\Validation\Validator;
@@ -21,8 +20,7 @@ use ReCaptcha\ReCaptcha as GoogleReCaptcha;
  */
 class ReCaptcha extends Validator
 {
-    use Meta,
-        DiBehavior;
+    use DiTrait;
 
     /**
      * Executes the captcha validation

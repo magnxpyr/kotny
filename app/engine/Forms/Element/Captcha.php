@@ -8,8 +8,7 @@
 
 namespace Engine\Forms\Element;
 
-use Engine\Behavior\DiBehavior;
-use Engine\Meta;
+use Engine\Di\DiTrait;
 use Phalcon\Forms\Element;
 
 /**
@@ -18,8 +17,7 @@ use Phalcon\Forms\Element;
  */
 class Captcha extends Element
 {
-    use Meta,
-        DiBehavior;
+    use DiTrait;
 
     public function render($attributes = false)
     {

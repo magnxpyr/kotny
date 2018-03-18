@@ -10,7 +10,7 @@ use Phalcon\Db\Column;
 use Phalcon\Db\Index;
 use Engine\Package\Migration;
 
-class UserAuthTokensMigration extends Migration
+class UserAuthTokens20170629180601Migration extends Migration
 {
     const TABLE_NAME = 'user_auth_tokens';
 

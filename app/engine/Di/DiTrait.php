@@ -6,7 +6,7 @@
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
  */
 
-namespace Engine\Behavior;
+namespace Engine\Di;
 
 use Engine\Meta;
 use Phalcon\DI;
@@ -16,7 +16,7 @@ use Phalcon\DiInterface;
  * Dependency container trait.
  * @package Engine\Behavior
  */
-trait DiBehavior
+trait DiTrait
 {
     use Meta;
 

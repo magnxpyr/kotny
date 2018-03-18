@@ -8,11 +8,16 @@
 
 namespace Engine\Package;
 
+use Engine\Traits\ConstTrait;
 
-use ReflectionClass;
-
+/**
+ * Class PackageType
+ * @package Engine\Package
+ */
 class PackageType
 {
+    use ConstTrait;
+
     const
         /**
          * Module package.
@@ -38,11 +43,4 @@ class PackageType
 //         * Library package.
 //         */
 //        LIBRARY = 'library';
-
-    public static function getConstants()
-    {
-        $reflectionClass = new ReflectionClass(__CLASS__);
-        return $reflectionClass->getConstants();
-    }
-
 }

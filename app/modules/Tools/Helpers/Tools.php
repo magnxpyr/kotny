@@ -233,7 +233,7 @@ class Tools extends ControllerBase {
 
     public static function getPackagePath($packageType)
     {
-        switch ($packageType) {
+        switch (PackageType::getConstant($packageType)) {
             case PackageType::WIDGET:
                 $packagePath = WIDGETS_PATH;
                 break;

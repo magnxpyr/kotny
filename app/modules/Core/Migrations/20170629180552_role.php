@@ -10,7 +10,7 @@ use Phalcon\Db\Column;
 use Phalcon\Db\Index;
 use Engine\Package\Migration;
 
-class RoleMigration extends Migration
+class Role20170629180552Migration extends Migration
 {
     const TABLE_NAME = 'role';
 

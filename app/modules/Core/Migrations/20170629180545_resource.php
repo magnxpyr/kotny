@@ -10,7 +10,7 @@ use Phalcon\Db\Column;
 use Phalcon\Db\Index;
 use Engine\Package\Migration;
 
-class ResourceMigration extends Migration
+class Resource20170629180545Migration extends Migration
 {
     const TABLE_NAME = 'resource';
 

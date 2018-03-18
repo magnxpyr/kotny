@@ -10,7 +10,7 @@ use Phalcon\Db\Column;
 use Phalcon\Db\Index;
 use Engine\Package\Migration;
 
-class CategoryMigration extends Migration
+class Category20170629180508Migration extends Migration
 {
     const TABLE_NAME = 'category';
 

@@ -10,7 +10,7 @@ use Engine\Package\Migration;
 use Phalcon\Db\Column;
 use Phalcon\Db\Index;
 
-class UserResetPasswordsMigration extends Migration
+class UserResetPasswords20170629180608Migration extends Migration
 {
     const TABLE_NAME = 'user_reset_passwords';
 

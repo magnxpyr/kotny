@@ -7,7 +7,7 @@
  */
 
 namespace Engine\Mvc;
-use Engine\Behavior\DiBehavior;
+use Engine\Di\DiTrait;
 use Throwable;
 
 /**
@@ -16,7 +16,7 @@ use Throwable;
  */
 class Exception extends \Exception
 {
-    use DiBehavior;
+    use DiTrait;
 
     public function __construct($message = "", $code = 0, Throwable $previous = null)
     {
