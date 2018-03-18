@@ -11,12 +11,11 @@
     {{ stylesheet_link("https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css") }}
     {{ stylesheet_link("https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css") }}
     {{ stylesheet_link("https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css") }}
+    {{ stylesheet_link("assets/mg_admin/css/main.css") }}
     {{ stylesheet_link("assets/mg_admin/css/AdminLTE.min.css") }}
     {{ stylesheet_link("assets/mg_admin/css/skins/skin-blue.min.css") }}
     {{ assets.outputCss("header-css") }}
     {{ stylesheet_link("assets/default/css/pdw.css") }}
-    {{ stylesheet_link("assets/mg_admin/css/style.css") }}
-    {{ stylesheet_link("assets/mg_admin/css/main.css") }}
     {{ assets.outputViewCss() }}
     {{ assets.outputInlineCss() }}
 </head>

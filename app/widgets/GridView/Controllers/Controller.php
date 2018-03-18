@@ -56,7 +56,7 @@ class Controller extends \Engine\Widget\Controller
      */
     private function getTableHtml()
     {
-        echo '<div class="searchFilterWrapper"><button id="searchFilter" class="btn btn-sm btn-primary"><i class="fa fa-search"></i> Advanced Search</button></div>';
+            echo '<div class="searchFilterBtn"><button id="searchFilter" class="btn btn-sm btn-primary"><i class="fa fa-search"></i> Advanced Search</button></div>';
         echo '<div id="searchFilterContainer" class="row" style="display: none">' . $this->searchHtml . '</div>';
         echo '<div class="table-responsive"></div><table id="'.$this->getParam('tableId').'" class="table table-striped table-bordered dataTable no-footer" width="100%"><thead><tr>';
         echo $this->headHtml;
@@ -111,7 +111,7 @@ class Controller extends \Engine\Widget\Controller
                 defaultContent: "",
                 orderable: false,
                 searchable: false,
-                className: "all",
+                className: "all dt-action-wrapper",
                 render: function (data, type, row) {
                     var custom = "";
                 ';
@@ -200,12 +200,11 @@ class Controller extends \Engine\Widget\Controller
         
         $("#searchFilter").on("click", function(){
             $("#searchFilterContainer").slideToggle();
-            $(this).toggleText("Search Filter", "Close Filter")
         });
         
         $(document).ready(function() {
             $("#searchFilterContainer").insertAfter("#table_wrapper .row:first-child")
-            $(".searchFilterWrapper").prependTo("#table_wrapper #table_filter")
+            $(".searchFilterBtn").prependTo("#table_wrapper #table_filter")
         })
         ';
 

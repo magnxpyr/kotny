@@ -1,20 +1,71 @@
+/*****************************************************************************************
+*
+*	name: Admin Styling
+*	path: admin/admin.less
+*	description: admin styling
+*	author: Gina Chiriac
+*	e-mail: ginabuna@gmail.com
+*
+*****************************************************************************************/
+
+@dateTableActionWidth: 45px;
 
 .box-body {
   .dataTables_wrapper {
-    .searchFilterWrapper {
+    .searchFilterBtn {
       display: inline-block;
       padding-bottom: (@grid-gutter-width/6);
-      @media(min-width: @screen-md) {
+      @media (min-width: @screen-md) {
         padding-right: @grid-gutter-width;
       }
     }
-  }
-  #searchFilterContainer {
-    padding: (@grid-gutter-width/2) 0;
-    .input-wrapper {
-      padding: (@grid-gutter-width/6) 0;
-      input {
-        width: 100%;
+    #searchFilterContainer {
+      padding: (@grid-gutter-width/2) 0;
+      .input-wrapper {
+        padding: (@grid-gutter-width/6) 0;
+        input {
+          width: 100%;
+        }
+      }
+    }
+    #table {
+      thead {
+        th {
+          &[data-column-id='actions'] {
+            text-align: center;
+            width: @dateTableActionWidth !important;
+          }
+          &:last-child {
+            &.control {
+              min-width: (@grid-gutter-width/2);
+            }
+          }
+        }
+      }
+      tbody {
+        td {
+          vertical-align: middle;
+          &:last-child {
+            &.control {
+              &:before {
+                height: 14px;
+                width: 14px;
+              }
+            }
+          }
+          &.dt-action-wrapper {
+            width: @dateTableActionWidth !important;
+          }
+        }
+      }
+    }
+    .datatable-action {
+      list-style: none;
+      -webkit-padding-start: 0;
+      li {
+        .make-sm-column(6);
+        text-align: center;
+        padding: 0 (@grid-gutter-width/6);
       }
     }
   }

@@ -101,6 +101,7 @@ $(function ($) {
     $.fn.datetimepicker.defaults.showTodayButton = true;
 });
 
+
 function handleResponse(response) {
     if (response.success) {
         ajaxSuccess(response);
@@ -129,7 +130,8 @@ function setData(data) {
     var elemId = $(".filemanager-modal iframe").data("input");
     $.each(data, function(index, val) {
         $("#" + elemId).val(val.url);
-        $("#wrapper-"+elemId+"-preview img").attr("src", val.url);
+        $("#wrapper-"+elemId+"-preview .image").css("background-image", 'url(' + val.url + ')');
+        $("#wrapper-"+elemId+"-preview .image").css("background-color", '#f2f2f2');
     });
 }
 

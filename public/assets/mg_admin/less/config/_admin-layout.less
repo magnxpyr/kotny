@@ -1,0 +1,247 @@
+/*****************************************************************************************
+*
+*	name: Admin Layout
+*	path: config/_admin-layout.less
+*	description: adminLTE rewrite
+*	author: Gina Chiriac
+*	e-mail: ginabuna@gmail.com
+*
+*****************************************************************************************/
+
+@dt-text-shadow-color: rgb(176, 190, 217);
+
+.sortable-style {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.dt-checkBox {
+  display: block;
+  position: absolute;
+  top: 1.2em;
+  left: 50%;
+  width: 12px;
+  height: 12px;
+  box-sizing: border-box;
+}
+
+ol {
+  &.sortable {
+    .sortable-style;
+    .fa-reorder {
+      cursor: move;
+    }
+    ol {
+      .sortable-style;
+    }
+    li {
+      div {
+        &.list-item {
+          cursor: default;
+          display: block;
+          margin: 3px 0;
+          width: 100%;
+          height: 30px;
+        }
+        div {
+          border: 1px solid #f4f4f4;
+          padding: 3px 5px;
+        }
+      }
+    }
+  }
+}
+
+li {
+  &.mjs-nestedSortable-expanded {
+    ol {
+      -webkit-padding-start: 10px;
+      padding-left: 10px;
+      list-style-type: none;
+    }
+  }
+  &.placeholder {
+    outline: 1px dashed #4183C4;
+    background-color: #F5FAFF;
+  }
+}
+
+.main-footer {
+  padding: (@grid-gutter-width/3) (@grid-gutter-width/2);
+  font-size: 12px;
+}
+
+.main-header {
+  > .navbar {
+    min-height: 36px;
+  }
+  .sidebar-toggle {
+    padding: (@grid-gutter-width/3);
+  }
+}
+
+.navbar-nav {
+  > li {
+    > a {
+      padding-top: (@grid-gutter-width/3) !important;
+      padding-bottom: (@grid-gutter-width/3) !important;
+    }
+  }
+}
+
+.sidebar-menu > li > a {
+  padding: 8px 5px 8px 13px;
+}
+
+.main-sidebar, .left-side {
+  padding-top: 40px;
+  width: 180px;
+}
+
+.fixed .content-wrapper, .fixed .right-side {
+  padding-top: 40px;
+}
+
+@media (min-width: 768px) {
+  .main-header {
+    .logo {
+      height: 40px;
+      line-height: 40px;
+      width: 180px;
+    }
+    > .navbar {
+      min-height: 36px;
+      margin-left: 180px;
+    }
+  }
+
+  .content-wrapper, .right-side, .main-footer {
+    margin-left: 180px;
+  }
+
+  .sidebar-mini.sidebar-collapse .sidebar-menu > li:hover > a > span {
+    top: 0;
+    margin-left: -3px;
+    padding: 8px 5px 8px 20px;
+    background-color: inherit;
+  }
+
+  .sidebar-mini.sidebar-collapse .sidebar-menu > li:hover > .treeview-menu {
+    top: 35px;
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 767px) {
+  .sidebar-open .content-wrapper,
+  .sidebar-open .right-side,
+  .sidebar-open .main-footer {
+    -webkit-transform: translate(180px, 0);
+    -ms-transform: translate(180px, 0);
+    -o-transform: translate(180px, 0);
+    transform: translate(180px, 0);
+  }
+
+  .main-header .logo {
+    display: none;
+  }
+
+  .main-sidebar, .left-side, .control-sidebar {
+    padding-top: 40px !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .navbar-right {
+    margin: 0;
+  }
+}
+
+/* AdminLTE End */
+
+.hint-block {
+  display: none;
+}
+
+.sticky-value {
+  padding: 6px 12px;
+  background: lightyellow;
+  white-space: pre;
+  word-wrap: break-word;
+}
+
+div.popover {
+  max-width: 500px;
+  word-wrap: break-word;
+  text-align: left;
+}
+
+.form-group label.help {
+  border-bottom: 1px dashed #888;
+  cursor: help;
+}
+
+.form-control {
+  border-radius: 3px !important;
+}
+
+table {
+  &.dataTable {
+    td, th {
+      &.select-checkbox {
+        position: relative;
+        &:before {
+          .dt-checkBox;
+          content: ' ';
+          margin-top: -6px;
+          margin-left: -6px;
+          border: 1px solid black;
+          border-radius: 3px;
+        }
+        &:after {
+          .dt-checkBox;
+        }
+      }
+    }
+    tr {
+      th {
+        &.select-checkbox {
+          &.selected {
+            &:after {
+              content: "✔";
+              margin-top: -11px;
+              margin-left: -4px;
+              text-align: center;
+              text-shadow: @dt-text-shadow-color 1px 1px,
+                @dt-text-shadow-color -1px -1px,
+                @dt-text-shadow-color 1px -1px,
+                @dt-text-shadow-color -1px 1px;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.filemanager-modal {
+  .modal-dialog {
+    width: 98%;
+    height: 92%;
+    padding: 0;
+  }
+  .modal-content {
+    height: 90%;
+  }
+  .modal-body {
+    height: 80%;
+  }
+}
+
+iframe {
+  display: block;
+  border: none;
+  height: 100%;
+  width: 100%;
+}

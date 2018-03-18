@@ -42,6 +42,7 @@ class AdminContentEditForm extends Form
         ]);
         $title->setLabel($this->t->_('Title'));
         $title->setFilters('string');
+        $title->setAttribute('placeholder', $this->t->_("Title"));
         $title->addValidator(
             new PresenceOf([
                 'title' => $this->t->_('%field% is required', ['field' => $this->t->_('Title')])
@@ -54,7 +55,7 @@ class AdminContentEditForm extends Form
             'class' => 'form-control'
         ]);
         $alias->setLabel($this->t->_('Alias'));
-        $alias->setAttribute('placeholder', $this->t->_("Generated from title"));
+        $alias->setAttribute('placeholder', $this->t->_("Alias"));
         $alias->setFilters('string');
         $this->add($alias);
 

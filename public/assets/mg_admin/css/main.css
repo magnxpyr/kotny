@@ -8816,7 +8816,9 @@ button.close {
 .modal-header:before,
 .modal-header:after,
 .modal-footer:before,
-.modal-footer:after {
+.modal-footer:after,
+.create__intro:before,
+.create__intro:after {
   content: " ";
   display: table;
 }
@@ -8835,7 +8837,8 @@ button.close {
 .pager:after,
 .panel-body:after,
 .modal-header:after,
-.modal-footer:after {
+.modal-footer:after,
+.create__intro:after {
   clear: both;
 }
 .center-block {
@@ -9109,21 +9112,351 @@ button.close {
 *	e-mail: ginabuna@gmail.com
 *
 *****************************************************************************************/
-.box-body .dataTables_wrapper .searchFilterWrapper {
+.btn {
+  display: inline-block;
+  width: auto;
+  margin: 0 2px;
+}
+.btn i {
+  padding-right: 5px;
+}
+/*****************************************************************************************
+*
+*	name: Admin Layout
+*	path: config/_admin-layout.less
+*	description: adminLTE rewrite
+*	author: Gina Chiriac
+*	e-mail: ginabuna@gmail.com
+*
+*****************************************************************************************/
+.sortable-style {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+.dt-checkBox {
+  display: block;
+  position: absolute;
+  top: 1.2em;
+  left: 50%;
+  width: 12px;
+  height: 12px;
+  box-sizing: border-box;
+}
+ol.sortable {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+ol.sortable .fa-reorder {
+  cursor: move;
+}
+ol.sortable ol {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+ol.sortable li div.list-item {
+  cursor: default;
+  display: block;
+  margin: 3px 0;
+  width: 100%;
+  height: 30px;
+}
+ol.sortable li div div {
+  border: 1px solid #f4f4f4;
+  padding: 3px 5px;
+}
+li.mjs-nestedSortable-expanded ol {
+  -webkit-padding-start: 10px;
+  padding-left: 10px;
+  list-style-type: none;
+}
+li.placeholder {
+  outline: 1px dashed #4183C4;
+  background-color: #F5FAFF;
+}
+.main-footer {
+  padding: 10px 15px;
+  font-size: 12px;
+}
+.main-header > .navbar {
+  min-height: 36px;
+}
+.main-header .sidebar-toggle {
+  padding: 10px;
+}
+.navbar-nav > li > a {
+  padding-top: 10px !important;
+  padding-bottom: 10px !important;
+}
+.sidebar-menu > li > a {
+  padding: 8px 5px 8px 13px;
+}
+.main-sidebar,
+.left-side {
+  padding-top: 40px;
+  width: 180px;
+}
+.fixed .content-wrapper,
+.fixed .right-side {
+  padding-top: 40px;
+}
+@media (min-width: 768px) {
+  .main-header .logo {
+    height: 40px;
+    line-height: 40px;
+    width: 180px;
+  }
+  .main-header > .navbar {
+    min-height: 36px;
+    margin-left: 180px;
+  }
+  .content-wrapper,
+  .right-side,
+  .main-footer {
+    margin-left: 180px;
+  }
+  .sidebar-mini.sidebar-collapse .sidebar-menu > li:hover > a > span {
+    top: 0;
+    margin-left: -3px;
+    padding: 8px 5px 8px 20px;
+    background-color: inherit;
+  }
+  .sidebar-mini.sidebar-collapse .sidebar-menu > li:hover > .treeview-menu {
+    top: 35px;
+    margin-left: 0;
+  }
+}
+@media (max-width: 767px) {
+  .sidebar-open .content-wrapper,
+  .sidebar-open .right-side,
+  .sidebar-open .main-footer {
+    -webkit-transform: translate(180px, 0);
+    -ms-transform: translate(180px, 0);
+    -o-transform: translate(180px, 0);
+    transform: translate(180px, 0);
+  }
+  .main-header .logo {
+    display: none;
+  }
+  .main-sidebar,
+  .left-side,
+  .control-sidebar {
+    padding-top: 40px !important;
+  }
+}
+@media (min-width: 768px) {
+  .navbar-right {
+    margin: 0;
+  }
+}
+/* AdminLTE End */
+.hint-block {
+  display: none;
+}
+.sticky-value {
+  padding: 6px 12px;
+  background: lightyellow;
+  white-space: pre;
+  word-wrap: break-word;
+}
+div.popover {
+  max-width: 500px;
+  word-wrap: break-word;
+  text-align: left;
+}
+.form-group label.help {
+  border-bottom: 1px dashed #888;
+  cursor: help;
+}
+.form-control {
+  border-radius: 3px !important;
+}
+table.dataTable td.select-checkbox,
+table.dataTable th.select-checkbox {
+  position: relative;
+}
+table.dataTable td.select-checkbox:before,
+table.dataTable th.select-checkbox:before {
+  display: block;
+  position: absolute;
+  top: 1.2em;
+  left: 50%;
+  width: 12px;
+  height: 12px;
+  box-sizing: border-box;
+  content: ' ';
+  margin-top: -6px;
+  margin-left: -6px;
+  border: 1px solid black;
+  border-radius: 3px;
+}
+table.dataTable td.select-checkbox:after,
+table.dataTable th.select-checkbox:after {
+  display: block;
+  position: absolute;
+  top: 1.2em;
+  left: 50%;
+  width: 12px;
+  height: 12px;
+  box-sizing: border-box;
+}
+table.dataTable tr th.select-checkbox.selected:after {
+  content: "✔";
+  margin-top: -11px;
+  margin-left: -4px;
+  text-align: center;
+  text-shadow: #b0bed9 1px 1px, #b0bed9 -1px -1px, #b0bed9 1px -1px, #b0bed9 -1px 1px;
+}
+.filemanager-modal .modal-dialog {
+  width: 98%;
+  height: 92%;
+  padding: 0;
+}
+.filemanager-modal .modal-content {
+  height: 90%;
+}
+.filemanager-modal .modal-body {
+  height: 80%;
+}
+iframe {
+  display: block;
+  border: none;
+  height: 100%;
+  width: 100%;
+}
+/*****************************************************************************************
+*
+*	name: Admin Styling
+*	path: admin/admin.less
+*	description: admin styling
+*	author: Gina Chiriac
+*	e-mail: ginabuna@gmail.com
+*
+*****************************************************************************************/
+.box-body .dataTables_wrapper .searchFilterBtn {
   display: inline-block;
   padding-bottom: 5px;
 }
 @media (min-width: 992px) {
-  .box-body .dataTables_wrapper .searchFilterWrapper {
+  .box-body .dataTables_wrapper .searchFilterBtn {
     padding-right: 30px;
   }
 }
-.box-body #searchFilterContainer {
+.box-body .dataTables_wrapper #searchFilterContainer {
   padding: 15px 0;
 }
-.box-body #searchFilterContainer .input-wrapper {
+.box-body .dataTables_wrapper #searchFilterContainer .input-wrapper {
   padding: 5px 0;
 }
-.box-body #searchFilterContainer .input-wrapper input {
+.box-body .dataTables_wrapper #searchFilterContainer .input-wrapper input {
   width: 100%;
+}
+.box-body .dataTables_wrapper #table thead th[data-column-id='actions'] {
+  text-align: center;
+  width: 45px !important;
+}
+.box-body .dataTables_wrapper #table thead th:last-child.control {
+  min-width: 15px;
+}
+.box-body .dataTables_wrapper #table tbody td {
+  vertical-align: middle;
+}
+.box-body .dataTables_wrapper #table tbody td:last-child.control:before {
+  height: 14px;
+  width: 14px;
+}
+.box-body .dataTables_wrapper #table tbody td.dt-action-wrapper {
+  width: 45px !important;
+}
+.box-body .dataTables_wrapper .datatable-action {
+  list-style: none;
+  -webkit-padding-start: 0;
+}
+.box-body .dataTables_wrapper .datatable-action li {
+  position: relative;
+  min-height: 1px;
+  padding-left: 15px;
+  padding-right: 15px;
+  text-align: center;
+  padding: 0 5px;
+}
+@media (min-width: 768px) {
+  .box-body .dataTables_wrapper .datatable-action li {
+    float: left;
+    width: 50%;
+  }
+}
+.create__btnWrapper {
+  text-align: right;
+}
+.create__intro {
+  margin-left: -15px;
+  margin-right: -15px;
+}
+.create__intro .col:first-child {
+  position: relative;
+  min-height: 1px;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+@media (min-width: 768px) {
+  .create__intro .col:first-child {
+    float: left;
+    width: 33.33333333%;
+  }
+}
+.create__intro .col:last-child {
+  position: relative;
+  min-height: 1px;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+@media (min-width: 768px) {
+  .create__intro .col:last-child {
+    float: left;
+    width: 66.66666667%;
+  }
+}
+.create .form-control#title {
+  height: 46px;
+  padding: 10px 16px;
+  font-size: 18px;
+  line-height: 1.3333333;
+  border-radius: 6px;
+}
+select.create .form-control#title {
+  height: 46px;
+  line-height: 46px;
+}
+textarea.create .form-control#title,
+select[multiple].create .form-control#title {
+  height: auto;
+}
+@media (min-width: 992px) {
+  .create .preview__imgWrapper {
+    margin-top: 40px;
+    padding-right: 0;
+  }
+}
+.create .preview__imgWrapper__preview {
+  width: 100%;
+  height: 200px;
+  padding-top: 5px;
+}
+.create .preview__imgWrapper__preview .image {
+  background-size: contain;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 100%;
+}
+.create .preview .mce-container,
+.create .preview .mce-container-body {
+  max-width: 100%;
+}
+.create .preview .mce-container iframe,
+.create .preview .mce-container-body iframe {
+  max-width: 100%;
 }
