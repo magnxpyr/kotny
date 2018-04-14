@@ -1,19 +1,11 @@
 <div class="box box-default">
     <div class="box-header with-border">
-        <div class="row">
-            <div class="col-xs-12">
-                <ul class="nav nav-pills">
-                    <li>
-                        <button onclick="flushCache()" class="btn btn-sm btn-block btn-primary">
-                            <i class="fa fa-close"></i> Flush cache</button>
-                    </li>
-                    <li>
-                    <button onclick="flushVoltCache()" class="btn btn-sm btn-block btn-primary">
-                        <i class="fa fa-close"></i> Flush volt cache</button>
-                    </li>
-                </ul>
-            </div>
-        </div>
+        <button onclick="flushCache()" class="btn btn-sm btn-primary">
+            <i class="fa fa-close"></i> Flush cache
+        </button>
+        <button onclick="flushVoltCache()" class="btn btn-sm btn-primary">
+        <i class="fa fa-close"></i> Flush volt cache
+        </button>
     </div>
 
     <div class="box-body">

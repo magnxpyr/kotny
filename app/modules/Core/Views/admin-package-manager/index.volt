@@ -1,25 +1,15 @@
 {{ content() }}
 <div class="box box-default">
     <div class="box-header with-border">
-        <div class="col-sm-6">
-            <ul class="nav nav-pills">
-                <li>
-                    <div class="box-body">
-                    {{ form.renderForm(
-                        url("admin/core/package-manager/upload"),
-                        [
-                            'form': ['id': 'packageManagerForm', 'enctype': 'multipart/form-data'],
-                            'label': ['class': 'control-label col-sm-2']
-                        ]
-                    ) }}
-                    </div>
-                </li>
-                <li>
-                    <button type="submit" form="packageManagerForm" class="btn btn-sm btn-block btn-success">
-                        <i class="fa fa-edit"></i> Install
-                    </button>
-                </li>
-            </ul>
+        <div class="box-body upload-package">
+            {{ form("admin/core/package-manager/upload", 'method': 'post') }}
+            {{ form.render('csrf') }}
+            {{ form.render("packageUpload") }}
+            {{ end_form() }}
+
+            <button type="submit" form="packageManagerForm" class="btn btn-sm btn-success install-btn">
+                <i class="fa fa-upload"></i> Install
+            </button>
         </div>
     </div>
     <div class="box-body">

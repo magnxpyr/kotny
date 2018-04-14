@@ -63,9 +63,49 @@
       list-style: none;
       -webkit-padding-start: 0;
       li {
-        .make-sm-column(6);
+        float: left;
+        width: 50%;
         text-align: center;
         padding: 0 (@grid-gutter-width/6);
+      }
+    }
+  }
+}
+
+//package manager
+.box-body {
+  &.upload-package {
+    padding: 0;
+    form {
+      display: inline-block;
+      #packageUpload {
+        width: auto;
+      }
+    }
+
+    .install-btn {
+      font-size: 13px;
+      border-color: transparent;
+      line-height: 22px;
+      display: inline-block;
+      margin-top: -5px;
+      margin-left: 0;
+    }
+  }
+}
+
+
+//Categories
+.sortable {
+  .list-item {
+    .col {
+      &:last-child {
+        a {
+          float: left;
+          width: 50%;
+          text-align: center;
+          padding: 0 5px;
+        }
       }
     }
   }

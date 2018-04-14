@@ -50,7 +50,7 @@ foreach ($menuElements as $k => $elements) {
             }
 
         } else {
-            echo "<li class=\"$active\"><a href='$path'>";
+            echo "<li class=\"$active\"><a href='$path' title='$elements->title'>";
             if (!empty($elements->getPrepend())) {
                 echo "<i class=\"$elements->prepend\"></i> ";
             }

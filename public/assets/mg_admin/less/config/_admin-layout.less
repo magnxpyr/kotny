@@ -30,7 +30,10 @@ ol {
   &.sortable {
     .sortable-style;
     .fa-reorder {
+      font-size: 12px;
+      color: darkgray;
       cursor: move;
+      padding-right: 5px;
     }
     ol {
       .sortable-style;
@@ -94,12 +97,14 @@ li {
   padding: 8px 5px 8px 13px;
 }
 
-.main-sidebar, .left-side {
+.main-sidebar,
+.left-side {
   padding-top: 40px;
   width: 180px;
 }
 
-.fixed .content-wrapper, .fixed .right-side {
+.fixed .content-wrapper,
+.fixed .right-side {
   padding-top: 40px;
 }
 
@@ -108,15 +113,17 @@ li {
     .logo {
       height: 40px;
       line-height: 40px;
-      width: 180px;
+      width: 180px ;
     }
     > .navbar {
       min-height: 36px;
-      margin-left: 180px;
+      margin-left: 180px ;
     }
   }
 
-  .content-wrapper, .right-side, .main-footer {
+  .content-wrapper,
+  .right-side,
+  .main-footer {
     margin-left: 180px;
   }
 
@@ -191,6 +198,7 @@ table {
     td, th {
       &.select-checkbox {
         position: relative;
+        width: 10px;
         &:before {
           .dt-checkBox;
           content: ' ';

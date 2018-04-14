@@ -199,14 +199,18 @@ class Form extends \Phalcon\Forms\Form
             $input .= 'placeholder="' . $element->getAttribute("placeholder") . '"';
         }
 
-        $html .= '<div '. $group. '>';
-        $html .= '<label for="'. $element->getName(). '" '. $label. '>'. $element->getLabel(). '</label>';
-        $html .= '<div ' . $input . '>' . $element;
-        if ($inputDate) {
-            $html .= '<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>';
+        if ($element instanceof Hidden) {
+            $html .= $element;
+        } else {
+            $html .= '<div ' . $group . '>';
+            $html .= '<label for="' . $element->getName() . '" ' . $label . '>' . $element->getLabel() . '</label>';
+            $html .= '<div ' . $input . '>' . $element;
+            if ($inputDate) {
+                $html .= '<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>';
+            }
+            $html .= '</div>';
+            $html .= '</div>';
         }
-        $html .= '</div>';
-        $html .= '</div>';
         return $html;
     }
 

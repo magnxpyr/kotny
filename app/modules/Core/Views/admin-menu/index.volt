@@ -3,16 +3,11 @@
     <div class="box-header with-border">
         <div class="row">
             <div class="col-xs-6 col-md-6">
-                <ul class="nav nav-pills">
-                    <li>
-                        <button onclick="location.href='{{ url("admin/core/menu/create/") }}'+ $('#menuType').val()" class="btn btn-sm btn-block btn-primary">
-                            <i class="fa fa-plus"></i> New</button>
-                    </li>
-                    <li>
-                        <button data-url="{{ url("admin/core/menu/saveTree") }}" data-root="menu" class="btn btn-sm btn-block btn-success sortableSave">
-                            <i class="fa fa-save"></i> Save</button>
-                    </li>
-                </ul>
+                <button onclick="location.href='{{ url("admin/core/menu/create/") }}'+ $('#menuType').val()" class="btn btn-sm btn-primary">
+                    <i class="fa fa-plus"></i> New</button>
+
+                <button data-url="{{ url("admin/core/menu/saveTree") }}" data-root="menu" class="btn btn-sm btn-success sortableSave">
+                    <i class="fa fa-save"></i> Save</button>
             </div>
             <div class="col-sm-offset-3 col-md-offset-3  col-sm-3 col-md-3">
 
@@ -69,7 +64,7 @@
                     f('$model->viewLevel->getName()'),
                     f('$model->getId()')
                 ],
-                'colSize': [4, 2, 2, 2, 2]
+                'colSize': [5, 2, 2, 2, 1]
             ]
         ) }}
     </div>
