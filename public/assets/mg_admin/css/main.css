@@ -2654,8 +2654,11 @@ iframe {
   text-align: center;
   padding: 0 5px;
 }
-.create__btnWrapper {
-  text-align: right;
+.edit-menu #wrapper-show_title {
+  display: inline-block;
+  vertical-align: top;
+  margin: 0;
+  padding-left: 10px;
 }
 .create__intro .col:first-child {
   width: 30%;
