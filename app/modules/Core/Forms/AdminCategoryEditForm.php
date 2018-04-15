@@ -8,6 +8,7 @@
 
 namespace Module\Core\Forms;
 
+use Engine\Forms\Element\Datalist;
 use Module\Core\Models\ViewLevel;
 use Engine\Forms\Form;
 use Phalcon\Forms\Element\Hidden;
@@ -95,6 +96,14 @@ class AdminCategoryEditForm extends Form
         $description->setFilters('string');
         $this->add($description);
 
+        $attrLayout = new Datalist('attributeLayout', [],
+            ['placeholder' => 'Default', 'class' => 'form-control']
+        );
+        $attrLayout->setLabel($this->t->_('Layout'));
+        $attrLayout->setFilters('string');
+        $this->add($attrLayout);
+
+
         // ---- SEO ----
         // Meta Title
         $metaTitle = new Text('metaTitle', [
@@ -113,7 +122,7 @@ class AdminCategoryEditForm extends Form
         $this->add($metaKeyword);
 
         // Meta Description
-        $metaDescription = new Text('metaDescription', [
+        $metaDescription = new TextArea('metaDescription', [
             'rows' => 5,
             'cols' => 30,
             'class' => 'form-control'
@@ -126,26 +135,26 @@ class AdminCategoryEditForm extends Form
     public function bind(array $data, $entity, $whitelist = null)
     {
         $meta = [];
+        $attributes = [];
         foreach ($data as $key => $val) {
             if (substr( $key, 0, 4 ) === "meta") {
                 $meta[$key] = $val;
                 unset($data[$key]);
+            } else if (substr( $key, 0, 9 ) === "attribute") {
+                $attributes[$key] = $val;
+                unset($data[$key]);
             }
         }
         $entity->setMetadata(json_encode($meta));
+        $entity->setAttributes(json_encode($attributes));
+
         parent::bind($data, $entity, $whitelist);
     }
 
     public function setEntity($entity)
     {
-        $meta = $entity->getMetadataArray();
-        if ($meta != null) {
-            foreach ($meta as $key => $val) {
-                if ($this->has($key)) {
-                    $this->get($key)->setDefault($val);
-                }
-            }
-        }
+        $this->mapEntity($entity->getMetadataArray());
+        $this->mapEntity($entity->getAttributesArray());
         parent::setEntity($entity);
     }
 }

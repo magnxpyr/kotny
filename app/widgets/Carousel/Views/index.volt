@@ -7,7 +7,9 @@
         <div class="owl-carousel owl-theme">
             {% for index, image in params['_images'] %}
                 <div class="item img {% if index is 0 %} {{ "active" }} {% endif %}"
-                     style="background-image: url('{{ image }}')"></div>
+                     style="background-image: url('{{ image }}')">
+                    {{ params['_text'][index] }}
+                </div>
             {% endfor %}
         </div>
     </div>

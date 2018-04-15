@@ -65,7 +65,7 @@ class AdminPackageEditForm extends Form
         // Type
         $type = new Select('type',
             PackageType::getConstants(),
-            ['class' => 'form-control', 'readonly' => 'readonly']
+            ['class' => 'form-control', 'readonly' => 'readonly', 'disabled' => true]
         );
         $type->setLabel($this->t->_('Type'));
         $type->setFilters('string');

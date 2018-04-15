@@ -82,10 +82,10 @@ class AdminPackageManagerController extends AdminController
     {
         try {
             switch ($packageType) {
-                case PackageType::MODULE:
+                case PackageType::module:
                     $this->packageManager->installModule($package);
                     break;
-                case PackageType::WIDGET:
+                case PackageType::widget:
                     $this->packageManager->installWidget($package);
                     break;
             }
@@ -144,7 +144,7 @@ class AdminPackageManagerController extends AdminController
                 $model = new Package();
                 $model->setId("l$count");
                 $model->setName($dir);
-                $model->setType(PackageType::MODULE);
+                $model->setType(PackageType::module);
                 $modules[$dir] = $model->toArray();
                 $count++;
             }
@@ -155,7 +155,7 @@ class AdminPackageManagerController extends AdminController
                 $model = new Package();
                 $model->setId("l$count");
                 $model->setName($dir);
-                $model->setType(PackageType::WIDGET);
+                $model->setType(PackageType::widget);
                 $modules[$dir] = $model->toArray();
                 $count++;
             }
@@ -238,7 +238,7 @@ class AdminPackageManagerController extends AdminController
             return;
         }
 
-        if ($model->getType() == PackageType::MODULE) {
+        if ($model->getType() == PackageType::module) {
             $this->cache->delete(Package::getCacheActiveModules());
         } else {
             $this->cache->delete(Package::getCacheActiveWidgets());
@@ -246,7 +246,7 @@ class AdminPackageManagerController extends AdminController
 
         $this->flash->success("Package was updated successfully");
 
-        $this->response->redirect('admin/core/package/index')->send();
+        $this->response->redirect('admin/core/package-manager/index')->send();
         return;
     }
 }

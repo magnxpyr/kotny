@@ -48,7 +48,7 @@ class AdminModulesController extends ControllerBase
             try {
                 $component = array(
                     'name'      => $name,
-                    'type'      => PackageType::MODULE,
+                    'type'      => PackageType::module,
                     'directory' => $directory,
                     'namespace' => $namespace,
                     'routes'    => $routes,

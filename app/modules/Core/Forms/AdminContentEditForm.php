@@ -8,6 +8,7 @@
 
 namespace Module\Core\Forms;
 
+use Engine\Forms\Element\Datalist;
 use Module\Core\Models\Category;
 use Module\Core\Models\ViewLevel;
 use Engine\Forms\Form;
@@ -165,6 +166,13 @@ class AdminContentEditForm extends Form
         $publishDown->setAttribute('timestamp', true);
         $this->add($publishDown);
 
+        $attrLayout = new Datalist('attributeLayout', [],
+            ['placeholder' => 'Default', 'class' => 'form-control']
+        );
+        $attrLayout->setLabel($this->t->_('Layout'));
+        $attrLayout->setFilters('string');
+        $this->add($attrLayout);
+
 
         // ---- SEO ----
         // Meta Title
@@ -184,7 +192,7 @@ class AdminContentEditForm extends Form
         $this->add($metaKeyword);
 
         // Meta Description
-        $metaDescription = new Text('metaDescription', [
+        $metaDescription = new TextArea('metaDescription', [
             'rows' => 5,
             'cols' => 30,
             'class' => 'form-control'
@@ -197,13 +205,18 @@ class AdminContentEditForm extends Form
     public function bind(array $data, $entity, $whitelist = null)
     {
         $meta = [];
+        $attributes = [];
         foreach ($data as $key => $val) {
             if (substr( $key, 0, 4 ) === "meta") {
                 $meta[$key] = $val;
                 unset($data[$key]);
+            } else if (substr( $key, 0, 9 ) === "attribute") {
+                $attributes[$key] = $val;
+                unset($data[$key]);
             }
         }
         $entity->setMetadata(json_encode($meta));
+        $entity->setAttributes(json_encode($attributes));
 
         $images = ['introImage' => $data['introImage'], 'fulltextImage' => $data['fulltextImage']];
         $entity->setImages(json_encode($images));
@@ -219,6 +232,7 @@ class AdminContentEditForm extends Form
     {
         $this->mapEntity($entity->getMetadataArray());
         $this->mapEntity($entity->getImagesArray());
+        $this->mapEntity($entity->getAttributesArray());
         parent::setEntity($entity);
     }
 }

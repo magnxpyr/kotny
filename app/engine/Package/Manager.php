@@ -65,12 +65,12 @@ class Manager extends Injectable
 
         $config = new Json("$package/package.json");
         switch ($config->type) {
-            case PackageType::MODULE:
+            case PackageType::module:
                 if ($this->moveDir($tmpDir, MODULES_PATH, $config->package)) {
                     $this->installModule($config->package);
                 }
                 break;
-            case PackageType::WIDGET:
+            case PackageType::widget:
                 if ($this->moveDir($tmpDir, WIDGETS_PATH, $config->package)) {
                     $this->installWidget($config->package);
                 }
@@ -90,10 +90,10 @@ class Manager extends Injectable
             throw new Exception("Package not found");
         }
         switch ($package->getType()) {
-            case PackageType::MODULE:
+            case PackageType::module:
                 $this->removeModule($package);
                 break;
-            case PackageType::WIDGET:
+            case PackageType::widget:
                 $this->removeWidget($package);
                 break;
         }
@@ -110,11 +110,11 @@ class Manager extends Injectable
         $deleted = false;
         $dir = null;
         switch ($packageType) {
-            case PackageType::MODULE:
+            case PackageType::module:
                 $dir = MODULES_PATH . $packageName;
                 $deleted = $this->helper->removeDir($dir);
                 break;
-            case PackageType::WIDGET:
+            case PackageType::widget:
                 $dir = WIDGETS_PATH . $packageName;
                 $deleted = $this->helper->removeDir($dir);
                 break;
@@ -150,7 +150,7 @@ class Manager extends Injectable
 
         $model = new Package();
         $model->setName($moduleName);
-        $model->setType(PackageType::MODULE);
+        $model->setType(PackageType::module);
         $model->setVersion($config->version);
         $model->setAuthor($config->author);
         $model->setWebsite($config->website);
@@ -162,11 +162,11 @@ class Manager extends Injectable
         }
 
         try {
-            $this->migrate(Migration::UP, PackageType::MODULE, $moduleName, $model->getId());
+            $this->migrate(Migration::UP, PackageType::module, $moduleName, $model->getId());
         } catch (Exception $exception) {
             $migration = MigrationModel::findFirst([
                 'conditions' => 'package_type = ?1 and package_id = ?1',
-                'bind' => [1 => PackageType::MODULE, 2 => $model->getId()],
+                'bind' => [1 => PackageType::module, 2 => $model->getId()],
                 'bindTypes' => [Column::BIND_PARAM_STR, Column::BIND_PARAM_INT],
             ]);
             if (!$migration) {
@@ -244,11 +244,11 @@ class Manager extends Injectable
             $this->acl->adapter->dropResourceAccess($resourceName);
         }
 
-        $this->migrate(Migration::DOWN, PackageType::MODULE, $package->getName(), $package->getId());
+        $this->migrate(Migration::DOWN, PackageType::module, $package->getName(), $package->getId());
         $package->delete();
         $this->cache->delete(Package::getCacheActiveModules());
         $this->cache->delete($this->acl->getCacheKey());
-        $this->removePackageFromDisk($package->getName(), PackageType::MODULE);
+        $this->removePackageFromDisk($package->getName(), PackageType::module);
         $this->helper->removeDir(MODULES_PATH . $package->getName());
         $this->logger->debug("Module " . $package->getName() . " with id " . $package->getId() . " removed successfully");
     }
@@ -278,7 +278,7 @@ class Manager extends Injectable
 
         $model = new Package();
         $model->setName($widgetName);
-        $model->setType(PackageType::WIDGET);
+        $model->setType(PackageType::widget);
         $model->setVersion($config->version);
         $model->setAuthor($config->author);
         $model->setWebsite($config->website);
@@ -290,11 +290,11 @@ class Manager extends Injectable
         }
 
         try {
-            $this->migrate(Migration::UP, PackageType::WIDGET, $widgetName, $model->getId());
+            $this->migrate(Migration::UP, PackageType::widget, $widgetName, $model->getId());
         } catch (Exception $exception) {
             $migration = MigrationModel::findFirst([
                 'conditions' => 'package_type = ?1 and package_id = ?1',
-                'bind' => [1 => PackageType::WIDGET, 2 => $model->getId()],
+                'bind' => [1 => PackageType::widget, 2 => $model->getId()],
                 'bindTypes' => [Column::BIND_PARAM_STR, Column::BIND_PARAM_INT],
             ]);
             if (!$migration) {
@@ -321,12 +321,12 @@ class Manager extends Injectable
             throw new Exception("Package is assigned to widgets");
         }
 
-        $this->migrate(Migration::DOWN, PackageType::WIDGET, $package->getName(), $package->getId());
+        $this->migrate(Migration::DOWN, PackageType::widget, $package->getName(), $package->getId());
 
         $package->delete();
         $this->cache->delete(Package::getCacheActiveWidgets());
         $this->cache->delete($this->acl->getCacheKey());
-        $this->removePackageFromDisk($package->getName(), PackageType::WIDGET);
+        $this->removePackageFromDisk($package->getName(), PackageType::widget);
         $this->logger->debug("Widget " . $package->getName() . " with id " . $package->getId() . " removed successfully");
     }
 
@@ -523,10 +523,10 @@ class Manager extends Injectable
     {
         $path = null;
         switch ($packageType) {
-            case PackageType::WIDGET:
+            case PackageType::widget:
                 $path = WIDGETS_PATH . $packageName;
                 break;
-            case PackageType::MODULE:
+            case PackageType::module:
                 $path = MODULES_PATH . $packageName;
         }
 

@@ -36,14 +36,15 @@ class Helper extends Component
     private $articleStatuses = [
         Content::STATUS_PUBLISHED => 'Published',
         Content::STATUS_UNPUBLISHED => 'Unpublished',
-        Content::STATUS_TRASHED => 'Trashed'
+//        Content::STATUS_TRASHED => 'Trashed'
     ];
 
     private $templateSections = [
         'menu' => 'menu', 'header' => 'header', 'heading-left' => 'heading-left', 'heading-mid' => 'heading-mid',
-        'heading-right' => 'heading-right', 'banner' => 'banner', 'sidebar-left' => 'sidebar-left',
-        'sidebar-right' => 'sidebar-right', 'footer' => 'footer', 'footer-left' => 'footer-left',
-        'footer-mid' => 'footer-mid', 'footer-right' => 'footer-right'
+        'heading-right' => 'heading-right', 'banner' => 'banner', 'content-top' => 'content-top',
+        'content-bottom' => 'content-bottom', 'content-left' => 'content-left', 'content-mid' => 'content-mid',
+        'content-right' => 'content-right', 'sidebar-left' => 'sidebar-left', 'sidebar-right' => 'sidebar-right',
+        'footer' => 'footer', 'footer-left' => 'footer-left', 'footer-mid' => 'footer-mid', 'footer-right' => 'footer-right'
     ];
 
     private $dbAdaptors = ['mysql' => 'Mysql', 'postgresql' => 'PostgreSQL', 'oracle' => 'Oracle'];

@@ -22,25 +22,25 @@ class PackageType
         /**
          * Module package.
          */
-        MODULE = 'module',
+        module = 'module',
 
         /**
          * Widget package.
          */
-        WIDGET = 'widget';
+        widget = 'widget';
 
 //        /**
 //         * Plugin package.
 //         */
-//        PLUGIN = 'plugin',
+//        plugin = 'plugin',
 //
 //        /**
 //         * Theme package.
 //         */
-//        THEME = 'theme',
+//        theme = 'theme',
 //
 //        /**
 //         * Library package.
 //         */
-//        LIBRARY = 'library';
+//        library = 'library';
 }

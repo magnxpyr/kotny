@@ -29,7 +29,7 @@ class AdminFileManagerController extends AdminController
     public function basicAction()
     {
         $this->setTitle('File Manager');
-        $this->view->setLayout("basic");
+        $this->view->setLayout(null);
     }
 
     /**

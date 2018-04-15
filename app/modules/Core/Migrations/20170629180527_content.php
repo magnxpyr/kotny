@@ -48,13 +48,17 @@ class Content20170629180527Migration extends Migration
                         'after' => 'introtext'
                     ]),
                     new Column('images', [
-                        'type' => Column::TYPE_VARCHAR,
+                        'type' => Column::TYPE_TEXT,
                         'size' => 255,
                         'after' => 'fulltext'
                     ]),
-                    new Column('metadata', [
+                    new Column('attributes', [
                         'type' => Column::TYPE_TEXT,
                         'after' => 'images'
+                    ]),
+                    new Column('metadata', [
+                        'type' => Column::TYPE_TEXT,
+                        'after' => 'attributes'
                     ]),
                     new Column('category', [
                         'type' => Column::TYPE_INTEGER,

@@ -51,7 +51,7 @@ class AdminWidgetEditForm extends Form
 
         // Packages
         $package = new Select('package_id',
-            Package::find("type = '" . PackageType::WIDGET . "'"),
+            Package::find("type = '" . PackageType::widget . "'"),
             ['using' => ['id', 'name'], 'useEmpty' => true, 'class' => 'form-control']
         );
         $package->setLabel($this->t->_('Widget'));

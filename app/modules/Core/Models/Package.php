@@ -263,7 +263,7 @@ class Package extends Model
     {
         return self::find([
             'conditions' => 'status = ?1 and type = ?2',
-            'bind' => [1 => 1, 2 => PackageType::MODULE],
+            'bind' => [1 => 1, 2 => PackageType::module],
             'columns' => ['name'],
             'cache' => [
                 'key' => self::getCacheActiveModules(),
@@ -307,7 +307,7 @@ class Package extends Model
     {
         return self::find([
             'conditions' => 'status = ?1 and type = ?2',
-            'bind' => [1 => 1, 2 => PackageType::WIDGET],
+            'bind' => [1 => 1, 2 => PackageType::widget],
             'columns' => ['name'],
             'cache' => [
                 'key' => self::getCacheActiveWidgets(),

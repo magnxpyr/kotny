@@ -9553,6 +9553,9 @@ p {
   background-size: cover;
   background-repeat: no-repeat;
   width: 100%;
+  padding: 5%;
+  display: flex;
+  align-items: center;
 }
 .carousel-wrapper #ontop-carousel .img {
   background-position: center;
@@ -11190,11 +11193,6 @@ fieldset[disabled] .btn-yahoo.focus {
 .btn-yahoo .badge {
   color: #720e9e;
   background-color: #fff;
-}
-#searchFilter {
-  position: absolute;
-  top: 10px;
-  left: 75px;
 }
 /*****************************************************************************************
 *

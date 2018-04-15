@@ -22,7 +22,7 @@ class Routes {
         $router->add('/', [
             'controller' => 'index',
             'action' => 'index'
-        ])->setName('core-home');
+        ])->setName('core-homepage');
 
         // Article
         $router->add('/([a-z]+)/([0-9]+)-([a-zA-Z0-9\-]+)', [

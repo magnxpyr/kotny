@@ -45,9 +45,13 @@ class Category20170629180508Migration extends Migration
                         'size' => 255,
                         'after' => 'alias'
                     ]),
-                    new Column('metadata', [
+                    new Column('attributes', [
                         'type' => Column::TYPE_TEXT,
                         'after' => 'fulltext'
+                    ]),
+                    new Column('metadata', [
+                        'type' => Column::TYPE_TEXT,
+                        'after' => 'attributes'
                     ]),
                     new Column('hits', [
                         'type' => Column::TYPE_INTEGER,
@@ -137,7 +141,7 @@ class Category20170629180508Migration extends Migration
         );
 
         $this->batchInsert(self::TABLE_NAME, [
-            ['Uncategorised', 'uncategorised', '', '{"metaTitle":"","metaKeywords":"","metaDescription":""}', 0, 1, 1, 0, 1, 0, 0, time(), 1],
-        ], ['title', 'alias', 'description', 'metadata', 'hits', 'status', 'view_level', 'parent_id', 'level', 'lft', 'rgt', 'created_at', 'created_by']);
+            ['Uncategorised', 'uncategorised', '', '', '{"metaTitle":"","metaKeywords":"","metaDescription":""}', 0, 1, 1, 0, 1, 0, 0, time(), 1],
+        ], ['title', 'alias', 'description', 'attributes', 'metadata', 'hits', 'status', 'view_level', 'parent_id', 'level', 'lft', 'rgt', 'created_at', 'created_by']);
     }
 }

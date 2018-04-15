@@ -40,6 +40,11 @@ class Category extends Model
     /**
      * @var string
      */
+    private $attributes;
+
+    /**
+     * @var string
+     */
     private $metadata;
 
     /**
@@ -472,7 +477,6 @@ class Category extends Model
     {
         $this->hasOne('view_level', 'Module\Core\Models\ViewLevel', 'id', ['alias' => 'viewLevel', 'reusable' => true]);
         $this->hasMany('id', Content::class, 'category', ['alias' => 'content', 'reusable' => true]);
-
     }
 
     /**
@@ -483,7 +487,7 @@ class Category extends Model
         if (empty($this->getAlias())) {
             $this->setAlias($this->getDI()->getShared('helper')->makeAlias($this->getTitle()));
         }
-        if(empty($this->id)) {
+        if (empty($this->id)) {
             $this
                 ->setCreatedAt(time())
                 ->setCreatedBy($this->getDI()->get("auth")->getUserId())
@@ -499,5 +503,10 @@ class Category extends Model
 
     public function getMetadataArray() {
         return json_decode($this->metadata);
+    }
+
+    public function getAttributesArray()
+    {
+        return json_decode($this->attributes);
     }
 }

@@ -5,23 +5,30 @@
     </div>
     <div id="wrapper-widget-images">
     {% if params['_images'] is empty %}
-        <div class="input-group col-lg-offset-2" id="wrapper-widget-images0">
-            <input type="text" id="_images0" name="_images[]" value="" class="form-control">
-            <span class="input-group-btn">
-                <button class="btn btn-default file-manager" data-input="_images0" type="button">
-                    <i class="fa fa-folder-open"></i></button>
-            </span>
-            <button class="btn btn-xs" onclick="deleteImageInput('wrapper-widget-images0')"><i class="fa fa-minus-square-o"></i></button>
+        <div id="wrapper-widget-images0">
+            <div class="input-group col-lg-offset-2">
+                <input type="text" id="_images0" name="_images[]" value="" class="form-control">
+                <span class="input-group-btn">
+                    <button class="btn btn-default file-manager" data-input="_images0" type="button">
+                        <i class="fa fa-folder-open"></i></button>
+                </span>
+                <button class="btn btn-xs" onclick="deleteImageInput('wrapper-widget-images0')"><i class="fa fa-minus-square-o"></i></button>
+            </div>
+            <textarea id="_text0" name="_text[]" class="form-control"></textarea>
         </div>
     {% else %}
         {% for index, image in params['_images'] %}
-            <div class="input-group col-lg-offset-2" id="wrapper-widget-images{{ index }}">
-                <input type="text" id="_images{{ index }}" name="_images[]" value="{{ image }}" class="form-control">
-                <span class="input-group-btn">
+            <div id="wrapper-widget-images{{ index }}">
+                <div class="input-group col-lg-offset-2">
+                    <input type="text" id="_images{{ index }}" name="_images[]" value="{{ image }}" class="form-control">
+                    <span class="input-group-btn">
                     <button class="btn btn-default file-manager" data-input="_images{{ index }}" type="button">
                         <i class="fa fa-folder-open"></i></button>
                 </span>
-                <button class="btn btn-xs" onclick="deleteImageInput('wrapper-widget-images{{ index }}')"><i class="fa fa-minus-square-o"></i></button>
+                    <button class="btn btn-xs" onclick="deleteImageInput('wrapper-widget-images{{ index }}')"><i class="fa fa-minus-square-o"></i></button>
+                </div>
+
+                <textarea id="_text{{ index }}" name="_text[]" class="form-control">{{ params['_text'][index] }}</textarea>
             </div>
         {% endfor %}
     {% endif %}

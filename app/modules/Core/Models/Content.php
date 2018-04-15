@@ -53,6 +53,11 @@ class Content extends Model
     /**
      * @var string
      */
+    private $attributes;
+
+    /**
+     * @var string
+     */
     private $metadata;
 
     /**
@@ -501,12 +506,31 @@ class Content extends Model
 
     /**
      * @param string $images
+     * @return $this
      */
     public function setImages($images)
     {
         $this->images = $images;
+        return $this;
     }
 
+    /**
+     * @return string
+     */
+    public function getAttributes()
+    {
+        return $this->attributes;
+    }
+
+    /**
+     * @param string $attributes
+     * @return $this
+     */
+    public function setAttributes($attributes)
+    {
+        $this->attributes = $attributes;
+        return $this;
+    }
 
     /**
      * Initialize method for model.
@@ -557,6 +581,11 @@ class Content extends Model
     public function getMetadataArray()
     {
         return json_decode($this->metadata);
+    }
+
+    public function getAttributesArray()
+    {
+        return json_decode($this->attributes);
     }
 
     public function getImagesArray($base = true)

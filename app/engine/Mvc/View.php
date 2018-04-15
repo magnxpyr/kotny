@@ -126,20 +126,13 @@ class View extends \Phalcon\Mvc\View
         $config = $this->getDI()->getShared('config');
         $theme = $config->defaultTheme;
 
-        if ($this->getBasePath() !== null) {
-            $this->setBasePath(MODULES_PATH);
-        }
-        if ($this->getPartialsDir() !== null) {
-            $this->setPartialsDir(THEMES_PATH . self::DEFAULT_BACKEND_THEME . '/partials/');
-        }
-        if ($this->getLayoutsDir() !== null) {
-            $this->setLayoutsDir(THEMES_PATH . self::DEFAULT_BACKEND_THEME  . '/layouts/');
-        }
-        if ($this->getLayout() !== null) {
+        $this->setBasePath(MODULES_PATH);
+        $this->setPartialsDir(THEMES_PATH . self::DEFAULT_BACKEND_THEME . '/partials/');
+        $this->setLayoutsDir(THEMES_PATH . self::DEFAULT_BACKEND_THEME  . '/layouts/');
+        $this->setMainView(THEMES_PATH . self::DEFAULT_BACKEND_THEME . '/index');
+
+        if ($this->getLayout() === null) {
             $this->setLayout(self::DEFAULT_LAYOUT);
-        }
-        if ($this->getMainView() !== null) {
-            $this->setMainView(THEMES_PATH . self::DEFAULT_BACKEND_THEME . '/index');
         }
 
         $oViewName = $this->getPickView();

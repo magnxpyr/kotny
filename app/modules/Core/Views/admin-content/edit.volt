@@ -46,7 +46,7 @@
                                 </div>
                             </div>
                             <div class="col-md-9">
-                                {{ form.renderDecorated('introtext', ['label': ['class': 'control-label col-sm-2']]) }}
+                                {{ form.renderDecorated('introtext', ['label': ['class': 'control-label col-sm-2'], 'group': ['class': 'mce']]) }}
                             </div>
                         </div>
                     </div>
@@ -72,7 +72,7 @@
                                 </div>
                             </div>
                             <div class="col-md-9">
-                                {{ form.renderDecorated('fulltext', ['label': ['class': 'control-label col-sm-2']]) }}
+                                {{ form.renderDecorated('fulltext', ['label': ['class': 'control-label col-sm-2 mce'], 'group': ['class': 'mce']]) }}
                             </div>
                         </div>
                     </div>
@@ -95,6 +95,7 @@
                         {{ form.renderDecorated('status', ['label': ['class': 'control-label']]) }}
                         {{ form.renderDecorated('publish_up', ['label': ['class': 'control-label']]) }}
                         {{ form.renderDecorated('publish_down', ['label': ['class': 'control-label']]) }}
+                        {{ form.renderDecorated('attributeLayout', ['label': ['class': 'control-label']]) }}
                         {{ form.renderDecorated('metaTitle', ['label': ['class': 'control-label']]) }}
                         {{ form.renderDecorated('metaKeywords', ['label': ['class': 'control-label']]) }}
                         {{ form.renderDecorated('metaDescription', ['label': ['class': 'control-label']]) }}
