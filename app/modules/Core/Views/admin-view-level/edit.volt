@@ -13,7 +13,7 @@
             url("admin/core/view-level/save"),
             [
                 'form': ['id': 'viewLevelForm'],
-                'label': ['class': 'control-label col-sm-2']
+                'label': ['class': 'control-label col-sm-1']
             ]
         ) }}
     </div>

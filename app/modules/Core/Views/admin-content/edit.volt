@@ -6,7 +6,7 @@
                 <button type="submit" form="contentForm" class="btn btn-success">
                     <i class="fa fa-save"></i> Save
                 </button>
-                <button onclick="location.href='{{ url.previousUri() }}'"
+                <button type="button" onclick="location.href='{{ url.previousUri() }}'"
                         class="btn btn-danger"><i class='fa fa-remove'></i> Cancel
                 </button>
             </div>
