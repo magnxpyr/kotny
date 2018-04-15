@@ -165,7 +165,7 @@ function initMCE(selector) {
         image_advtab: true,
         resize: "both",
         width: "100%",
-        autoresize_min_height: 400,
+        autoresize_min_height: 200,
         autoresize_max_height: 800,
         theme_advanced_resizing: true,
         image_class_list: [
