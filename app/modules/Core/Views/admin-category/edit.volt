@@ -25,7 +25,7 @@
                             {{ form.render('alias') }}
                         </div>
 
-                        {{ form.renderDecorated('description', ['label': ['class': 'control-label col-sm-2']]) }}
+                        {{ form.renderDecorated('description', ['label': ['class': 'control-label']]) }}
                     </div>
                 </div>
             </div>

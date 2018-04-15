@@ -2660,6 +2660,36 @@ iframe {
   margin: 0;
   padding-left: 10px;
 }
+.view-level .form-group > .control-label {
+  width: 50px;
+}
+.view-level .form-group > .form-group {
+  display: inline-block;
+  vertical-align: middle;
+  margin: 0;
+  padding-left: 10px;
+}
+.view-level .form-group > .form-group#wrapper-name {
+  display: block;
+  padding: 0;
+}
+#wrapper-widget-images .input-wrapper {
+  margin-bottom: 10px;
+  width: 100%;
+}
+#wrapper-widget-images .input-wrapper .input-group {
+  width: 100%;
+}
+#wrapper-widget-images .input-wrapper .input-group-btn {
+  vertical-align: top;
+}
+#wrapper-widget-images .input-wrapper .input-group-addon.delete {
+  color: #ff6666;
+}
+#wrapper-widget-images .input-wrapper > .mce-container {
+  width: calc(100% - 35px) !important;
+  padding-left: 35px;
+}
 .create__intro .col:first-child {
   width: 30%;
   float: left;

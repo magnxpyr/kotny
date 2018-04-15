@@ -64,6 +64,7 @@ class AdminMenuEditForm extends Form
         ]);
         $title->setLabel($this->t->_('Title'));
         $title->setFilters('string');
+        $title->setAttribute('placeholder', $this->t->_("Title"));
         $title->addValidator(
             new PresenceOf([
                 'message' => $this->t->_('%field% is required', ['field' => $this->t->_('Title')])

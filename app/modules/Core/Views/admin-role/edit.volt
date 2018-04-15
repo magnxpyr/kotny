@@ -9,12 +9,21 @@
         </button>
     </div>
     <div class="box-body">
-        {{ form.renderForm(
-            url("admin/core/role/save"),
-            [
-                'form': ['id': 'roleForm'],
-                'label': ['class': 'control-label col-sm-2']
-            ]
-        ) }}
+        <form method='post' action="{{ url("admin/core/role/save") }}" id="userForm">
+            {{ form.render('id') }}
+            {{ form.render('csrf') }}
+
+            <div class="row">
+                <div class="col-sm-6">
+                    {{ form.renderDecorated('name', ['label': ['class': 'control-label']]) }}
+                </div>
+                <div class="col-sm-6">
+                    {{ form.renderDecorated('parent_id', ['label': ['class': 'control-label']]) }}
+                </div>
+            </div>
+
+            {{ form.renderDecorated('description', ['label': ['class': 'control-label']]) }}
+
+        </form>
     </div>
 </div>

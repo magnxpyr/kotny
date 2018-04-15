@@ -13,7 +13,7 @@
             url("admin/core/menu-type/save"),
             [
                 'form': ['id': 'menuTypeForm'],
-                'label': ['class': 'control-label col-sm-2']
+                'label': ['class': 'control-label']
             ]
         ) }}
     </div>

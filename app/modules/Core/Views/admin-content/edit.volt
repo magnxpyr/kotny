@@ -3,11 +3,11 @@
     <form method='post' action="{{ url("admin/core/content/save") }}" id="contentForm">
         <div class="box box-default">
             <div class="box-header with-border create__btnWrapper">
-                <button type="submit" form="contentForm" class="btn btn-success">
+                <button type="submit" form="contentForm" class="btn btn-sm btn-success">
                     <i class="fa fa-save"></i> Save
                 </button>
                 <button type="button" onclick="location.href='{{ url.previousUri() }}'"
-                        class="btn btn-danger"><i class='fa fa-remove'></i> Cancel
+                        class="btn btn-sm btn-danger"><i class='fa fa-remove'></i> Cancel
                 </button>
             </div>
             <div class="box-body">

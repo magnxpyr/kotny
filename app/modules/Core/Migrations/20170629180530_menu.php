@@ -133,7 +133,7 @@ class Menu20170629180530Migration extends Migration
             [20, 1, 'fa fa-circle-o', 'Manager', 'admin/core/package-manager/index', 1, 1, 19, 2, 39, 40, 4],
             [21, 1, 'fa fa-circle-o', 'Widgets', 'admin/core/widget/index', 1, 1, 19, 2, 41, 42, 4],
             [22, 1, 'fa fa-bullseye', 'Performance', 'admin/core/cache/index', 1, 1, 0, 1, 44, 45, 4],
-            [23, 2, 'fa fa-external-link', 'Go to website', ' ', 1, 0, 0, 1, 0, 0, 4],
+            [23, 2, 'fa fa-home', 'Go to website', ' ', 1, 0, 0, 1, 0, 0, 4],
             [24, 2, 'fa fa-sign-out', 'Logout', 'user/logout', 1, 0, 0, 1, 0, 0, 4],
             [25, 3, '', 'Home', ' ', 1, 1, 0, 1, 0, 0, 1],
             [26, 3, '', 'Admin', 'admin', 1, 1, 0, 1, 0, 0, 4],

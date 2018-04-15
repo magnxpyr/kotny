@@ -23,11 +23,11 @@
             <div class="col-md-9">
                 <div class="box box-default">
                     <div class="box-body">
-                        {{ form.renderDecorated('package_id', ['label': ['class': 'control-label col-sm-2']]) }}
-                        {{ form.renderDecorated('position', ['label': ['class': 'control-label col-sm-2']]) }}
-                        {{ form.renderDecorated('ordering', ['label': ['class': 'control-label col-sm-2']]) }}
-                        {{ form.renderDecorated('layout', ['label': ['class': 'control-label col-sm-2']]) }}
-                        {{ form.renderDecorated('cache', ['label': ['class': 'control-label col-sm-2']]) }}
+                        {{ form.renderDecorated('package_id', ['label': ['class': 'control-label']]) }}
+                        {{ form.renderDecorated('position', ['label': ['class': 'control-label']]) }}
+                        {{ form.renderDecorated('ordering', ['label': ['class': 'control-label']]) }}
+                        {{ form.renderDecorated('layout', ['label': ['class': 'control-label']]) }}
+                        {{ form.renderDecorated('cache', ['label': ['class': 'control-label']]) }}
                         <div id="wrapper-admin-widget">{{ widgetContent }}</div>
                     </div>
                 </div>

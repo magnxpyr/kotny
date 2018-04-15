@@ -20,9 +20,9 @@
                             {{ form.render('title') }}
                         </div>
 
-                        {{ form.renderDecorated('path', ['label': ['class': 'control-label col-sm-2']]) }}
-                        {{ form.renderDecorated('prepend', ['label': ['class': 'control-label col-sm-2']]) }}
-                        {{ form.renderDecorated('description', ['label': ['class': 'control-label col-sm-2']]) }}
+                        {{ form.renderDecorated('path', ['label': ['class': 'control-label']]) }}
+                        {{ form.renderDecorated('prepend', ['label': ['class': 'control-label']]) }}
+                        {{ form.renderDecorated('description', ['label': ['class': 'control-label']]) }}
                     </div>
                 </div>
             </div>

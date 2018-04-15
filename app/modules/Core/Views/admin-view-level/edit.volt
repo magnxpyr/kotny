@@ -8,12 +8,12 @@
             <i class='fa fa-remove'></i> Cancel
         </button>
     </div>
-    <div class="box-body">
+    <div class="box-body view-level">
         {{ form.renderForm(
             url("admin/core/view-level/save"),
             [
                 'form': ['id': 'viewLevelForm'],
-                'label': ['class': 'control-label col-sm-1']
+                'label': ['class': 'control-label']
             ]
         ) }}
     </div>

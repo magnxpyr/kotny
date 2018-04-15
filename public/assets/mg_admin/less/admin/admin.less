@@ -119,3 +119,45 @@
     padding-left: 10px;
   }
 }
+
+//View level
+.view-level {
+  .form-group {
+    >.control-label {
+      width: 50px;
+    }
+    >.form-group {
+      display: inline-block;
+      vertical-align: middle;
+      margin: 0;
+      padding-left: 10px;
+      &#wrapper-name {
+        display: block;
+        padding: 0;
+      }
+    }
+  }
+}
+
+//widget
+#wrapper-widget-images {
+  .input-wrapper {
+    margin-bottom: 10px;
+    width: 100%;
+    .input-group {
+      width: 100%;
+    }
+    .input-group-btn {
+      vertical-align: top;
+    }
+    .input-group-addon {
+      &.delete {
+        color: #ff6666;
+      }
+    }
+    >.mce-container {
+      width: ~"calc(100% - 35px)" !important;
+      padding-left: 35px;
+    }
+  }
+}
