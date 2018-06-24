@@ -81,11 +81,17 @@ class Content20170629180527Migration extends Migration
                         'size' => 4,
                         'after' => 'hits'
                     ]),
+                    new Column('alias_id', [
+                        'type' => Column::TYPE_INTEGER,
+                        'unsigned' => true,
+                        'size' => 11,
+                        'after' => 'featured'
+                    ]),
                     new Column('status', [
                         'type' => Column::TYPE_INTEGER,
                         'notNull' => true,
                         'size' => 1,
-                        'after' => 'featured'
+                        'after' => 'alias_id'
                     ]),
                     new Column('view_level', [
                         'type' => Column::TYPE_INTEGER,

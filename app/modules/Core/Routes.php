@@ -19,28 +19,27 @@ class Routes {
      */
     public function init($router)
     {
-        $router->add('/', [
+        $router->addGet('/', [
             'controller' => 'index',
             'action' => 'index'
         ])->setName('core-homepage');
 
         // Article
-        $router->add('/([a-z]+)/([0-9]+)-([a-zA-Z0-9\-]+)', [
+        $router->addGet('/([a-z]+)/([0-9]+)-([a-zA-Z0-9\-]+)', [
             'controller' => 'content',
             'action' => 'article',
-            'category' => 1,
             'articleId' => 2,
             'articleAlias' => 3
-        ])->setName('core-article');
+        ])->setName('article');
 
         // Category
-        $router->add('/([a-z]+)', [
+        $router->addGet('/([a-z]+)', [
             'controller' => 'content',
             'action' => 'category',
             'category' => 1
         ])->setName('core-category');
 
-        $router->add('/([a-z]+)/([0-9]+)', [
+        $router->addGet('/([a-z]+)/([0-9]+)', [
             'controller' => 'content',
             'action' => 'category',
             'category' => 1,
@@ -48,7 +47,7 @@ class Routes {
         ])->setName('core-category-pagination');
 
         // Articles
-        $router->add('/articles/([0-9]+)', [
+        $router->addGet('/articles/([0-9]+)', [
             'controller' => 'content',
             'action' => 'category',
             'category' => null,
@@ -56,7 +55,7 @@ class Routes {
         ])->setName('core-articles');
 
 
-        $router->add('/articles', [
+        $router->addGet('/articles', [
             'controller' => 'content',
             'action' => 'category',
         ])->setName('core-articles');
@@ -69,7 +68,7 @@ class Routes {
         ])->setName('core-default');
 
         // Admin
-        $router->add('/admin', array(
+        $router->addGet('/admin', array(
             'module' => 'core',
             'controller' => 'admin-index',
             'action' => 'index'

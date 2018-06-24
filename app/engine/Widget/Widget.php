@@ -196,7 +196,7 @@ class Widget extends Injectable
         $controller->viewWidget->pick([$viewName]);
 
         $viewsDir = THEMES_PATH . $this->config->defaultTheme . '/views/widgets/' .
-            $this->helper->uncamelize($widgetName) . '/';
+            Text::uncamelize($widgetName, '-') . '/';
         if ($controller->viewWidget->viewExists($viewsDir . $viewName)) {
             $controller->viewWidget->setViewsDir($viewsDir);
         }

@@ -36,19 +36,12 @@ class Controller extends \Engine\Widget\Controller
      */
     public function indexAction()
     {
-        $this->assets->collection('header-css')
-            ->addCss('https://cdn.datatables.net/v/bs/dt-1.10.16/r-2.2.1/rr-1.2.3/sl-1.2.4/datatables.min.css');
-        $this->assets->collection('footer-js')
-            ->addJs('https://cdn.datatables.net/v/bs/dt-1.10.16/r-2.2.1/rr-1.2.3/sl-1.2.4/datatables.min.js')
-            ->addJs('https://cdn.datatables.net/plug-ins/1.10.15/dataRender/datetime.js');
-
-        // disable view render
-        $this->setRenderView(false);
-
         // render our content
         $this->getHtml();
-        $this->getTableHtml();
-        $this->getJs();
+        $this->viewWidget->setVars([
+            'tableHtml' => $this->getTableHtml(),
+            'js' => $this->getJs()
+        ]);
     }
 
     /**
@@ -56,11 +49,12 @@ class Controller extends \Engine\Widget\Controller
      */
     private function getTableHtml()
     {
-            echo '<div class="searchFilterBtn"><button id="searchFilter" class="btn btn-sm btn-primary"><i class="fa fa-search"></i> Advanced Search</button></div>';
-        echo '<div id="searchFilterContainer" class="row" style="display: none">' . $this->searchHtml . '</div>';
-        echo '<div class="table-responsive"></div><table id="'.$this->getParam('tableId').'" class="table table-striped table-bordered dataTable no-footer" width="100%"><thead><tr>';
-        echo $this->headHtml;
-        echo '</tr></thead><tbody></tbody></table></div>';
+            $ar = '<div class="searchFilterBtn"><button id="searchFilter" class="btn btn-sm btn-primary"><i class="fa fa-search"></i> Advanced Search</button></div>';
+        $ar .= '<div id="searchFilterContainer" class="row" style="display: none">' . $this->searchHtml . '</div>';
+        $ar .= '<div class="table-responsive"></div><table id="'.$this->getParam('tableId').'" class="table table-striped table-bordered dataTable no-footer" width="100%"><thead><tr>';
+        $ar .= $this->headHtml;
+        $ar .= '</tr></thead><tbody></tbody></table></div>';
+        return $ar;
     }
 
     /**
@@ -70,8 +64,9 @@ class Controller extends \Engine\Widget\Controller
     {
         $params = $this->getParams();
 
+
         $js = 'var table = $("#'.$this->getParam('tableId').'").DataTable({
-            serverSide: true,
+            
             responsive: {
                 details: {
                     type: "column",
@@ -85,11 +80,16 @@ class Controller extends \Engine\Widget\Controller
                 headers: { "X-CSRF-Token": "' . $this->tokenManager->getToken() . '" }
             },';
 
+        $serverSide = isset($params['serverSide']) ? $params['serverSide'] : true;
+        if ($serverSide) {
+            $js .= 'serverSide: true,';
+        }
+
         if (isset($params['order'])) {
             if (empty($params['order'])) {
                 $js .= 'order: [],';
             } else {
-                $js .= 'order: '. $this->getParam('order') . ',';
+                $js .= 'order: ['. $this->assocArrayToString($this->getParam('order')) . '],';
             }
         } else {
             $js .= 'order: [[1, "desc"]],';
@@ -153,10 +153,6 @@ class Controller extends \Engine\Widget\Controller
             style: "multi",
             selector: "td:first-child"
         }';
-//        treeGrid: {
-//        left: 10,
-//        indentedRow: "title"
-//        },'
 
         if ($this->getParam('options')) {
             $js .= "," . $this->arrayToString($this->getParam('options'));
@@ -169,7 +165,7 @@ class Controller extends \Engine\Widget\Controller
                 }';
 
         if ($this->getParam('columnDefs')) {
-            $js .= ',' . trim($this->getParam('columnDefs'), '[]');
+            $js .= ',' . $this->assocArrayToString($this->getParam('columnDefs'));
         }
         $js .= ']';
 
@@ -208,7 +204,7 @@ class Controller extends \Engine\Widget\Controller
         })
         ';
 
-        $this->assets->addInlineJs($js);
+        return $js;
     }
 
     /**
@@ -235,12 +231,13 @@ class Controller extends \Engine\Widget\Controller
                     $this->searchHtml .= '<th></th>';
                 }
 
-                $this->js .= '{data: "'.$column['data'].'"';
-                if(isset($column['searchable'])) $this->js .= ', searchable: "' .$column['searchable'].'"';
-                $this->js .=  '},';
+                $this->js .= '{' . $this->arrayToString($column) . '},';
             }
         }
-        $this->headHtml .= '<th data-column-id="actions">Actions</th><th class="control" style="display: none;"></th>';
+        if ($this->getParam('actions')) {
+            $this->headHtml .= '<th data-column-id="actions">Actions</th>';
+        }
+        $this->headHtml .= '<th class="control" style="display: none;"></th>';
         $this->searchHtml .= '<th></th>';
 
     }
@@ -256,10 +253,44 @@ class Controller extends \Engine\Widget\Controller
                 if (is_object($v) || is_array($v)) {
                     $string .= "'$k': {" . $this->arrayToString($v) . "},";
                 } else {
-                    $string .= "'$k': '$v',";
+                    if (is_bool($v)) {
+                        $string .= "'$k': " . ($v ? 'true' : 'false') . ",";
+                    } elseif ((is_numeric($v) && !is_string($v)) || $k == 'render') {
+                        $string .= "'$k': $v,";
+                    } else {
+                        $string .= "'$k': '$v',";
+                    }
                 }
             }
         }
         return rtrim($string, ',');
+    }
+
+    private function assocArrayToString($array)
+    {
+        $string = '';
+        if (!$array) {
+            $array = $this->getParam('options');
+        }
+        if ($array) {
+            foreach ($array as $v) {
+                if (is_object($v) || is_array($v)) {
+                    if (is_array($v) && !$this->isAssoc($v)) {
+                        $string .= "[" . $this->assocArrayToString($v) . "],";
+                    } else {
+                        $string .= "{" . $this->arrayToString($v) . "},";
+                    }
+                } else {
+                    $string .= "'$v',";
+                }
+            }
+        }
+        return rtrim($string, ',');
+    }
+
+    private function isAssoc(array $arr)
+    {
+        if (array() === $arr) return false;
+        return array_keys($arr) !== range(0, count($arr) - 1);
     }
 }

@@ -30,6 +30,16 @@ $(function ($) {
         }
     });
 
+    /** add active class and stay opened when selected */
+    var url = window.location;
+
+    // for sidebar menu entirely but not cover treeview
+    $('ul.sidebar-menu li.active').parent().addClass('active');
+
+    // for treeview
+    $('ul.treeview-menu li.active').parentsUntil(".sidebar-menu > .treeview-menu").addClass('active');
+    /** end menu active class */
+
     $('.hint-block').each(function () {
         var $hint = $(this);
         $hint.parent().find('label').addClass('help').popover({
@@ -62,6 +72,22 @@ $(function ($) {
             }
         });
     }
+
+    if (typeof jQuery.fn.select2 !== 'undefined' && $.isFunction(jQuery.fn.select2)) {
+        $('.multiselect').select2({
+            tags: true
+        });
+    }
+
+    $('form').submit(function (event) {
+        $(this).find('input[list]').each(function (index, obj) {
+            $(obj.list).find('option').each(function (i, o) {
+                if (obj.value === o.value) {
+                    obj.value = $(o).data('value');
+                }
+            });
+        });
+    });
 
     $(".box-body").on("click", '.ajaxDelete', function(e) {
         e.preventDefault();
@@ -172,6 +198,7 @@ function initMCE(selector) {
             {title: "None", value: ""},
             {title: "Image Responsive", value: "img-responsive"}
         ],
+        extended_valid_elements: 'a[*],em[*]',
         branding: false,
         file_browser_callback: function (field_name, url, type, win) {
             var w = window,

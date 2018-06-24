@@ -15,6 +15,7 @@ use Engine\Package\PackageType;
 use Module\Core\Forms\AdminPackageEditForm;
 use Module\Core\Forms\AdminPackageManagerForm;
 use Module\Core\Models\Package;
+use Module\Core\Models\Route;
 
 /**
  * Class AdminPackageManagerController
@@ -94,6 +95,8 @@ class AdminPackageManagerController extends AdminController
             $this->flashSession->error($e->getMessage());
         }
 
+        $this->cache->delete(Route::getCacheActiveRoutes());
+
         $this->dispatcher->forward([
             "action" => "index"
         ]);
@@ -115,6 +118,8 @@ class AdminPackageManagerController extends AdminController
             } else {
                 $this->packageManager->removePackage($packageId);
             }
+
+            $this->cache->delete(Route::getCacheActiveRoutes());
 
             $this->returnJSON([
                 'success' => true,
@@ -245,6 +250,8 @@ class AdminPackageManagerController extends AdminController
         }
 
         $this->flash->success("Package was updated successfully");
+
+        $this->cache->delete(Route::getCacheActiveRoutes());
 
         $this->response->redirect('admin/core/package-manager/index')->send();
         return;

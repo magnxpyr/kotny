@@ -53,6 +53,7 @@ abstract class AdminController extends Controller
         $level = 1;
 
         if ($menuElements != null) {
+            $isAnyActive = $this->isAnyActive($menuElements, $uri);
             foreach ($menuElements as $elements) {
                 if (!$this->acl->checkViewLevel($elements->viewLevel->getRolesArray())) continue;
 
@@ -63,7 +64,7 @@ abstract class AdminController extends Controller
 
                 if ($elements->getPath() != "#" && substr($elements->getPath(), 0, 4) != "http") {
                     $path = $this->url->get($elements->getPath());
-                    if (!$isActive && $uri == trim($elements->getPath(), "/ ")) {
+                    if (!$isActive && $this->checkActive($isAnyActive, $uri, $elements->getPath())) {
                         $active = "active";
                         $isActive = true;
                     }
@@ -158,5 +159,40 @@ abstract class AdminController extends Controller
             'prepend' => $elements->getPrepend(),
             'link' => $this->url->get($elements->getPath()),
         ];
+    }
+
+    /**
+     * Check if any menu is active
+     *
+     * @param $menuElements
+     * @param $uri
+     * @return bool
+     */
+    private function isAnyActive($menuElements, $uri)
+    {
+        $active = false;
+        foreach ($menuElements as $menu) {
+            if ($uri == trim($menu->getPath(), "/ ")) {
+                $active = true;
+                break;
+            }
+        }
+        return $active;
+    }
+
+    private function checkActive($isAnyActive, $uri, $path)
+    {
+        $path = trim($path, "/ ");
+        if ($isAnyActive) {
+            return $uri == $path;
+        } else {
+            $uriArray = explode('/', $uri);
+            $pathArray = explode('/', $path);
+            if (sizeof($uriArray) > 3 && sizeof($pathArray) > 3) {
+                return $uriArray[0] == $pathArray[0] && $uriArray[1] == $pathArray[1] && $uriArray[2] == $pathArray[2];
+            } else {
+                return false;
+            }
+        }
     }
 }

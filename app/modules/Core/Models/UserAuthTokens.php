@@ -9,7 +9,7 @@
 namespace Module\Core\Models;
 
 use Engine\Mvc\Model;
-use Phalcon\Mvc\Model\EagerLoadingTrait;
+use Phalcon\Di;
 
 class UserAuthTokens extends Model
 {
@@ -154,5 +154,11 @@ class UserAuthTokens extends Model
     public function initialize()
     {
         $this->belongsTo('user_id', User::class, 'id', ['alias' => 'user', 'reusable' => true]);
+    }
+
+    public static function deleteExpired()
+    {
+        $phql = 'DELETE FROM ' . UserAuthTokens::class . ' WHERE expires < :expire:';
+        Di::getDefault()->getShared('modelsManager')->executeQuery($phql, ['expire' => time()]);
     }
 }

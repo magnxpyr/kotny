@@ -41,9 +41,12 @@ class Helper extends Component
 
     private $templateSections = [
         'menu' => 'menu', 'header' => 'header', 'heading-left' => 'heading-left', 'heading-mid' => 'heading-mid',
-        'heading-right' => 'heading-right', 'banner' => 'banner', 'content-top' => 'content-top',
-        'content-bottom' => 'content-bottom', 'content-left' => 'content-left', 'content-mid' => 'content-mid',
-        'content-right' => 'content-right', 'sidebar-left' => 'sidebar-left', 'sidebar-right' => 'sidebar-right',
+        'heading-right' => 'heading-right',
+        'content-top' => 'content-top', 'content-bottom' => 'content-bottom',
+        'homepage-content-top' => 'homepage-content-top', 'homepage-content-bottom' => 'homepage-content-bottom',
+        'homepage-content-left' => 'homepage-content-left', 'homepage-content-mid' => 'homepage-content-mid',
+        'homepage-content-right' => 'homepage-content-right', 'homepage-header' => 'homepage-header',
+        'sidebar-left' => 'sidebar-left', 'sidebar-right' => 'sidebar-right',
         'footer' => 'footer', 'footer-left' => 'footer-left', 'footer-mid' => 'footer-mid', 'footer-right' => 'footer-right'
     ];
 
@@ -167,16 +170,6 @@ class Helper extends Component
         }
 
         return $obj;
-    }
-
-    /**
-     * Uncamelize and replace _ with -
-     * @param $str
-     * @return mixed
-     */
-    public function uncamelize($str)
-    {
-        return str_replace('_', '-', Text::uncamelize($str));
     }
 
     /**

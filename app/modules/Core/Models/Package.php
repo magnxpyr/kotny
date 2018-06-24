@@ -248,6 +248,7 @@ class Package extends Model
     {
         $this->hasMany('id', Migration::class, 'package_id', ['alias' => 'migration', 'reusable' => true]);
         $this->hasMany('id', Widget::class, 'package_id', ['alias' => 'widget', 'reusable' => true]);
+        $this->hasMany('id', Route::class, 'package_id', ['alias' => 'route', 'reusable' => true]);
     }
 
     public static function getCacheActiveModules()

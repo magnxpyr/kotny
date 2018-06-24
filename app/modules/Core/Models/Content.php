@@ -78,6 +78,11 @@ class Content extends Model
     /**
      * @var integer
      */
+    private $alias_id;
+
+    /**
+     * @var integer
+     */
     private $status;
 
     /**
@@ -230,6 +235,14 @@ class Content extends Model
         $this->featured = $featured;
 
         return $this;
+    }
+
+    /**
+     * @param int $alias_id
+     */
+    public function setAliasId($alias_id)
+    {
+        $this->alias_id = $alias_id;
     }
 
     /**
@@ -401,6 +414,14 @@ class Content extends Model
     }
 
     /**
+     * @return int
+     */
+    public function getAliasId()
+    {
+        return $this->alias_id;
+    }
+
+    /**
      * Returns the value of field status
      *
      * @return integer
@@ -538,8 +559,9 @@ class Content extends Model
     public function initialize()
     {
         $this->hasOne('category_id', Category::class, 'id', ['alias' => 'category', 'reusable' => true]);
-        $this->belongsTo('created_by', 'Module\Core\Models\User', 'id', ['alias' => 'user', 'reusable' => true]);
-        $this->belongsTo('modified_by', 'Module\Core\Models\User', 'id', ['alias' => 'user', 'reusable' => true]);
+        $this->hasOne('alias_id', Alias::class, 'id', ['alias' => 'aliasUrl', 'reusable' => true]);
+        $this->belongsTo('created_by', User::class, 'id', ['alias' => 'user', 'reusable' => true]);
+        $this->belongsTo('modified_by', User::class, 'id', ['alias' => 'user', 'reusable' => true]);
     }
 
     public function beforeValidationOnCreate()

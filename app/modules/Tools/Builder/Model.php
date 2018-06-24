@@ -52,9 +52,9 @@ class Model extends Component
         }
         if (empty($options['namespace']) || $options['namespace'] != 'None') {
             if(empty($options['module']))
-                $options['namespace'] = Tools::getBaseNamespace() . Tools::getModelsDir();
+                $options['namespace'] = Tools::getBaseNamespace() . '\\' . Tools::getModelsDir();
             else
-                $options['namespace'] = Tools::getBaseNamespace() . $options['module'] . '\\' . Tools::getModelsDir();
+                $options['namespace'] = Tools::getBaseNamespace() . '\\' . $options['module'] . '\\' . Tools::getModelsDir();
         }
         if (empty($options['baseClass'])) {
             $options['baseClass'] = 'Engine\Mvc\Model';

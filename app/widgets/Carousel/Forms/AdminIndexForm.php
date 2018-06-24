@@ -10,6 +10,7 @@ namespace Widget\Carousel\Forms;
 
 use Engine\Forms\Form;
 use Phalcon\Forms\Element\Text;
+use Phalcon\Forms\Element\TextArea;
 use Phalcon\Validation\Validator\PresenceOf;
 
 /**
@@ -24,14 +25,15 @@ class AdminIndexForm extends Form
     public function initialize()
     {
         // Images
-        $category = new Text('_images');
-        $category->setLabel($this->t->_('Images'));
-        $category->setFilters('string');
-        $category->addValidator(
-            new PresenceOf([
-                'message' => $this->t->_('%field% is required', ['field' => $this->t->_('Images')])
-            ])
-        );
-        $this->add($category);
+        $images = new Text('_images');
+        $images->setLabel($this->t->_('Images'));
+        $images->setFilters('string');
+        $this->add($images);
+
+        // Text
+        $text = new TextArea('_text');
+        $text->setLabel($this->t->_('Text'));
+        $text->setFilters(['escapeHtml', 'string']);
+        $this->add($text);
     }
 }

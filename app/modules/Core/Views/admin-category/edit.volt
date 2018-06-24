@@ -1,13 +1,11 @@
 {{ content() }}
 <div class="create">
-    <form method='post' action="{{ url("admin/core/category/save") }}" id="contentForm">
-
+    <form method='post' action="{{ url("admin/core/category/save") }}" id="categoryForm">
         <div class="row">
             <div class="col-md-9">
-
                 <div class="box box-default">
                     <div class="box-header with-border create__btnWrapper">
-                        <button type="submit" form="menuForm" class="btn btn-sm btn-success">
+                        <button type="submit" form="categoryForm" class="btn btn-sm btn-success">
                             <i class="fa fa-edit"></i> Save
                         </button>
                         <button type="button" onclick="location.href='{{ url("admin/core/category/index") }}'" class="btn btn-sm btn-danger">
@@ -35,6 +33,7 @@
                     <div class="box-body">
                         {{ form.renderDecorated('view_level', ['label': ['class': 'control-label']]) }}
                         {{ form.renderDecorated('status', ['label': ['class': 'control-label']]) }}
+                        {{ form.renderDecorated('attrLayout', ['label': ['class': 'control-label']]) }}
                         {{ form.renderDecorated('metaTitle', ['label': ['class': 'control-label']]) }}
                         {{ form.renderDecorated('metaKeywords', ['label': ['class': 'control-label']]) }}
                         {{ form.renderDecorated('metaDescription', ['label': ['class': 'control-label']]) }}

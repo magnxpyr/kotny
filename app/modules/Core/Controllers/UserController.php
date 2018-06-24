@@ -42,6 +42,7 @@ class UserController extends Controller
             $this->flash->error($e->getMessage());
         }
         $this->view->setVar('form', $form);
+        $this->view->setVar('title', $this->t->_("User login"));
     }
 
     /**
@@ -110,6 +111,7 @@ class UserController extends Controller
             }
         }
         $this->view->setVar('form', $form);
+        $this->view->setVar('title', $this->t->_("User register"));
     }
 
     /**

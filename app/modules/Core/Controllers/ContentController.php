@@ -22,22 +22,54 @@ class ContentController extends Controller
 {
     /**
      * Show articles from a category
-     *
-     * @param $category
-     * @param $page
      */
-    public function categoryAction($category = "articles", $page)
+    public function categoryAction()
     {
+        $category = $this->dispatcher->getParam('category', 'alias');
+        $page = $this->dispatcher->getParam('page', 'int');
+
+        if ($category == null) {
+            $category = 'articles';
+        }
+        if ($category != 'articles') {
+            $catModel = Category::findFirstByAlias($category);
+            if ($catModel == null) {
+                $this->dispatcher->forward([
+                    'controller' => 'error',
+                    'action' => 'show404'
+                ]);
+                return;
+            }
+            $attr = $catModel->getAttributesArray();
+            if (isset($attr->attrLayout) && !empty($attr->attrLayout)) {
+                $this->view->setLayout($attr->attrLayout);
+            }
+        }
+
+        $search = $this->request->get('search', 'string');
+
+        $ids = [];
+        if ($search != null) {
+            $res = $this->search->fuzzySearch($search);
+            foreach ($res as $re) {
+                $ids[] = $re['id'];
+            }
+        }
+
+
         $builder = $this->modelsManager->createBuilder()
             ->columns('user.*, content.*, category.*')
             ->addFrom(Content::class, 'content')
             ->leftJoin(User::class, 'content.created_by = user.id', 'user');
-            if ($category == "articles") {
-                $builder->leftJoin(Category::class, 'category.id = content.category', 'category');
-            } else {
-                $builder->innerJoin(Category::class, 'content.category = category.id', 'category')
-                    ->andWhere('category.alias = :category:', ['category' => $category]);
-            }
+        if ($category == "articles") {
+            $builder->leftJoin(Category::class, 'category.id = content.category', 'category');
+        } else {
+            $builder->innerJoin(Category::class, 'content.category = category.id', 'category')
+                ->andWhere('category.alias = :category:', ['category' => $category]);
+        }
+        if (!empty($ids)) {
+            $builder->andWhere('content.id in (:ids:)', ['ids' => join(',', $ids)]);
+        }
         $builder->orderBy('content.created_at DESC');
 
         $paginator = new PaginatorQueryBuilder([
@@ -52,13 +84,12 @@ class ContentController extends Controller
 
     /**
      * Show an article
-     *
-     * @param $catAlias string
-     * @param $articleId int
-     * @param $articleAlias string
      */
-    public function articleAction($catAlias, $articleId, $articleAlias)
+    public function articleAction()
     {
+        $articleId = $this->dispatcher->getParam('articleId', 'int');
+        $articleAlias = $this->dispatcher->getParam('articleAlias', 'alias');
+
         $this->view->setVar('metaAuthor', '');
         $this->view->setVar('metaDescription', $this->config->metaDesc);
         $this->view->setVar('metaKeywords', $this->config->metaKeys);
@@ -77,13 +108,19 @@ class ContentController extends Controller
             ->getSingleResult();
 
         // if empty show 404
-        if (!$model || !$this->helper->isContentPublished($model->content) || $model->content->getAlias() != $articleAlias ||
-            $model->category->getAlias() != $catAlias || !$this->acl->checkViewLevel($model->viewLevel->getRolesArray())) {
+        if (!$model || !$this->helper->isContentPublished($model->content) ||
+            $model->content->getAlias() != $articleAlias ||
+            !$this->acl->checkViewLevel($model->viewLevel->getRolesArray())) {
             $this->dispatcher->forward([
                 'controller' => 'error',
                 'action' => 'show404'
             ]);
             return;
+        }
+
+        $attributes = $model->content->getAttributesArray();
+        if (isset($attributes->attrLayout) && !empty($attributes->attrLayout)) {
+            $this->view->setLayout($attributes->attrLayout);
         }
 
         $this->setTitle($model->content->title);
@@ -111,5 +148,11 @@ class ContentController extends Controller
         $content->setHits($content->getHits() + 1)->save();
 
         $this->view->setVar('model', $model);
+    }
+
+    public function searchAction()
+    {
+
+        $this->view->setVar('articles', $articles);
     }
 }

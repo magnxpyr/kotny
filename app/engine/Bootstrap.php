@@ -8,7 +8,11 @@
  */
 
 use Engine\TokenManager;
+use Module\Core\Models\Alias;
+use Module\Core\Models\Package;
+use Module\Core\Models\Route;
 use Phalcon\Mvc\Model\Manager;
+use TeamTNT\TNTSearch\TNTSearch;
 
 /**
  * Class Bootstrap
@@ -31,6 +35,8 @@ class Bootstrap
     public function run()
     {
         $this->initConfig();
+
+        $this->initTntSearch();
 
         // Getting a request instance
         $request = new Phalcon\Http\Request();
@@ -182,17 +188,91 @@ class Bootstrap
         // Set 'false' to disable default behavior. After that define all routes or you get 404
         $router = new Phalcon\Mvc\Router(false);
         $router->removeExtraSlashes(true);
-        $router->setDefaults([
-            'module' => 'core',
-            'controller' => 'index',
-            'action' => 'index'
-        ]);
 
-        foreach ($modulesConfig['routes'] as $routeClass) {
-            $route = new $routeClass;
-            $route->init($router);
+
+        $baseUri = "/";
+        $uri = trim(substr($_SERVER['REQUEST_URI'], sizeof($baseUri)), '/');
+
+        $builder = null;
+        if (!empty($uri)) {
+            $builder = $this->di->getShared('modelsManager')->createBuilder()
+                ->columns("alias.*, route.*, package.*")
+                ->addFrom(Alias::class, "alias")
+                ->addFrom(Route::class, "route")
+                ->addFrom(Package::class, "package")
+                ->where("alias.route_id = route.id")
+                ->andWhere("package.id = route.package_id")
+                ->andWhere("alias.url = :url:", ["url" => $uri])
+                ->andWhere("package.status = 1")
+                ->andWhere("route.status = 1")
+                ->andWhere("alias.status = 1")
+                ->getQuery()
+                ->getSingleResult();
         }
+        
+        if ($builder != null && $builder) {
+            $router->setDefaults([
+                'namespace' => 'Module\\' . $builder->package->getName() . '\Controllers',
+                'module' => \Phalcon\Text::uncamelize($builder->package->getName(), '-'),
+                'controller' => $builder->route->getController(),
+                'action' => $builder->route->getAction(),
+                'params' => (array)json_decode($builder->alias->getParams())
+            ]);
+        } else {
+            $router->setDefaults([
+                'module' => 'core',
+                'controller' => 'index',
+                'action' => 'index'
+            ]);
+
+            foreach ($modulesConfig['routes'] as $routeClass) {
+                $route = new $routeClass;
+                $route->init($router);
+            }
+
+            $routes = Route::getActiveRoutes();
+            if ($routes) {
+                foreach ($routes as $routeObj) {
+                    $package = $routeObj->package;
+                    $route = $routeObj->route;
+                    $routePaths = [
+                        'controller' => $route->getController(),
+                        'action' => $route->getAction()
+                    ];
+                    if ($package != null) {
+                        $routePaths['module'] = \Phalcon\Text::uncamelize($package->getName(), '-');
+                    }
+                    if ($route->getParams() != null) {
+                        foreach ($route->getParamsArray() as $key => $value) {
+                            $routePaths[$key] = $value;
+                        }
+                    }
+                    $router->add($route->getPattern(), $routePaths, $route->getMethodArray());
+                }
+            }
+        }
+
         $this->di->setShared('router', $router);
+    }
+
+    private function initTntSearch()
+    {
+        /** @var Config $config */
+        $config = $this->di->getShared('config');
+
+        $dbConfig = [
+            'driver'    => $config->dbAdaptor,
+            'host'      => $config->dbHost,
+            'database'  => $config->dbName,
+            'username'  => $config->dbUser,
+            'password'  => $config->dbPass,
+            'storage'   => CACHE_PATH . 'search/'
+        ];
+
+        $tnt = new TNTSearch;
+        $tnt->loadConfig($dbConfig);
+        $tnt->selectIndex("kotny.index");
+        $this->di->setShared("search", $tnt);
     }
 
     private function initEventManager()

@@ -2,18 +2,20 @@
     <div class="container">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    data-target="#menu-navbar-collapse" aria-expanded="false">
                 <span class="sr-only">Toggle navigation</span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="/">Magnxpyr</a>
+            <a class="navbar-brand" href="/">{{ config.logo }}</a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            {{ section.render("menu") }}
+        <div class="collapse navbar-collapse" id="menu-navbar-collapse">
+            <div class="right">
+                {{ section.render("menu") }}
+            </div>
         </div>
 
     </div>
@@ -23,18 +25,18 @@
     <div id="flash-area">
         {{ flashSession.output() }}
     </div>
-
+    {{ section.render('content-top') }}
     {{ content() }}
+    {{ section.render('content-bottom') }}
 </div>
+
 
 <footer class="main-footer hidden">
     <div class="container">
-        <div class="left-box">Powered by <a href="">Magnxpyr Network</a> &copy 2016</div>
-        <div class="right-box social-logo">
-            <a href=""><i class="facebook icons"></i></a>
-            <a href=""><i class="twitter icons"></i></a>
-            <a href=""><i class="google-plus icons"></i></a>
-            <a href=""><i class="linkedin icons"></i></a>
+        <div class="left-box">{{ section.render('footer-left') }}</div>
+        <div class="right-box">
+            {{ section.render('footer-right') }}
         </div>
+        {{ section.render('footer') }}
     </div>
 </footer>

@@ -1,0 +1,10 @@
+<?php
+echo $tableHtml;
+
+$this->assets->collection('header-css')
+    ->addCss('https://cdn.datatables.net/v/bs/dt-1.10.16/r-2.2.1/rr-1.2.3/sl-1.2.4/datatables.min.css');
+$this->assets->collection('footer-js')
+    ->addJs('https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment-with-locales.min.js')
+    ->addJs('https://cdn.datatables.net/v/bs/dt-1.10.16/r-2.2.1/rr-1.2.3/sl-1.2.4/datatables.min.js')
+    ->addJs('https://cdn.datatables.net/plug-ins/1.10.16/dataRender/datetime.js');
+$this->addViewWidgetJs('index-scripts', ['js' => $js]);

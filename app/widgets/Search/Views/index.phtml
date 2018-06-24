@@ -1,0 +1,15 @@
+<div class="navbar-left search-bar">
+    <form action="<?= $this->url->get("/articles") ?>" id="search-articles-form">
+        <span class="archive-link header-search-span">
+            <span class="header-search">
+                <input type="text" class="form-control input-sm"  name="search" id="search-articles" placeholder="Search">
+                    <button type="submit" class="btn btn-default search-submit">Submit</button>
+                <a href="#" role="button" class="btn-srch"><i class="fa fa-lg fa-search"></i></a>
+            </span>
+        </span>
+    </form>
+</div>
+
+<?php
+$this->addViewWidgetJs('index-scripts');
+$this->addViewWidgetCss('index-styles');

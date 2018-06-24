@@ -16,6 +16,7 @@ use Installer\Migrations\MigrationMigration;
 use Installer\Migrations\PackageMigration;
 use Phalcon\Mvc\Controller;
 use Phalcon\Mvc\Model\Manager;
+use TeamTNT\TNTSearch\TNTSearch;
 
 /**
  * Class IndexController
@@ -181,6 +182,24 @@ class IndexController extends Controller
 
         $this->response->setJsonContent($response);
         $this->response->send();
+    }
+
+    public function setupSearch($config)
+    {
+        $dbConfig = [
+            'driver'    => $config->dbAdaptor,
+            'host'      => $config->dbHost,
+            'database'  => $config->dbName,
+            'username'  => $config->dbUser,
+            'password'  => $config->dbPass,
+            'storage'   => CACHE_PATH . 'search/'
+        ];
+
+        $tnt = new TNTSearch;
+        $tnt->loadConfig($dbConfig);
+        $indexer = $tnt->createIndex('kotny.index');
+        $indexer->query('SELECT id, `fulltext` FROM content');
+        $indexer->run();
     }
 
     public function removeInstallerAction()

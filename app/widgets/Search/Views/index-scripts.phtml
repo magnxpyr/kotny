@@ -1,0 +1,10 @@
+<script>
+    $(document).ready(function(){
+        $('#search-articles').keypress(function (e) {
+            if (e.which === 13) {
+                $('form#search-articles-form').submit();
+                return false;
+            }
+        });
+    })
+</script>

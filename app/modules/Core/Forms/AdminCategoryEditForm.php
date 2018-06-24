@@ -96,7 +96,7 @@ class AdminCategoryEditForm extends Form
         $description->setFilters('string');
         $this->add($description);
 
-        $attrLayout = new Datalist('attributeLayout', [],
+        $attrLayout = new Datalist('attrLayout', [],
             ['placeholder' => 'Default', 'class' => 'form-control']
         );
         $attrLayout->setLabel($this->t->_('Layout'));
@@ -140,7 +140,7 @@ class AdminCategoryEditForm extends Form
             if (substr( $key, 0, 4 ) === "meta") {
                 $meta[$key] = $val;
                 unset($data[$key]);
-            } else if (substr( $key, 0, 9 ) === "attribute") {
+            } else if (substr( $key, 0, 4 ) === "attr") {
                 $attributes[$key] = $val;
                 unset($data[$key]);
             }

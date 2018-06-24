@@ -9,7 +9,7 @@
         </button>
     </div>
     <div class="box-body">
-        <form method='post' action="{{ url("admin/core/role/save") }}" id="userForm">
+        <form method='post' action="{{ url("admin/core/role/save") }}" id="roleForm">
             {{ form.render('id') }}
             {{ form.render('csrf') }}
 
@@ -23,7 +23,6 @@
             </div>
 
             {{ form.renderDecorated('description', ['label': ['class': 'control-label']]) }}
-
         </form>
     </div>
 </div>

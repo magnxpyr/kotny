@@ -1,7 +1,4 @@
 <div class="main-wrapper">
-    {#<div class="loading-spinner">#}
-        {#<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>#}
-    {#</div>#}
     <div class="articles-list-wrapper">
         {% for item in model.items %}
             {% set images = item.content.getImagesArray() %}
@@ -38,10 +35,16 @@
         {% endfor %}
     </div>
     {% if model.total_pages > 1 %}
-        {{ link_to("/" ~ category, "First") }}
-        {{ link_to("/" ~ category ~ "/" ~ model.before, "Previous") }}
-        {{ link_to("/" ~ category ~ "/" ~ model.next, "Next") }}
-        {{ link_to("/" ~ category ~ "/" ~ model.last, "Last") }}
+    <nav aria-label="...">
+        <ul class="pager">
+            {% if model.first != model.current %}
+                <li class="previous"><a href="{{ url("/" ~ category ~ "/" ~ model.before) }}"><span aria-hidden="true">&larr;</span> Previous</a></li>
+            {% endif %}
+            {% if model.last != model.current %}
+                <li class="next"><a href="{{ url("/" ~ category ~ "/" ~ model.next) }}">Next <span aria-hidden="true">&rarr;</span></a></li>
+            {% endif %}
+        </ul>
+    </nav>
     {% endif %}
 </div>
 

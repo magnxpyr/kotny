@@ -8,6 +8,7 @@
 
 namespace Module\Core\Forms;
 
+use Engine\Forms\Element\Datalist;
 use Engine\Forms\Form;
 use Engine\Package\PackageType;
 use Module\Core\Models\Package;
@@ -64,7 +65,7 @@ class AdminWidgetEditForm extends Form
         $this->add($package);
 
         // Positions
-        $position = new Select('position',
+        $position = new Datalist('position',
             $this->helper->getTemplateSections(),
             ['class' => 'form-control']
         );
@@ -78,13 +79,8 @@ class AdminWidgetEditForm extends Form
         $this->add($position);
 
         // Layout
-        $layout = new Select('layout', [],
-            [
-                'useEmpty' => true,
-                'emptyText' => 'None',
-                'emptyValue' => null,
-                'class' => 'form-control'
-            ]
+        $layout = new Datalist('layout', [],
+            ['class' => 'form-control']
         );
         $layout->setLabel($this->t->_('Layout'));
         $layout->setFilters('string');

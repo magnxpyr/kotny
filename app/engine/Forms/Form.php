@@ -203,7 +203,9 @@ class Form extends \Phalcon\Forms\Form
             $html .= $element;
         } else {
             $html .= '<div ' . $group . '>';
-            $html .= '<label for="' . $element->getName() . '" ' . $label . '>' . $element->getLabel() . '</label>';
+            if (!empty($element->getLabel())) {
+                $html .= '<label for="' . $element->getName() . '" ' . $label . '>' . $element->getLabel() . '</label>';
+            }
             $html .= '<div ' . $input . '>' . $element;
             if ($inputDate) {
                 $html .= '<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>';

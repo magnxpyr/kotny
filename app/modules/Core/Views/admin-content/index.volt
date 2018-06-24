@@ -15,16 +15,10 @@
                     ['data': 'viewLevel'],
                     ['data': 'featured', 'searchable': false],
                     ['data': 'username'],
-                    ['data': 'created_at'],
+                    ['data': 'created_at', 'searchable': false, "render": '$.fn.dataTable.render.moment("X", "DD-MM-YYYY")'],
                     ['data': 'status', 'searchable': false],
                     ['data': 'hits', 'searchable': false]
                 ],
-                'columnDefs': '[
-                    {
-                        "targets": 7,
-                        "render": $.fn.dataTable.render.moment("X", "DD-MM-YYYY")
-                    }
-                ]',
                 'url': url('admin/core/content/search'),
                 'actions': [
                     'update': url('admin/core/content/edit'),

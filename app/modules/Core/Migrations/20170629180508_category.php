@@ -47,7 +47,7 @@ class Category20170629180508Migration extends Migration
                     ]),
                     new Column('attributes', [
                         'type' => Column::TYPE_TEXT,
-                        'after' => 'fulltext'
+                        'after' => 'description'
                     ]),
                     new Column('metadata', [
                         'type' => Column::TYPE_TEXT,

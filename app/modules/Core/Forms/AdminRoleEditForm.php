@@ -40,7 +40,7 @@ class AdminRoleEditForm extends Form
             [
                 'using' => ['id', 'name'],
                 'useEmpty' => true,
-                'emptyValue' => 'None',
+                'emptyValue' => '0',
                 'class' => 'form-control'
             ]
         );

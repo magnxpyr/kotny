@@ -29,6 +29,7 @@ namespace Engine;
  * @property \Phalcon\Cache\Backend $cache
  * @property \Phalcon\Translate\Adapter\NativeArray $t
  * @property \Phalcon\Mvc\Model\Manager $modelsManager
+ * @property \TeamTNT\TNTSearch\TNTSearch $search
  */
 trait Meta
 {

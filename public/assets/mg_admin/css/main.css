@@ -2621,11 +2621,11 @@ iframe {
 .box-body .dataTables_wrapper #table tbody td.dt-action-wrapper {
   width: 45px !important;
 }
-.box-body .dataTables_wrapper .datatable-action {
+.datatable-action {
   list-style: none;
   -webkit-padding-start: 0;
 }
-.box-body .dataTables_wrapper .datatable-action li {
+.datatable-action li {
   float: left;
   width: 50%;
   text-align: center;
@@ -2683,12 +2683,35 @@ iframe {
 #wrapper-widget-images .input-wrapper .input-group-btn {
   vertical-align: top;
 }
-#wrapper-widget-images .input-wrapper .input-group-addon.delete {
-  color: #ff6666;
-}
 #wrapper-widget-images .input-wrapper > .mce-container {
   width: calc(100% - 35px) !important;
   padding-left: 35px;
+}
+.input-group-addon.delete {
+  color: #ff6666;
+}
+.input-wrapper {
+  margin-bottom: 10px;
+  width: 100%;
+}
+.round-left {
+  border-bottom-left-radius: 4px !important;
+  border-top-left-radius: 4px !important;
+}
+.round-right {
+  border-bottom-right-radius: 4px !important;
+  border-top-right-radius: 4px !important;
+}
+.straight-left {
+  border-bottom-left-radius: 0 !important;
+  border-top-left-radius: 0 !important;
+}
+.straight-right {
+  border-bottom-right-radius: 0 !important;
+  border-top-right-radius: 0 !important;
+}
+.gray-bg {
+  background-color: #eee !important;
 }
 .create__intro .col:first-child {
   width: 30%;

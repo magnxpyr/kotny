@@ -119,8 +119,10 @@ class Widget20170629180616Migration extends Migration
 
         $this->batchInsert(self::TABLE_NAME, [
             [5, 'Homepage Menu', 0, 'menu', null, 'index', time(), 1, \Engine\Widget\Widget::CACHE_LIFETIME, '{"_menu":"3"}', 0, 1],
-            [2, 'Homepage Carousel', 0, 'header', null, 'index', time(), 1, \Engine\Widget\Widget::CACHE_LIFETIME, '{"_images":["https:\/\/farm1.staticflickr.com\/516\/32235079792_0ce7b5c93f_k.jpg"]}', 0, 1],
-            [7, 'Latest Posts', 0, 'footer', 'widget', 'index', time(), 1, \Engine\Widget\Widget::CACHE_LIFETIME, '{"_category":"","_limit":"3"}', 1, 1]
+            [2, 'Homepage Carousel', 0, 'homepage-header', null, 'index', time(), 1, \Engine\Widget\Widget::CACHE_LIFETIME, '{"_images":["https:\/\/farm1.staticflickr.com\/516\/32235079792_0ce7b5c93f_k.jpg"]}', 0, 1],
+            [7, 'Latest Posts', 0, 'homepage-content-bottom', 'widget', 'index', time(), 1, \Engine\Widget\Widget::CACHE_LIFETIME, '{"_category":"","_limit":"3"}', 1, 1],
+            [3, 'Powered by', 0, 'footer-left', 'widget', 'index', time(), 1, \Engine\Widget\Widget::CACHE_LIFETIME, '{"_content":"Powered by <a href=\"http:\/\/www.kotny.com\">Kotny<\/a> &amp;copy 2018"}', 1, 1],
+            [3, 'Social links', 0, 'footer-right', 'widget', 'index', time(), 1, \Engine\Widget\Widget::CACHE_LIFETIME, '{"_content":"<div class=\"social\"><a href=\"http:\/\/www.magnxpyr.com\" target=\"_blank\" rel=\"noopener\"><em class=\"facebook icons\"><\/em><\/a> <a href=\"http:\/\/www.magnxpyr.com\" target=\"_blank\" rel=\"noopener\"><em class=\"twitter icons\"><\/em><\/a> <a href=\"http:\/\/www.magnxpyr.com\" target=\"_blank\" rel=\"noopener\"><em class=\"google-plus icons\"><\/em><\/a> <a href=\"http:\/\/www.magnxpyr.com\" target=\"_blank\" rel=\"noopener\"><em class=\"linkedin icons\"><\/em><\/a> &nbsp;<\/div>"}', 1, 1]
         ], ['package_id', 'title', 'ordering', 'position', 'layout', 'view', 'publish_up', 'view_level', 'cache', 'params', 'show_title', 'status']);
     }
 }

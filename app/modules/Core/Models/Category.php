@@ -471,6 +471,22 @@ class Category extends Model
     }
 
     /**
+     * @return string
+     */
+    public function getAttributes()
+    {
+        return $this->attributes;
+    }
+
+    /**
+     * @param string $attributes
+     */
+    public function setAttributes($attributes)
+    {
+        $this->attributes = $attributes;
+    }
+
+    /**
      * Initialize method for model.
      */
     public function initialize()

@@ -101,7 +101,7 @@ class Auth extends Component
                         $this->checkUserFlags($model->user);
                         $this->setSession($model->user);
                         $this->setRememberMe(null, $model->auth);
-                         $this->saveSuccessLogin($model->user->getUsername());
+                        $this->saveSuccessLogin($model->user->getUsername());
 
                         if ($redirect) {
                             return $this->redirectReturnUrl();
@@ -155,8 +155,9 @@ class Auth extends Component
     public function setRememberMe($user = null, $remember = null)
     {
         $selector = $this->security->getRandom()->hex(self::SELECTOR_BYTES);
-        $token = $this->security->getRandom()->hex(self::TOKEN_BYTES);;
+        $token = $this->security->getRandom()->hex(self::TOKEN_BYTES);
         if($remember === null) {
+            UserAuthTokens::deleteExpired();
             $remember = new UserAuthTokens();
             $remember->setUserId($user->getId());
         }

@@ -66,25 +66,33 @@ class Datalist extends Element
             unset($attributes['using']);
         }
 
-        $html = "<input type='text' id='" . $this->getName() ."' name='" . $this->getName() ."' list='datalist_" . $this->getName(). "' ";
-        foreach($attributes as $key => $value) {
-            $html .= " $key='$value' ";
-        }
-        $html .= ">";
-
-        $html .= "<datalist  id='datalist_" . $this->getName() . "'>";
+        $inputValue = "";
+        $datalist = "<datalist  id='datalist_" . $this->getName() . "'>";
         if (is_object($this->getOptions())) {
             foreach ($this->getOptions() as $option) {
                 $option = $option->toArray();
-                $html .= "<option value='" . $option[$fields[0]] . "' data-value='" . $option[$fields[1]] . "'></option>";
+                $datalist .= "<option value='" . $option[$fields[0]] . "' data-value='" . $option[$fields[1]] . "' ></option>";
+                if ($this->getValue() != null && $option[$fields[1]] == $this->getValue()) {
+                    $inputValue = $option[$fields[0]];
+                }
             }
         } elseif (is_array($this->getOptions())) {
-            foreach ($this->getOptions() as $option) {
-                $html .= "<option value='" . $option[0] . "' data-value='" . $option[1] . "'></option>";
+            foreach ($this->getOptions() as $key => $value) {
+                $datalist .= "<option value='$key' data-value='$value' ></option>";
+                if ($this->getValue() != null && $value == $this->getValue()) {
+                    $inputValue = $value;
+                }
             }
         }
-        $html .="</datalist>";
+        $datalist .="</datalist>";
 
-        return $html;
+        $input = "<input type='text' id='" . $this->getName() . "' name='" . $this->getName() .
+            "' value='" . $inputValue . "' list='datalist_" . $this->getName(). "' ";
+        foreach($attributes as $key => $value) {
+            $input .= " $key='$value' ";
+        }
+        $input .= ">";
+
+        return $input . $datalist;
     }
 }

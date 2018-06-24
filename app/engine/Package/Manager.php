@@ -16,6 +16,7 @@ use Module\Core\Models\User;
 use Module\Core\Models\Widget;
 use Phalcon\Config\Adapter\Json;
 use Phalcon\Db\Column;
+use Phalcon\Text;
 
 /**
  * Class Manager
@@ -193,7 +194,7 @@ class Manager extends Injectable
                 $className = str_replace('.php', '', $file);
 
                 $resourceName = str_replace('Controller', '', $className);
-                $resourceName = 'module:core/' . $this->helper->uncamelize($resourceName);
+                $resourceName = 'module:core/' . Text::uncamelize($resourceName, '-');
 
                 $controllerClass = "Module\\$moduleName\\Controllers\\$className";
                 $controller = new $controllerClass();
@@ -239,7 +240,7 @@ class Manager extends Injectable
             $className = str_replace('.php', '', $file);
 
             $resourceName = str_replace('Controller', '', $className);
-            $resourceName = 'module:core/' . $this->helper->uncamelize($resourceName);
+            $resourceName = 'module:core/' . Text::uncamelize($resourceName, '-');
 
             $this->acl->adapter->dropResourceAccess($resourceName);
         }

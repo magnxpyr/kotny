@@ -63,6 +63,6 @@
             Version {{ constant('MG_VERSION') }}
         </div>
         <!-- Default to the left -->
-        Powered by {{ link_to('http://www.magnxpyr.com', 'Magnxpyr Network', false) }} &copy; {{ date('Y') }}
+        Powered by {{ link_to('http://www.kotny.com', 'Kotny', false) }} &copy; {{ date('Y') }}
     </footer>
 </div><!-- ./wrapper -->

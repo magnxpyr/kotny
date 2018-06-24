@@ -43,7 +43,6 @@ class AdminContentEditForm extends Form
         ]);
         $title->setLabel($this->t->_('Title'));
         $title->setFilters('string');
-        $title->setAttribute('placeholder', $this->t->_("Title"));
         $title->addValidator(
             new PresenceOf([
                 'title' => $this->t->_('%field% is required', ['field' => $this->t->_('Title')])
@@ -56,9 +55,16 @@ class AdminContentEditForm extends Form
             'class' => 'form-control'
         ]);
         $alias->setLabel($this->t->_('Alias'));
-        $alias->setAttribute('placeholder', $this->t->_("Alias"));
         $alias->setFilters('alias');
         $this->add($alias);
+
+        // Custom url
+        $customUrl = new Text('customUrl', [
+            'class' => 'form-control'
+        ]);
+        $customUrl->setLabel($this->t->_('Custom Url'));
+        $customUrl->setFilters('url');
+        $this->add($customUrl);
 
         // Featured intro image
         $introImage = new Text('introImage', [
@@ -77,7 +83,6 @@ class AdminContentEditForm extends Form
         $introText = new TextArea('introtext', [
             'class' => 'form-control'
         ]);
-        $introText->setLabel($this->t->_('Intro Text'));
         $introText->setFilters(['escapeHtml', 'string']);
         $this->add($introText);
 
@@ -93,7 +98,6 @@ class AdminContentEditForm extends Form
         $fullText = new TextArea('fulltext', [
             'class' => 'form-control'
         ]);
-        $fullText->setLabel($this->t->_('Full Text'));
         $fullText->setFilters(['escapeHtml', 'string']);
         $this->add($fullText);
 
@@ -112,7 +116,7 @@ class AdminContentEditForm extends Form
         $this->add($category);
 
         // Featured
-        $featured = new Check('featured');
+        $featured = new Select('featured', [0 => 'No', 1 => 'Yes'], ['class' => 'form-control']);
         $featured->setLabel($this->t->_('Featured'));
         $featured->setFilters('int');
         $this->add($featured);
@@ -166,7 +170,7 @@ class AdminContentEditForm extends Form
         $publishDown->setAttribute('timestamp', true);
         $this->add($publishDown);
 
-        $attrLayout = new Datalist('attributeLayout', [],
+        $attrLayout = new Datalist('attrLayout', [],
             ['placeholder' => 'Default', 'class' => 'form-control']
         );
         $attrLayout->setLabel($this->t->_('Layout'));
@@ -210,7 +214,7 @@ class AdminContentEditForm extends Form
             if (substr( $key, 0, 4 ) === "meta") {
                 $meta[$key] = $val;
                 unset($data[$key]);
-            } else if (substr( $key, 0, 9 ) === "attribute") {
+            } else if (substr( $key, 0, 4 ) === "attr") {
                 $attributes[$key] = $val;
                 unset($data[$key]);
             }

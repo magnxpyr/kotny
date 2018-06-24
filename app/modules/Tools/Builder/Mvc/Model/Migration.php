@@ -253,7 +253,7 @@ class Migration
             }
 
             $oldColumn = $field->getName();
-            $tableDefinition[] = "\t\t\t\t\tnew Column('" . $field->getName() . "', [\n\t\t\t\t\t\t\t" . join(",\n\t\t\t\t\t\t\t", $fieldDefinition) . "\n\t\t\t\t\t\t]\n\t\t\t\t\t)";
+            $tableDefinition[] = "\t\t\t\t\tnew Column('" . $field->getName() . "', [\n\t\t\t\t\t\t" . join(",\n\t\t\t\t\t\t", $fieldDefinition) . "\n\t\t\t\t\t])";
             $allFields[] = "'".$field->getName()."'";
         }
 

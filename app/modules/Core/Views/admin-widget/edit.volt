@@ -50,6 +50,6 @@
 </div>
 
 
-{% do assets.collection('footer-js').addJs("https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.7.4/tinymce.min.js") %}
-{% do assets.collection('footer-js').addJs("https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.7.4/jquery.tinymce.min.js") %}
+{% do assets.collection('footer-js').addJs("https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.7.11/tinymce.min.js") %}
+{% do assets.collection('footer-js').addJs("https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.7.11/jquery.tinymce.min.js") %}
 {% do addViewJs('admin-widget/edit-scripts', ['widgetScripts': widgetScripts]) %}

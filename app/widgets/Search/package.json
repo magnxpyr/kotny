@@ -1,0 +1,9 @@
+{
+  "package": "Search",
+  "type": "widget",
+  "version": "1.0.0",
+  "author": "Magnxpyr Network",
+  "website": "http://www.magnxpyr.com",
+  "description": "Search widget",
+  "licence": "BSD"
+}

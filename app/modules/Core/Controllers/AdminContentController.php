@@ -9,6 +9,7 @@
 namespace Module\Core\Controllers;
 
 use Module\Core\Forms\AdminContentEditForm;
+use Module\Core\Models\Alias;
 use Module\Core\Models\Category;
 use Module\Core\Models\Content;
 use DataTables\DataTable;
@@ -16,7 +17,6 @@ use Engine\Mvc\AdminController;
 use Module\Core\Models\User;
 use Module\Core\Models\ViewLevel;
 use Phalcon\Mvc\View;
-use Phalcon\Paginator\Adapter\Model as Paginator;
 
 class AdminContentController extends AdminController
 {
@@ -76,6 +76,11 @@ class AdminContentController extends AdminController
             }
             $this->view->setVar('model', $model);
             $form->setEntity($model);
+
+            $alias = $model->aliasUrl;
+            if ($alias) {
+                $form->setValue('customUrl', $alias->getUrl());
+            }
         }
     }
 
@@ -94,12 +99,12 @@ class AdminContentController extends AdminController
         $form = new AdminContentEditForm();
         $id = $this->request->getPost('id');
         if (!empty($id)) {
-            $menu = Content::findFirstById($this->request->getPost('id'));
+            $model = Content::findFirstById($this->request->getPost('id'))->load('aliasUrl');
         } else {
-            $menu = new Content();
+            $model = new Content();
         }
 
-        $form->bind($_POST, $menu);
+        $form->bind($_POST, $model);
         if (!$form->isValid()) {
             $this->flashErrors($form);
 
@@ -110,14 +115,47 @@ class AdminContentController extends AdminController
             return;
         }
 
-        if (!$menu->save()) {
-            $this->flashErrors($menu);
+        if (!$model->save()) {
+            $this->flashErrors($model);
 
             $this->dispatcher->forward([
                 "action" => "edit",
                 "params" => [$id]
             ]);
             return;
+        }
+
+        if (!empty($id)) {
+            $this->search->getIndex()->update($id, ['id' => $id, 'fulltext' => $model->getFulltext()]);
+        } else {
+            $this->search->getIndex()->insert($id, ['id' => $id, 'fulltext' => $model->getFulltext()]);
+        }
+
+
+        $customUrl = $form->getValue('customUrl');
+        $customUrl = empty($customUrl) ? null : trim($customUrl, '/');
+        if ($customUrl != null) {
+            if ($model->aliasUrl) {
+                $model->aliasUrl->setUrl($customUrl);
+                $model->aliasUrl->setParams(json_encode([
+                    'articleId' => $model->getId(),
+                    'articleAlias' => $model->getAlias()
+                ]));
+                $model->aliasUrl->save();
+            } else {
+                $alias = new Alias();
+                $alias->setUrl($customUrl);
+                $alias->setRouteId(7);
+                $alias->setStatus(1);
+                $alias->setParams(json_encode([
+                    'articleId' => $model->getId(),
+                    'articleAlias' => $model->getAlias()
+                ]));
+                $alias->save();
+
+                $model->setAliasId($alias->getId());
+                $model->save();
+            }
         }
 
         $this->flash->success("Article was updated successfully");
@@ -141,6 +179,8 @@ class AdminContentController extends AdminController
         if (!$model->delete()) {
             return;
         }
+
+        $this->search->getIndex()->delete($id);
 
         $this->returnJSON(['success' => true]);
         return;

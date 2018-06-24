@@ -9479,6 +9479,15 @@ p {
 .topbar .navbar-toggle .icon-bar {
   background-color: #ffffff;
 }
+.topbar .navbar-collapse {
+  position: relative;
+}
+@media (min-width: 768px) {
+  .right {
+    position: absolute;
+    right: 0;
+  }
+}
 /*****************************************************************************************
 *
 *	name: _footer.less

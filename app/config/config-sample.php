@@ -11,7 +11,6 @@ class Config {
     public $dbSchema = '';
 
     // app
-    public $offline = false; // true false
     public $dev = true; // true false
     public $timezone = '';
     public $siteName = '';
@@ -57,4 +56,5 @@ class Config {
     // template
     public $defaultTheme = 'default';
     public $defaultLayout = 'default';
+    public $logo = 'kotny';
 }
