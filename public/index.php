@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2018 Magnxpyr Network
+ * @copyright   2006 - 2019 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -14,6 +14,7 @@ define('PUBLIC_PATH', __DIR__ . DS);
 define('APP_PATH', ROOT_PATH . 'app/');
 define('CONFIG_PATH', APP_PATH . 'config/');
 define('LOGS_PATH', ROOT_PATH . 'logs/');
+define('SEARCH_PATH', ROOT_PATH . 'search/');
 define('MEDIA_PATH', PUBLIC_PATH . 'media/');
 define('THEMES_PATH', APP_PATH . 'themes/');
 define('MODULES_PATH', APP_PATH . 'modules/');

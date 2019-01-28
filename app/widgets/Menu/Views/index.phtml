@@ -2,13 +2,16 @@
 /**
  * @var array|Module\Core\Models\Menu $menuElements
  */
+
+use Module\Core\Models\Content;
+
 $level = 1;
 
 echo '<ul class="nav navbar-nav navbar-right">';
 $isActive = false;
 $uri = trim($this->router->getRewriteUri(), "/ ");
 foreach ($menuElements as $k => $elements) {
-    if (!$this->acl->checkViewLevel($elements->viewLevel->getRolesArray())) continue;
+    if (!$this->acl->checkViewLevel($elements->viewLevel->getRolesArray()) || $elements->getStatus() != Content::STATUS_PUBLISHED) continue;
 
     $active = "";
     if ($elements->getPath() != "#" && substr($elements->getPath(), 0, 4) != "http") {

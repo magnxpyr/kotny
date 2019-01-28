@@ -15,7 +15,7 @@
 
             <div class="form-group" id="wrapper-title">
                 <div class="input-group">
-                    <span class="input-group-addon round-left gray-bg">{{ url('/') }}</span>
+                    <span class="input-group-addon round-left gray-bg">{{ url() }}</span>
                     {{ form.render('url', ['placeholder': t._('Custom Url'), 'class': 'form-control input-lg straight-left']) }}
                 </div>
             </div>

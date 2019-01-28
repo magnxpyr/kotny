@@ -11,13 +11,14 @@
     {{ stylesheet_link("https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css") }}
     {{ stylesheet_link("https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css") }}
     {{ stylesheet_link("https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css") }}
-    {{ stylesheet_link("assets/mg_admin/css/AdminLTE.min.css") }}
-    {{ stylesheet_link("assets/mg_admin/css/skins/skin-blue.min.css") }}
-    {{ stylesheet_link("assets/mg_admin/css/main.css") }}
+    {{ stylesheet_link("assets/mg_admin/css/main.min.css") }}
     {{ assets.outputCss("header-css") }}
-    {{ stylesheet_link("assets/default/css/pdw.css") }}
     {{ assets.outputViewCss() }}
     {{ assets.outputInlineCss() }}
+    {% if config.dev %}
+        {{ stylesheet_link("assets/default/css/pdw.css") }}
+    {% endif %}
+
 </head>
 <body class="skin-blue sidebar-mini fixed {{ sidebar_collapse }}">
 {{ content() }}
@@ -30,12 +31,12 @@
 {{ javascript_include("https://cdnjs.cloudflare.com/ajax/libs/jQuery-slimScroll/1.3.8/jquery.slimscroll.min.js") }}
 {{ javascript_include("https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js") }}
 {{ assets.outputJs("footer-js") }}
-{{ javascript_include("assets/common/js/mg.js") }}
-{{ javascript_include("assets/mg_admin/js/app.js") }}
-{{ javascript_include("assets/default/js/pdw.js") }}
-{{ javascript_include("assets/mg_admin/js/mg.js") }}
-{{ javascript_include("assets/mg_admin/js/bootstrap.modal.js") }}
+{{ javascript_include("assets/mg_admin/js/main.min.js") }}
 {{ assets.outputViewJs() }}
 {{ assets.outputInlineJs() }}
+
+{% if config.dev %}
+    {{ javascript_include("assets/default/js/pdw.js") }}
+{% endif %}
 </body>
 </html>

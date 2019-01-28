@@ -15,7 +15,7 @@
                             <img src="{{ images.introImage }}"/>
                         </div>
                         {% endif %}
-                        <a href="{{ url(item.category.alias ~ "/" ~ item.content.id ~ "-" ~ item.content.alias) }}">
+                        <a href="{{ url(['for': 'article', 'articleAlias': item.content.alias]) }}">
                             <h3 class="title">
                                 {{ item.content.title }}
                             </h3>

@@ -14,7 +14,7 @@ class Config {
     public $dev = true; // true false
     public $timezone = '';
     public $siteName = '';
-    public $siteNameLocation = 1; //0,1,2
+    public $siteNameLocation = 0; //0,1,2
     public $baseUri = '/';
     public $cryptKey = '721a79281f408416';
     public $environment = ''; //get by file config name

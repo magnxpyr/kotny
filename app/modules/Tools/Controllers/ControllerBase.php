@@ -92,6 +92,10 @@ class ControllerBase extends AdminController
      */
     private function checkToolsIp($ip)
     {
-        return strpos($ip, Tools::getToolsIp()) === 0;
+        $allowedIp = Tools::getToolsIp();
+        if (is_array($allowedIp)) {
+            $allowedIp = implode(',', (array)$allowedIp);
+        }
+        return strpos($allowedIp, $ip) !== 0;
     }
 }

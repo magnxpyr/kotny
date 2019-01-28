@@ -1,5 +1,5 @@
-
 $(document).ready(function(){
+    ajaxSetup();
     initializeMenu();
     hideAlertMesssage();
     checkHTMLBodyHeight();
@@ -10,6 +10,14 @@ $(window).on('load resize', function() {
     $('.main-footer').removeClass('hidden');
     checkHTMLBodyHeight();
 });
+
+function ajaxSetup() {
+    $.ajaxSetup({
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="_token"]').attr('content')
+        }
+    });
+}
 
 function checkHTMLBodyHeight() {
     var HTMLBody = $('body').height();
@@ -36,7 +44,7 @@ function initializeMenu() {
 }
 
 function hideAlertMesssage() {
-    $('body').on('click', function() {
+    $('body').on('click', function () {
         $(this).find('.alert-dismissible').fadeOut('slow');
     })
 }

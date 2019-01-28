@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2018 Magnxpyr Network
+ * @copyright   2006 - 2019 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -25,6 +25,12 @@ class AdminIndexForm extends Form
      */
     public function initialize()
     {
+        // Featured
+        $featured = new Select('_featured', [0 => 'No', 1 => 'Yes'], ['class' => 'form-control']);
+        $featured->setLabel($this->t->_('Featured'));
+        $featured->setFilters('int');
+        $this->add($featured);
+
         // Category
         $category = new Select('_category',
             Category::find(),

@@ -1,6 +1,6 @@
 <?php 
 /**
- * @copyright   2006 - 2018 Magnxpyr Network
+ * @copyright   2006 - 2019 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -82,7 +82,8 @@ class Route20180517191323Migration extends Migration
                     ])
                 ],
                 'indexes' => [
-                    new Index('PRIMARY', ['id'])
+                    new Index('PRIMARY', ['id']),
+                    new Index('UNIQUE', ['name'], 'UNIQUE'),
                 ],
                 'options' => [
                     'TABLE_TYPE' => 'BASE TABLE',
@@ -92,5 +93,16 @@ class Route20180517191323Migration extends Migration
                 ]
             ]
         );
+
+        $this->batchInsert(self::TABLE_NAME, [
+            [1, 'homepage', '/', '["GET"]', 1, 'index', 'index', NULL, 1, 1],
+            [2, 'article', '/articles/([a-zA-Z0-9\\-]+)', '["GET"]', 1, 'content', 'article', '{"articleAlias":"1"}', 2, 1],
+            [3, 'category', '/([a-z]+)', '["GET"]', 1, 'content', 'category', '{"category":"1"}', 3, 1],
+            [4, 'category-pagination', '/([a-z]+)/([0-9]+)', '["GET"]', 1, 'content', 'category', '{"category":"1","page":"2"}', 4, 1],
+            [5, 'articles-pagination', '/articles/([0-9]+)', '["GET"]', 1, 'content', 'category', '{"category":"","page":"1"}', 5, 1],
+            [6, 'articles', '/articles', '["GET"]', 1, 'content', 'category', NULL, 6, 1],
+            [7, 'user', '/user/([a-zA-Z0-9\\-\\.]+)', NULL, 1, 'user', '1', NULL, 7, 1],
+            [8, 'admin-dashboard', '/admin', '["GET"]', 1, 'admin-index', 'index', NULL, 8, 1]
+        ], ['id', 'name', 'pattern', 'method', 'package_id', 'controller', 'action', 'params', 'ordering', 'status']);
     }
 }

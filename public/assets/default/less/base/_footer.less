@@ -12,7 +12,7 @@
   background-color: @light-gray;
   border-top: 1px solid @light-gray;
   display: block;
-  padding: (@grid-gutter-width/3) 0;
+  padding: (@grid-gutter-width/2) 0;
   &.stickyFooter {
     @media(min-width: (@screen-sm - 1)) {
       position: fixed;
@@ -23,7 +23,6 @@
   .left-box {
     font-size: @font-size-xsmall;
     float: left;
-    padding-top: 8px;
     @media (max-width: @screen-xs) {
       width: 100%;
       text-align: center;
@@ -31,9 +30,14 @@
   }
   .right-box {
     float: right;
+    font-size: @font-size-xsmall;
     @media (max-width: @screen-xs) {
       width: 100%;
       text-align: center;
     }
+  }
+  ul.menu-link-inline li.menu-item-link {
+    display: inline;
+    margin: 0 5px;
   }
 }

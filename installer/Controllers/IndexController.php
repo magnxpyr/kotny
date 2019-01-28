@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2018 Magnxpyr Network
+ * @copyright   2006 - 2019 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -16,7 +16,6 @@ use Installer\Migrations\MigrationMigration;
 use Installer\Migrations\PackageMigration;
 use Phalcon\Mvc\Controller;
 use Phalcon\Mvc\Model\Manager;
-use TeamTNT\TNTSearch\TNTSearch;
 
 /**
  * Class IndexController
@@ -63,7 +62,7 @@ class IndexController extends Controller
             'zip' => function_exists('zip_open') && function_exists('zip_read'),
             'db' => implode(', ', $db),
             'json' => function_exists('json_encode') && function_exists('json_decode'),
-            'mcrypt' => is_callable('mcrypt_encrypt'),
+            'mcrypt' => $this->isOpenSsl() ? extension_loaded('openssl') : is_callable('mcrypt_encrypt'),
 
             'writableRoot' => is_writable(ROOT_PATH),
             'writableModules' => is_writable(MODULES_PATH),
@@ -72,7 +71,7 @@ class IndexController extends Controller
             'writableConfig' => is_writable(CONFIG_PATH),
             'writableAssets' => is_writable(PUBLIC_PATH . 'assets/'),
             'writableLogs' => is_writable(LOGS_PATH),
-            'writableCache' => is_writable(CACHE_PATH),
+            'writableCache' => is_writable(CACHE_PATH)
         ];
 
         $isValid = true;
@@ -87,6 +86,7 @@ class IndexController extends Controller
             'recommended' => $recommended,
             'required' => $required,
             'isValid' => $isValid,
+            'isOpenSsl' => $this->isOpenSsl(),
             'success' => false
         ]);
     }
@@ -167,11 +167,12 @@ class IndexController extends Controller
             $package->up();
 
             $this->packageManager->installModule('Core');
+            $this->packageManager->installModule('Tools');
             $this->db->insert($config->dbPrefix . 'user',
                 [$_POST['su-username'], $_POST['su-email'], $this->security->hash($_POST['su-password']), 3, 1, time()],
                 ['username', 'email', 'password', 'role_id', 'status', 'created_at']);
 
-            $widgets = ['Carousel','Content', 'GridView', 'Menu', 'SortableView', 'TopContent'];
+            $widgets = ['Carousel','Content', 'GridView', 'Menu', 'SortableView', 'TopContent', 'Search'];
             foreach ($widgets as $widget) {
                 $this->packageManager->installWidget($widget);
             }
@@ -182,24 +183,6 @@ class IndexController extends Controller
 
         $this->response->setJsonContent($response);
         $this->response->send();
-    }
-
-    public function setupSearch($config)
-    {
-        $dbConfig = [
-            'driver'    => $config->dbAdaptor,
-            'host'      => $config->dbHost,
-            'database'  => $config->dbName,
-            'username'  => $config->dbUser,
-            'password'  => $config->dbPass,
-            'storage'   => CACHE_PATH . 'search/'
-        ];
-
-        $tnt = new TNTSearch;
-        $tnt->loadConfig($dbConfig);
-        $indexer = $tnt->createIndex('kotny.index');
-        $indexer->query('SELECT id, `fulltext` FROM content');
-        $indexer->run();
     }
 
     public function removeInstallerAction()
@@ -242,7 +225,8 @@ class IndexController extends Controller
             'username' => $_POST['db-username'],
             'password' => $_POST['db-password'],
             'port' => $_POST['db-port'],
-            'dbname' => $_POST['db-name']
+            'dbname' => $_POST['db-name'],
+            'charset' => 'utf8'
         ];
 
         $db = null;
@@ -277,7 +261,7 @@ class IndexController extends Controller
      * @param $dir
      * @return bool
      */
-    public function deleteDir($dir)
+    private function deleteDir($dir)
     {
         $files = array_diff(scandir($dir), ['.','..']);
         foreach ($files as $file) {
@@ -286,7 +270,7 @@ class IndexController extends Controller
         return rmdir($dir);
     }
 
-    public function createDirectories()
+    private function createDirectories()
     {
         if (!is_dir(CACHE_PATH)) {
             @mkdir(CACHE_PATH);
@@ -306,6 +290,20 @@ class IndexController extends Controller
 
         if (!is_dir(LOGS_PATH)) {
             @mkdir(LOGS_PATH);
+        }
+    }
+
+    private function isOpenSsl()
+    {
+        $phpVersion = substr(phpversion(), 0, 3);
+        switch ((string) $phpVersion) {
+            case "5.5":
+            case "5.6":
+            case "7.0":
+            case "7.1":
+                return false;
+            default:
+                return true;
         }
     }
 }

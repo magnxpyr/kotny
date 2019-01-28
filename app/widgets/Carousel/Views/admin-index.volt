@@ -26,8 +26,7 @@
                         <i class="fa fa-folder-open"></i>
                     </span>
                 </div>
-                <textarea id="_text{{ index }}" name="_text[]" class="form-control">{{ params['_text'][index] }}</textarea>
-
+                <textarea id="_text{{ index }}" name="_text[]" class="form-control">{{ params['_text'][index] is defined ? params['_text'][index] : "" }}</textarea>
             </div>
         {% endfor %}
     {% endif %}

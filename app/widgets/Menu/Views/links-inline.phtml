@@ -1,0 +1,28 @@
+<?php
+/**
+ * @var array|Module\Core\Models\Menu $menuElements
+ */
+
+use Module\Core\Models\Content;
+
+echo '<ul class="menu-link-inline">';
+foreach ($menuElements as $k => $elements) {
+    if (!$this->acl->checkViewLevel($elements->viewLevel->getRolesArray()) || $elements->getStatus() != Content::STATUS_PUBLISHED) continue;
+
+    $active = "";
+    if ($elements->getPath() != "#" && substr($elements->getPath(), 0, 4) != "http") {
+        $path = $this->url->get($elements->getPath());
+    } else {
+        $path = $elements->getPath();
+    }
+
+    echo "<li class='menu-item-link'><a href='$path' title='$elements->title'>";
+    if (!empty($elements->getPrepend())) {
+        echo "<i class=\"$elements->prepend\"></i> ";
+    }
+    if ($elements->getShowTitle()) {
+        echo $elements->title;
+    }
+    echo "</a></li>";
+}
+echo '</ul>';

@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2018 Magnxpyr Network
+ * @copyright   2006 - 2019 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -396,7 +396,7 @@ class AdminWidgetController extends AdminController
         foreach ($files as $file) {
             preg_match("/.*[\/|\\\](.*?)\..*/s", $file, $matches);
             if (isset($matches[1]) && substr($matches[1], 0, 6) != 'admin-' &&
-                strpos($matches[1], '-scripts') === false) {
+                strpos($matches[1], '-scripts') === false && strpos($matches[1], '-styles') === false) {
                 $view[$matches[1]] = $matches[1];
             }
         }

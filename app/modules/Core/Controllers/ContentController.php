@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2018 Magnxpyr Network
+ * @copyright   2006 - 2019 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -12,6 +12,7 @@ use Module\Core\Models\Category;
 use Module\Core\Models\Content;
 use Engine\Mvc\Controller;
 use Module\Core\Models\User;
+use Module\Core\Models\ViewLevel;
 use Phalcon\Paginator\Adapter\QueryBuilder as PaginatorQueryBuilder;
 
 /**
@@ -48,15 +49,6 @@ class ContentController extends Controller
 
         $search = $this->request->get('search', 'string');
 
-        $ids = [];
-        if ($search != null) {
-            $res = $this->search->fuzzySearch($search);
-            foreach ($res as $re) {
-                $ids[] = $re['id'];
-            }
-        }
-
-
         $builder = $this->modelsManager->createBuilder()
             ->columns('user.*, content.*, category.*')
             ->addFrom(Content::class, 'content')
@@ -67,8 +59,8 @@ class ContentController extends Controller
             $builder->innerJoin(Category::class, 'content.category = category.id', 'category')
                 ->andWhere('category.alias = :category:', ['category' => $category]);
         }
-        if (!empty($ids)) {
-            $builder->andWhere('content.id in (:ids:)', ['ids' => join(',', $ids)]);
+        if ($search != null) {
+            $builder->andWhere('FULLTEXT_MATCH_BMODE(content.title, content.fulltext, :search:)', ['search' => $search]);
         }
         $builder->orderBy('content.created_at DESC');
 
@@ -87,7 +79,6 @@ class ContentController extends Controller
      */
     public function articleAction()
     {
-        $articleId = $this->dispatcher->getParam('articleId', 'int');
         $articleAlias = $this->dispatcher->getParam('articleAlias', 'alias');
 
         $this->view->setVar('metaAuthor', '');
@@ -96,14 +87,14 @@ class ContentController extends Controller
 
         $model = $this->modelsManager->createBuilder()
             ->columns('content.*, category.*, user.*, viewLevel.*')
-            ->addFrom('Module\Core\Models\Content', 'content')
-            ->addFrom('Module\Core\Models\Category', 'category')
-            ->addFrom('Module\Core\Models\User', 'user')
-            ->addFrom('Module\Core\Models\ViewLevel', 'viewLevel')
+            ->addFrom(Content::class, 'content')
+            ->addFrom(Category::class, 'category')
+            ->addFrom(User::class, 'user')
+            ->addFrom(ViewLevel::class, 'viewLevel')
             ->andWhere('content.category = category.id')
             ->andWhere('content.created_by = user.id')
             ->andWhere('content.view_level = viewLevel.id')
-            ->andWhere('content.id = :id:', ['id' => $articleId])
+            ->andWhere('content.alias = :alias:', ['alias' => $articleAlias])
             ->getQuery()
             ->getSingleResult();
 
@@ -148,11 +139,5 @@ class ContentController extends Controller
         $content->setHits($content->getHits() + 1)->save();
 
         $this->view->setVar('model', $model);
-    }
-
-    public function searchAction()
-    {
-
-        $this->view->setVar('articles', $articles);
     }
 }

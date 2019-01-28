@@ -15,7 +15,7 @@
 
     <div class="tab-content">
         <div class="tab-pane active" id="requirements-tab" role="tabpanel">
-            <?php $this->partial("index/requirements", ['required' => $required, 'recommended' => $recommended]); ?>
+            <?php $this->partial("index/requirements", ['required' => $required, 'recommended' => $recommended, 'isOpenSsl' => $isOpenSsl]); ?>
             <div class="btn-group pull-right">
                 <a href="#" class="btn btn-primary" onclick="checkRequirements();" rel="next" title="Next">
                     <i class="fa fa-arrow-right"></i> Next</a>
@@ -117,7 +117,7 @@
 
     <div class="tab-pane" id="overview-tab" role="tabpanel">
         <?php $this->partial("index/overview", ['required' => $required, 'recommended' => $recommended]); ?>
-        <?php $this->partial("index/requirements", ['required' => $required, 'recommended' => $recommended]); ?>
+        <?php $this->partial("index/requirements", ['required' => $required, 'recommended' => $recommended, 'isOpenSsl' => $isOpenSsl]); ?>
         <a class="btn" href="#" rel="prev" title="Previous">
             <i class="fa fa-arrow-left"></i> Previous</a>
         <a class="btn btn-primary" href="#" onclick="cmsInstall()" rel="next" title="Next">

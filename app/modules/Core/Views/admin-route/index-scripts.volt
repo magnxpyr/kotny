@@ -13,7 +13,10 @@
             $.post("{{ url("/admin/core/route/update-ordering") }}", {
                 data: result,
                 success: function (response) {
-                    ajaxFailure(response);
+                    ajaxSuccess(response);
+                },
+                error: function (response) {
+                    ajaxFailure(response)
                 }
             });
         });

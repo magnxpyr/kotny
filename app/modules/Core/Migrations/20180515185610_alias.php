@@ -1,6 +1,6 @@
 <?php 
 /**
- * @copyright   2006 - 2018 Magnxpyr Network
+ * @copyright   2006 - 2019 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -63,5 +63,11 @@ class Alias20180515185610Migration extends Migration
                 ]
             ]
         );
+
+        $this->batchInsert(self::TABLE_NAME, [
+            [1, 'terms-of-service', '{"articleId":"1","articleAlias":"terms-of-service"}', 2, 1],
+            [2, 'privacy-policy', '{"articleId":"2","articleAlias":"privacy-policy"}', 2, 1],
+            [3, 'cookie-policy', '{"articleId":"3","articleAlias":"cookie-policy"}', 2, 1]
+        ], ['id', 'url', 'params', 'route_id', 'status']);
     }
 }

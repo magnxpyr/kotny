@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2018 Magnxpyr Network
+ * @copyright   2006 - 2019 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -12,7 +12,6 @@ use Module\Core\Models\Alias;
 use Module\Core\Models\Package;
 use Module\Core\Models\Route;
 use Phalcon\Mvc\Model\Manager;
-use TeamTNT\TNTSearch\TNTSearch;
 
 /**
  * Class Bootstrap
@@ -35,8 +34,6 @@ class Bootstrap
     public function run()
     {
         $this->initConfig();
-
-        $this->initTntSearch();
 
         // Getting a request instance
         $request = new Phalcon\Http\Request();
@@ -116,6 +113,11 @@ class Bootstrap
 
     private function initConfig()
     {
+        // Load loader
+        require_once APP_PATH . 'engine/Loader.php';
+        $loader = new \Engine\Loader();
+        $loader->init();
+
         // Load config file
         require_once APP_PATH . 'config/config-default.php';
         $config = new ConfigDefault();
@@ -142,18 +144,21 @@ class Bootstrap
             'port' => $config->dbPort,
             'dbname' => $config->dbName,
             'prefix' => $config->dbPrefix,
-            'schema' => $config->dbSchema
+            'schema' => $config->dbSchema,
+            'charset' => 'utf8'
         ];
 
         // Connect to db
         switch ($config->dbAdaptor) {
             case 'oracle':
+                $dbConfig['dialectClass'] = \Phalcon\Db\Dialect\Oracle::class;
                 $db = new \Phalcon\Db\Adapter\Pdo\Oracle($dbConfig);
                 break;
             case 'postgresql':
                 $db = new \Phalcon\Db\Adapter\Pdo\Postgresql($dbConfig);
                 break;
             default:
+                $dbConfig['dialectClass'] = \Phalcon\Db\Dialect\MysqlExtended::class;
                 $db = new \Phalcon\Db\Adapter\Pdo\Mysql($dbConfig);
                 break;
         }
@@ -167,11 +172,6 @@ class Bootstrap
         $this->di->setShared('db', $db);
         $this->di->setShared('config', $config);
         $this->initCache();
-
-        // Load loader
-        require_once APP_PATH . 'engine/Loader.php';
-        $loader = new \Engine\Loader();
-        $loader->init();
 
         // Load modules
         $modulesList = \Module\Core\Models\Package::getActiveModules();
@@ -189,9 +189,7 @@ class Bootstrap
         $router = new Phalcon\Mvc\Router(false);
         $router->removeExtraSlashes(true);
 
-
-        $baseUri = "/";
-        $uri = trim(substr($_SERVER['REQUEST_URI'], sizeof($baseUri)), '/');
+        $uri = trim(substr($_SERVER['REQUEST_URI'], strlen($config->baseUri)), '/');
 
         $builder = null;
         if (!empty($uri)) {
@@ -225,11 +223,6 @@ class Bootstrap
                 'action' => 'index'
             ]);
 
-            foreach ($modulesConfig['routes'] as $routeClass) {
-                $route = new $routeClass;
-                $route->init($router);
-            }
-
             $routes = Route::getActiveRoutes();
             if ($routes) {
                 foreach ($routes as $routeObj) {
@@ -247,32 +240,19 @@ class Bootstrap
                             $routePaths[$key] = $value;
                         }
                     }
-                    $router->add($route->getPattern(), $routePaths, $route->getMethodArray());
+                    $router
+                        ->add($route->getPattern(), $routePaths, $route->getMethodArray())
+                        ->setName($route->getName());
                 }
+            }
+
+            foreach ($modulesConfig['routes'] as $routeClass) {
+                $route = new $routeClass;
+                $route->init($router);
             }
         }
 
         $this->di->setShared('router', $router);
-    }
-
-    private function initTntSearch()
-    {
-        /** @var Config $config */
-        $config = $this->di->getShared('config');
-
-        $dbConfig = [
-            'driver'    => $config->dbAdaptor,
-            'host'      => $config->dbHost,
-            'database'  => $config->dbName,
-            'username'  => $config->dbUser,
-            'password'  => $config->dbPass,
-            'storage'   => CACHE_PATH . 'search/'
-        ];
-
-        $tnt = new TNTSearch;
-        $tnt->loadConfig($dbConfig);
-        $tnt->selectIndex("kotny.index");
-        $this->di->setShared("search", $tnt);
     }
 
     private function initEventManager()
@@ -541,8 +521,7 @@ class Bootstrap
                 throw $e;
             } else {
                 $this->di->getShared('logger')->error('Page error: ' . $e->getMessage());
-                $application->response->redirect([
-                    'for' => 'core-default',
+                $application->dispatcher->forward([
                     'module' => 'core',
                     'controller' => 'error',
                     'action' => 'show404'

@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2018 Magnxpyr Network
+ * @copyright   2006 - 2019 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -68,15 +68,10 @@ class AdminContentEditForm extends Form
 
         // Featured intro image
         $introImage = new Text('introImage', [
-            'class' => 'form-control', 'readonly' => 'readonly'
+            'class' => 'form-control',
         ]);
         $introImage->setLabel($this->t->_('Featured Intro Image'));
         $introImage->setFilters('string');
-        $introImage->addValidator(
-            new PresenceOf([
-                'message' => $this->t->_('%field% is required', ['field' => $this->t->_('Featured Intro Image')])
-            ])
-        );
         $this->add($introImage);
 
         // Intro Text
@@ -88,7 +83,7 @@ class AdminContentEditForm extends Form
 
         // Featured full text image
         $fullTextImage = new Text('fulltextImage', [
-            'class' => 'form-control', 'readonly' => 'readonly'
+            'class' => 'form-control',
         ]);
         $fullTextImage->setLabel($this->t->_('Featured Full text Image'));
         $fullTextImage->setFilters('string');

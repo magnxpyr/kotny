@@ -1,11 +1,13 @@
 /**
- * @copyright   2006 - 2018 Magnxpyr Network
+ * @copyright   2006 - 2019 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @url         http://www.magnxpyr.com
  * @authors     Stefan Chiriac <stefan@magnxpyr.com>
  */
 
 $(function ($) {
+    ajaxSetup();
+
     window.baseURI = $('meta[name=url]').attr("content");
     var AdminLTEOptions = {
         //Enable sidebar expand on hover effect for sidebar mini
@@ -29,9 +31,6 @@ $(function ($) {
             }
         }
     });
-
-    /** add active class and stay opened when selected */
-    var url = window.location;
 
     // for sidebar menu entirely but not cover treeview
     $('ul.sidebar-menu li.active').parent().addClass('active');
@@ -127,6 +126,13 @@ $(function ($) {
     $.fn.datetimepicker.defaults.showTodayButton = true;
 });
 
+function ajaxSetup() {
+    $.ajaxSetup({
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="_token"]').attr('content')
+        }
+    });
+}
 
 function handleResponse(response) {
     if (response.success) {
@@ -138,7 +144,7 @@ function handleResponse(response) {
 
 function ajaxSuccess(response) {
     var message = "Success";
-    if (response.message) {
+    if (response && response.message) {
         message = response.message;
     }
     $("#flash-area").html("<div class=\"alert alert-success alert-dismissible\">" + message + "</div>")
@@ -146,7 +152,7 @@ function ajaxSuccess(response) {
 
 function ajaxFailure(response) {
     var message = "Failure";
-    if (response.message) {
+    if (response && response.message) {
         message = response.message;
     }
     $("#flash-area").html("<div class=\"alert alert-danger alert-dismissible\">" + message + "</div>")
@@ -198,7 +204,7 @@ function initMCE(selector) {
             {title: "None", value: ""},
             {title: "Image Responsive", value: "img-responsive"}
         ],
-        extended_valid_elements: 'a[*],em[*]',
+        extended_valid_elements: 'a[*],em[*],span[*]',
         branding: false,
         file_browser_callback: function (field_name, url, type, win) {
             var w = window,

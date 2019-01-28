@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2018 Magnxpyr Network
+ * @copyright   2006 - 2019 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -32,7 +32,7 @@ class ConfigurationForm extends Form
     {
         // Adaptor
         $adaptor = new Select('db-adapter',
-            ['mysql' => 'Mysql', 'postgresql' => 'PostgreSQL', 'oracle' => 'Oracle']);
+            ['mysql' => 'Mysql'/*, 'postgresql' => 'PostgreSQL', 'oracle' => 'Oracle'*/]);
         $adaptor->setLabel("Database Type");
         $adaptor->setFilters('alphanum');
         $this->add($adaptor);

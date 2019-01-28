@@ -2,7 +2,7 @@ module.exports = function(grunt) {
 
     grunt.initConfig({
         less: {
-            dev: {
+            build: {
                 files: {
                     '../css/main.css' : ['../less/main.less']
                 }
@@ -18,13 +18,6 @@ module.exports = function(grunt) {
             },
             options: {
                 separator: '; '
-            },
-            dist: {
-                src: [
-                    '../js/pages/*.js',
-                    '../js/pages/*/*.js'
-                ],
-                dest: '../js/main.js'
             }
         },
         watch: {
@@ -58,7 +51,7 @@ module.exports = function(grunt) {
         uglify: {
             main_js: {
                 files: {
-                    '../js/main.min.js': ['../js/main.js']
+                    '../js/main.min.js': ['../js/*.js', '../js/*/*.js', '!../js/*.min.js', '!../js/pdw.js']
                 }
             }
         },
@@ -92,20 +85,17 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-uglify');         // minifying js files
     grunt.loadNpmTasks('grunt-contrib-cssmin');         // minifying css files
     grunt.loadNpmTasks('grunt-autoprefixer');
-    grunt.loadNpmTasks('grunt-bless');
 
     // Register tasks
     grunt.registerTask('default', [
-        'dev'
+        'build'
     ]);
 
-    grunt.registerTask('dev', [
-        'watch',
-        'less:dev',
+    grunt.registerTask('build', [
+        'less:build',
         'concat',
         'uglify',
         'cssmin',
-        'autoprefixer',
-        'bless'
+        'autoprefixer'
     ]);
 };

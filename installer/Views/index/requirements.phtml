@@ -27,7 +27,7 @@
                         <td><?= isRequired($required['json']) ?></td>
                     </tr>
                     <tr>
-                        <td class="item">Mcrypt Support</td>
+                        <td class="item"><?= $isOpenSsl ? "Mcrypt" : "Open SSL" ?> Support</td>
                         <td><?= isRequired($required['mcrypt']) ?></td>
                     </tr>
                     <tr>

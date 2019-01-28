@@ -9,6 +9,9 @@
                 } else {
                     $('#flash-messages').html('<div class="alert alert-success">Installer directory removed successfully! Please proceed to your website.</div>');
                 }
+            },
+            error: function () {
+                $('#flash-messages').html('<div class="alert alert-danger">Unable to delete installer directory! Please remove it manually!</div>');
             }
         });
     }

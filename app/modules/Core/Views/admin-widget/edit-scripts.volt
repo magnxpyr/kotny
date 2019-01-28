@@ -11,7 +11,7 @@
                 url: "{{ url('admin/core/widget/get-order') }}",
                 data: {
                     id: $('#id').val(),
-                    position: $(this).find(':selected').text()
+                    position: $(this).val()
                 },
                 success: function (data) {
                     var listItems = '';

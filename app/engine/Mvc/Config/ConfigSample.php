@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2018 Magnxpyr Network
+ * @copyright   2006 - 2019 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -29,7 +29,7 @@ class ConfigSample
     public $dev = true; // true false
     public $timezone = '';
     public $siteName = '';
-    public $siteNameLocation = 1; //0,1,2
+    public $siteNameLocation = 0; //0,1,2
     public $baseUri = '/';
     public $cryptKey = '';
     public $environment = 'default'; //get by file config name

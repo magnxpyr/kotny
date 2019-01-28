@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2018 Magnxpyr Network
+ * @copyright   2006 - 2019 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -43,7 +43,9 @@ class Url extends \Phalcon\Mvc\Url
             return $this->getDI()->getShared('request')->get('returnUrl');
         } else {
             $historyUri = $this->getDI()->getShared('session')->get(self::HISTORY_URI);
-            return $this->getDI()->getShared('url')->get($historyUri[1]);
+            if (isset($historyUri[1])) {
+                return $this->getDI()->getShared('url')->get($historyUri[1]);
+            }
         }
     }
 

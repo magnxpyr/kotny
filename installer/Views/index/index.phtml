@@ -129,7 +129,7 @@
 <div id="flash-messages"></div>
 <div class="main">
     <?php $success ? $this->partial("index/success") :
-        $this->partial("index/tabs", ['required' => $required, 'recommended' => $recommended]); ?>
+        $this->partial("index/tabs", ['required' => $required, 'recommended' => $recommended, 'isOpenSsl' => $isOpenSsl]); ?>
 </div>
 <div class="layout-loader hidden">
     <div class="loader">

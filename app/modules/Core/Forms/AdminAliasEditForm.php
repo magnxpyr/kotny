@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2018 Magnxpyr Network
+ * @copyright   2006 - 2019 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -115,10 +115,13 @@ class AdminAliasEditForm extends Form
         if (isset($data['_paramKey']) && $data['_paramKey'] != null) {
             $params = [];
             foreach ($data['_paramKey'] as $key => $value) {
-                $params[$value] = $data['_paramValue'][$key];
+                if (!empty($key) && !empty($value)) {
+                    $params[$value] = $data['_paramValue'][$key];
+                }
             }
-
-            $entity->setParams(json_encode($params));
+            if (!empty($params)) {
+                $entity->setParams(json_encode($params));
+            }
         }
 
         $data['url'] = empty($data['url']) ? null : trim($data['url'], '/');

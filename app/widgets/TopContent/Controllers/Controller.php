@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2018 Magnxpyr Network
+ * @copyright   2006 - 2019 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -27,6 +27,9 @@ class Controller extends \Engine\Widget\Controller
             ->limit($this->getParam("_limit"));
         if ($this->getParam("_category")) {
             $model->andWhere('category.alias = :category:', ['category' => $this->getParam("_category")]);
+        }
+        if ($this->getParam("_featured") && $this->getParam("_featured") == 1) {
+            $model->andWhere('content.featured = :featured:', ['featured' => 1]);
         }
         
         $this->viewWidget->setVar('model', $model->getQuery()->execute());

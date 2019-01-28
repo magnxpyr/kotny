@@ -24,7 +24,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="input-group">
-                                <span class="input-group-addon round-left gray-bg">{{ url('/') }}</span>
+                                <span class="input-group-addon round-left gray-bg">{{ url() }}</span>
                                 {{ form.render('customUrl', ['placeholder': t._('Custom Url'), 'class': 'form-control straight-left']) }}
                             </div>
                         </div>

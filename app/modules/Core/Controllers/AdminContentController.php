@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2006 - 2018 Magnxpyr Network
+ * @copyright   2006 - 2019 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -14,6 +14,7 @@ use Module\Core\Models\Category;
 use Module\Core\Models\Content;
 use DataTables\DataTable;
 use Engine\Mvc\AdminController;
+use Module\Core\Models\Route;
 use Module\Core\Models\User;
 use Module\Core\Models\ViewLevel;
 use Phalcon\Mvc\View;
@@ -125,13 +126,6 @@ class AdminContentController extends AdminController
             return;
         }
 
-        if (!empty($id)) {
-            $this->search->getIndex()->update($id, ['id' => $id, 'fulltext' => $model->getFulltext()]);
-        } else {
-            $this->search->getIndex()->insert($id, ['id' => $id, 'fulltext' => $model->getFulltext()]);
-        }
-
-
         $customUrl = $form->getValue('customUrl');
         $customUrl = empty($customUrl) ? null : trim($customUrl, '/');
         if ($customUrl != null) {
@@ -145,12 +139,15 @@ class AdminContentController extends AdminController
             } else {
                 $alias = new Alias();
                 $alias->setUrl($customUrl);
-                $alias->setRouteId(7);
                 $alias->setStatus(1);
                 $alias->setParams(json_encode([
                     'articleId' => $model->getId(),
                     'articleAlias' => $model->getAlias()
                 ]));
+                $route = Route::findFirstByName('article');
+                if ($route) {
+                    $alias->setRouteId($route->getId());
+                }
                 $alias->save();
 
                 $model->setAliasId($alias->getId());

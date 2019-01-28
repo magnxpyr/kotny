@@ -1,6 +1,6 @@
 <?php 
 /**
- * @copyright   2006 - 2018 Magnxpyr Network
+ * @copyright   2006 - 2019 Magnxpyr Network
  * @license     New BSD License; see LICENSE
  * @link        http://www.magnxpyr.com
  * @author      Stefan Chiriac <stefan@magnxpyr.com>
@@ -118,11 +118,12 @@ class Widget20170629180616Migration extends Migration
         );
 
         $this->batchInsert(self::TABLE_NAME, [
-            [5, 'Homepage Menu', 0, 'menu', null, 'index', time(), 1, \Engine\Widget\Widget::CACHE_LIFETIME, '{"_menu":"3"}', 0, 1],
-            [2, 'Homepage Carousel', 0, 'homepage-header', null, 'index', time(), 1, \Engine\Widget\Widget::CACHE_LIFETIME, '{"_images":["https:\/\/farm1.staticflickr.com\/516\/32235079792_0ce7b5c93f_k.jpg"]}', 0, 1],
-            [7, 'Latest Posts', 0, 'homepage-content-bottom', 'widget', 'index', time(), 1, \Engine\Widget\Widget::CACHE_LIFETIME, '{"_category":"","_limit":"3"}', 1, 1],
-            [3, 'Powered by', 0, 'footer-left', 'widget', 'index', time(), 1, \Engine\Widget\Widget::CACHE_LIFETIME, '{"_content":"Powered by <a href=\"http:\/\/www.kotny.com\">Kotny<\/a> &amp;copy 2018"}', 1, 1],
-            [3, 'Social links', 0, 'footer-right', 'widget', 'index', time(), 1, \Engine\Widget\Widget::CACHE_LIFETIME, '{"_content":"<div class=\"social\"><a href=\"http:\/\/www.magnxpyr.com\" target=\"_blank\" rel=\"noopener\"><em class=\"facebook icons\"><\/em><\/a> <a href=\"http:\/\/www.magnxpyr.com\" target=\"_blank\" rel=\"noopener\"><em class=\"twitter icons\"><\/em><\/a> <a href=\"http:\/\/www.magnxpyr.com\" target=\"_blank\" rel=\"noopener\"><em class=\"google-plus icons\"><\/em><\/a> <a href=\"http:\/\/www.magnxpyr.com\" target=\"_blank\" rel=\"noopener\"><em class=\"linkedin icons\"><\/em><\/a> &nbsp;<\/div>"}', 1, 1]
+            [6, 'Top Menu', 0, 'menu', null, 'index', time(), 1, \Engine\Widget\Widget::CACHE_LIFETIME, '{"_menu":"3"}', 0, 1],
+            [9, 'Top Menu Search', 1, 'menu', null, 'index', time(), 1, \Engine\Widget\Widget::CACHE_LIFETIME, null, 0, 1],
+            [3, 'Homepage Carousel', 0, 'homepage-header', null, 'index', time(), 1, \Engine\Widget\Widget::CACHE_LIFETIME, '{"_images":["\/media\/ordinateur-apple-ipad-et-imac.jpg"],"_text":["<h1><span style=\"color: #f2f2f2;\">Free &amp; Open Source<\/span><br \/><span style=\"color: #f2f2f2;\">content management system<\/span><\/h1>\r\n<p><span style=\"color: #ffffff;\"><strong>PHP\/MySQL CMS and Framework<\/strong> based on <strong>fastest<\/strong> PHP Framework<\/span><\/p>\r\n<p>&nbsp;<\/p>\r\n<p><a class=\"btn btn-primary btn-large\" href=\"https:\/\/github.com\/magnxpyr\/kotny\">Github<\/a><\/p>"]}', 0, 1],
+            [8, 'Latest Posts', 0, 'homepage-content-bottom', 'widget', 'index', time(), 1, \Engine\Widget\Widget::CACHE_LIFETIME, '{"_featured":"1","_category":"","_limit":"3"}', 1, 1],
+            [4, 'Powered by', 0, 'footer-left', null, 'index', time(), 1, \Engine\Widget\Widget::CACHE_LIFETIME, '{"_content":"Powered by <a href=\"http:\/\/www.kotny.com\">Kotny<\/a> &amp;copy 2019"}', 1, 1],
+            [6, 'Footer right menu', 1, 'footer-right', NULL, 'links-inline', time(), 1, \Engine\Widget\Widget::CACHE_LIFETIME, '{"_menu":"4"}', 0, 1],
         ], ['package_id', 'title', 'ordering', 'position', 'layout', 'view', 'publish_up', 'view_level', 'cache', 'params', 'show_title', 'status']);
     }
 }

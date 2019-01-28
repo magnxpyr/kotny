@@ -29,14 +29,13 @@
   "require": {
     "php": ">=5.6",
     "ext-phalcon": "~3.0",
-    "phalcon/incubator": "3.1.*",
+    "phalcon/incubator": "3.*",
     "magnxpyr/phalcon-datatables": "1.*",
-    "swiftmailer/swiftmailer": "5.4.*",
-    "facebook/graph-sdk": "5.4.*",
-    "google/apiclient": "2.0.*",
-    "google/recaptcha": "~1.1",
-    "guillermomartinez/filemanager-php": "0.1.*",
-    "teamtnt/tntsearch": "1.3.*"
+    "swiftmailer/swiftmailer": "5.*",
+    "facebook/graph-sdk": "5.*",
+    "google/apiclient": "2.*",
+    "google/recaptcha": "1.*",
+    "guillermomartinez/filemanager-php": "0.1.*"
   },
   "config": {
     "vendor-dir": "app/vendor"
