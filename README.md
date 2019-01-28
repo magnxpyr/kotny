@@ -1,26 +1,39 @@
-Magnxpyr CMS
+Kotny CMS
 ==============
 Content management system based on Phalcon Framework
 
 ![CS PSR2 badge](https://img.shields.io/badge/CS-PSR%202-orange.svg)
-![Phalcon badge](https://img.shields.io/badge/Phalcon-v2.0.7-brightgreen.svg)
+![Phalcon badge](https://img.shields.io/badge/Phalcon-v3.x-green.svg)
 
 Requirements
 ------------
 To run this application, you need at least:
-- >= PHP 5.4
-- Phalcon 2.0.7
-- Mod rewrite enabled
+- PHP 5.6+
+- Phalcon 3.0.0+
+- mysql
+- apache(+mod_rewrite) / nginx
 
-Set your environment setting in 'app/config/config.php'
+## Installation
 
-Third Party
------------
-* jQuery 1.11.3: https://jquery.org/ (MIT)
-* jQuery UI 1.11.4 https://jqueryui.com/ (MIT)
-* Bootstrap 3 http://getbootstrap.com/ (MIT)
-* Bootstrap Switch http://www.bootstrap-switch.org/ (Apache2)
-* Font Awesome 4.3 http://fortawesome.github.io/Font-Awesome/ (MIT)
-* CKEditor 4.4.7: http://ckeditor.com/ (GPL, LGPL and MPL)
-* ElFinder 2.x https://github.com/Studio-42/elFinder (BSD3)
-* Incubator https://github.com/phalcon/incubator/ (BSD3)
+### Composer
+```
+composer install
+```
+
+After some time, do not forget run composer update for update dependencies:
+```
+composer update
+```
+
+### NPM
+```
+npm install
+```
+
+To recompile changes on a theme
+```
+grunt dev
+```
+
+
+For a new environment create a file in `config` directory named `config-env` and set in `config-default.php` `$environment = env`
