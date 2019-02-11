@@ -1,8 +1,8 @@
 {
-  "name": "magnxpyr/cms",
+  "name": "magnxpyr/kotny",
   "version": "1.0.0",
   "license": "BSD-3-Clause",
-  "description": "Open Source CMS written with Phalcon PHP Framework 3.0.x.",
+  "description": "Open Source CMS written with Phalcon PHP Framework 3.x",
   "type": "project",
   "keywords": [
     "phalcon",
