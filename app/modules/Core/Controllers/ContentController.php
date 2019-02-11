@@ -127,7 +127,7 @@ class ContentController extends Controller
                     $this->view->setVar($key, $val);
                 }
             }
-            if (!isset($meta->metaTitle) || empty($meta->metaTitle)) {
+            if ((!isset($meta->metaTitle) || empty($meta->metaTitle)) && !empty($model->c)) {
                 $this->view->setVar('metaTitle', $model->c->title);
             }
         }
