@@ -19,7 +19,7 @@ class Config {
     public $cryptKey = '721a79281f408416';
     public $environment = ''; //get by file config name
     public $aclAdapter = 'memory'; // memory, database
-    public $cacheAdapter = 'file'; // file, memcache, memcached
+    public $cacheAdapter = 'memory'; // file, memcache, memcached, memory
     public $cacheHost = '';
     public $cachePort = '';
     public $metaDesc = '';
