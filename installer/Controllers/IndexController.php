@@ -70,7 +70,6 @@ class IndexController extends Controller
             'writableMedia' => is_writable(MEDIA_PATH),
             'writableConfig' => is_writable(CONFIG_PATH),
             'writableAssets' => is_writable(PUBLIC_PATH . 'assets/'),
-            'writableMetadata' => is_writable(PUBLIC_PATH . 'metadata/'),
             'writableLogs' => is_writable(LOGS_PATH),
             'writableCache' => is_writable(CACHE_PATH)
         ];
@@ -289,6 +288,10 @@ class IndexController extends Controller
 
         if (!is_dir(CACHE_PATH . 'volt')) {
             @mkdir(CACHE_PATH . 'volt');
+        }
+
+        if (!is_dir(CACHE_PATH . 'metadata')) {
+            @mkdir(CACHE_PATH . 'metadata');
         }
 
         if (!is_dir(LOGS_PATH)) {
