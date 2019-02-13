@@ -17,7 +17,7 @@ To run this application, you need at least:
 
 ### Composer
 ```
-composer install
+composer create-project magnxpyr/kotny
 ```
 
 After some time, do not forget run composer update for update dependencies:

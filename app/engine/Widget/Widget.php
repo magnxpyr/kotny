@@ -70,8 +70,6 @@ class Widget extends Injectable
      */
     public function render($widget, $params = null, $options = null)
     {
-        $this->logger->debug("Rendering widget: " . $this->helper->arrayToString($widget));
-
         $controllerName = 'controller';
         $action = 'index';
 
@@ -117,14 +115,14 @@ class Widget extends Injectable
 
         /** @var \Engine\Widget\Controller $controller */
         $controller = new $controllerClass();
-        if ($options !== null && isset($options['cache']) && !empty($options['cache'])) {
-            if (!isset($params['cacheKey'])) {
-                $options['cacheKey'] = $this->createCacheKey($widget, $params, $widgetName);
-            }
-            if ($controller->cache->exists($options['cacheKey'], $options['cache'])) {
-                return $controller->cache->get($options['cacheKey']);
-            }
-        }
+//        if ($options !== null && isset($options['cache']) && !empty($options['cache'])) {
+//            if (!isset($params['cacheKey'])) {
+//                $options['cacheKey'] = $this->createCacheKey($widget, $params, $widgetName);
+//            }
+//            if ($controller->cache->exists($options['cacheKey'], $options['cache'])) {
+//                return $controller->cache->get($options['cacheKey']);
+//            }
+//        }
 
         if ($params !== null) {
             $controller->setParams($params);
@@ -159,9 +157,9 @@ class Widget extends Injectable
         }
         $this->di->set('viewWidget', $viewWidget);
 
-        if ($html != null && $options !== null && isset($options['cache']) && !empty($options['cache'])) {
-            $controller->cache->save($options['cacheKey'], $html, $options['cache']);
-        }
+//        if ($html != null && $options !== null && isset($options['cache']) && !empty($options['cache'])) {
+//            $controller->cache->save($options['cacheKey'], $html, $options['cache']);
+//        }
         return $html;
     }
 

@@ -472,17 +472,13 @@ class Bootstrap
                 ]);
                 break;
             case 'file':
-            default:
                 $modelsMetadata = new \Phalcon\Mvc\Model\MetaData\Files([
                     "metaDataDir" => CACHE_PATH . 'metadata/'
                 ]);
                 break;
+            default:
+                $modelsMetadata = new \Phalcon\Mvc\Model\MetaData\Memory();
         }
-
-        if (DEV) {
-            $modelsMetadata = new \Phalcon\Mvc\Model\MetaData\Memory();
-        }
-
 
         // If the configuration specify the use of metadata adapter use it or use memory otherwise
         $this->di->setShared('modelsMetadata', $modelsMetadata);

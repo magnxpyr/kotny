@@ -70,6 +70,7 @@ class IndexController extends Controller
             'writableMedia' => is_writable(MEDIA_PATH),
             'writableConfig' => is_writable(CONFIG_PATH),
             'writableAssets' => is_writable(PUBLIC_PATH . 'assets/'),
+            'writableMetadata' => is_writable(PUBLIC_PATH . 'metadata/'),
             'writableLogs' => is_writable(LOGS_PATH),
             'writableCache' => is_writable(CACHE_PATH)
         ];
@@ -141,6 +142,8 @@ class IndexController extends Controller
         }
 
         try {
+            $baseUri = str_replace('/install/', '', $this->url->get('/'));
+            $baseUri = strlen($baseUri) == 0 ? '/' : $baseUri;
             $config = new ConfigSample();
             $config->dbAdaptor = $_POST['db-adapter'];
             $config->dbName = $_POST['db-name'];
@@ -149,7 +152,7 @@ class IndexController extends Controller
             $config->dbUser = $_POST['db-username'];
             $config->dbPass = $_POST['db-password'];
             $config->dbPrefix = $_POST['db-prefix'];
-            $config->baseUri = str_replace('/install/', '', $this->url->get('/'));
+            $config->baseUri = $baseUri;
             $config->timezone = date_default_timezone_get();
             $config->cryptKey = $this->security->getRandom()->hex(Auth::SELECTOR_BYTES);
 
