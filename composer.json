@@ -24,7 +24,7 @@
     }
   ],
   "support": {
-    "issues": "https://github.com/magnxpyr/cms/issues"
+    "issues": "https://github.com/magnxpyr/kotny/issues"
   },
   "require": {
     "php": ">=5.6",
